@@ -6,6 +6,7 @@ import store from './store'
 // import Vant from 'vant'
 // import 'vant/lib/index.css'
 // 自定义vant主题色步骤一引入全部组件样式
+import './js/flexible.js'
 import 'vant/lib/index.less'
 import './styles/index.less'
 
