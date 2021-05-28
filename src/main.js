@@ -4,7 +4,8 @@ import router from './router'
 import store from './store'
 // 一次性引入Vant组件
 import Vant from 'vant'
-import './js/flexible.js'
+// TODO:flexible.js 的使用暂不明确
+// import './js/flexible.js'
 // 自定义vant主题色步骤一引入全部组件样式
 import 'vant/lib/index.less'
 import './styles/index.less'

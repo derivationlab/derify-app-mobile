@@ -1,6 +1,12 @@
 <template>
-  <div class="home">
-    <navbar title="首页" />
+  <div class="home-container page-container">
+    <navbar :logo="true" title="首页" />
+    <div class="home-top">
+      <div class="home-top-coin">
+        <span>ETH/USDT</span>
+        <vant-icon name="arrow" color="#FFF" size="16px"></vant-icon>
+      </div>
+    </div>
   </div>
 </template>
 
