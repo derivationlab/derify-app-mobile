@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <navbar :logo="true" title="首页" />
+    <navbar title="首页" />
   </div>
 </template>
 
