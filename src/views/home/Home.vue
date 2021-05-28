@@ -60,19 +60,12 @@
 </template>
 
 <script>
-import { NavBar, Popup, List, Cell } from 'vant'
 export default {
   name: 'Home',
   data () {
     return {
       show: false
     }
-  },
-  components: {
-    [NavBar.name]: NavBar,
-    [Popup.name]: Popup,
-    [List.name]: List,
-    [Cell.name]: Cell
   },
   beforeCreate () {
     this.$store.dispatch('user/login')
