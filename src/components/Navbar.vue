@@ -1,19 +1,14 @@
 <template>
 <div class="navbar-container">
-    <van-nav-bar :title="title" :border="false" :fixed="true">
-      <template #left>
-        <img  @click="ClickBox" src="@/assets/images/uil_bars.png" alt="" srcset="">
-      </template>
-      <template #title>
-        <!-- <img v-if="$route.name == 'Home'" src="@/assets/images/logo.png" alt="" srcset=""> -->
-        <span>{{$route.name}}</span>
-      </template>
-    </van-nav-bar>
-          <van-popup
-      v-model="show"
-      :style="{ height: '100%', width: '60%',}"
-      position="left"
-    >
+  <van-nav-bar :title="title" :border="false" :fixed="true">
+    <template #left>
+      <img @click="ClickBox" src="@/assets/images/uil_bars.png" alt="" srcset="">
+    </template>
+    <template #title v-if="logo">
+      <img src="@/assets/images/logo.png" alt="" srcset="">
+    </template>
+  </van-nav-bar>
+  <van-popup v-model="show" :style="{ height: '100%', width: '60%',}" position="left">
     <div class="headDiv">
       <div class="imgDiv">
         <img src="@/assets/logo.png" alt="" width="50px" height="50px">
@@ -23,46 +18,15 @@
         <span>275fdfd39782ndfs67</span>
       </div>
     </div>
-            <van-list router>
-        <van-cell to="/" :border="false"
-          ><van-icon
-            color="#FFFFFF"
-            size="0.853333rem"
-            name="home-o"
-          /><span class="spSize">Home</span></van-cell
-        >
-        <van-cell to="/" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="exchange" /><span
-            class="spSize"
-            >Exchange</span
-          ></van-cell
-        >
-        <van-cell to="/" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="chart-trending-o" /><span
-            class="spSize"
-            >Dashboard</span
-          ></van-cell
-        >
-        <van-cell to="/earnings" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="gold-coin-o" /><span
-            class="spSize"
-            >earnings</span
-          ></van-cell
-        >
-        <van-cell to="/data" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="point-gift-o" /><span
-            class="spSize"
-            >Data</span
-          ></van-cell
-        >
-        <van-cell to="/broker" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="friends-o" /><span
-            class="spSize"
-            >Broker</span
-          ></van-cell
-        >
-            </van-list>
-    </van-popup>
+    <van-list router>
+      <van-cell to="/" :border="false" title="Home" icon="home-o" />
+      <van-cell to="/" :border="false" title="Exchange" icon="exchange" />
+      <van-cell to="/" :border="false" title="Dashboard" icon="chart-trending-o" />
+      <van-cell to="/earnings" :border="false" title="Earnings" icon="gold-coin-o" />
+      <van-cell to="/data" :border="false" title="Data" icon="point-gift-o" />
+      <van-cell to="/broker" :border="false" title="Broker" icon="friends-o" />
+    </van-list>
+  </van-popup>
 </div>
 </template>
 
@@ -83,35 +47,40 @@ export default {
 </script>
 
 <style lang="less">
-    .headDiv{
-    display: flex;
-    align-items: center;
-    margin-top: 2.5rem;
-    padding-left: 16px;
-    padding-bottom: .6rem;
-    border-bottom: 1px solid rgb(190, 190, 190);
-    .imgDiv{
-      margin-right: 16px;
-        img{
+    .headDiv {
+      display: flex;
+      align-items: center;
+      margin-top: 2.5rem;
+      padding-left: 16px;
+      padding-bottom: .6rem;
+      border-bottom: 1px solid rgb(190, 190, 190);
+
+      .imgDiv {
+        margin-right: 16px;
+
+        img {
           border-radius: 50%;
         }
-    }
-    .infoDiv{
-      display: flex;
-      flex-direction: column;
-      line-height: 32px;
-      span:nth-child(1){
-        font-size: 16px;
-        color: rgba(255,255,255,0.85);
       }
-       span:nth-child(2){
-        font-size: 14px;
-        color: rgba(255,255,255,0.85);
-      }
-    }
-  }
 
-  .spSize{
+      .infoDiv {
+        display: flex;
+        flex-direction: column;
+        line-height: 32px;
+
+        span:nth-child(1) {
+          font-size: 16px;
+          color: rgba(255, 255, 255, 0.85);
+        }
+
+        span:nth-child(2) {
+          font-size: 14px;
+          color: rgba(255, 255, 255, 0.85);
+        }
+      }
+    }
+
+    .spSize {
       margin-left: 18px;
       color: #FFFFFF;
     }
