@@ -2,3 +2,52 @@
 .van-nav-bar__content{
   background-color: #140B32;
 }
+
+.wrap-navbar-popup.van-popup {
+  background-color: #140B32;
+}
+
+// 覆盖vant-ui dropmenu的样式
+.derify-dropmenu {
+  .van-dropdown-menu__bar {
+    box-shadow: none;
+    border: .1rem solid rgba(255,255,255,0.15);
+    border-radius: 2.2rem;
+  }
+  .van-dropdown-menu__title {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 1.6rem;
+    .van-ellipsis {
+      width: 100%;
+      .derify-dropmenu-title {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+  .van-dropdown-menu__title::after {
+    display: none;
+  }
+  .van-dropdown-menu__title--down::after {
+    display: none;
+  }
+  .van-dropdown-item__content {
+    border-radius: .5rem;
+    margin-top: 4px;
+    background-color: #343166;
+    width: calc(100% - 3.2rem);
+    left: 1.6rem;
+    .van-cell {
+      background-color: #343166;
+      .van-cell__value {
+        display: none;
+      }
+    }
+    .van-cell::after {
+      display: none;
+    }
+  }
+}

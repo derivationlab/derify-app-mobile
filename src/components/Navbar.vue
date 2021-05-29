@@ -8,7 +8,7 @@
       <img src="@/assets/images/logo.png" alt="" srcset="">
     </template>
   </van-nav-bar>
-  <van-popup v-model="show" :style="{ height: '100%', width: '60%',}" position="left">
+  <van-popup class="wrap-navbar-popup" v-model="show" :style="{ height: '100%', width: '60%',}" position="left">
     <div class="headDiv">
       <div class="imgDiv">
         <img src="@/assets/logo.png" alt="" width="50px" height="50px">
