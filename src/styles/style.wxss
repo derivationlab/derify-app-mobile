@@ -1,0 +1,22 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+html {
+  font-size: 62.5%;
+  color: #FFF;
+}
+body {
+  font-size: 1.4rem;
+}
+.page-container {
+  padding: 66px 16px 16px 10px;
+  background-color: #140b32;
+}
+.yellow-gra {
+  background-color: linear-gradient(180deg, #fae55e, #f7d042 100%);
+}
+.base-color {
+  background-color: #140B32;
+}

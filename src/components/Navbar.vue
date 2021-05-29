@@ -4,8 +4,9 @@
       <template #left>
         <img  @click="ClickBox" src="@/assets/images/uil_bars.png" alt="" srcset="">
       </template>
-      <template #title v-if="logo">
-        <img src="@/assets/images/logo.png" alt="" srcset="">
+      <template #title>
+        <!-- <img v-if="$route.name == 'Home'" src="@/assets/images/logo.png" alt="" srcset=""> -->
+        <span>{{$route.name}}</span>
       </template>
     </van-nav-bar>
           <van-popup
@@ -31,7 +32,7 @@
           /><span class="spSize">Home</span></van-cell
         >
         <van-cell to="/" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" na  me="exchange" /><span
+          ><van-icon color="#FFFFFF" size="0.853333rem" name="exchange" /><span
             class="spSize"
             >Exchange</span
           ></van-cell
@@ -42,16 +43,22 @@
             >Dashboard</span
           ></van-cell
         >
-        <van-cell to="/" :border="false"
-          ><van-icon color="#FFFFFF" size="0.853333rem" name="point-gift-o" /><span
+        <van-cell to="/earnings" :border="false"
+          ><van-icon color="#FFFFFF" size="0.853333rem" name="gold-coin-o" /><span
             class="spSize"
-            >Yield</span
+            >earnings</span
           ></van-cell
         >
-        <van-cell to="/" :border="false"
+        <van-cell to="/data" :border="false"
+          ><van-icon color="#FFFFFF" size="0.853333rem" name="point-gift-o" /><span
+            class="spSize"
+            >Data</span
+          ></van-cell
+        >
+        <van-cell to="/broker" :border="false"
           ><van-icon color="#FFFFFF" size="0.853333rem" name="friends-o" /><span
             class="spSize"
-            >经纪商</span
+            >Broker</span
           ></van-cell
         >
             </van-list>

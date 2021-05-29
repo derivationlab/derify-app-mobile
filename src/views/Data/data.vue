@@ -1,25 +1,32 @@
 <template>
-  <div class="home">
-    <van-nav-bar title="首页" :border="false" :fixed="true">
-      <template #left>
-        <img src="@/assets/images/uil_bars.png" alt="" srcset="">
-      </template>
-      <template #title>
-        <text>数据</text>
-      </template>
-    </van-nav-bar>
+  <div class="home-container page-container">
+    <navbar :logo="true" title="首页" />
+    <div class="home-top">
+      数据
+    </div>
   </div>
 </template>
 
 <script>
-import { NavBar } from 'vant'
+import Navbar from '@/components/Navbar'
+
 export default {
   name: 'Home',
   components: {
-    [NavBar.name]: NavBar
+    Navbar
   },
-  beforeCreate () {
-    this.$store.dispatch('user/login')
+  data () {
+    return {
+      show: false
+    }
+  },
+  methods: {
+    ClickBox () {
+      this.show = true
+    }
   }
 }
 </script>
+
+<style lang="less" scoped>
+</style>

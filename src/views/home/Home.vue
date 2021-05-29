@@ -4,7 +4,7 @@
     <div class="home-top">
       <div class="home-top-coin">
         <span>ETH/USDT</span>
-        <vant-icon name="arrow" color="#FFF" size="16px"></vant-icon>
+        <!-- <vant-icon name="arrow" color="#FFF" size="16px"></vant-icon> -->
       </div>
     </div>
   </div>
@@ -22,9 +22,6 @@ export default {
     return {
       show: false
     }
-  },
-  beforeCreate () {
-    this.$store.dispatch('user/login')
   },
   methods: {
     ClickBox () {
