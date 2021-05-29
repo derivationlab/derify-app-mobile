@@ -6,13 +6,27 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
-      <div>
-        <span>类型</span>
-        <span>金额</span>
-        <span>余额</span>
-        <span>时间</span>
+      <div class="heard">
+        <div>类型</div>
+        <div>金额</div>
+        <div class="center-span">余额</div>
+        <div class="center-span">时间</div>
       </div>
-        <van-cell v-for="item in list" :key="item" :title="item" />
+      <div class="heard">
+        <div class="color-type">提现</div>
+        <div>
+          <div class="color-type">-1234.56</div>
+          <div class="unit-span mrt-5">USDT</div>
+        </div>
+        <div class="center-span">
+          <div class="color-type">7890.12</div>
+          <div class="unit-span mrt-5">USDT</div>
+        </div>
+        <div class="center-span unit-span">
+          2021-12-31
+        </div>
+      </div>
+        <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
       </van-list>
   </div>
 </template>
@@ -45,5 +59,25 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.heard{
+  margin: 2.4rem 0;
+  display: flex;
+  div{
+    flex: 1;
+    color: rgba(255,255,255,0.45);
+    font-size: 1.3rem;
+  }
+  .center-span{
+    width: 10%;
+    text-align:center;
+  }
+  .unit-span{
+    color: rgba(255,255,255,0.45);
+    font-weight: 400;
+  }
+  .color-type{
+    color: rgba(255,255,255,0.85);
+  }
+}
 
 </style>
