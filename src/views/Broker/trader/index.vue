@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       list: [],
       loading: false,
@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-        onLoad () {
+    onLoad () {
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
       setTimeout(() => {
@@ -41,9 +41,9 @@ export default {
         }
       }, 1000)
     }
-  },
+  }
 }
 </script>
 <style lang="less" scoped>
-  
+
 </style>
