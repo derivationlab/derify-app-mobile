@@ -14,7 +14,7 @@
         <img src="@/assets/logo.png" alt="" width="50px" height="50px">
       </div>
       <div class="infoDiv">
-        <span>甩哥SSSS</span>
+        <span>甩哥SssSSS</span>
         <span>275fdfd39782ndfs67</span>
       </div>
     </div>
