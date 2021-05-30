@@ -14,6 +14,11 @@
     border: .1rem solid rgba(255,255,255,0.15);
     border-radius: 2.2rem;
   }
+  &.no-border {
+    .van-dropdown-menu__bar {
+      border: none;
+    }
+  }
   .van-dropdown-menu__title {
     width: 100%;
     justify-content: space-between;
@@ -42,6 +47,7 @@
     left: 1.6rem;
     .van-cell {
       background-color: #343166;
+      font-size: 1.5rem;
       .van-cell__value {
         display: none;
       }

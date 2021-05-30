@@ -29,7 +29,7 @@
           <li>*&nbsp;&nbsp;权益有效期到期后将无法获得经纪商奖励，但仍会保持经纪商身份， 您可以随时燃烧eDRF恢复经纪商奖励权益。</li>
         </ul>
       </div>
-      <van-tabs v-model="active" background="#140B32" color="#FAE247" title-active-color="#FAE247">
+      <van-tabs v-model="active">
         <van-tab title="账户流水">
           <trader></trader>
         </van-tab>

@@ -5,7 +5,7 @@
       <div class="home-top-left">
         <div class="home-top-coin">
           <span class="home-top-coin-name">ETH/USDT</span>
-          <van-icon color="#FFF" name="arrow" size="1.6rem"></van-icon>
+          <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
         </div>
         <div class="home-top-num">
           <span>1234</span><span class="home-top-num-small">.50</span>
@@ -24,16 +24,16 @@
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
           <span class="fc-green">多</span>
-          <span class="fc-85">0.01%</span>
+          <span>0.01%</span>
           <span class="fc-65 margin">/</span>
           <span class="fc-red">空</span>
-          <span class="fc-85">0.12%</span>
+          <span>0.12%</span>
         </div>
       </div>
     </div>
     <div class="home-mid">
-      <div class="home-mid-1">
-        <van-dropdown-menu class="derify-dropmenu">
+      <div class="home-mid-one">
+        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
           <van-dropdown-item v-model="value1" :options="option1">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{option1[value1].text}}</span>
@@ -41,7 +41,121 @@
               </div>
           </van-dropdown-item>
         </van-dropdown-menu>
+        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
+          <van-dropdown-item v-model="value2" :options="option2">
+              <div class="derify-dropmenu-title" slot="title">
+                <span>{{option2[value2].text}}</span>
+                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+              </div>
+          </van-dropdown-item>
+        </van-dropdown-menu>
       </div>
+      <div class="home-mid-two">
+        <div class="fc-65 fz-12">开仓价</div>
+        <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
+        <div class="home-mid-input">
+          <van-field input-align="center" disabled v-model="value3" />
+        </div>
+      </div>
+      <div class="home-mid-two">
+        <div class="home-mid-two-title">
+          <div class="fc-65 fz-12">开仓量</div>
+          <div class="fz-12">
+            <span class="fc-65">可开：2.00000000 ETH</span>
+            <span class="fc-yellow">划转</span>
+          </div>
+        </div>
+        <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
+        <div class="home-mid-input">
+          <van-field type="number" v-model="value4" />
+        </div>
+      </div>
+      <div class="home-mid-three">
+        <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" />
+      </div>
+      <div class="home-mid-four">
+        <div class="home-mid-four-btn green-gra">看涨 看多</div>
+        <div class="home-mid-four-btn red-gra">看跌 开空</div>
+        <div class="home-mid-four-btn yellow-gra">双向对冲</div>
+      </div>
+    </div>
+    <div class="home-last">
+      <van-tabs v-model="active">
+        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="loadMore"
+          >
+            <div class="exchange-block" v-for="i in datalist" :key="i">
+              <div class="exchange-block-title">
+                <div class="left">
+                  <div class="text-icon-green mr-4">多</div>
+                  <div class="fz-16 mr-4">ETH/USDT</div>
+                  <div class="number-icon-green mr-4">5x</div>
+                  <img class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                </div>
+                <div class="right">
+                  <div class="fz-12">平仓</div>
+                  <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                </div>
+              </div>
+              <div class="exchange-item">
+                <div class="exchange-item-left">
+                  <div class="fc-45">浮动盈亏：</div>
+                  <div class="fc-green">+34.56</div>
+                  <div>USDT</div>
+                </div>
+                <div class="exchange-item-right">
+                  <div class="fc-45">持仓量：</div>
+                  <div>1.2321332 ETH</div>
+                </div>
+              </div>
+              <div class="exchange-item">
+                <div class="exchange-item-left">
+                  <div class="fc-45">当前价格：</div>
+                  <div>1245.67 USDT</div>
+                </div>
+                <div class="exchange-item-right">
+                  <div class="fc-45">开仓均价：</div>
+                  <div>1.2321332 ETH</div>
+                </div>
+              </div>
+              <div class="exchange-item">
+                <div class="exchange-item-left">
+                  <div class="fc-45">止损设置：</div>
+                  <div>-</div>
+                </div>
+                <div class="exchange-item-right">
+                  <div class="fc-45">止盈设置：</div>
+                  <div>-</div>
+                </div>
+              </div>
+              <div class="exchange-item">
+                <div class="exchange-item-left">
+                  <div class="fc-45">持仓保证金：</div>
+                  <div>1234.5 USDT</div>
+                </div>
+                <div class="exchange-item-right">
+                  <div class="fc-45">保证金率：</div>
+                  <div>123%</div>
+                </div>
+              </div>
+              <div class="exchange-item">
+                <div class="exchange-item-left">
+                  <div class="fc-45">强平金额：</div>
+                  <div>12323.44 USDT</div>
+                </div>
+                <div class="exchange-item-right">
+                  <div>设置止盈/止损</div>
+                  <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                </div>
+              </div>
+            </div>
+          </van-list>
+        </van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>
@@ -58,22 +172,46 @@ export default {
     return {
       show: false,
       value1: 0,
-      value2: 'a',
+      value2: 0,
+      value3: '以市价成交',
+      value4: 99213120.12,
+      value5: 20,
       option1: [
-        { text: '全部商品', value: 0 },
-        { text: '新款商品', value: 1 },
-        { text: '活动商品', value: 2 }
+        { text: '市价委托', value: 0 },
+        { text: '限价委托', value: 1 }
       ],
       option2: [
-        { text: '默认排序', value: 'a' },
-        { text: '好评排序', value: 'b' },
-        { text: '销量排序', value: 'c' }
-      ]
+        { text: '10x', value: 0 },
+        { text: '5x', value: 1 },
+        { text: '3x', value: 2 }
+      ],
+      active: 'key1',
+      tabs: {
+        key1: '我的持仓',
+        key2: '当前委托',
+        key3: '成交记录'
+      },
+      datalist: [1, 2, 4, 5, 6, 7, 8, 9, 10],
+      loading: false,
+      finished: false
     }
   },
   methods: {
     ClickBox () {
       this.show = true
+    },
+    loadMore () {
+      setTimeout(() => {
+        const lastCount = this.datalist[this.datalist.length - 1]
+        for (let i = 0; i < 10; i++) {
+          this.datalist.push(lastCount + i + 1)
+        }
+        console.log(this.datalist)
+        this.loading = false
+        if (this.datalist.length >= 40) {
+          this.finished = true
+        }
+      }, 1000)
     }
   }
 }
@@ -146,6 +284,100 @@ export default {
   }
   .home-top-items + .home-top-items {
     margin-top: .4rem;
+  }
+}
+.home-mid {
+  background: #272354;
+  border-radius: 1.6rem;
+  padding: 2.5rem 1.6rem;
+  &-one {
+    display: flex;
+    justify-content: space-between;
+    .derify-dropmenu:first-child {
+      flex: .7;
+      margin-right: .8rem;
+    }
+    .derify-dropmenu:last-child {
+      flex: .3
+    }
+  }
+  &-two {
+    margin-top: 2rem;
+    &-title {
+      display: flex;
+      justify-content: space-between;
+      .fc-yellow {
+        margin-left: .4rem;
+      }
+    }
+  }
+  &-three {
+    margin-top: 2.0rem;
+  }
+  &-input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 22px;
+    margin-top: .4rem;
+    position: relative;
+  }
+  &-four {
+    margin-top: 3rem;
+    &-btn {
+      width: 100%;
+      height: 4.8rem;
+      border-radius: 2.4rem;
+      line-height: 4.8rem;
+      text-align: center;
+      font-size: 1.8rem;
+      &.yellow-gra {
+        color: #140B32;
+      }
+    }
+    &-btn + &-btn {
+      margin-top: 1.8rem;
+    }
+  }
+}
+.home-last {
+  margin-top: 4rem;
+}
+.exchange-block {
+  margin-top: 3rem;
+  &-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .mr-4 {
+      margin-right: .4rem;
+    }
+    .left, .right {
+      display: flex;
+      align-items: center;
+      &-help-icon {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+  }
+  .exchange-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.2rem;
+    font-size: 1.2rem;
+    + .exchange-item {
+      margin-top: .8rem;
+    }
+    &-left,&-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    &-right {
+      justify-content: flex-end;
+    }
   }
 }
 </style>

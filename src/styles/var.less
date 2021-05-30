@@ -22,7 +22,7 @@
 @gradient-orange: linear-gradient(to right, #ffd01e, #ff8917);
 
 // Component Colors
-@text-color: #FFF; // 自定义
+@text-color: rgba(255, 255, 255, .85); // 自定义
 @active-color: @orange; // 自定义
 @active-opacity: 0.7;
 @disabled-opacity: 0.5;
@@ -71,12 +71,29 @@
 // 自定义属性
 @nav-bar-height:66px;
 @popup-background-color:#272354;
-@cell-background-color:#140B32;
+@cell-background-color: transparent;
 
 // 自定义下拉菜单
 @dropdown-menu-height: 4.4rem;
 @dropdown-menu-background-color: #272354;
-@dropdown-menu-title-font-size: 1.5rem;
+@dropdown-menu-title-font-size: 1.6rem;
 @dropdown-menu-title-text-color: rgba(255, 255, 255, .85);
 @dropdown-menu-title-active-text-color: @orange;
 @dropdown-menu-option-active-color: @orange;
+
+// 自定义field输入框
+@field-input-disabled-text-color: rgba(255, 255, 255, .3);
+
+// 自定义range
+@slider-active-background-color: @orange;
+@slider-inactive-background-color: rgba(255, 255, 255, .2);
+@slider-button-background-color: @orange;
+
+// 自定义tab
+@tab-text-color: rgba(255, 255, 255, .65);
+@tab-active-text-color: @orange;
+@tab-disabled-text-color: rgba(255, 255, 255, .3);
+@tabs-nav-background-color: transparent;
+@tabs-default-color: @orange;
+@tabs-bottom-bar-width: 2rem;
+@tabs-bottom-bar-height: .2rem;
