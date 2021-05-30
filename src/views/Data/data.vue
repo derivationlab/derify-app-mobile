@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :logo="true" title="首页" />
+    <navbar title="数据" />
     <div class="home-top">
       数据
     </div>
