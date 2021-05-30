@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/home/Home.vue'
-import broker from '../views/Broker/broker.vue'
-import data from '../views/Data/data.vue'
-import earnings from '../views/Earnings/earnings.vue'
+import broker from '../views/Broker/broker.vue' // 经济商
+import data from '../views/Data/data.vue' // 数据
+import earnings from '../views/Earnings/earnings.vue' // 收益
+import detail from '../views/Earnings/detail/detail.vue' // 流水明细
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ const routes = [
     path: '/earnings',
     name: 'earnings',
     component: earnings
+  },
+  {
+    path: '/detail',
+    name: 'detail',
+    component: detail
   }
 ]
 

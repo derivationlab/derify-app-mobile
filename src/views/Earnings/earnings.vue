@@ -5,7 +5,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">持仓挖矿收益</span>
-          <span class="span2 fz-12">流水明细 ></span>
+          <span class="span2 fz-12" @click="goDetail(1)">流水明细 ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -32,7 +32,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">持仓挖矿收益</span>
-          <span class="span2 fz-12">流水明细 ></span>
+          <span class="span2 fz-12" @click="goDetail(2)">流水明细></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -67,7 +67,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">持仓挖矿收益</span>
-          <span class="span2 fz-12">流水明细 ></span>
+          <span class="span2 fz-12" @click="goDetail(3)">流水明细 ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -120,6 +120,9 @@ export default {
   methods: {
     ClickBox () {
       this.show = true
+    },
+    goDetail (id) {
+      this.$router.push({ path: '/detail', query: { id } })
     }
   }
   // beforeCreate () {
