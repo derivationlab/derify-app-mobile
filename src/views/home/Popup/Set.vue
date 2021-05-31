@@ -20,7 +20,7 @@
       </div>
       <div class="set-popup-item">
         <div class="set-popup-item-title">止盈设置</div>
-        <div class="set-popup-item-input">
+        <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="0.00" type="number" v-model="value1" />
           <div class="unit">USDT</div>
         </div>
@@ -28,7 +28,7 @@
       </div>
       <div class="set-popup-item fc-45">
         <div class="set-popup-item-title">止损设置</div>
-        <div class="set-popup-item-input">
+        <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="0.00" type="number" v-model="value2" />
           <div class="unit">USDT</div>
         </div>
@@ -91,15 +91,6 @@ export default {
     color: rgba(255, 255, 255, .45);
     margin-top: 4rem;
     font-size: 1.2rem;
-    &-input {
-      position: relative;
-      border-bottom: .1rem solid rgba(255, 255, 255, .15);
-      .unit {
-        position: absolute;
-        top: 16px;
-        right: 0;
-      }
-    }
     &-hint {
       margin-top: 1rem;
     }
