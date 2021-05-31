@@ -103,7 +103,7 @@
                   <div class="mr-4" :class="i % 2 === 0 ? 'text-icon-green' : 'text-icon-red'">多</div>
                   <div class="fz-16 mr-4">ETH/USDT</div>
                   <div class="number-icon-green mr-4">5x</div>
-                  <img class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                  <img @click="changeShowHint(active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
                 <div class="right" v-if="active === 'key1'">
                   <div class="fz-12">平仓</div>
@@ -250,18 +250,21 @@
       </van-tabs>
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
+    <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
 import Market from './Popup/Market'
+import Hint from './Popup/Hint'
 
 export default {
   name: 'Home',
   components: {
     Navbar,
-    Market
+    Market,
+    Hint
   },
   data () {
     return {
@@ -294,7 +297,9 @@ export default {
       datalist: [1, 2, 4, 5, 6, 7, 8, 9, 10],
       loading: false,
       finished: false,
-      showMarket: false // 市场弹窗，选择币种
+      showMarket: false, // 市场弹窗，选择币种
+      showHint: false, // 概念提示弹窗
+      hintType: 'key1' // 概念提示的种类
     }
   },
   methods: {
@@ -316,6 +321,10 @@ export default {
     },
     changeShowMarket () {
       this.showMarket = !this.showMarket
+    },
+    changeShowHint (type) {
+      this.hintType = type
+      this.showHint = !this.showHint
     }
   }
 }
