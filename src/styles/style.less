@@ -67,6 +67,11 @@ body {
 .mrt-5{
     margin-top: .5rem;
 }
+
+.fc-85 {
+    color: rgba(255, 255, 255, .85);
+}
+
 .fc-65 {
     color: rgba(255, 255, 255, .65);
 }
@@ -146,5 +151,30 @@ body {
         font-weight: 500;
         text-align: center;
         padding-bottom: 2rem;
+    }
+    &-buttons {
+        display: flex;
+        margin-top: 4rem;
+    }
+    &-button {
+        height: 4rem;
+        border-radius: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-size: 1.5rem;
+        font-weight: 500;
+        &.cancel {
+            border: .1rem solid @orange;
+            color: @orange;
+        }
+        &.confirm {
+            background: @orange;
+            color: #000;
+        }
+    }
+    .system-popup-button + .system-popup-button {
+        margin-left: .8rem;
     }
 }

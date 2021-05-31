@@ -3,7 +3,7 @@
     <navbar :logo="true" title="首页" />
     <div class="home-top">
       <div class="home-top-left">
-        <div class="home-top-coin" @click="changeShowMarket">
+        <div class="home-top-coin" @click="changeShowMarket(true)">
           <span class="home-top-coin-name">ETH / USDT</span>
           <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
         </div>
@@ -103,7 +103,7 @@
                   <div class="mr-4" :class="i % 2 === 0 ? 'text-icon-green' : 'text-icon-red'">多</div>
                   <div class="fz-16 mr-4">ETH/USDT</div>
                   <div class="number-icon-green mr-4">5x</div>
-                  <img @click="changeShowHint(active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                  <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
                 <div class="right" v-if="active === 'key1'">
                   <div class="fz-12">平仓</div>
@@ -164,7 +164,7 @@
                     <div class="fc-45">强平金额：</div>
                     <div>12323.44 USDT</div>
                   </div>
-                  <div class="exchange-item-right">
+                  <div class="exchange-item-right" @click="changeShowSet(true)">
                     <div>设置止盈/止损</div>
                     <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                   </div>
@@ -251,6 +251,7 @@
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
+    <set-popup :show="showSet" @closeSetPopup="changeShowSet" />
   </div>
 </template>
 
@@ -258,13 +259,15 @@
 import Navbar from '@/components/Navbar'
 import Market from './Popup/Market'
 import Hint from './Popup/Hint'
+import SetPopup from './Popup/Set'
 
 export default {
   name: 'Home',
   components: {
     Navbar,
     Market,
-    Hint
+    Hint,
+    SetPopup
   },
   data () {
     return {
@@ -299,7 +302,8 @@ export default {
       finished: false,
       showMarket: false, // 市场弹窗，选择币种
       showHint: false, // 概念提示弹窗
-      hintType: 'key1' // 概念提示的种类
+      hintType: 'key1', // 概念提示的种类
+      showSet: false // 止盈止损弹窗
     }
   },
   methods: {
@@ -319,12 +323,15 @@ export default {
         }
       }, 1000)
     },
-    changeShowMarket () {
-      this.showMarket = !this.showMarket
+    changeShowMarket (bool) {
+      this.showMarket = bool
     },
-    changeShowHint (type) {
+    changeShowHint (bool, type) {
       this.hintType = type
-      this.showHint = !this.showHint
+      this.showHint = bool
+    },
+    changeShowSet (bool) {
+      this.showSet = bool
     }
   }
 }

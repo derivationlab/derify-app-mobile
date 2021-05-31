@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('closeHintPopup', this.hintType)
+      this.$emit('closeHintPopup', false, this.hintType)
     }
   }
 }

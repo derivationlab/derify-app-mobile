@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('closeMarketPopup')
+      this.$emit('closeMarketPopup', false)
     },
     changeCoin (key) {
       this.curKey = key
