@@ -156,6 +156,11 @@ body {
         display: flex;
         margin-top: 4rem;
     }
+    &-input-block {
+        color: rgba(255, 255, 255, .45);
+        margin-top: 4rem;
+        font-size: 1.2rem;
+    }
     &-input {
         position: relative;
         border-bottom: .1rem solid rgba(255, 255, 255, .15);
@@ -163,7 +168,10 @@ body {
             position: absolute;
             top: 16px;
             right: 0;
-        }   
+        }
+        &-hint {
+            margin-top: 1rem;
+        }
     }
     &-button {
         height: 4rem;
@@ -182,6 +190,21 @@ body {
             background: @orange;
             color: #000;
         }
+    }
+    &-price {
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .fc-85, .fc-green {
+            font-size: 1.4rem;
+        }
+        .fc-45 {
+            margin-left: .4rem;
+        }
+    }
+    .system-popup-price + .system-popup-price {
+        margin-top: 1rem;
     }
     .system-popup-button + .system-popup-button {
         margin-left: .8rem;

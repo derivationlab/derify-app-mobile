@@ -105,7 +105,7 @@
                   <div class="number-icon-green mr-4">5x</div>
                   <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
-                <div class="right" v-if="active === 'key1'">
+                <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true)">
                   <div class="fz-12">平仓</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
@@ -252,6 +252,7 @@
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
     <set-popup :show="showSet" @closeSetPopup="changeShowSet" />
+    <unwind :show="showUwind" @closeUnwindPopup="changeShowUnwind" />
   </div>
 </template>
 
@@ -260,6 +261,7 @@ import Navbar from '@/components/Navbar'
 import Market from './Popup/Market'
 import Hint from './Popup/Hint'
 import SetPopup from './Popup/Set'
+import Unwind from './Popup/Unwind'
 
 export default {
   name: 'Home',
@@ -267,7 +269,8 @@ export default {
     Navbar,
     Market,
     Hint,
-    SetPopup
+    SetPopup,
+    Unwind
   },
   data () {
     return {
@@ -303,7 +306,8 @@ export default {
       showMarket: false, // 市场弹窗，选择币种
       showHint: false, // 概念提示弹窗
       hintType: 'key1', // 概念提示的种类
-      showSet: false // 止盈止损弹窗
+      showSet: false, // 止盈止损弹窗
+      showUwind: false // 平仓弹窗
     }
   },
   methods: {
@@ -332,6 +336,9 @@ export default {
     },
     changeShowSet (bool) {
       this.showSet = bool
+    },
+    changeShowUnwind (bool) {
+      this.showUwind = bool
     }
   }
 }
