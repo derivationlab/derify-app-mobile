@@ -3,8 +3,8 @@
     <navbar :logo="true" title="首页" />
     <div class="home-top">
       <div class="home-top-left">
-        <div class="home-top-coin">
-          <span class="home-top-coin-name">ETH/USDT</span>
+        <div class="home-top-coin" @click="changeShowMarket">
+          <span class="home-top-coin-name">ETH / USDT</span>
           <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
         </div>
         <div class="home-top-num">
@@ -100,86 +100,171 @@
             <div class="exchange-block" v-for="i in datalist" :key="i">
               <div class="exchange-block-title">
                 <div class="left">
-                  <div class="text-icon-green mr-4">多</div>
+                  <div class="mr-4" :class="i % 2 === 0 ? 'text-icon-green' : 'text-icon-red'">多</div>
                   <div class="fz-16 mr-4">ETH/USDT</div>
                   <div class="number-icon-green mr-4">5x</div>
                   <img class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
-                <div class="right">
+                <div class="right" v-if="active === 'key1'">
                   <div class="fz-12">平仓</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
-              </div>
-              <div class="exchange-item">
-                <div class="exchange-item-left">
-                  <div class="fc-45">浮动盈亏：</div>
-                  <div class="fc-green">+34.56</div>
-                  <div>USDT</div>
-                </div>
-                <div class="exchange-item-right">
-                  <div class="fc-45">持仓量：</div>
-                  <div>1.2321332 ETH</div>
-                </div>
-              </div>
-              <div class="exchange-item">
-                <div class="exchange-item-left">
-                  <div class="fc-45">当前价格：</div>
-                  <div>1245.67 USDT</div>
-                </div>
-                <div class="exchange-item-right">
-                  <div class="fc-45">开仓均价：</div>
-                  <div>1.2321332 ETH</div>
-                </div>
-              </div>
-              <div class="exchange-item">
-                <div class="exchange-item-left">
-                  <div class="fc-45">止损设置：</div>
-                  <div>-</div>
-                </div>
-                <div class="exchange-item-right">
-                  <div class="fc-45">止盈设置：</div>
-                  <div>-</div>
-                </div>
-              </div>
-              <div class="exchange-item">
-                <div class="exchange-item-left">
-                  <div class="fc-45">持仓保证金：</div>
-                  <div>1234.5 USDT</div>
-                </div>
-                <div class="exchange-item-right">
-                  <div class="fc-45">保证金率：</div>
-                  <div>123%</div>
-                </div>
-              </div>
-              <div class="exchange-item">
-                <div class="exchange-item-left">
-                  <div class="fc-45">强平金额：</div>
-                  <div>12323.44 USDT</div>
-                </div>
-                <div class="exchange-item-right">
-                  <div>设置止盈/止损</div>
+                <div class="right" v-if="active === 'key2'">
+                  <div class="fz-12">取消委托</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
+                <div class="right" v-if="active === 'key3'">
+                  <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
+                </div>
               </div>
+              <template v-if="active === 'key1'">
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">浮动盈亏：</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">+34.56</div>
+                    <div>USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">持仓量：</div>
+                    <div>1.2321332 ETH</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">当前价格：</div>
+                    <div>1245.67 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">开仓均价：</div>
+                    <div>1.2321332 ETH</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">止损设置：</div>
+                    <div>-</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">止盈设置：</div>
+                    <div>-</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">持仓保证金：</div>
+                    <div>1234.5 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">保证金率：</div>
+                    <div>123%</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">强平金额：</div>
+                    <div>12323.44 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div>设置止盈/止损</div>
+                    <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                  </div>
+                </div>
+              </template>
+              <template v-if="active ==='key2'">
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">委托价格：</div>
+                    <div>1234.59 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">委托类型：</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">开仓 / 限价委托</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">委托数量：</div>
+                    <div>1234.59 ETH</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">委托时间：</div>
+                    <div>2021-03-20 10:00:50</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">止损设置：</div>
+                    <div>-</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">止盈设置：</div>
+                    <div>-</div>
+                  </div>
+                </div>
+              </template>
+              <template v-if="active ==='key3'">
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">盈亏：</div>
+                    <div>-</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">委托类型：</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">平仓 / 限价委托</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">成交价格：</div>
+                    <div>1234.59 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">成交数量：</div>
+                    <div>1342.95 ETH</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">成交金额：</div>
+                    <div>1234.52 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">手续费：</div>
+                    <div>2312.2 USDT</div>
+                  </div>
+                </div>
+                <div class="exchange-item">
+                  <div class="exchange-item-left">
+                    <div class="fc-45">动仓费：</div>
+                    <div>1234.52 USDT</div>
+                  </div>
+                  <div class="exchange-item-right">
+                    <div class="fc-45">分辨补偿：</div>
+                    <div>23.42 bDRf</div>
+                  </div>
+                </div>
+              </template>
             </div>
           </van-list>
         </van-tab>
       </van-tabs>
     </div>
+    <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
+import Market from './Popup/Market'
 
 export default {
   name: 'Home',
   components: {
-    Navbar
+    Navbar,
+    Market
   },
   data () {
     return {
-      show: false,
       value1: 0,
       value2: 0,
       value3: '以市价成交',
@@ -208,7 +293,8 @@ export default {
       },
       datalist: [1, 2, 4, 5, 6, 7, 8, 9, 10],
       loading: false,
-      finished: false
+      finished: false,
+      showMarket: false // 市场弹窗，选择币种
     }
   },
   methods: {
@@ -227,6 +313,9 @@ export default {
           this.finished = true
         }
       }, 1000)
+    },
+    changeShowMarket () {
+      this.showMarket = !this.showMarket
     }
   }
 }
@@ -400,6 +489,12 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      .fc-green,.fc-red {
+        margin-right: .4rem;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
     }
     &-right {
       justify-content: flex-end;
