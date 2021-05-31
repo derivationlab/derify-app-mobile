@@ -54,7 +54,8 @@
         <div class="fc-65 fz-12">开仓价</div>
         <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
         <div class="home-mid-input">
-          <van-field input-align="center" disabled v-model="value3" />
+          <van-field class="derify-input" type="text" input-align="center" disabled v-model="value3" />
+          <div class="fc-30">USDT</div>
         </div>
       </div>
       <div class="home-mid-two">
@@ -67,7 +68,15 @@
         </div>
         <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
         <div class="home-mid-input">
-          <van-field type="number" v-model="value4" />
+          <van-field class="derify-input" type="number" v-model="value4" />
+          <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
+            <van-dropdown-item v-model="value6" :options="option3">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{option3[value6].text}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+            </van-dropdown-item>
+          </van-dropdown-menu>
         </div>
       </div>
       <div class="home-mid-three">
@@ -176,6 +185,7 @@ export default {
       value3: '以市价成交',
       value4: 99213120.12,
       value5: 20,
+      value6: 0,
       option1: [
         { text: '市价委托', value: 0 },
         { text: '限价委托', value: 1 }
@@ -184,6 +194,11 @@ export default {
         { text: '10x', value: 0 },
         { text: '5x', value: 1 },
         { text: '3x', value: 2 }
+      ],
+      option3: [
+        { text: 'USDT', value: 0 },
+        { text: 'ETH', value: 1 },
+        { text: 'BIT', value: 2 }
       ],
       active: 'key1',
       tabs: {
@@ -321,6 +336,17 @@ export default {
     border-radius: 22px;
     margin-top: .4rem;
     position: relative;
+    .fc-30 {
+      position: absolute;
+      font-size: 1.5rem;
+      top: 1rem;
+      right: 1.6rem;
+    }
+    .derify-dropmenu {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
   }
   &-four {
     margin-top: 3rem;

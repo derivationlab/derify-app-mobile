@@ -17,6 +17,7 @@
   &.no-border {
     .van-dropdown-menu__bar {
       border: none;
+      height: 4.2rem;
     }
   }
   .van-dropdown-menu__title {
@@ -56,4 +57,9 @@
       display: none;
     }
   }
+}
+
+// 覆盖field的样式
+.derify-input.van-cell::after {
+    display: none;
 }
