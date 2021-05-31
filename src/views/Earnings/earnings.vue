@@ -24,7 +24,7 @@
         <div class="earnings-item">
           <div class="item-div">
             <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13">提现</span>
+            <span class="fz-13" @click="withdraw(true,1)">提现</span>
           </div>
         </div>
       </div>
@@ -36,22 +36,22 @@
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
-          <span class="span2">USDT</span>
+          <span class="span2">eDRF</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">持仓额（USDT）</span>
+            <span class="span2 fz-11">持仓额（DRF）</span>
           </div>
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">历史累计收益（USDT）</span>
+            <span class="span2 fz-11">历史累计收益（eDRF）</span>
           </div>
         </div>
         <div class="earnings-item">
           <div class="item-div flex1">
             <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13">提现</span>
+            <span class="fz-13" @click="withdraw(true,2)">提现</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="peer-pay" size="18"/>
@@ -86,7 +86,7 @@
         <div class="earnings-item">
           <div class="item-div flex1">
             <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13">提现</span>
+            <span class="fz-13" @click="withdraw(true,3)">提现</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="balance-o" size="18"/>
@@ -102,22 +102,36 @@
           </div>
         </div>
       </div>
+      <withdraw :show='show' :withdrawId='withdrawId' @closeUnwindPopup="closeUnwindPopup"></withdraw>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
+import withdraw from './Popup/withdraw.vue'
 export default {
   name: 'earnings',
   components: {
-    Navbar
+    Navbar,
+    withdraw
   },
   data () {
     return {
-      show: false
+      show: false,
+      withdrawId: ''
     }
   },
   methods: {
+    // 关闭弹框
+    closeUnwindPopup (bool) {
+      this.show = bool
+    },
+    // 提现弹框
+    withdraw (bool, id) {
+      this.show = bool
+      this.withdrawId = id
+      console.log(this.withdrawId)
+    },
     ClickBox () {
       this.show = true
     },

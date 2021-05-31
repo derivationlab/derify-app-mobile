@@ -14,8 +14,8 @@
         <img src="@/assets/logo.png" alt="" width="50px" height="50px">
       </div>
       <div class="infoDiv">
-        <span>甩哥SSSSassjdnkawd</span>
-        <span>275fdfd39782ndfs67</span>
+        <span>甩哥</span>
+        <span>275f</span>
       </div>
     </div>
     <van-list router>

@@ -2,7 +2,6 @@
   <div class="home-container page-container">
     <navbar title="数据" />
     <div class="home-top">
-      数据
     </div>
   </div>
 </template>
