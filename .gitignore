@@ -1,11 +1,24 @@
-# dependencies
-node_modules/
+.DS_Store
+node_modules
+/dist
 
-# Compiles
-build/
 
-# Optional npm cache directory
-.npm
+# local env files
+.env.local
+.env.*.local
 
-# Optional eslint cache
-.eslintcache
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
