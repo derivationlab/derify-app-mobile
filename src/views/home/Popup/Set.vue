@@ -1,6 +1,6 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
-    <div class="set-popup system-popup">
+    <div class="system-popup">
       <div class="system-popup-title">设置止盈止损</div>
       <div style="margin-top: 2rem">
         <div class="system-popup-price">

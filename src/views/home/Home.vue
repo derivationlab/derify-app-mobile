@@ -52,7 +52,6 @@
       </div>
       <div class="home-mid-two">
         <div class="fc-65 fz-12">开仓价</div>
-        <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
         <div class="home-mid-input">
           <van-field class="derify-input" type="text" input-align="center" disabled v-model="value3" />
           <div class="fc-30">USDT</div>
@@ -66,7 +65,6 @@
             <span class="fc-yellow">划转</span>
           </div>
         </div>
-        <!-- TODO: 交互时额外增加的右侧内容用定位实现 暂不了解业务 后面增加 -->
         <div class="home-mid-input">
           <van-field class="derify-input" type="number" v-model="value4" />
           <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
@@ -83,9 +81,9 @@
         <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" />
       </div>
       <div class="home-mid-four">
-        <div class="home-mid-four-btn green-gra">看涨 看多</div>
-        <div class="home-mid-four-btn red-gra">看跌 开空</div>
-        <div class="home-mid-four-btn yellow-gra">双向对冲</div>
+        <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 'green')">看涨 看多</div>
+        <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 'red')">看跌 开空</div>
+        <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 'yellow')">双向对冲</div>
       </div>
     </div>
     <div class="home-last">
@@ -253,6 +251,9 @@
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
     <set-popup :show="showSet" @closeSetPopup="changeShowSet" />
     <unwind :show="showUwind" @closeUnwindPopup="changeShowUnwind" />
+    <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
+    <open :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
+    <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
   </div>
 </template>
 
@@ -262,6 +263,9 @@ import Market from './Popup/Market'
 import Hint from './Popup/Hint'
 import SetPopup from './Popup/Set'
 import Unwind from './Popup/Unwind'
+import OneKeyUnwind from './Popup/OneKeyUnwind'
+import Open from './Popup/Open'
+import OpenStatus from './Popup/OpenStatus'
 
 export default {
   name: 'Home',
@@ -270,7 +274,10 @@ export default {
     Market,
     Hint,
     SetPopup,
-    Unwind
+    Unwind,
+    OneKeyUnwind,
+    Open,
+    OpenStatus
   },
   data () {
     return {
@@ -292,7 +299,7 @@ export default {
       option3: [
         { text: 'USDT', value: 0 },
         { text: 'ETH', value: 1 },
-        { text: 'BIT', value: 2 }
+        { text: '%', value: 2 }
       ],
       active: 'key1',
       tabs: {
@@ -307,7 +314,12 @@ export default {
       showHint: false, // 概念提示弹窗
       hintType: 'key1', // 概念提示的种类
       showSet: false, // 止盈止损弹窗
-      showUwind: false // 平仓弹窗
+      showUwind: false, // 平仓弹窗
+      showOneKeyUnwind: false, // 一键平仓弹窗
+      showOpen: false, // 开仓确认弹窗
+      openType: null, // 开仓类型
+      showOpenStatus: false, // 开仓状态弹窗
+      openStatus: 'fail' // 开仓状态
     }
   },
   methods: {
@@ -339,6 +351,17 @@ export default {
     },
     changeShowUnwind (bool) {
       this.showUwind = bool
+    },
+    changeShowOneKeyUnwind (bool) {
+      this.showOneKeyUnwind = bool
+    },
+    changeShowOpen (bool, type) {
+      this.openType = type
+      this.showOpen = bool
+    },
+    changeShowOpenStatus (bool, status) {
+      this.openStatus = status
+      this.showOpenStatus = bool
     }
   }
 }
