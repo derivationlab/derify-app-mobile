@@ -9,9 +9,12 @@ import Vant from 'vant'
 // 自定义vant主题色步骤一引入全部组件样式
 import 'vant/lib/index.less'
 import './styles/index.less'
+// 引入 echarts
+// import echarts from 'echarts'
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 Vue.use(Vant)
 Vue.config.productionTip = false
-
 new Vue({
   router,
   store,
