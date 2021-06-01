@@ -7,8 +7,9 @@
           <span class="home-top-coin-name">ETH / USDT</span>
           <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
         </div>
+        <!-- 注释 -->
         <div class="home-top-num">
-          <span>1234</span><span class="home-top-num-small">.50</span>
+          <span>134</span><span class="home-top-num-small">.50</span>
         </div>
         <div class="home-top-percent up">+999.99%</div>
       </div>
