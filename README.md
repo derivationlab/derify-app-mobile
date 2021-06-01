@@ -1,4 +1,4 @@
-# derify-protocol
+# derify-app-mobile
 
 ## Project setup
 ```
