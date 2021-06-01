@@ -33,10 +33,9 @@ export default {
       const myChart = this.$echarts.init(document.getElementById('myChart'))
       // 绘制图表
       myChart.setOption({
-        title: { text: '在Vue中使用echarts',
-          link:"https://www.baidu.com/" ,
-          textStyle:{},//设置标题的样式
-        },
+        title: { text: '在Vue中使用echarts' },
+        // link:"https://www.baidu.com/" ,
+        // textStyle:{},//设置标题的样式
         tooltip: { // 信息提示
           trigger: 'item', // 触发类型
           // triggerOn:"click", //触发时机
