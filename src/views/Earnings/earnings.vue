@@ -55,11 +55,11 @@
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="peer-pay" size="18"/>
-            <span class="fz-13">赎回</span>
+            <span class="fz-13" @click="redeem(true,1)">赎回</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-            <span class="fz-13">质押</span>
+            <span class="fz-13" @click="pledge(true,1)">质押</span>
           </div>
         </div>
       </div>
@@ -90,35 +90,46 @@
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="balance-o" size="18"/>
-            <span class="fz-13">存入</span>
+            <span class="fz-13" @click="deposit(true)">存入</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="peer-pay" size="18"/>
-            <span class="fz-13">赎回</span>
+            <span class="fz-13" @click="redeem(true,2)">赎回</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-            <span class="fz-13">质押</span>
+            <span class="fz-13" @click="pledge(true,2)">质押</span>
           </div>
         </div>
       </div>
       <withdraw :show='show' :withdrawId='withdrawId' @closeUnwindPopup="closeUnwindPopup"></withdraw>
+      <redeem   :show='show' :redeemId='redeemId' @closeUnwindPopup="closeUnwindPopup"></redeem>
+      <pledge   :show='show' :pledgeId='pledgeId' @closeUnwindPopup="closeUnwindPopup"></pledge>
+      <deposit  :show='show'  @closeUnwindPopup="closeUnwindPopup"></deposit>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
 import withdraw from './Popup/withdraw.vue'
+import redeem from './Popup/redeem.vue'
+import pledge from './Popup/pledge.vue'
+import deposit from './Popup/deposit.vue'
 export default {
   name: 'earnings',
   components: {
     Navbar,
-    withdraw
+    withdraw,
+    redeem,
+    pledge,
+    deposit
   },
   data () {
     return {
       show: false,
-      withdrawId: ''
+      withdrawId: '',
+      redeemId: '',
+      pledgeId: ''
     }
   },
   methods: {
@@ -130,7 +141,21 @@ export default {
     withdraw (bool, id) {
       this.show = bool
       this.withdrawId = id
-      console.log(this.withdrawId)
+    },
+    // 赎回弹框
+    redeem (bool, id) {
+      this.show = bool
+      this.redeemId = id
+    },
+    // 质押弹框
+    pledge (bool, id) {
+      this.show = bool
+      this.pledgeId = id
+    },
+    // 存入
+    deposit (bool, id) {
+      this.show = bool
+      // this.pledgeId = id
     },
     ClickBox () {
       this.show = true

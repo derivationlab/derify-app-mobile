@@ -1,21 +1,21 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">提现</div>
+      <div class="system-popup-title">质押{{pledgeName}}</div>
       <div>
-        <div class="popup-text">提现数量</div>
+        <div class="popup-text">质押数量</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
-          <div class="unit">{{withdrawName}}</div>
+          <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可提现：1234567.00000000 {{withdrawName}}</span>
-          <span class="popup-span2">全部提现</span>
+          <span class="popup-span1">可质押：1234567.00000000 {{pledgeName}}</span>
+          <span class="popup-span2">全部质押</span>
         </div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">提现</div>
+        <div class="system-popup-button confirm" @click="close">质押</div>
       </div>
     </div>
   </van-popup>
@@ -23,13 +23,13 @@
 
 <script>
 export default {
-  props: ['show', 'withdrawId'],
+  props: ['show', 'pledgeId'],
   data () {
     return {
       showPopup: this.show,
       value1: null,
       curPercent: 25,
-      withdrawName: null
+      pledgeName: null
     }
   },
   watch: {
@@ -37,12 +37,10 @@ export default {
       this.showPopup = this.show
     },
     withdrawId () {
-      if (this.withdrawId === 1) {
-        this.withdrawName = 'USDT'
-      } else if (this.withdrawId === 2) {
-        this.withdrawName = 'eDRF'
+      if (this.pledgeId === 1) {
+        this.pledgeName = 'eDRF'
       } else {
-        this.withdrawName = 'bDRF'
+        this.pledgeName = 'bDRF'
       }
     }
   },
