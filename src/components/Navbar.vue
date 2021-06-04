@@ -33,7 +33,10 @@
       <div class="menu-list-item" @click="changeRouter('exchange')" :class="$route.name === 'exchange' ? 'active' : ''">
         <img class="menu-list-item-icon" src="@/assets/icons/icon-menu-active.png" alt="">
         <van-icon
-        class="menu-list-item-van-icon" name="exchange" color="rgba(255, 255, 255, .85)" size="2.0rem"></van-icon>
+          class="menu-list-item-van-icon" name="exchange"
+          :color="$route.name === 'exchange' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
+          size="2.0rem">
+        </van-icon>
         <div class="menu-list-item-name">Exchange</div>
       </div>
       <div class="menu-list-item" @click="changeRouter('data')" :class="$route.name === 'data' ? 'active' : ''">
@@ -41,7 +44,7 @@
         <van-icon
           class="menu-list-item-van-icon"
           name="bar-chart-o"
-          :color="$route.name === 'home' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
+          :color="$route.name === 'data' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
         <div class="menu-list-item-name">Dashboard</div>
@@ -51,7 +54,7 @@
         <van-icon
           class="menu-list-item-van-icon"
           name="bag-o"
-          :color="$route.name === 'home' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
+          :color="$route.name === 'earnings' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
         <div class="menu-list-item-name">Yield</div>
@@ -61,7 +64,7 @@
         <van-icon
           class="menu-list-item-van-icon"
           name="friends-o"
-          :color="$route.name === 'home' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
+          :color="$route.name === 'broker' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
         <div class="menu-list-item-name">Brokers</div>
