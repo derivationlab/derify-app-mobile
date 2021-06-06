@@ -76,11 +76,11 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">持仓额（USDT）</span>
+            <span class="span2 fz-11">收益计划存入 ( bDRF )</span>
           </div>
           <div class="div1">
-            <span class="span1">24891.34</span>
-            <span class="span2 fz-11">历史累计收益（USDT）</span>
+            <span class="span1">12.34%</span>
+            <span class="span2 fz-11">APY</span>
           </div>
         </div>
         <div class="earnings-item">
@@ -102,10 +102,11 @@
           </div>
         </div>
       </div>
-      <withdraw :show='show' :withdrawId='withdrawId' @closeUnwindPopup="closeUnwindPopup"></withdraw>
-      <redeem   :show='show' :redeemId='redeemId' @closeUnwindPopup="closeUnwindPopup"></redeem>
-      <pledge   :show='show' :pledgeId='pledgeId' @closeUnwindPopup="closeUnwindPopup"></pledge>
-      <deposit  :show='show'  @closeUnwindPopup="closeUnwindPopup"></deposit>
+      <div style="margin-bottom:2rem">&nbsp;</div>
+      <withdraw :show='showWithdraw' :withdrawId='withdrawId' @closeWithdraw="closeWithdraw"></withdraw>
+      <redeem   :show='showRedeem' :redeemId='redeemId' @closeRedeem="closeRedeem"></redeem>
+      <pledge   :show='showPledge' :pledgeId='pledgeId' @closePledge="closePledge"></pledge>
+      <deposit  :show='showDeposit'  @closeDeposit="closeDeposit"></deposit>
   </div>
 </template>
 
@@ -126,35 +127,50 @@ export default {
   },
   data () {
     return {
-      show: false,
+      showWithdraw: false,
+      showRedeem: false,
+      showPledge: false,
+      showDeposit: false,
       withdrawId: '',
       redeemId: '',
       pledgeId: ''
     }
   },
   methods: {
-    // 关闭弹框
-    closeUnwindPopup (bool) {
-      this.show = bool
+    // 关闭提现弹框
+    closeWithdraw (bool) {
+      this.showWithdraw = bool
+    },
+    // 关闭赎回弹框
+    closeRedeem (bool) {
+      this.showRedeem = bool
+    },
+    // 关闭质押弹框
+    closePledge (bool) {
+      this.showPledge = bool
+    },
+    // 关闭存入弹框
+    closeDeposit (bool) {
+      this.showDeposit = bool
     },
     // 提现弹框
     withdraw (bool, id) {
-      this.show = bool
+      this.showWithdraw = bool
       this.withdrawId = id
     },
     // 赎回弹框
     redeem (bool, id) {
-      this.show = bool
+      this.showRedeem = bool
       this.redeemId = id
     },
     // 质押弹框
     pledge (bool, id) {
-      this.show = bool
+      this.showPledge = bool
       this.pledgeId = id
     },
     // 存入
     deposit (bool, id) {
-      this.show = bool
+      this.showDeposit = bool
       // this.pledgeId = id
     },
     ClickBox () {
@@ -175,7 +191,7 @@ export default {
     background: #201b48;
     border-radius: 1.6rem;
     padding: 2rem;
-    margin: 1.6rem 0;
+    margin: 1.8rem 0;
     .earnings-title{
       display: flex;
       justify-content: space-between;

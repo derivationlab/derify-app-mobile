@@ -3,6 +3,16 @@
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">质押{{pledgeName}}</div>
       <div>
+        <div>
+          <van-dropdown-menu :overlay="false" class="derify-dropmenus">
+            <van-dropdown-item v-model="value1" :options="option1">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{option1[value1]}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+            </van-dropdown-item>
+          </van-dropdown-menu>
+        </div>
         <div class="popup-text">质押数量</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
@@ -29,14 +39,18 @@ export default {
       showPopup: this.show,
       value1: null,
       curPercent: 25,
-      pledgeName: null
+      pledgeName: null,
+      option1: [
+        { text: '市价委托', value: 0 },
+        { text: '限价委托', value: 1 }
+      ]
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
     },
-    withdrawId () {
+    pledgeId () {
       if (this.pledgeId === 1) {
         this.pledgeName = 'eDRF'
       } else {
@@ -46,7 +60,7 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('closeUnwindPopup', false)
+      this.$emit('closePledge', false)
     }
   }
 }

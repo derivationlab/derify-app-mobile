@@ -2,22 +2,41 @@
   <div class="home-container page-container">
     <navbar title="数据" />
     <div class="home-top">
+      <div class="classify-div">
+        <div class="div1">
+          <span class="ify-span"><span class="colory"></span> 交易量（24h）</span>
+          <div class="ify-div">
+            <span class="num">123456780.12</span>
+            <span class="unit">USDT</span>
+          </div>
+        </div>
+        <div class="div1">
+          <span class="ify-span"><span class="colorb"></span>手续费收入（24h）</span>
+          <div class="ify-div">
+            <span>123456780.12</span>
+            <span>USDT</span>
+          </div>
+        </div>
+      </div>
       <!-- K线图 -->
       <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
       <!-- K线图 -->
-      <div>交易记录</div>
+      <div style="font-weight: 700;color: rgba(255,255,255,0.85);font-size: 1.7rem;margin:2rem 0">交易记录</div>
+      <record></record>
     </div>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
+import record from './record/index.vue'
 // 自定义主题折线图
 // import theme from '@/js/themeEcharts.js'
 export default {
   name: 'Home',
   components: {
-    Navbar
+    Navbar,
+    record
     // theme
   },
   data () {
@@ -93,4 +112,42 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.classify-div{
+  display: flex;
+  margin: 2rem 0;
+  .div1{
+    flex: 1;
+    margin-left: 1rem;
+    .ify-span{
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.65);
+      .colory ,.colorb{
+        display: inline-block;
+        width: .8rem;
+        height: .8rem;
+        border-radius: 50%;
+        background-color: #fae247;
+        margin-left: -1rem;
+        margin-right: .5rem;
+      }
+      .colorb{
+        background-color: #475FFA;
+      }
+    }
+    .ify-div{
+      margin-top: .9rem;
+      .num{
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: rgba(255,255,255,0.85);
+      }
+      .unit{
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: rgba(255,255,255,0.45);
+      }
+    }
+  }
+}
 </style>

@@ -38,6 +38,55 @@
         </van-tab>
       </van-tabs>
     </div>
+    <!-- 提示申请弹框 -->
+    <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="closeshowPopup">
+      <div class="unwind-popup system-popup">
+        <div class="hintImg">
+          <img src="@/assets/images/Frame.png" alt="" srcset="">
+        </div>
+        <div class="hintTitle">您尚未开通经纪商身份</div>
+        <div class="btnDiv" @click="closeshowPopup">申请成为经纪商</div>
+      </div>
+  </van-popup>
+  <!-- 申请条件 -->
+  <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="closetermPopup">
+      <div class="unwind-popup system-popup">
+        <div class="hint-div">您需要燃烧</div>
+        <div class="hint-num">
+          <span class="num">60,000</span>
+          <span class="unit">eDRF</span>
+        </div>
+        <div class="hint-title">以成为经纪商</div>
+          <div>
+          <van-dropdown-menu :overlay="false" class="derify-dropmenus">
+            <van-dropdown-item v-model="value1" :options="option1">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{option1[value1]}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+            </van-dropdown-item>
+          </van-dropdown-menu>
+          <!-- <van-dropdown-menu active-color="#1989fa">
+            <van-dropdown-item v-model="value1" :options="option1" />
+          </van-dropdown-menu> -->
+          </div>
+        <div class="balance-div">可用余额：1234567.00000000 eDRF</div>
+        <div class="system-popup-buttons">
+          <div class="system-popup-button cancel" @click="closetermPopup">取消</div>
+          <div class="system-popup-button confirm" @click="closetermPopup">确认</div>
+      </div>
+      </div>
+  </van-popup>
+  <!-- 申请成功弹框 -->
+  <van-popup class="derify-popup" v-model="succPopup" round :closeable="false" @close="closesuccPopup">
+      <div class="unwind-popup system-popup">
+        <div class="hintImg">
+          <img src="@/assets/images/succFrame.png" alt="" srcset="">
+        </div>
+        <div class="hintTitle">您已成功开通经纪商身份</div>
+        <div class="btnDiv succPopup" @click="closesuccPopup">关闭</div>
+      </div>
+  </van-popup>
   </div>
 </template>
 
@@ -54,14 +103,34 @@ export default {
   },
   data () {
     return {
-      show: false,
-      active: '1'
+      showPopup: true,
+      termPopup: false,
+      succPopup: false,
+      active: '1',
+      value1: '',
+      option1: [
+        { text: '市价委托', value: 0 },
+        { text: '限价委托', value: 1 }
+      ]
     }
   },
   created () {
   },
   methods: {
-
+    // 关闭申请弹框
+    closeshowPopup () {
+      this.termPopup = true
+      this.showPopup = false
+    },
+    // 申请条件弹框
+    closetermPopup () {
+      this.succPopup = true
+      this.termPopup = false
+    },
+    // 关闭申请成功后弹框
+    closesuccPopup () {
+      this.succPopup = false
+    }
   }
 }
 </script>
@@ -147,5 +216,62 @@ export default {
       }
     }
   }
+}
+.hintImg{
+  width: 12rem;
+  height: 12rem;
+  margin: 6rem auto 4rem;
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}
+.hintTitle{
+  text-align: center;
+  margin-bottom: 2.4rem;
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+}
+.hint-div ,.hint-title{
+  font-size: 1.4rem;
+  font-weight: 400;
+  text-align: center;
+  color: rgba(255,255,255,0.65);
+}
+.balance-div{
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: LEFT;
+  color: rgba(255,255,255,0.65);
+}
+.hint-num{
+  text-align: center;
+  margin: 1rem 0;
+  .num{
+    font-size: 3rem;
+    font-weight: 500;
+    color: #fae247;
+  }
+  .unit{
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.65);
+  }
+}
+.btnDiv{
+  width: 18rem;
+  height: 4rem;
+  line-height: 4rem;
+  margin: 0 auto;
+  background: linear-gradient(180deg,#fae55e, #f7d042 100%);
+  border-radius: 3.4rem;
+  text-align: center;
+  color: #000;
+  font-weight: 500;
+  font-size: 1.6rem;
+}
+.succPopup{
+  width: 12rem;
 }
 </style>

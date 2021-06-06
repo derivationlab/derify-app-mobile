@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('closeUnwindPopup', false)
+      this.$emit('closeWithdraw', false)
     }
   }
 }
