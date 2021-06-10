@@ -1,9 +1,10 @@
 <template>
+<div>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">赎回{{redeemName}}</div>
       <div>
-        <div>
+        <!-- <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="value1" :options="option1">
                 <div class="derify-dropmenu-title" slot="title">
@@ -12,7 +13,7 @@
                 </div>
             </van-dropdown-item>
           </van-dropdown-menu>
-        </div>
+        </div> -->
         <div class="popup-text">赎回数量</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
@@ -29,9 +30,12 @@
       </div>
     </div>
   </van-popup>
+  <van-action-sheet v-model="sss" :actions="actions" @select="onSelect" />
+  </div>
 </template>
 
 <script>
+import { Toast } from 'vant'
 export default {
   props: ['show', 'redeemId'],
   data () {
@@ -43,6 +47,12 @@ export default {
       option1: [
         { text: '市价委托', value: 0 },
         { text: '限价委托', value: 1 }
+      ],
+      sss: false,
+      actions: [
+        { name: '选项一' },
+        { name: '选项二' },
+        { name: '选项三' }
       ]
     }
   },
@@ -61,6 +71,12 @@ export default {
   methods: {
     close () {
       this.$emit('closeRedeem', false)
+    },
+    onSelect (item) {
+      // 默认情况下点击选项时不会自动收起
+      // 可以通过 close-on-click-action 属性开启自动收起
+      this.show = false
+      Toast(item.name)
     }
   }
 }

@@ -5,6 +5,7 @@ import broker from '../views/Broker/broker.vue' // 经济商
 import data from '../views/Data/data.vue' // 数据
 import earnings from '../views/Earnings/earnings.vue' // 收益
 import detail from '../views/Earnings/detail/detail.vue' // 流水明细
+import transfer from '../views/transfer/index.vue' // 资金划转
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
     path: '/detail',
     name: 'detail',
     component: detail
+  },
+  {
+    path: '/transfer',
+    name: 'transfer',
+    component: transfer
   }
 ]
 

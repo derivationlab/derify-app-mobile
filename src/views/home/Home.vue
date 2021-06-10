@@ -63,7 +63,7 @@
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
             <span class="fc-65">可开：2.00000000 ETH</span>
-            <span class="fc-yellow">划转</span>
+            <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
         <div class="home-mid-input">
@@ -363,6 +363,9 @@ export default {
     changeShowOpenStatus (bool, status) {
       this.openStatus = status
       this.showOpenStatus = bool
+    },
+    transfer () {
+      this.$router.push({ path: '/transfer' })
     }
   }
 }
