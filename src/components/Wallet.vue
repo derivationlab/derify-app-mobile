@@ -7,24 +7,11 @@
     <div class="wallet-wrap">
       <div class="wallet-wrap-title">选择网络</div>
       <div class="wallet-select-area">
-        <div class="wallet-item active">
-          <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
-          <div class="wallet-item-name">Ethereum (xDai)</div>
-          <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
-        </div>
-        <div class="wallet-item">
-          <img class="wallet-item-image" src="@/assets/images/wallet/ht-logo.png" alt="">
-          <div class="wallet-item-name">HECO</div>
-          <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
-        </div>
-        <div class="wallet-item">
-          <img class="wallet-item-image" src="@/assets/images/wallet/bnb-logo.png" alt="">
-          <div class="wallet-item-name">Binance</div>
-          <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
-        </div>
-        <div class="wallet-item">
-          <img class="wallet-item-image" src="@/assets/images/wallet/sln-logo.png" alt="">
-          <div class="wallet-item-name">Solana</div>
+        <div class="wallet-item"
+             :class="net.enable ? net.key === selectedNetKey ? 'active' : '' : 'disabled'"
+             v-for="net in nets" :key="net.key" @click="changeKey(net, 'NET')">
+          <img class="wallet-item-image" :src="net.image" alt="">
+          <div class="wallet-item-name">{{ net.name }}</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
       </div>
@@ -32,7 +19,9 @@
     <div class="wallet-wrap">
       <div class="wallet-wrap-title">选择钱包</div>
       <div class="wallet-select-area">
-        <div class="wallet-item active">
+        <div class="wallet-item"
+          :class="wallet.enable ? wallet.key === selectedWalletKey ? 'active' : '' : 'disabled'"
+          v-for="wallet in wallets" :key="wallet.key" @click="changeKey(wallet, 'Wallet')">
           <img class="wallet-item-image" src="@/assets/images/wallet/mask-logo.png" alt="">
           <div class="wallet-item-name">Metamask</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
@@ -50,7 +39,43 @@ export default {
   props: ['show'],
   data () {
     return {
-      showPopup: this.show
+      showPopup: this.show,
+      selectedNetKey: 'eth',
+      selectedWalletKey: 'metamask',
+      nets: [
+        {
+          name: 'Ethereum (xDai)',
+          key: 'eth',
+          image: require('../assets/images/wallet/eth-logo.png'),
+          enable: true
+        },
+        {
+          name: 'HECO',
+          key: 'heco',
+          image: require('../assets/images/wallet/ht-logo.png'),
+          enable: false
+        },
+        {
+          name: 'Binance',
+          key: 'bnb',
+          image: require('../assets/images/wallet/bnb-logo.png'),
+          enable: false
+        },
+        {
+          name: 'Solana',
+          key: 'sln',
+          image: require('../assets/images/wallet/sln-logo.png'),
+          enable: false
+        }
+      ],
+      wallets: [
+        {
+          name: 'Metamask',
+          key: 'metamask',
+          image: require('../assets/images/wallet/mask-logo.png'),
+          enable: true
+        }
+      ]
     }
   },
   watch: {
@@ -61,6 +86,13 @@ export default {
   methods: {
     close () {
       this.$emit('closeWalletPopup', false)
+    },
+    changeKey (obj, type) {
+      if (!obj.enable) {
+        this.$toast(`${obj.name} does not support`)
+        return false
+      }
+      this[`selected${type}Key`] = obj.key
     }
   }
 }
@@ -134,6 +166,9 @@ export default {
         .wallet-item-select {
           display: block;
         }
+      }
+      &.disabled {
+        opacity: .2;
       }
     }
   }
