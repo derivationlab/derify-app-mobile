@@ -3,23 +3,24 @@
     <navbar title="资金划转" />
     <div class="from-div">From</div>
     <van-cell-group>
-      <van-field v-model="value"  placeholder="Metamask Wallet" border='false' />
+      <van-field class="derify-input no-padding-hor" placeholder="Metamask Wallet" :border='false' />
     </van-cell-group>
     <div class="to-div"><span class="span1">to</span><van-icon class="span2" name="exchange" size="2rem"/></div>
     <van-cell-group>
-      <van-field v-model="value"  placeholder="Derify Account" />
+      <van-field class="derify-input no-padding-hor" placeholder="Derify Account" />
     </van-cell-group>
     <div class="num-div">数量</div>
     <van-cell-group>
       <van-field
-        v-model="value"
-        placeholder="1.23456789"
+        v-model="amount"
+        class="derify-input no-padding-hor"
+        type="number"
       >
       </van-field>
       <span class="unit">USDT</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">可划转：1234567.00000000 USDT</span><span class="span2">全部划转</span></div>
-    <div class="pay-div">充值</div>
+    <div class="pay-div" @click="deposit">充值</div>
   </div>
 </template>
 <script>
@@ -31,12 +32,28 @@ export default {
   },
   data () {
     return {
-      value: ''
+      amount: ''
+    }
+  },
+  computed: {
+    account () {
+      return this.$store.state.contract.account
     }
   },
   mounted () {
   },
   methods: {
+    deposit () {
+      if (!this.amount) {
+        this.$toast('请输入正确的数量')
+        return false
+      }
+      const a = parseFloat(this.amount) * 1e8
+      const amount = parseInt(a)
+      this.$store.dispatch('contract/depositAccount', amount).then(_ => {
+        this.$toast('充值成功')
+      })
+    }
   }
 }
 </script>

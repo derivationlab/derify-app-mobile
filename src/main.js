@@ -12,6 +12,8 @@ import './styles/index.less'
 // 引入 echarts
 // import echarts from 'echarts'
 import * as echarts from 'echarts'
+import '@/utils/web3Utils'
+
 Vue.prototype.$echarts = echarts
 Vue.use(Vant)
 Vue.config.productionTip = false

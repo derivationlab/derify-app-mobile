@@ -11,6 +11,7 @@ export function getCache (key, isTemp = false) {
   }
   return null
 }
+
 export function setCache (key, value, isTemp = false, expiration = 7 * 24 * 60 * 60 * 1000) {
   if (!value) {
     removeCache(key)
@@ -26,6 +27,7 @@ export function setCache (key, value, isTemp = false, expiration = 7 * 24 * 60 *
     localStorage.setItem(key, JSON.stringify(obj))
   }
 }
+
 export function removeCache (key, isTemp = false) {
   if (isTemp) {
     sessionStorage.removeItem(key)

@@ -9,12 +9,21 @@
     </template>
   </van-nav-bar>
   <van-popup class="menu-popup" v-model="showMenu" position="left">
-    <div class="head-info"  @click="changeShowWallet(true)">
-      <div class="head-info-left">
-        <div class="first-letter-wrap">W</div>
+    <div class="interactive-error" v-if="loginError">{{loginError}}</div>
+    <div class="head-info" @click="handleLogin">
+      <div class="head-info-left" v-if="walletAddress">
+        <div class="first-letter-wrap">OK</div>
         <div class="info-div">
-          <div class="info-name">WETWE</div>
-          <div>275fdwqe23jkds</div>
+          <div class="info-name">USER_NAME</div>
+          <div>{{ walletAddress }}</div>
+        </div>
+
+      </div>
+      <div class="head-info-left" v-else>
+        <div class="first-letter-wrap">C</div>
+        <div class="info-div">
+          <div class="info-name">Click To Log In</div>
+          <div>click to log in wallet</div>
         </div>
       </div>
       <van-icon name="arrow" size="2.2rem" color="rgba(255, 255, 255, .85)"></van-icon>
@@ -91,7 +100,18 @@ export default {
   data () {
     return {
       showMenu: false,
-      showWallet: false
+      showWallet: false,
+      loginError: null
+    }
+  },
+  computed: {
+    walletAddress () {
+      const address = this.$store.state.contract.wallet_address
+      if (address.length === 42 && address.startsWith('0x')) {
+        const length = address.length
+        return `${address.substring(0, 6)}...${address.substring(length - 4, length)}`
+      }
+      return ''
     }
   },
   methods: {
@@ -110,6 +130,24 @@ export default {
       setTimeout(_ => {
         this.$router.push({ name })
       }, 500)
+    },
+    handleLogin () {
+      if (!this.walletAddress) {
+        this.showWallet = true
+        this.$store.dispatch('contract/loginWallet').then(_ => {
+          this.$toast('Successfully log in wallet')
+        }).catch(err => {
+          this.$toast(err.message)
+        }).finally(_ => {
+          this.showWallet = false
+          this.this.loginError = null
+        })
+      }
+    }
+  },
+  beforeMount () {
+    if (this.walletAddress) {
+      this.$store.dispatch('contract/setAccount')
     }
   }
 }
