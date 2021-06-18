@@ -37,7 +37,7 @@ const actions = {
       }
     })
   },
-  depositAccount ({ commit }, amount) {
+  depositAccount ({ state }, amount) {
     return new Promise((resolve, reject) => {
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
