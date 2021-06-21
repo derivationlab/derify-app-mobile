@@ -6,11 +6,15 @@ const contractAddress = '0x43b429d43218Aac1559B48e91C2D1f2947767121'
 
 // create or get instance
 function _contractInstance () {
-  if (window.contractInstance) return window.contractInstance
-  const web3 = new Web3(new Web3.providers.HttpProvider(ethUrl))
-  const contract = new web3.eth.Contract(contractAbi, contractAddress)
-  window.web3 = web3
-  window.contractInstance = contract
+  if (window.ethereum) {
+    window.web3 = new Web3(window.ethereum)
+  } else if (window.web3) {
+    window.web3 = new Web3(window.web3.currentProvider)
+  } else {
+    const web3 = new Web3(new Web3.providers.HttpProvider(ethUrl))
+    window.web3 = web3
+  }
+  const contract = new window.web3.eth.Contract(contractAbi, contractAddress)
   return contract
 }
 
@@ -21,10 +25,8 @@ export function getAccount (address) {
 
 export function deposit (address, amount) {
   const call = _contractInstance().methods.deposit(amount).send({
-    from: address,
-    value: amount
+    from: address
   })
-  // need to solve : The method eth_sendTransaction does not exist/is not available
   return call
 }
 
@@ -34,5 +36,9 @@ export function enable () {
       reject(new Error('please install Metamask'))
     })
   }
-  return window.ethereum && window.ethereum.enable()
+  return new Promise((resolve, reject) => {
+    window.ethereum.request({
+      method: 'eth_requestAccounts'
+    }).then(r => resolve(r)).catch(e => reject(e))
+  })
 }
