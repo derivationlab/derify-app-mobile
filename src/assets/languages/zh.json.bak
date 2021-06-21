@@ -1,0 +1,17 @@
+{
+  "lng": "zh",
+  "navbar":{
+    "trade": "交易",
+    "mobility": "流动性",
+    "data":"数据",
+    "broker":"券商",
+    "extend":"推广",
+    "help":"帮助"
+
+    
+
+  },
+  "trade":{
+    
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "lng": "zh",
+  "navbar":{
+    "Home":"首页",
+    "Trade": "交易",
+    "Rewards":"收益",
+    "Partners":"经纪商",
+    "Data":"数据",
+    "Connect Wallet":"连接钱包"
+  }
+}

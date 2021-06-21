@@ -37,7 +37,7 @@
           :color="$route.name === 'home' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
-        <div class="menu-list-item-name">Home</div>
+        <div class="menu-list-item-name">{{$t('navbar.Home')}}</div>
       </div>
       <div class="menu-list-item" @click="changeRouter('exchange')" :class="$route.name === 'exchange' ? 'active' : ''">
         <img class="menu-list-item-icon" src="@/assets/icons/icon-menu-active.png" alt="">
@@ -46,7 +46,7 @@
           :color="$route.name === 'exchange' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
-        <div class="menu-list-item-name">Exchange</div>
+        <div class="menu-list-item-name">{{$t('navbar.Trade')}}</div>
       </div>
       <div class="menu-list-item" @click="changeRouter('data')" :class="$route.name === 'data' ? 'active' : ''">
         <img class="menu-list-item-icon" src="@/assets/icons/icon-menu-active.png" alt="">
@@ -56,7 +56,7 @@
           :color="$route.name === 'data' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
-        <div class="menu-list-item-name">Dashboard</div>
+        <div class="menu-list-item-name">{{$t('navbar.Data')}}</div>
       </div>
       <div class="menu-list-item" @click="changeRouter('earnings')" :class="$route.name === 'earnings' ? 'active' : ''">
         <img class="menu-list-item-icon" src="@/assets/icons/icon-menu-active.png" alt="">
@@ -66,7 +66,7 @@
           :color="$route.name === 'earnings' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
-        <div class="menu-list-item-name">Yield</div>
+        <div class="menu-list-item-name">{{$t('navbar.Rewards')}}</div>
       </div>
       <div class="menu-list-item" @click="changeRouter('broker')" :class="$route.name === 'broker' ? 'active' : ''">
         <img class="menu-list-item-icon" src="@/assets/icons/icon-menu-active.png" alt="">
@@ -76,13 +76,13 @@
           :color="$route.name === 'broker' ?  '#FAE247' : 'rgba(255, 255, 255, .85)'"
           size="2.0rem">
         </van-icon>
-        <div class="menu-list-item-name">Brokers</div>
+        <div class="menu-list-item-name">{{$t('navbar.Partners')}}</div>
       </div>
     </div>
     <div class="language-wrap">
-      <div class="language-item active">简</div>
-      <div class="language-item">繁</div>
-      <div class="language-item">En</div>
+      <div class="language-item active" @click="Ch">中</div>
+      <div class="language-item" @click="En">en</div>
+      <!-- <div class="language-item">繁 zh en</div> -->
     </div>
   </van-popup>
   <wallet :show="showWallet" @closeWalletPopup="changeShowWallet" />
@@ -115,6 +115,12 @@ export default {
     }
   },
   methods: {
+    Ch () {
+      this.$i18n.locale = 'zh'
+    },
+    En () {
+      this.$i18n.locale = 'en'
+    },
     changeShowMenu (bool) {
       this.showMenu = bool
     },

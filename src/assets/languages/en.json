@@ -1,0 +1,11 @@
+{
+  "lng": "en",
+  "navbar":{
+    "Home":"Home",
+    "Trade": "Trade",
+    "Rewards":"Rewards",
+    "Partners":"Partners",
+    "Data":"Data",
+    "Connect Wallet":"Connect Wallet"
+  }
+}

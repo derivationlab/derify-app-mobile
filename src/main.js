@@ -13,12 +13,33 @@ import './styles/index.less'
 // import echarts from 'echarts'
 import * as echarts from 'echarts'
 import '@/utils/web3Utils'
+import VueI18n from 'vue-i18n'
+let locale = 'zh'
+try {
+  const curLngStr = localStorage.getItem('curLng')
+  const lng = JSON.parse(curLngStr || '{}')
+  console.log('main==>>lng', lng)
+  if (lng.lng) {
+    locale = lng.lng
+    store.commit('user/SET_CURLNG', lng)
+  }
+} catch (err) {
+}
+Vue.use(VueI18n)
 
+const i18n = new VueI18n({
+  locale: locale, // 定义默认语言为中文
+  messages: {
+    zh: require('@/assets/languages/zh.json'),
+    en: require('@/assets/languages/en.json')
+  }
+})
 Vue.prototype.$echarts = echarts
 Vue.use(Vant)
 Vue.config.productionTip = false
 new Vue({
   router,
+  i18n,
   store,
   render: h => h(App)
 }).$mount('#app')
