@@ -21,7 +21,7 @@ try {
   console.log('main==>>lng', lng)
   if (lng.lng) {
     locale = lng.lng
-    store.commit('user/SET_CURLNG', lng)
+    // store.commit('user/SET_CURLNG', lng)
   }
 } catch (err) {
 }
