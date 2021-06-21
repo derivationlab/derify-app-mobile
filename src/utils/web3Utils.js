@@ -24,10 +24,17 @@ export function getAccount (address) {
 }
 
 export function deposit (address, amount) {
-  const call = _contractInstance().methods.deposit(amount).send({
+  const transaction = _contractInstance().methods.deposit(amount).send({
     from: address
   })
-  return call
+  return transaction
+}
+
+export function withdraw (address, amount) {
+  const transaction = _contractInstance().methods.withdraw(address, amount).send({
+    from: address
+  })
+  return transaction
 }
 
 export function enable () {
