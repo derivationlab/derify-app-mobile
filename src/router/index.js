@@ -5,7 +5,10 @@ import broker from '../views/Broker/broker.vue' // 经济商
 import data from '../views/Data/data.vue' // 数据
 import earnings from '../views/Earnings/earnings.vue' // 收益
 import detail from '../views/Earnings/detail/detail.vue' // 流水明细
-import transfer from '../views/transfer/index.vue' // 资金划转
+import account from '../views/transfer/account.vue' // 交易账户
+import financialDetails from '../views/transfer/component/financialDetails.vue' // 资金明细
+import topUp from '../views/transfer/component/topUp.vue' // 资金充值
+import extract from '../views/transfer/component/extract.vue' // 资金提取
 
 Vue.use(VueRouter)
 
@@ -45,9 +48,24 @@ const routes = [
     component: detail
   },
   {
-    path: '/transfer',
-    name: 'transfer',
-    component: transfer
+    path: '/topUp',
+    name: 'topUp',
+    component: topUp
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: account
+  },
+  {
+    path: '/financialDetails',
+    name: 'financialDetails',
+    component: financialDetails
+  },
+  {
+    path: '/extract',
+    name: 'extract',
+    component: extract
   }
 ]
 

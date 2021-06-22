@@ -117,6 +117,7 @@ export default {
   methods: {
     Ch () {
       this.$i18n.locale = 'zh'
+      console.log(1)
     },
     En () {
       this.$i18n.locale = 'en'

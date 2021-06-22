@@ -365,7 +365,7 @@ export default {
       this.showOpenStatus = bool
     },
     transfer () {
-      this.$router.push({ path: '/transfer' })
+      this.$router.push({ path: '/account' })
     }
   }
 }
