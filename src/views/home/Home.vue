@@ -4,12 +4,11 @@
     <div class="home-top">
       <div class="home-top-left">
         <div class="home-top-coin" @click="changeShowMarket(true)">
-          <span class="home-top-coin-name">ETH / USDT</span>
+          <span class="home-top-coin-name">{{curPair.name}}</span>
           <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
         </div>
-        <!-- 注释 -->
         <div class="home-top-num">
-          <span>134</span><span class="home-top-num-small">.50</span>
+          {{curSpotPrice | fck(-8)}}
         </div>
         <div class="home-top-percent up">+999.99%</div>
       </div>
@@ -35,17 +34,17 @@
     <div class="home-mid">
       <div class="home-mid-one">
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="value1" :options="option1">
+          <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig">
               <div class="derify-dropmenu-title" slot="title">
-                <span>{{option1[value1].text}}</span>
+                <span>{{entrustTypeConfig[entrustType].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
               </div>
           </van-dropdown-item>
         </van-dropdown-menu>
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="value2" :options="option2">
+          <van-dropdown-item v-model="leverage" :options="leverageConfig">
               <div class="derify-dropmenu-title" slot="title">
-                <span>{{option2[value2].text}}</span>
+                <span>{{leverageConfig[leverage].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
               </div>
           </van-dropdown-item>
@@ -53,8 +52,11 @@
       </div>
       <div class="home-mid-two">
         <div class="fc-65 fz-12">开仓价</div>
-        <div class="home-mid-input">
-          <van-field class="derify-input" type="text" input-align="center" disabled v-model="value3" />
+        <div class="home-mid-input" v-if="entrustType === 0">
+          <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
+        </div>
+        <div class="home-mid-input" v-else>
+          <van-field class="derify-input" type="number" v-model.number="amount" />
           <div class="fc-30">USDT</div>
         </div>
       </div>
@@ -67,11 +69,11 @@
           </div>
         </div>
         <div class="home-mid-input">
-          <van-field class="derify-input" type="number" v-model="value4" />
+          <van-field class="derify-input" type="number" v-model.number="size" />
           <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
-            <van-dropdown-item v-model="value6" :options="option3">
+            <van-dropdown-item v-model="unit" :options="unitConfig">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{option3[value6].text}}</span>
+                  <span>{{unitConfig[unit].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
@@ -82,9 +84,9 @@
         <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" />
       </div>
       <div class="home-mid-four">
-        <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 'green')">看涨 看多</div>
-        <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 'red')">看跌 开空</div>
-        <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 'yellow')">双向对冲</div>
+        <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
+        <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+        <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
       </div>
     </div>
     <div class="home-last">
@@ -253,7 +255,7 @@
     <set-popup :show="showSet" @closeSetPopup="changeShowSet" />
     <unwind :show="showUwind" @closeUnwindPopup="changeShowUnwind" />
     <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
-    <open :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
+    <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
   </div>
 </template>
@@ -280,24 +282,33 @@ export default {
     Open,
     OpenStatus
   },
+  computed: {
+    curPair () {
+      const { curPairKey, pairs } = this.$store.state.contract
+      return pairs.find(pair => pair.key === curPairKey)
+    },
+    curSpotPrice () {
+      return this.$store.state.contract.curSpotPrice
+    }
+  },
   data () {
     return {
-      value1: 0,
-      value2: 0,
-      value3: '以市价成交',
-      value4: 99213120.12,
+      entrustType: 0,
+      leverage: 0,
+      amount: 0,
+      size: 0,
       value5: 20,
-      value6: 0,
-      option1: [
+      unit: 0,
+      entrustTypeConfig: [
         { text: '市价委托', value: 0 },
         { text: '限价委托', value: 1 }
       ],
-      option2: [
+      leverageConfig: [
         { text: '10x', value: 0 },
         { text: '5x', value: 1 },
         { text: '3x', value: 2 }
       ],
-      option3: [
+      unitConfig: [
         { text: 'USDT', value: 0 },
         { text: 'ETH', value: 1 },
         { text: '%', value: 2 }
@@ -320,7 +331,8 @@ export default {
       showOpen: false, // 开仓确认弹窗
       openType: null, // 开仓类型
       showOpenStatus: false, // 开仓状态弹窗
-      openStatus: 'fail' // 开仓状态
+      openStatus: 'fail', // 开仓状态
+      openExtraData: null
     }
   },
   methods: {
@@ -357,6 +369,25 @@ export default {
       this.showOneKeyUnwind = bool
     },
     changeShowOpen (bool, type) {
+      if (bool) {
+        const { entrustType, leverage, amount, size, unit } = this
+        if (entrustType === 1 && !amount) {
+          this.$toast('please input amount first')
+          return
+        }
+        if (!size) {
+          this.$toast('please input size first')
+          return
+        }
+        this.openExtraData = {
+          entrustType,
+          leverage,
+          amount,
+          size,
+          side: type,
+          unit
+        }
+      }
       this.openType = type
       this.showOpen = bool
     },
@@ -367,6 +398,12 @@ export default {
     transfer () {
       this.$router.push({ path: '/account' })
     }
+  },
+  beforeMount () {
+    this.$store.dispatch('contract/getMarketAccount').then(r => {
+      // TODO: render records in page
+      console.log('market======', r)
+    })
   }
 }
 </script>

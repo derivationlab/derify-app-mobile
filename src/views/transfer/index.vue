@@ -19,7 +19,7 @@
       </van-field>
       <span class="unit">USDT</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：1234567.00000000 USDT</span><span class="span2">全部划转</span></div>
+    <div class="transfer-div"><span class="span1">可划转：{{account.accountBalance | fck(-8)}} USDT</span><span class="span2">全部划转</span></div>
     <div class="pay-div" v-if="type === 'deposit'" @click="deposit">充值</div>
     <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">提现</div>
   </div>

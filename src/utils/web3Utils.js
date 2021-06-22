@@ -30,11 +30,28 @@ export function deposit (address, amount) {
   return transaction
 }
 
-export function withdraw (address, amount) {
-  const transaction = _contractInstance().methods.withdraw(address, amount).send({
+export function withdraw (address, marketIdx, amount) {
+  const transaction = _contractInstance().methods.withdraw(marketIdx, amount).send({
     from: address
   })
   return transaction
+}
+
+export function getSpotPrice (marketIdx) {
+  const call = _contractInstance().methods.getSpotPrice(marketIdx).call()
+  return call
+}
+
+export function openPosition (address, marketIdx, side, size, price, leverage) {
+  const transaction = _contractInstance().methods.openPosition(marketIdx, side, size, price, leverage).send({
+    from: address
+  })
+  return transaction
+}
+
+export function getMarketAccount (address, marketIdx) {
+  const call = _contractInstance().methods.getMarketAccount(marketIdx, address).call()
+  return call
 }
 
 export function enable () {

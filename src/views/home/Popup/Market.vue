@@ -2,11 +2,14 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="market-popup system-popup">
       <div class="system-popup-title">市场</div>
-      <div class="market-item" @click="changeCoin(coin.key)" :class="curKey === coin.key ? 'active' : ''" v-for="coin in coins" :key="coin.key">
-        <div class="market-item-left">{{coin.name}}</div>
+      <div class="market-item"
+           @click="changePair(pair)"
+           :class="pair.enable ? curKey === pair.key ? 'active' : '' : 'disabled'"
+           v-for="pair in pairs" :key="pair.key">
+        <div class="market-item-left">{{pair.name}}</div>
         <div class="market-item-right">
-          <div>{{parseFloat(coin.num).toFixed(2)}}</div>
-          <div :class="coin.percent >= 0 ? 'fc-green' : 'fc-red'">{{coin.percent >= 0 ? '+' : '-'}}{{Math.abs(coin.percent)}}%</div>
+          <div>{{parseFloat(pair.num).toFixed(2)}}</div>
+          <div :class="pair.percent >= 0 ? 'fc-green' : 'fc-red'">{{pair.percent >= 0 ? '+' : '-'}}{{Math.abs(pair.percent)}}%</div>
         </div>
       </div>
     </div>
@@ -21,16 +24,17 @@ export default {
       default: false
     }
   },
+  computed: {
+    pairs () {
+      return this.$store.state.contract.pairs
+    },
+    curKey () {
+      return this.$store.state.contract.curPairKey
+    }
+  },
   data () {
     return {
-      showPopup: this.show,
-      curKey: 'ETH',
-      coins: [
-        { key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23 },
-        { key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23 },
-        { key: 'BNB', name: 'BNB / USDT', num: 2230.67, percent: 1.23 },
-        { key: 'UNI', name: 'UNI / USDT', num: 3930.32, percent: -1.23 }
-      ]
+      showPopup: this.show
     }
   },
   watch: {
@@ -42,9 +46,20 @@ export default {
     close () {
       this.$emit('closeMarketPopup', false)
     },
-    changeCoin (key) {
-      this.curKey = key
+    changePair (pair) {
+      if (!pair.enable) {
+        this.$toast(`${pair.name} does not support`)
+        return false
+      }
+      this.$store.commit('contract/SET_CURPAIRKEY', pair.key)
+      this.getCurPrice().then(_ => { this.close() })
+    },
+    getCurPrice () {
+      return this.$store.dispatch('contract/getSpotPrice')
     }
+  },
+  beforeMount () {
+    this.getCurPrice()
   }
 }
 </script>
@@ -72,6 +87,9 @@ export default {
     .market-item-left {
       color: @orange;
     }
+  }
+  &.disabled {
+    opacity: .2;
   }
 }
 .market-item + .market-item {
