@@ -31,6 +31,9 @@ export function deposit (address, amount) {
 }
 
 export function withdraw (address, marketIdx, amount) {
+  console.log(address)
+  console.log(marketIdx)
+  console.log(amount)
   const transaction = _contractInstance().methods.withdraw(marketIdx, amount).send({
     from: address
   })

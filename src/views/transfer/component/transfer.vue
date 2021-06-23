@@ -1,6 +1,16 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="资金划转" />
+    <van-nav-bar
+      title="资金划转"
+      left-arrow
+      :border="false"
+      :fixed="true"
+      @click-left="onClickLeft"
+    >
+      <template #left>
+        <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
+      </template>
+    </van-nav-bar>
     <div class="from-div">From</div>
     <van-cell-group>
       <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? 'Metamask Wallet' : 'Derify Account'" :border='false' />
@@ -25,12 +35,8 @@
   </div>
 </template>
 <script>
-import Navbar from '@/components/Navbar'
 export default {
   name: 'transfer',
-  components: {
-    Navbar
-  },
   data () {
     return {
       amount: '',
@@ -43,8 +49,12 @@ export default {
     }
   },
   mounted () {
+    this.type = (this.$route.query && this.$route.query.type) || 'deposit'
   },
   methods: {
+    onClickLeft () {
+      this.$router.go(-1)
+    },
     changeType () {
       this.type = this.type === 'deposit' ? 'withdraw' : 'deposit'
     },
