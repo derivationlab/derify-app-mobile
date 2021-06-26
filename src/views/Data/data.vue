@@ -30,8 +30,7 @@
 <script>
 import Navbar from '@/components/Navbar'
 import record from './record/index.vue'
-// 自定义主题折线图
-// import theme from '@/js/themeEcharts.js'
+
 export default {
   name: 'Home',
   components: {

@@ -31,6 +31,7 @@
         </div>
       </div>
     </div>
+    <template v-if="$route.name === 'home'">
     <div class="home-mid">
       <div class="home-mid-one">
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
@@ -89,6 +90,10 @@
         <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
       </div>
     </div>
+    </template>
+    <template v-else>
+      <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
+    </template>
     <div class="home-last">
       <van-tabs v-model="active">
         <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
@@ -269,6 +274,7 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
+import options from '@/utils/kExample'
 
 export default {
   name: 'Home',
@@ -397,6 +403,10 @@ export default {
     },
     transfer () {
       this.$router.push({ path: '/account' })
+    },
+    drawKline () {
+      const myChart = this.$echarts.init(document.getElementById('myChart'))
+      myChart.setOption(options)
     }
   },
   beforeMount () {
@@ -404,6 +414,11 @@ export default {
       // TODO: render records in page
       console.log('market======', r)
     })
+  },
+  mounted () {
+    if (this.$route.name === 'exchange') {
+      this.drawKline()
+    }
   }
 }
 </script>
