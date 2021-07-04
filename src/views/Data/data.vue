@@ -1,17 +1,17 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="数据" />
+    <navbar :title="$t('data.Data')" />
     <div class="home-top">
       <div class="classify-div">
         <div class="div1">
-          <span class="ify-span"><span class="colory"></span> 交易量（24h）</span>
+          <span class="ify-span"><span class="colory"></span> {{$t('data.TradingVolume')}}（24h）</span>
           <div class="ify-div">
             <span class="num">123456780.12</span>
             <span class="unit">USDT</span>
           </div>
         </div>
         <div class="div1">
-          <span class="ify-span"><span class="colorb"></span>手续费收入（24h）</span>
+          <span class="ify-span"><span class="colorb"></span>{{$t('data.TradFeeEarning')}}（24h）</span>
           <div class="ify-div">
             <span>123456780.12</span>
             <span>USDT</span>

@@ -1,8 +1,8 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="经济商" />
+    <navbar :title="$t('Brokers.Brokers')" />
     <div class="home-top">
-      <div class="account-div">账户余额</div>
+      <div class="account-div">{{$t('Brokers.AccBalance')}}</div>
       <div class="num-div">
         <span class="num"> 23,456.78</span>
         <span class="unit">USDT</span>
@@ -10,30 +10,30 @@
       <div class="income-div">
         <div class="taday-div">
           <span class="span1">24,691.34</span>
-          <span class="span2 fz-11">今日收入 ( USDT )</span>
+          <span class="span2 fz-11">{{$t('Brokers.DailyEarning')}} ( USDT )</span>
         </div>
         <div class="taday-div">
           <span class="span1">24,691.34</span>
-          <span class="span2 fz-11">累计收入 ( USDT )</span>
+          <span class="span2 fz-11">{{$t('Brokers.AccumulatedEarning')}} ( USDT )</span>
         </div>
       </div>
-      <div class="cbtn-div fz-17 mrb-17">充值</div>
-      <div class="tbtm-div fz-17">提现</div>
-      <div class="dealer-div">经销商权益有效期<span>365</span>天，至 2048 年 12月 31日</div>
+      <div class="cbtn-div fz-17 mrb-17">{{$t('Brokers.Burn')}}</div>
+      <div class="tbtm-div fz-17">{{$t('Brokers.Withdraw')}}</div>
+      <div class="dealer-div">{{$t('Brokers.PrivilegeValiduntil')}}<span>365</span>{{$t('Brokers.Days')}}，{{$t('Brokers.Until')}} 2048.12.31</div>
       <div class="explain-div">
-        <div>说明：</div>
+        <div>{{$t('Brokers.Note')}}：</div>
         <ul>
-          <li>*&nbsp;&nbsp;平台采取经纪商制度。所有的交易者只能通过访问经纪商的交易页面进行交易，Derify protocol并不直接面向交易者提供服务。</li>
-          <li>*&nbsp;&nbsp;经纪商可以持续获得手续费奖励（未来还将获得额外的DRF奖励）。</li>
-          <li>*&nbsp;&nbsp;经纪商需要燃烧eDRF才能保持享有该权益（当前，每600个eDRF可以维持一天的经纪商收益）。 </li>
-          <li>*&nbsp;&nbsp;权益有效期到期后将无法获得经纪商奖励，但仍会保持经纪商身份， 您可以随时燃烧eDRF恢复经纪商奖励权益。</li>
+          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify1')}}</li>
+          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify2')}}</li>
+          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify3')}}</li>
+          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify4')}}</li>
         </ul>
       </div>
       <van-tabs v-model="active">
-        <van-tab title="账户流水">
+        <van-tab :title="$t('Brokers.AccountHistory')">
           <trader></trader>
         </van-tab>
-        <van-tab title="交易者信息">
+        <van-tab :title="$t('Brokers.TraderInfo')">
           <account></account>
         </van-tab>
       </van-tabs>
@@ -44,19 +44,19 @@
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
         </div>
-        <div class="hintTitle">您尚未开通经纪商身份</div>
-        <div class="btnDiv" @click="closeshowPopup">申请成为经纪商</div>
+        <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
+        <div class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
       </div>
   </van-popup>
   <!-- 申请条件 -->
   <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="closetermPopup">
       <div class="unwind-popup system-popup">
-        <div class="hint-div">您需要燃烧</div>
-        <div class="hint-num">
+        <div class="hint-div">{{$t('Brokers.BurnEDRF')}}</div>
+        <!-- <div class="hint-num">
           <span class="num">60,000</span>
           <span class="unit">eDRF</span>
-        </div>
-        <div class="hint-title">以成为经纪商</div>
+        </div> -->
+        <!-- <div class="hint-title">{{$t('Brokers.YouPrivilege')}}</div> -->
           <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="value1" :options="option1">
@@ -70,10 +70,10 @@
             <van-dropdown-item v-model="value1" :options="option1" />
           </van-dropdown-menu> -->
           </div>
-        <div class="balance-div">可用余额：1234567.00000000 eDRF</div>
+        <div class="balance-div">{{$t('Brokers.Balances')}}：1234567.00000000 eDRF</div>
         <div class="system-popup-buttons">
-          <div class="system-popup-button cancel" @click="closetermPopup">取消</div>
-          <div class="system-popup-button confirm" @click="closetermPopup">确认</div>
+          <div class="system-popup-button cancel" @click="closetermPopup">{{$t('Brokers.cancel')}}</div>
+          <div class="system-popup-button confirm" @click="closetermPopup">{{$t('Brokers.affirm')}}</div>
       </div>
       </div>
   </van-popup>
@@ -83,8 +83,8 @@
         <div class="hintImg">
           <img src="@/assets/images/succFrame.png" alt="" srcset="">
         </div>
-        <div class="hintTitle">您已成功开通经纪商身份</div>
-        <div class="btnDiv succPopup" @click="closesuccPopup">关闭</div>
+        <div class="hintTitle">{{$t('Brokers.YouPrivilege')}}</div>
+        <div class="btnDiv succPopup" @click="closesuccPopup">{{$t('Brokers.Close')}}</div>
       </div>
   </van-popup>
   </div>

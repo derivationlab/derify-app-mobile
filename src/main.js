@@ -8,15 +8,19 @@ import './styles/index.less'
 import * as echarts from 'echarts'
 import '@/utils/web3Utils'
 import '@/utils/filters'
+import '@/js/DerifyExchange.js'
+import '@/js/contractUtil.js'
 import VueI18n from 'vue-i18n'
 let locale = 'zh'
 try {
-  const curLngStr = localStorage.getItem('curLng')
+  const curLngStr = sessionStorage.getItem('locale')
   const lng = JSON.parse(curLngStr || '{}')
-  console.log('main==>>lng', lng)
+  console.log(lng, 9999)
   if (lng.lng) {
     locale = lng.lng
     // store.commit('user/SET_CURLNG', lng)
+    // this.$i18n.locale = locale
+    // console.log(this.$i18n.locale)
   }
 } catch (err) {
 }
