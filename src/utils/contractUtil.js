@@ -188,10 +188,11 @@ Contract.prototype = {
   /**
    * 获取系统最大开仓量
    * @param marketIdAddress
+   * @param side
    * @return {*}
    */
-  getSysOpenUpperBound: function (marketIdAddress) {
-    return this.contract.methods.getSysOpenUpperBound(marketIdAddress).call()
+  getSysOpenUpperBound: function (marketIdAddress, side) {
+    return this.contract.methods.getSysOpenUpperBound(marketIdAddress, side).call()
   }
 }
 

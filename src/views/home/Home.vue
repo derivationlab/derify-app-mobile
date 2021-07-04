@@ -19,7 +19,7 @@
         </div>
         <div class="home-top-items">
           <span class="fc-65">动仓费率：</span>
-          <span class="fc-red">{{positionChangeFeeRatio}}</span>
+          <span class="fc-red">{{curPositionChangeFeeRatio | fck(-8)}}%</span>
         </div>
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
@@ -65,7 +65,7 @@
         <div class="home-mid-two-title">
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
-            <span class="fc-65">可开：2.00000000 ETH</span>
+            <span class="fc-65">可开：{{curTraderOpenUpperBound | fck(-8)}} ETH</span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -294,7 +294,13 @@ export default {
       return pairs.find(pair => pair.key === curPairKey)
     },
     curSpotPrice () {
-      return this.$store.state.contract.curSpotPrice
+      return this.$store.state.contract.contractData.curSpotPrice
+    },
+    curPositionChangeFeeRatio () {
+      return this.$store.state.contract.contractData.positionChangeFeeRatio
+    },
+    curTraderOpenUpperBound () {
+      return this.$store.state.contract.contractData.traderOpenUpperBound.size
     }
   },
   data () {
@@ -410,17 +416,14 @@ export default {
     }
   },
   beforeMount () {
+    this.$store.dispatch('contract/loadHomeData').then(r => {
+      console.log(' loadHomeData ' + JSON.stringify(r))
+    })
+
     this.$store.dispatch('contract/getMarketAccount').then(r => {
       // TODO: render records in page
       console.log('market======', r)
-    });
-
-    this.$store.dispatch('contract/loadHomeData').then(r => {
-      console.log(" loadHomeData "+ r);
-    });
-  },
-  async loadData () {
-    this.$store.dispatch()
+    })
   },
   mounted () {
     if (this.$route.name === 'exchange') {
