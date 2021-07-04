@@ -1,855 +1,1240 @@
 export default [
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_factory",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_maintenanceMarginRatio',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_positionFeeRatio',
+        type: 'uint256'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    name: 'addMarket',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "anonymous": false,
-    "inputs": [
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
       }
     ],
-    "name": "Deposit",
-    "type": "event"
+    name: 'cancelClosePosition',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "anonymous": false,
-    "inputs": [
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
       }
     ],
-    "name": "Withdraw",
-    "type": "event"
+    name: 'cancelOpenPosition',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [],
-    "name": "factory",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    inputs: [],
+    name: 'clearing',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "enum IDerifyExchangeActions.AccountType",
-        "name": "from",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IDerifyExchangeActions.AccountType",
-        "name": "to",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       }
     ],
-    "name": "transferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'liquidatePosition',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor'
   },
   {
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'market',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'enum ClearingHouse.Side',
+        name: 'side',
+        type: 'uint8'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'size',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'price',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256'
       }
     ],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'Close',
+    type: 'event'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       },
       {
-        "internalType": "enum IDerifyExchangeActions.OpenType",
-        "name": "openType",
-        "type": "uint8"
+        internalType: 'uint256',
+        name: '_size',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "leverage",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '_price',
+        type: 'uint256'
       }
     ],
-    "name": "openPosition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'closePosition',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.StopType",
-        "name": "stopType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "stopPrice",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
       }
     ],
-    "name": "orderStopPosition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address'
       },
       {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256'
       }
     ],
-    "name": "closePosition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'Deposit',
+    type: 'event'
   },
   {
-    "inputs": [],
-    "name": "closeAllPositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'market',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'enum ClearingHouse.Side',
+        name: 'side',
+        type: 'uint8'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'size',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'price',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'leverage',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256'
+      }
+    ],
+    name: 'Open',
+    type: 'event'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "enum IDerifyDerivativeActions.OrderType",
-        "name": "orderType",
-        "type": "uint8"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       },
       {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'uint256',
+        name: '_size',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '_price',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_leverage',
+        type: 'uint256'
       }
     ],
-    "name": "cancleOrderedPosition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'openPosition',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address'
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
       }
     ],
-    "name": "cancleAllOrderedPositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'OwnershipTransferred',
+    type: 'event'
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      }
-    ],
-    "name": "getTraderAccount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "int256",
-        "name": "marginBalance",
-        "type": "int256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalMargin",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyExchangeActions.OpenType",
-        "name": "openType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "leverage",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '_price',
+        type: 'uint256'
       }
     ],
-    "name": "getTraderOpenUpperBound",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'setSpotPrice',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address'
       }
     ],
-    "name": "getSysOpenUpperBound",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
       }
     ],
-    "name": "getCloseUpperBound",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address'
       },
       {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256'
       }
     ],
-    "name": "setSpotPrice",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'Withdraw',
+    type: 'event'
   },
   {
-    "inputs": [
+    inputs: [],
+    name: 'checkClearing',
+    outputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
       }
     ],
-    "name": "getSpotPrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "spotPrice",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       }
     ],
-    "name": "getPositionChangeFeeRatio",
-    "outputs": [
+    name: 'checkLiquidate',
+    outputs: [
       {
-        "internalType": "int256",
-        "name": "ratio",
-        "type": "int256"
+        internalType: 'bool',
+        name: '',
+        type: 'bool'
       }
     ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [],
+    name: 'fundBalance',
+    outputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
       }
     ],
-    "name": "getTradingFee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "tradingFee",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.ActionType",
-        "name": "actionType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       }
     ],
-    "name": "getPositionChangeFee",
-    "outputs": [
+    name: 'getAccount',
+    outputs: [
       {
-        "internalType": "int256",
-        "name": "positionChangeFee",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
-      }
-    ],
-    "name": "getTraderPosition",
-    "outputs": [
-      {
-        "components": [
+        components: [
           {
-            "internalType": "bool",
-            "name": "isUsed",
-            "type": "bool"
+            internalType: 'uint256',
+            name: 'accountBalance',
+            type: 'uint256'
           },
           {
-            "internalType": "uint256",
-            "name": "size",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "leverage",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "timestamp",
-            "type": "uint256"
+            internalType: 'bool',
+            name: 'isUsed',
+            type: 'bool'
           }
         ],
-        "internalType": "struct IDerifyDerivativeActions.Position",
-        "name": "position",
-        "type": "tuple"
+        internalType: 'struct ClearingHouse.UserAccount',
+        name: '',
+        type: 'tuple'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.StopType",
-        "name": "stopType",
-        "type": "uint8"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       }
     ],
-    "name": "getTraderOrderStopPosition",
-    "outputs": [
+    name: 'getDebt',
+    outputs: [
       {
-        "components": [
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getDebtInterest',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getFreeDebt',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getFreeLPReward',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getFreeStake',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getLatestPrice',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: '',
+        type: 'int256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getLPReward',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getMarketAccount',
+    outputs: [
+      {
+        components: [
           {
-            "internalType": "bool",
-            "name": "isUsed",
-            "type": "bool"
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position',
+            name: 'long',
+            type: 'tuple'
           },
           {
-            "internalType": "uint256",
-            "name": "stopPrice",
-            "type": "uint256"
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position',
+            name: 'short',
+            type: 'tuple'
           },
           {
-            "internalType": "uint256",
-            "name": "timestamp",
-            "type": "uint256"
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position[]',
+            name: 'longOpenPending',
+            type: 'tuple[]'
+          },
+          {
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position[]',
+            name: 'shortOpenPending',
+            type: 'tuple[]'
+          },
+          {
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position[]',
+            name: 'longClosePending',
+            type: 'tuple[]'
+          },
+          {
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'size',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openPrice',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'openNotional',
+                type: 'uint256'
+              },
+              {
+                internalType: 'uint256',
+                name: 'leverage',
+                type: 'uint256'
+              }
+            ],
+            internalType: 'struct ClearingHouse.Position[]',
+            name: 'shortClosePending',
+            type: 'tuple[]'
           }
         ],
-        "internalType": "struct IDerifyDerivativeActions.StopPosition",
-        "name": "sp",
-        "type": "tuple"
+        internalType: 'struct ClearingHouse.MarketAccount',
+        name: '',
+        type: 'tuple'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       }
     ],
-    "name": "getTraderOrderLimitPositions",
-    "outputs": [
+    name: 'getMarketSize',
+    outputs: [
       {
-        "components": [
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      }
+    ],
+    name: 'getMarketUnrealizedPnl',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: '',
+        type: 'int256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: '_price',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_leverage',
+        type: 'uint256'
+      }
+    ],
+    name: 'getMaxOpenSize',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  // --------------
+
+  // -----------------------
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      },
+      {
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
+      }
+    ],
+    name: 'getPendingClosePosition',
+    outputs: [
+      {
+        components: [
           {
-            "internalType": "bool",
-            "name": "isUsed",
-            "type": "bool"
+            internalType: 'uint256',
+            name: 'size',
+            type: 'uint256'
           },
           {
-            "internalType": "uint256",
-            "name": "size",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'openPrice',
+            type: 'uint256'
           },
           {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'openNotional',
+            type: 'uint256'
           },
           {
-            "internalType": "uint256",
-            "name": "leverage",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "timestamp",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'leverage',
+            type: 'uint256'
           }
         ],
-        "internalType": "struct IDerifyDerivativeActions.Position[]",
-        "name": "positions",
-        "type": "tuple[]"
+        internalType: 'struct ClearingHouse.Position',
+        name: '',
+        type: 'tuple'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      }
-    ],
-    "name": "getTraderVariables",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "marginBalance",
-        "type": "int256"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "totalPositionAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "int256",
-        "name": "marginRate",
-        "type": "int256"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'getPendingMargin',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       },
       {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       },
       {
-        "internalType": "uint256",
-        "name": "spotPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "leverage",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "averagePrice",
-        "type": "uint256"
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256'
       }
     ],
-    "name": "getTraderPositionVariables",
-    "outputs": [
+    name: 'getPendingOpenPosition',
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "margin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "int256",
-        "name": "unrealizedPnl",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "returnRate",
-        "type": "int256"
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'size',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'openPrice',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'openNotional',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'leverage',
+            type: 'uint256'
+          }
+        ],
+        internalType: 'struct ClearingHouse.Position',
+        name: '',
+        type: 'tuple'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "enum IDerifyDerivativeActions.Side",
-        "name": "side",
-        "type": "uint8"
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
       },
       {
-        "internalType": "uint256",
-        "name": "spotPrice",
-        "type": "uint256"
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
       },
       {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "marginMaintenanceRatio",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "marginBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalPositionAmount",
-        "type": "uint256"
+        internalType: 'enum ClearingHouse.Side',
+        name: '_side',
+        type: 'uint8'
       }
     ],
-    "name": "getTraderPositionLiquidatePrice",
-    "outputs": [
+    name: 'getPosition',
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "liquidatePrice",
-        "type": "uint256"
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'size',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'openPrice',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'openNotional',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'leverage',
+            type: 'uint256'
+          }
+        ],
+        internalType: 'struct ClearingHouse.Position',
+        name: '',
+        type: 'tuple'
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [],
-    "name": "checkOrderedPositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getPositionMargin',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
-    "inputs": [],
-    "name": "checkLiquidatePositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getPositionNotional',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      }
+    ],
+    name: 'getSpotPrice',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getStake',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getStakeInterest',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getTotalMargin',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_marketIdx',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_trader',
+        type: 'address'
+      }
+    ],
+    name: 'getUnrealizedPnl',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: '',
+        type: 'int256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    name: 'markets',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'maintenanceMarginRatio',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'positionFeeRatio',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'marketBalance',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'spotPrice',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
   }
 ]

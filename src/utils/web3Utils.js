@@ -1,8 +1,14 @@
 import Web3 from 'web3'
 import contractAbi from '@/utils/contractAbi'
+import derifyABI from './derifyExchange'
+import Contract from './contractUtil'
 
 const ethUrl = 'https://kovan.infura.io/v3/4790cd7bb24349738a3b05ee0c20746e'
 const contractAddress = '0x43b429d43218Aac1559B48e91C2D1f2947767121'
+
+export function contract (account) {
+  return new Contract(derifyABI, '0xFb7297591A440b29CAc98DAe6bBcBD73B353b27c', { from: account })
+}
 
 // create or get instance
 function _contractInstance () {

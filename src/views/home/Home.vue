@@ -19,7 +19,7 @@
         </div>
         <div class="home-top-items">
           <span class="fc-65">动仓费率：</span>
-          <span class="fc-red">-0.1234%</span>
+          <span class="fc-red">{{positionChangeFeeRatio}}</span>
         </div>
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
@@ -413,7 +413,14 @@ export default {
     this.$store.dispatch('contract/getMarketAccount').then(r => {
       // TODO: render records in page
       console.log('market======', r)
-    })
+    });
+
+    this.$store.dispatch('contract/loadHomeData').then(r => {
+      console.log(" loadHomeData "+ r);
+    });
+  },
+  async loadData () {
+    this.$store.dispatch()
   },
   mounted () {
     if (this.$route.name === 'exchange') {
