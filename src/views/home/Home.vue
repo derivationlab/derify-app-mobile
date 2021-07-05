@@ -65,7 +65,7 @@
         <div class="home-mid-two-title">
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
-            <span class="fc-65">可开：{{curTraderOpenUpperBound | fck(-8)}} ETH</span>
+            <span class="fc-65">可开：{{curTraderOpenUpperBound}} ETH</span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -103,12 +103,14 @@
             finished-text="没有更多了"
             @load="loadMore"
           >
-            <div class="exchange-block" v-for="i in datalist" :key="i">
+            <div class="exchange-block" v-for="(data,i) in datalist" :key="i">
               <div class="exchange-block-title">
                 <div class="left">
-                  <div class="mr-4" :class="i % 2 === 0 ? 'text-icon-green' : 'text-icon-red'">多</div>
+
+                  <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                  <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
                   <div class="fz-16 mr-4">ETH/USDT</div>
-                  <div class="number-icon-green mr-4">5x</div>
+                  <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                   <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
                 <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true)">
@@ -127,42 +129,45 @@
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">浮动盈亏：</div>
-                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">+34.56</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">{{data.unrealizedPnl | fck(-8)}}</div>
                     <div>USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">持仓量：</div>
-                    <div>1.2321332 ETH</div>
+                    <div>{{data.size | fck(-8)}} ETH</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">当前价格：</div>
-                    <div>1245.67 USDT</div>
+                    <div>{{data.spotPrice | fck(-8)}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">开仓均价：</div>
-                    <div>1.2321332 ETH</div>
+                    <div>{{data.averagePrice | fck(-8)}} ETH</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">止损设置：</div>
-                    <div>-</div>
+                    <div>
+                      <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
+                      <template v-else>-</template></div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">止盈设置：</div>
-                    <div>-</div>
+                    <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
+                      <template v-else>-</template></div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">持仓保证金：</div>
-                    <div>1234.5 USDT</div>
+                    <div>{{data.margin | fck(-8)}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">保证金率：</div>
-                    <div>123%</div>
+                    <div>{{data.marginRate | fck(-8)}}%</div>
                   </div>
                 </div>
                 <div class="exchange-item">
@@ -331,7 +336,7 @@ export default {
         key2: '当前委托',
         key3: '成交记录'
       },
-      datalist: [1, 2, 4, 5, 6, 7, 8, 9, 10],
+      datalist: [1, 2, 3, 4],
       loading: false,
       finished: false,
       showMarket: false, // 市场弹窗，选择币种
@@ -352,17 +357,6 @@ export default {
       this.show = true
     },
     loadMore () {
-      setTimeout(() => {
-        const lastCount = this.datalist[this.datalist.length - 1]
-        for (let i = 0; i < 10; i++) {
-          this.datalist.push(lastCount + i + 1)
-        }
-        console.log(this.datalist)
-        this.loading = false
-        if (this.datalist.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
     },
     changeShowMarket (bool) {
       this.showMarket = bool
@@ -416,13 +410,33 @@ export default {
     }
   },
   beforeMount () {
-    this.$store.dispatch('contract/loadHomeData').then(r => {
+    const self = this
+    this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
       console.log(' loadHomeData ' + JSON.stringify(r))
     })
 
     this.$store.dispatch('contract/getMarketAccount').then(r => {
       // TODO: render records in page
       console.log('market======', r)
+    })
+
+    const dataList = this.datalist
+
+    dataList.splice(0)
+    self.loading = true
+    this.$store.dispatch('contract/loadPositionData').then(r => {
+      // Array<Position>
+      if (r === undefined) {
+        return
+      }
+
+      r.forEach((item) => {
+        if (item !== undefined || !isNaN(item)) {
+          dataList.push(item)
+        }
+      })
+
+      self.loading = false
     })
   },
   mounted () {

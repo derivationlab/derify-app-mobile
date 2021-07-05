@@ -16,6 +16,8 @@ function Contract (abi, address, option) {
   this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
 }
 
+const SOLIDITY_RATIO = 1e8
+
 Contract.prototype = {
   /**
    * 充值金额
@@ -23,7 +25,7 @@ Contract.prototype = {
    * @return
    */
   deposit: function (amount) {
-    return this.contract.methods.deposit(amount).send()
+    return this.contract.methods.deposit(amount * SOLIDITY_RATIO).send()
   },
   /**
    * 提现
@@ -31,12 +33,11 @@ Contract.prototype = {
    * @returns {*}
    */
   withdraw: function (amount) {
-    return this.contract.methods.withdraw(amount).send()
+    return this.contract.methods.withdraw(amount * SOLIDITY_RATIO).send()
   },
   /**
    * 开仓
    * @param token 当前合约币种地址
-   * @param trader 用户账户地址
    * @param side LONG-做多，SHORT-做空，HEDGE-对冲
    * @param openType MarketOrder-市价委托，LimitOrder-限价委托
    * @param size 开仓量（按币种计价）
@@ -44,8 +45,9 @@ Contract.prototype = {
    * @param leverage 杠杆（精度为8位）
    * @return {*}
    */
-  openPosition: function (token, trader, side, openType, size, price, leverage) {
-    return this.contract.methods.openPosition(token, side, openType, size, price, leverage)
+  openPosition: function (token, side, openType, size, price, leverage) {
+    return this.contract.methods
+      .openPosition(token, side, openType, size, price * SOLIDITY_RATIO, leverage * SOLIDITY_RATIO)
       .send()
   },
 
@@ -58,7 +60,7 @@ Contract.prototype = {
    * @return {*}
    */
   orderStopPosition: function (token, side, stopType, stopPrice) {
-    return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice)
+    return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice * SOLIDITY_RATIO)
       .send()
   },
   /**
@@ -69,7 +71,7 @@ Contract.prototype = {
    * @return {*}
    */
   closePosition: function (token, side, size) {
-    return this.contract.methods.closePosition(token, side, size)
+    return this.contract.methods.closePosition(token, side, size * SOLIDITY_RATIO)
       .send()
   },
   /**
@@ -95,7 +97,7 @@ Contract.prototype = {
    * @return {*}
    */
   setSpotPrice: function (marketIdAddress, price) {
-    return this.contract.methods.setSpotPrice(marketIdAddress, price).send()
+    return this.contract.methods.setSpotPrice(marketIdAddress, price * SOLIDITY_RATIO).send()
   },
 
   /**
@@ -193,7 +195,117 @@ Contract.prototype = {
    */
   getSysOpenUpperBound: function (marketIdAddress, side) {
     return this.contract.methods.getSysOpenUpperBound(marketIdAddress, side).call()
+  },
+
+  /**
+   * 计算保证金、浮动盈亏、回报率
+   * @param trader
+   * @param marketIdAddress
+   * @param side
+   * @param spotPrice
+   * @param size
+   * @param leverage
+   * @param averagePrice
+   */
+  getTraderPositionVariables (trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice) {
+    return this.contract.methods.getTraderPositionVariables(trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice).call()
+  },
+
+  /**
+   * 所有持仓
+   * @param trader
+   * @param marketIdAddress
+   * @return Array<Position>
+   */
+  async getTraderAllPosition (trader, marketIdAddress) {
+    const positionArr = []
+
+    // 多
+    positionArr.push(await this.getTraderViewPosition(trader, marketIdAddress, 0))
+
+    // 空
+    positionArr.push(await this.getTraderViewPosition(trader, marketIdAddress, 1))
+
+    return positionArr
+  },
+
+  /**
+   * 获取某种持仓
+   * @param trader
+   * @param marketIdAddress
+   * @param side
+   * @return {Promise<Position>}
+   */
+  async getTraderViewPosition (trader, marketIdAddress, side) {
+    let position = new PositionView()
+    position.side = side
+
+    // 1.获取持仓量、杠杆、开仓均价、时间戳
+    position = Object.assign(position, await this.getTraderPosition(trader, marketIdAddress, side))
+    position.averagePrice = position.price
+    position.spotPrice = await this.getSpotPrice(marketIdAddress)
+
+    // 2.获取止盈、止损价格
+    // 2.1.获取止盈委托
+    const profitPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 0)
+
+    // 2.2.获取止损委托
+    const lossPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 1)
+
+    // 2.3.合并
+    position.stopProfitPrice = profitPostion.stopPrice
+    position.stopLossPrice = lossPostion.stopPrice
+
+    // 3.获取浮动盈亏、持仓保证金、回报率
+    position = Object.assign(position, await this.getTraderPositionVariables(trader, marketIdAddress
+      , side, position.spotPrice, position.size, position.leverage, position.averagePrice))
+
+    return position
   }
+}
+
+export class PositionView {
+  // 多&空
+  side;
+
+  // 持仓量
+  size;
+
+  // 杠杆
+  leverage;
+
+  // 开仓均价
+  averagePrice;
+
+  // 时间戳
+  timestamp;
+
+  // 浮动盈亏
+  unrealizedPnl;
+
+  // 回报率
+  returnRate;
+
+  // 当前价格
+  spotPrice;
+
+  // 持仓保证金
+  margin;
+
+  // 持仓保证金率
+  marginRate;
+
+  // 保证金余额
+  marginBalance;
+
+  // 持仓总额
+  totalPositionAmount;
+
+  // 止盈
+  stopProfitPrice;
+
+  // 止损
+  stopLossPrice;
 }
 
 export default Contract

@@ -16,6 +16,12 @@ const state = {
     traderOpenUpperBound: '-',
     curSpotPrice: 0
   },
+  accountData: {
+    balance: 0,
+    marginBalance: 0,
+    totalMargin: 0
+  },
+  positionData: [],
   curSpotPrice: 0
 }
 
@@ -36,6 +42,12 @@ const mutations = {
   },
   SET_CONTRACT_DATA (state, updates) {
     state.contractData = Object.assign({}, state.contractData, { ...updates })
+  },
+  SET_ACCOUNT_DATA (state, accountData) {
+    state.accountData = accountData
+  },
+  SET_POSITION_DATA (state, positionData) {
+    state.positionData = positionData
   }
 
 }
@@ -76,8 +88,7 @@ const actions = {
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
       } else {
-        const idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
-        web3Utils.withdraw(state.wallet_address, idx, amount).then(r => resolve(r)).catch(err => reject(err))
+        web3Utils.contract(state.wallet_address).withdraw(amount).then(r => resolve(r)).catch(err => reject(err))
       }
     })
   },
@@ -97,12 +108,20 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  openPosition ({ state }, { side, size, price, leverage }) {
+  openPosition ({ state }, { side, size, openType, price, leverage }) {
     return new Promise((resolve, reject) => {
-      const idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
-      web3Utils.openPosition(state.wallet_address, idx, side, size, price, leverage).then(r => {
-        resolve(r)
-      }).catch(e => reject(e))
+      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+      if (idx === undefined) {
+        idx = 0
+      }
+
+      const coin = state.pairs[idx]
+
+      web3Utils.contract(state.wallet_address)
+        .openPosition(coin.address, side, openType, size, price, leverage).then(r => {
+          resolve(r)
+        }).catch(e => reject(e))
     })
   },
   getMarketAccount ({ state }) {
@@ -113,9 +132,10 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  loadHomeData ({ state, commit }) {
+
+  loadHomeData ({ state, commit }, entrustType = 0) {
     // 加载首页合约数据
-    return new async function () {
+    return (async function () {
       const data = { curSpotPrice: 0, positionChangeFeeRatio: 0 }
 
       const contract = web3Utils.contract(state.wallet_address)
@@ -127,35 +147,62 @@ const actions = {
         idx = 0
       }
 
-      const coin = state.pairs[idx];
+      const coin = state.pairs[idx]
 
-      data.curSpotPrice = await contract.getSpotPrice(coin.address);
+      data.curSpotPrice = await contract.getSpotPrice(coin.address)
 
       // 2.获取动仓费率
-      data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(coin.address);
+      data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(coin.address)
 
       // 3.获取可转仓量
-      const entrustType = 0;// 开仓类型
-      const price = 0;// 价格
-      const leverage = 0;// 杠杆
+      const price = data.curSpotPrice// 价格
+      const leverage = 1e8// 杠杆
       data.traderOpenUpperBound = await contract.getTraderOpenUpperBound(coin.address, state.wallet_address, entrustType, price, leverage)
 
-      const side = 0;
       // 4.获取系统上限仓量
-      data.sysOpenUpperBound = await contract.getSysOpenUpperBound(coin.address, side);
+      data.sysOpenUpperBound = await contract.getSysOpenUpperBound(coin.address, entrustType)
 
-      data.traderOpenUpperBound = data.sysOpenUpperBound;
+      data.traderOpenUpperBound = data.sysOpenUpperBound
 
-      commit('SET_CONTRACT_DATA', data);
+      commit('SET_CONTRACT_DATA', data)
 
       return data
-    };
+    }())
   },
 
-  loadTradePositions ({ state, commit }) {
-    //1.获取
+  loadAccountData ({ state, commit }) {
+    // 1.获取
+    return (async function () {
+      console.log('loadAccountData')
+      const contract = web3Utils.contract(state.wallet_address)
+
+      const accountData = await contract.getTraderAccount(state.wallet_address)
+
+      commit('SET_ACCOUNT_DATA', accountData)
+
+      console.log(accountData)
+      return accountData
+    }())
+  },
+  loadPositionData ({ state, commit }) {
+    return (async function () {
+      const contract = web3Utils.contract(state.wallet_address)
+
+      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+      if (idx === undefined) {
+        idx = 0
+      }
+
+      const coin = state.pairs[idx]
+
+      const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
+
+      commit('SET_POSITION_DATA', positionData)
+      return positionData
+    })()
   }
-};
+}
 
 export default {
   namespaced: true,

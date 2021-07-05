@@ -114,16 +114,19 @@ export default {
       const size = this.openData.size
       const side = this.openData.side
       const leverage = this.leverageConfig[this.openData.leverage]
+      const openType = this.openType
       let price = null
       if (this.openData.entrustType === 0) {
-        price = this.curSpotPrice
+        price = this.curSpotPrice / 1e8
       } else {
-        const a = parseFloat(this.openData.amount) * 1e8
+        const a = parseFloat(this.openData.amount)
         price = parseInt(a)
+        price = price / 1e8
       }
       this.$store.dispatch('contract/openPosition', {
         side,
         size,
+        openType,
         price,
         leverage
       })

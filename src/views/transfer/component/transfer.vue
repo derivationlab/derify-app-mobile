@@ -63,7 +63,7 @@ export default {
         this.$toast('请输入正确的数量')
         return false
       }
-      const a = parseFloat(this.amount) * 1e8
+      const a = parseFloat(this.amount)
       const amount = parseInt(a)
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         this.$toast('充值成功')
@@ -74,7 +74,7 @@ export default {
         this.$toast('请输入正确的数量')
         return false
       }
-      const a = parseFloat(this.amount) * 1e8
+      const a = parseFloat(this.amount)
       const amount = parseInt(a)
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
         this.$toast('提现成功')

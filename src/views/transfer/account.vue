@@ -6,7 +6,7 @@
       <span class="info" @click="lookFinDetail">资金明细 ></span>
     </div>
     <div class="account-info">
-      <div class="div-unmUnit"><span>23,456</span><span class="unit">USDT</span></div>
+      <div class="div-unmUnit"><span>{{balance | fck(-8)}}</span><span class="unit">USDT</span></div>
       <span class="unm">+1,234.56</span>
     </div>
     <div class="title-div">
@@ -14,8 +14,8 @@
       <span>占用保证金</span>
     </div>
     <div class="unit-tr">
-      <div>24.691.34<span>USDT</span></div>
-      <div>24.691.34<span>USDT(52%)</span></div>
+      <div>{{marginBalance | fck(-8)}}<span>USDT</span></div>
+      <div>{{totalMargin | fck(-8)}}<span>USDT({{marginRate}}%)</span></div>
     </div>
     <div class="recharge" @click="goTransfer('deposit')">充值</div>
     <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
@@ -23,16 +23,30 @@
 </template>
 <script>
 import Navbar from '@/components/Navbar'
+
+const state = {
+  marginRate: '0',
+  marginBalance: 0,
+  totalMargin: 0,
+  balance: 0
+}
 export default {
   name: 'account',
   components: {
     Navbar
   },
   data () {
-    return {
-    }
+    return state
   },
   mounted () {
+  },
+  computed: {
+  },
+  beforeMount () {
+    this.$store.dispatch('contract/loadAccountData').then(r => {
+      Object.assign(state, r)
+      console.log(' loadAccountData ' + JSON.stringify(r))
+    })
   },
   methods: {
     lookFinDetail () {
