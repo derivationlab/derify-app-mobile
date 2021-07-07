@@ -117,7 +117,7 @@
                   <div class="fz-12">平仓</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
-                <div class="right" v-if="active === 'key2'">
+                <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
                   <div class="fz-12">取消委托</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
@@ -225,41 +225,43 @@
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">盈亏：</div>
-                    <div>-</div>
+                    <div>{{data.realizedPnl}}</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">委托类型：</div>
-                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">平仓 / 限价委托</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">
+                      {{data.tradeType}}
+                    </div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">成交价格：</div>
-                    <div>1234.59 USDT</div>
+                    <div>{{data.price}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">成交数量：</div>
-                    <div>1342.95 ETH</div>
+                    <div>{{data.size}} ETH</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">成交金额：</div>
-                    <div>1234.52 USDT</div>
+                    <div>{{data.amount}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">手续费：</div>
-                    <div>2312.2 USDT</div>
+                    <div>{{data.tradingFee}} USDT</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">动仓费：</div>
-                    <div>1234.52 USDT</div>
+                    <div>{{data.positionChangeFee}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
-                    <div class="fc-45">分辨补偿：</div>
-                    <div>23.42 bDRf</div>
+                    <div class="fc-45">分摊补偿：</div>
+                    <div>{{data.shareCompensation}} bDRf</div>
                   </div>
                 </div>
               </template>
@@ -358,6 +360,7 @@ export default {
       showOpenStatus: false, // 开仓状态弹窗
       openStatus: 'fail', // 开仓状态
       openExtraData: {size: 0},
+      positionChangeFeeRatio: 0, //动仓费率
       setExtraData: null,
       unwindExtraData: {size: 0}
     }
@@ -391,8 +394,6 @@ export default {
       if(!bool){
         return
       }
-
-      console.log('changeShowUnwind', position)
       this.unwindExtraData = {...position}
 
     },
@@ -413,10 +414,11 @@ export default {
         this.openExtraData = {
           entrustType,
           leverage,
-          amount,
-          size,
+          amount: amount * 1e8,
+          size: size,
           side: type,
-          unit
+          unit,
+          positionChangeFee: this.positionChangeFeeRatio * amount * size
         }
       }
       this.openType = type
@@ -440,7 +442,7 @@ export default {
 
         dataList.splice(0)
         self.loading = true
-        this.$store.dispatch('contract/loadOrderedPositionData').then(r => {
+        this.$store.dispatch('contract/loadOrderedPositionData', {}).then(r => {
           // Array<Position>
           if (r === undefined) {
             return
@@ -455,12 +457,45 @@ export default {
           self.loading = false
         })
       }
+
+      if(key === 'key3'){
+        const dataList = this.datalist;
+
+        dataList.splice(0)
+        self.loading = true
+        this.$store.dispatch('contract/loadTradeRecords').then(r => {
+          //@see TradeRecord
+          if (r === undefined) {
+            return
+          }
+
+          r.forEach((item) => {
+            if (item !== undefined || !isNaN(item)) {
+              dataList.push(item)
+            }
+          })
+
+          self.loading = false
+        })
+      }
+    },
+    cancleOrderedPosition (data) {
+      const timestamp = new Date().getTime();
+      //执行取消委托
+      this.$store.dispatch('contract/cancleOrderedPosition',
+          {
+            coinAddress: data.coinAddress,
+            orderType: data.orderType,
+            side: data.side,
+            timestamp}).then(r => {
+      })
     }
   },
   beforeMount () {
     const self = this
     this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
-      console.log(' loadHomeData ' + JSON.stringify(r))
+      self.positionChangeFeeRatio = r.positionChangeFeeRatio;
+      console.log('loadHomeData', self.positionChangeFeeRatio)
     })
 
     this.$store.dispatch('contract/getMarketAccount').then(r => {

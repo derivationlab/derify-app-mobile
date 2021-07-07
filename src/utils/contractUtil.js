@@ -1,5 +1,7 @@
 import Web3 from 'web3'
 
+const SOLIDITY_RATIO = 1e8
+
 /**
  *
  * @param abi
@@ -13,10 +15,10 @@ function Contract (abi, address, option) {
   web3.setProvider(provider)
 
   this.web3 = web3
-  this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
+  const fasPrice = 200 * SOLIDITY_RATIO;
+  this.contract = new web3.eth.Contract(abi, address, Object.assign({gasPrice: fasPrice}, option))
 }
 
-const SOLIDITY_RATIO = 1e8
 
 Contract.prototype = {
   /**

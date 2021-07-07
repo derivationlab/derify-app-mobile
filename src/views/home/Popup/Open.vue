@@ -38,7 +38,7 @@
       <div class="system-popup-price">
         <div class="fc-45">动仓费</div>
         <div>
-          <span class="fc-85">0.00</span>
+          <span class="fc-85">{{openData.positionChangeFee | fck(-8)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
@@ -117,11 +117,10 @@ export default {
       const openType = this.openType
       let price = null
       if (this.openData.entrustType === 0) {
-        price = this.curSpotPrice / 1e8
+        price = this.curSpotPrice
       } else {
         const a = parseFloat(this.openData.amount)
         price = parseInt(a)
-        price = price / 1e8
       }
       this.$store.dispatch('contract/openPosition', {
         side,

@@ -29,7 +29,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">止损设置</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @change="changeProfitPrice(position.stopLossPriceInput)" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" @change="changeLossPrice(position.stopLossPriceInput)" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">当指数价格达到 {{position.stopLossPrice | fck(-8)}} USDT时，将会触发市价平仓当前仓位，预计亏损 {{ position.lostAmount  | fck(-8)}} USDT</div>
@@ -82,8 +82,6 @@ export default {
           stopLossPriceInput: fck(this.extraData.stopLossPrice, -8),
           lostAmount,
           profitAmount}, this.extraData);
-
-        console.log("setExtraData", this.position)
       }
     }
   },
@@ -100,8 +98,10 @@ export default {
       this.calLossAndProfit();
     },
     calLossAndProfit(){
-      this.position.profitAmount = (this.position.stopProfitPrice - this.position.averagePrice) * this.position.size;
-      this.position.lostAmount = (this.position.stopLossPrice - this.position.averagePrice) * this.position.size;
+      this.position.profitAmount = (this.position.stopProfitPrice - this.position.averagePrice) * this.position.size
+      this.position.lostAmount = (this.position.stopLossPrice - this.position.averagePrice) * this.position.size
+
+      console.log(this.position.lostAmount, fck(this.position.lostAmount, -8))
     },
     submitThenClose (){
       const side = this.position.side

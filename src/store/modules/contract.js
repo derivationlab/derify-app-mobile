@@ -1,5 +1,7 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
+import * as axios from "@/utils/request";
+import {getTradeList} from "@/api/trade";
 
 const state = {
   wallet_address: getCache('wallet_address') || '',
@@ -249,8 +251,18 @@ const actions = {
       return positionData
     })()
   },
-  loadOrderedPositionData ({coinAddress, state, commit}) {
+  loadOrderedPositionData ({state, commit}, {coinAddress}) {
     return (async function () {
+
+      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+      if (idx === undefined) {
+        idx = 0
+      }
+
+      const coin = state.pairs[idx]
+
+      coinAddress = coin.address;
       const contract = web3Utils.contract(state.wallet_address)
 
       const positionData = await contract.getTraderAllLimitPosition(state.wallet_address, coinAddress)
@@ -258,6 +270,9 @@ const actions = {
       commit('SET_LIMIT_POSITION_DATA', positionData)
       return positionData
     })()
+  },
+  loadTradeRecords ({state, commit}, {coinAddress}) {
+    return getTradeList(state.wallet_address)
   }
 }
 
