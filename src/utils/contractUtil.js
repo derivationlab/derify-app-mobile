@@ -1,7 +1,5 @@
 import Web3 from 'web3'
 
-const SOLIDITY_RATIO = 1e8
-
 /**
  *
  * @param abi
@@ -15,10 +13,10 @@ function Contract (abi, address, option) {
   web3.setProvider(provider)
 
   this.web3 = web3
-  const fasPrice = 200 * SOLIDITY_RATIO;
-  this.contract = new web3.eth.Contract(abi, address, Object.assign({gasPrice: fasPrice}, option))
+  this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
 }
 
+const SOLIDITY_RATIO = 1e8
 
 Contract.prototype = {
   /**
@@ -267,21 +265,27 @@ Contract.prototype = {
   async getTraderAllLimitPosition (trader, marketIdAddress) {
     const positionArr = []
 
-    // 多
-    positionArr.push(await this.getTraderOrderLimitPosition(trader, marketIdAddress, 0))
+    const longArr = await this.getTraderOrderLimitPosition(trader, marketIdAddress, 0);
 
-    // 空
-    positionArr.push(await this.getTraderOrderLimitPosition(trader, marketIdAddress, 1))
+    longArr.forEach(function(limitOrder){
+      positionArr.push(limitOrder)
+    })
+
+    const shortArr = await this.getTraderOrderLimitPosition(trader, marketIdAddress, 1);
+    // 多
+    shortArr.forEach(function(limitOrder){
+      positionArr.push(limitOrder)
+    })
 
     return positionArr
   },
   async getTraderOrderLimitPosition (trader, marketIdAddress, side) {
-    let orderLimitPositionView = new OrderLimitPositionView()
+
+    const arr = [];
+
 
     // 1.获取持仓量、杠杆、开仓均价、时间戳
-    orderLimitPositionView.limitOrders = await this.getTraderOrderLimitPositions(trader, marketIdAddress, side);
-
-    orderLimitPositionView.spotPrice = await this.getSpotPrice(marketIdAddress)
+    const limitOrders = await this.getTraderOrderLimitPositions(trader, marketIdAddress, side);
 
     // 2.获取止盈、止损价格
     // 2.1.获取止盈委托
@@ -290,11 +294,28 @@ Contract.prototype = {
     // 2.2.获取止损委托
     const lossPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 1)
 
-    orderLimitPositionView.stopLossPrice = lossPostion.stopPrice;
+    const spotPrice = await this.getSpotPrice(marketIdAddress)
 
-    orderLimitPositionView.stopProfitPrice = profitPostion.stopPrice;
+    limitOrders.forEach(async function (limitOrder) {
+      //LimitPoistion
 
-    return orderLimitPositionView
+      let orderLimitPositionView = new OrderLimitPositionView()
+      orderLimitPositionView.side = side
+      orderLimitPositionView.coinAddress = marketIdAddress
+
+      orderLimitPositionView.spotPrice = spotPrice
+
+      orderLimitPositionView.stopLossPrice = lossPostion.stopPrice
+
+      orderLimitPositionView.stopProfitPrice = profitPostion.stopPrice
+      orderLimitPositionView = Object.assign({}, orderLimitPositionView, limitOrder)
+
+      arr.push(orderLimitPositionView)
+    });
+
+
+
+    return arr
   }
 }
 

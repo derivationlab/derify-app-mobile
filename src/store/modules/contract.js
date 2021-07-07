@@ -215,6 +215,7 @@ const actions = {
 
       commit('SET_CONTRACT_DATA', data)
 
+      console.log('loadHomeData', data);
       return data
     }())
   },
@@ -229,7 +230,7 @@ const actions = {
 
       commit('SET_ACCOUNT_DATA', accountData)
 
-      console.log(accountData)
+      console.log('loadAccountData', accountData)
       return accountData
     }())
   },
@@ -246,6 +247,8 @@ const actions = {
       const coin = state.pairs[idx]
 
       const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
+
+      console.log('loadPositionData', positionData);
 
       commit('SET_POSITION_DATA', positionData)
       return positionData
@@ -267,6 +270,7 @@ const actions = {
 
       const positionData = await contract.getTraderAllLimitPosition(state.wallet_address, coinAddress)
 
+      console.log('loadOrderedPositionData', positionData)
       commit('SET_LIMIT_POSITION_DATA', positionData)
       return positionData
     })()

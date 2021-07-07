@@ -95,8 +95,8 @@
       <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
     </template>
     <div class="home-last">
-      <van-tabs v-model="active">
-        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value" @click="tabChange(key)">
+      <van-tabs v-model="active" @click="tabChange">
+        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -134,7 +134,7 @@
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">持仓量：</div>
-                    <div>{{data.size | fck(-8)}} ETH</div>
+                    <div>{{data.size}} ETH</div>
                   </div>
                 </div>
                 <div class="exchange-item">
@@ -414,7 +414,7 @@ export default {
         this.openExtraData = {
           entrustType,
           leverage,
-          amount: amount * 1e8,
+          amount: amount,
           size: size,
           side: type,
           unit,
@@ -436,7 +436,30 @@ export default {
       myChart.setOption(options)
     },
     tabChange (key) {
+      console.log(`tabChange ${key}`)
       const self = this;
+
+      if(key === 'key1'){
+        const dataList = this.datalist
+
+        dataList.splice(0)
+        self.loading = true
+        this.$store.dispatch('contract/loadPositionData').then(r => {
+          // Array<Position>
+          if (r === undefined) {
+            return
+          }
+
+          r.forEach((item) => {
+            if (item !== undefined || !isNaN(item)) {
+              dataList.push(item)
+            }
+          })
+
+          self.loading = false
+        })
+      }
+
       if(key === 'key2'){
         const dataList = this.datalist;
 

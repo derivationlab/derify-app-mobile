@@ -111,7 +111,7 @@ export default {
       this.$emit('closeOpenPopup', false, this.openType)
     },
     submitThenClose () {
-      const size = this.openData.size
+      const size = this.openData.size * 1e8
       const side = this.openData.side
       const leverage = this.leverageConfig[this.openData.leverage]
       const openType = this.openType
@@ -120,11 +120,12 @@ export default {
         price = this.curSpotPrice
       } else {
         const a = parseFloat(this.openData.amount)
-        price = parseInt(a)
+        price = parseInt(a) * 1e8
       }
+
       this.$store.dispatch('contract/openPosition', {
         side,
-        size,
+        size: size,
         openType,
         price,
         leverage
