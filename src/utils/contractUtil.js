@@ -25,7 +25,7 @@ Contract.prototype = {
    * @return
    */
   deposit: function (amount) {
-    return this.contract.methods.deposit(amount * SOLIDITY_RATIO).send()
+    return this.contract.methods.deposit(amount).send()
   },
   /**
    * 提现
@@ -33,7 +33,7 @@ Contract.prototype = {
    * @returns {*}
    */
   withdraw: function (amount) {
-    return this.contract.methods.withdraw(amount * SOLIDITY_RATIO).send()
+    return this.contract.methods.withdraw(amount).send()
   },
   /**
    * 开仓
@@ -47,7 +47,7 @@ Contract.prototype = {
    */
   openPosition: function (token, side, openType, size, price, leverage) {
     return this.contract.methods
-      .openPosition(token, side, openType, size, price * SOLIDITY_RATIO, leverage * SOLIDITY_RATIO)
+      .openPosition(token, side, openType, size, price, leverage)
       .send()
   },
 
@@ -60,7 +60,7 @@ Contract.prototype = {
    * @return {*}
    */
   orderStopPosition: function (token, side, stopType, stopPrice) {
-    return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice * SOLIDITY_RATIO)
+    return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice)
       .send()
   },
   /**
@@ -96,7 +96,7 @@ Contract.prototype = {
    * @return {*}
    */
   setSpotPrice: function (marketIdAddress, price) {
-    return this.contract.methods.setSpotPrice(marketIdAddress, price * SOLIDITY_RATIO).send()
+    return this.contract.methods.setSpotPrice(marketIdAddress, price).send()
   },
 
   /**

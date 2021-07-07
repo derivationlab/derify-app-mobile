@@ -1,14 +1,14 @@
-import { getCache, setCache } from '@/utils/cache'
+import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 
 const state = {
   wallet_address: getCache('wallet_address') || '',
   account: getCache('account') || null,
   pairs: [
-    { key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b' },
-    { key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b' },
-    { key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b' },
-    { key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b' }
+    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
   curPairKey: 'ETH',
   contractData: {
@@ -42,7 +42,7 @@ const mutations = {
     state.curSpotPrice = price
   },
   SET_CONTRACT_DATA (state, updates) {
-    state.contractData = Object.assign({}, state.contractData, { ...updates })
+    state.contractData = Object.assign({}, state.contractData, {...updates})
   },
   SET_ACCOUNT_DATA (state, accountData) {
     state.accountData = accountData
@@ -57,7 +57,7 @@ const mutations = {
 }
 
 const actions = {
-  loginWallet ({ commit, dispatch }) {
+  loginWallet ({commit, dispatch}) {
     return new Promise((resolve, reject) => {
       web3Utils.enable().then(res => {
         commit('SET_WALLET_ADDRESS', res[0])
@@ -65,7 +65,7 @@ const actions = {
       }).catch(err => reject(err))
     })
   },
-  setAccount ({ commit, state }) {
+  setAccount ({commit, state}) {
     return new Promise((resolve, reject) => {
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
@@ -77,7 +77,7 @@ const actions = {
       }
     })
   },
-  depositAccount ({ state }, amount) {
+  depositAccount ({state}, amount) {
     return new Promise((resolve, reject) => {
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
@@ -87,7 +87,7 @@ const actions = {
       }
     })
   },
-  withdrawAccount ({ state }, amount) {
+  withdrawAccount ({state}, amount) {
     return new Promise((resolve, reject) => {
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
@@ -96,7 +96,7 @@ const actions = {
       }
     })
   },
-  getSpotPrice ({ state, commit }) {
+  getSpotPrice ({state, commit}) {
     return new Promise((resolve, reject) => {
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
@@ -112,7 +112,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  openPosition ({ state }, { side, size, openType, price, leverage }) {
+  openPosition ({state}, {side, size, openType, price, leverage}) {
     return new Promise((resolve, reject) => {
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
@@ -128,7 +128,7 @@ const actions = {
         }).catch(e => reject(e))
     })
   },
-  closePosition ({ state }, { coinAddress, side, size}) {
+  closePosition ({state}, {coinAddress, side, size}) {
     return new Promise((resolve, reject) => {
       web3Utils.contract(state.wallet_address)
         .closePosition(coinAddress, side, size).then(r => {
@@ -136,23 +136,16 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  orderStopPosition ({ state }, { coinAddress, side, stopType, stopPrice}) {
+  orderStopPosition ({state}, {coinAddress, side, stopType, stopPrice}) {
     return new Promise((resolve, reject) => {
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
-
-      if (idx === undefined) {
-        idx = 0
-      }
-
-      const coin = state.pairs[idx]
 
       web3Utils.contract(state.wallet_address)
-        .orderStopPosition(coin.address, side, stopType, stopPrice).then(r => {
+        .orderStopPosition(coinAddress, side, stopType, stopPrice).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
   },
-  closeAllPositions ({ state }, { }) {
+  closeAllPositions ({state}, { }) {
     return new Promise((resolve, reject) => {
 
       web3Utils.contract(state.wallet_address)
@@ -161,7 +154,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleOrderedPosition ({ state }, {coinAddress, orderType, side, timestamp }) {
+  cancleOrderedPosition ({state}, {coinAddress, orderType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
       web3Utils.contract(state.wallet_address)
@@ -170,7 +163,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleAllOrderedPositions ({ state }, {coinAddress}) {
+  cancleAllOrderedPositions ({state}, {coinAddress}) {
     return new Promise((resolve, reject) => {
       web3Utils.contract(state.wallet_address)
         .cancleAllOrderedPositions(coinAddress).then(r => {
@@ -178,7 +171,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  getMarketAccount ({ state }) {
+  getMarketAccount ({state}) {
     return new Promise((resolve, reject) => {
       const idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
       web3Utils.getMarketAccount(state.wallet_address, idx).then(r => {
@@ -187,10 +180,10 @@ const actions = {
     })
   },
 
-  loadHomeData ({ state, commit }, entrustType = 0) {
+  loadHomeData ({state, commit}, entrustType = 0) {
     // 加载首页合约数据
     return (async function () {
-      const data = { curSpotPrice: 0, positionChangeFeeRatio: 0 }
+      const data = {curSpotPrice: 0, positionChangeFeeRatio: 0}
 
       const contract = web3Utils.contract(state.wallet_address)
 
@@ -224,7 +217,7 @@ const actions = {
     }())
   },
 
-  loadAccountData ({ state, commit }) {
+  loadAccountData ({state, commit}) {
     // 1.获取
     return (async function () {
       console.log('loadAccountData')
@@ -238,7 +231,7 @@ const actions = {
       return accountData
     }())
   },
-  loadPositionData ({ state, commit }) {
+  loadPositionData ({state, commit}) {
     return (async function () {
       const contract = web3Utils.contract(state.wallet_address)
 
@@ -256,7 +249,7 @@ const actions = {
       return positionData
     })()
   },
-  loadOrderedPositionData ({ coinAddress, state, commit }) {
+  loadOrderedPositionData ({coinAddress, state, commit}) {
     return (async function () {
       const contract = web3Utils.contract(state.wallet_address)
 

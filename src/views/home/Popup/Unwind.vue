@@ -63,19 +63,19 @@ export default {
   data () {
     console.log('unwind popup', this.extraData)
 
-    const defaultPercent = 25;
-    const size = this.extraData == null ? 0 : this.extraData.size;
+    const defaultPercent = 25
+    const size = this.extraData == null ? 0 : this.extraData.size
 
-    const value1 = size * defaultPercent / 100
+    const value1 = Math.ceil(size * defaultPercent / 100)
     return {
       showPopup: this.show,
       value1: value1,
       position: Object.assign({size : 0}, this.extraData),
       percents: [
-        { name: '25%', value: 25 },
-        { name: '50%', value: 50 },
-        { name: '75%', value: 75 },
-        { name: '100%', value: 100 }
+        {name: '25%', value: 25},
+        {name: '50%', value: 50},
+        {name: '75%', value: 75},
+        {name: '100%', value: 100}
       ],
       curPercent: defaultPercent
     }
@@ -89,6 +89,7 @@ export default {
       immediate: true,
       handler () {
         this.position = this.extraData
+        this.value1 = Math.ceil(this.position.size * this.curPercent / 100);
       }
     }
   },
@@ -98,7 +99,7 @@ export default {
     },
     changePercentage (percent) {
       this.curPercent = percent
-      this.value1 = this.extraData.size * this.curPercent / 100;
+      this.value1 = Math.ceil(this.extraData.size * this.curPercent / 100);
     },
     submitThenClose (){
       const size = this.value1

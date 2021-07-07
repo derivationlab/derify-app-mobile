@@ -303,7 +303,7 @@ export default {
   },
   computed: {
     curPair () {
-      const { curPairKey, pairs } = this.$store.state.contract
+      const {curPairKey, pairs} = this.$store.state.contract
       return pairs.find(pair => pair.key === curPairKey)
     },
     curSpotPrice () {
@@ -325,18 +325,18 @@ export default {
       value5: 20,
       unit: 0,
       entrustTypeConfig: [
-        { text: '市价委托', value: 0 },
-        { text: '限价委托', value: 1 }
+        {text: '市价委托', value: 0},
+        {text: '限价委托', value: 1}
       ],
       leverageConfig: [
-        { text: '10x', value: 0 },
-        { text: '5x', value: 1 },
-        { text: '3x', value: 2 }
+        {text: '10x', value: 0},
+        {text: '5x', value: 1},
+        {text: '3x', value: 2}
       ],
       unitConfig: [
-        { text: 'USDT', value: 0 },
-        { text: 'ETH', value: 1 },
-        { text: '%', value: 2 }
+        {text: 'USDT', value: 0},
+        {text: 'ETH', value: 1},
+        {text: '%', value: 2}
       ],
       active: 'key1',
       tabs: {
@@ -357,9 +357,9 @@ export default {
       openType: null, // 开仓类型
       showOpenStatus: false, // 开仓状态弹窗
       openStatus: 'fail', // 开仓状态
-      openExtraData: { size: 0 },
+      openExtraData: {size: 0},
       setExtraData: null,
-      unwindExtraData: { size: 0 }
+      unwindExtraData: {size: 0}
     }
   },
   methods: {
@@ -382,8 +382,7 @@ export default {
         return
       }
 
-
-      this.setExtraData = { ...position };
+      this.setExtraData = {...position};
 
     },
     changeShowUnwind (bool, position) {
@@ -394,7 +393,7 @@ export default {
       }
 
       console.log('changeShowUnwind', position)
-      this.unwindExtraData = { ...position }
+      this.unwindExtraData = {...position}
 
     },
     changeShowOneKeyUnwind (bool) {
@@ -402,7 +401,7 @@ export default {
     },
     changeShowOpen (bool, type) {
       if (bool) {
-        const { entrustType, leverage, amount, size, unit } = this
+        const {entrustType, leverage, amount, size, unit} = this
         if (entrustType === 1 && !amount) {
           this.$toast('please input amount first')
           return
@@ -428,7 +427,7 @@ export default {
       this.showOpenStatus = bool
     },
     transfer () {
-      this.$router.push({ path: '/account' })
+      this.$router.push({path: '/account'})
     },
     drawKline () {
       const myChart = this.$echarts.init(document.getElementById('myChart'))
