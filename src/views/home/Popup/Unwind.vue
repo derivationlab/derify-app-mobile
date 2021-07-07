@@ -6,21 +6,21 @@
           <div class="system-popup-price">
             <div class="fc-45">开仓量</div>
             <div>
-              <span class="fc-85">89293.22</span>
+              <span class="fc-85">{{position.size}}</span>
               <span class="fc-45">ETH</span>
             </div>
           </div>
           <div class="system-popup-price">
             <div class="fc-45">开仓价格</div>
             <div>
-              <span class="fc-85">2302.22</span>
+              <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
             </div>
           </div>
           <div class="system-popup-price">
             <div class="fc-45">当前价格</div>
             <div>
-              <span class="fc-green">1920.22</span>
+              <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
             </div>
           </div>
@@ -32,12 +32,13 @@
           <div class="unit">ETH</div>
         </div>
         <div class="unwind-popup-set">
-          <div class="unwind-popup-set-item" :class="curPercent === percent.value ? 'active' : ''" @click="curPercent = percent.value" v-for="percent in percents" :key="percent.value">{{percent.name}}</div>
+          <div class="unwind-popup-set-item" :class="curPercent === percent.value ? 'active' : ''"
+               @click="changePercentage(percent.value)" v-for="percent in percents" :key="percent.value">{{percent.name}}</div>
         </div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">确认</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">确认</div>
       </div>
     </div>
   </van-popup>
@@ -49,29 +50,67 @@ export default {
     show: {
       type: Boolean,
       default: false
+    },
+    type: {
+      type: Number,
+      default: 0
+    },
+    extraData: {
+      type: Object,
+      default: null
     }
   },
   data () {
+    console.log('unwind popup', this.extraData)
+
+    const defaultPercent = 25;
+    const size = this.extraData == null ? 0 : this.extraData.size;
+
+    const value1 = size * defaultPercent / 100
     return {
       showPopup: this.show,
-      value1: null,
+      value1: value1,
+      position: Object.assign({size : 0}, this.extraData),
       percents: [
         { name: '25%', value: 25 },
         { name: '50%', value: 50 },
         { name: '75%', value: 75 },
         { name: '100%', value: 100 }
       ],
-      curPercent: 25
+      curPercent: defaultPercent
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
+    },
+    extraData: {
+      deep: true,
+      immediate: true,
+      handler () {
+        this.position = this.extraData
+      }
     }
   },
   methods: {
     close () {
       this.$emit('closeUnwindPopup', false)
+    },
+    changePercentage (percent) {
+      this.curPercent = percent
+      this.value1 = this.extraData.size * this.curPercent / 100;
+    },
+    submitThenClose (){
+      const size = this.value1
+      const side = this.position.side
+      const coinAddress = this.position.coinAddress
+
+      this.$store.dispatch('contract/closePosition', {
+        coinAddress,
+        side,
+        size
+      })
+      this.close()
     }
   }
 }

@@ -22,6 +22,7 @@ const state = {
     totalMargin: 0
   },
   positionData: [],
+  limitPositionData: [],
   curSpotPrice: 0
 }
 
@@ -48,6 +49,9 @@ const mutations = {
   },
   SET_POSITION_DATA (state, positionData) {
     state.positionData = positionData
+  },
+  SET_LIMIT_POSITION_DATA (state, positionData) {
+    state.limitPositionData = positionData
   }
 
 }
@@ -122,6 +126,56 @@ const actions = {
         .openPosition(coin.address, side, openType, size, price, leverage).then(r => {
           resolve(r)
         }).catch(e => reject(e))
+    })
+  },
+  closePosition ({ state }, { coinAddress, side, size}) {
+    return new Promise((resolve, reject) => {
+      web3Utils.contract(state.wallet_address)
+        .closePosition(coinAddress, side, size).then(r => {
+        resolve(r)
+      }).catch(e => reject(e))
+    })
+  },
+  orderStopPosition ({ state }, { coinAddress, side, stopType, stopPrice}) {
+    return new Promise((resolve, reject) => {
+      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+      if (idx === undefined) {
+        idx = 0
+      }
+
+      const coin = state.pairs[idx]
+
+      web3Utils.contract(state.wallet_address)
+        .orderStopPosition(coin.address, side, stopType, stopPrice).then(r => {
+        resolve(r)
+      }).catch(e => reject(e))
+    })
+  },
+  closeAllPositions ({ state }, { }) {
+    return new Promise((resolve, reject) => {
+
+      web3Utils.contract(state.wallet_address)
+        .closeAllPositions().then(r => {
+        resolve(r)
+      }).catch(e => reject(e))
+    })
+  },
+  cancleOrderedPosition ({ state }, {coinAddress, orderType, side, timestamp }) {
+    return new Promise((resolve, reject) => {
+
+      web3Utils.contract(state.wallet_address)
+        .cancleOrderedPosition(coinAddress, orderType, side, timestamp).then(r => {
+        resolve(r)
+      }).catch(e => reject(e))
+    })
+  },
+  cancleAllOrderedPositions ({ state }, {coinAddress}) {
+    return new Promise((resolve, reject) => {
+      web3Utils.contract(state.wallet_address)
+        .cancleAllOrderedPositions(coinAddress).then(r => {
+        resolve(r)
+      }).catch(e => reject(e))
     })
   },
   getMarketAccount ({ state }) {
@@ -199,6 +253,16 @@ const actions = {
       const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
 
       commit('SET_POSITION_DATA', positionData)
+      return positionData
+    })()
+  },
+  loadOrderedPositionData ({ coinAddress, state, commit }) {
+    return (async function () {
+      const contract = web3Utils.contract(state.wallet_address)
+
+      const positionData = await contract.getTraderAllLimitPosition(state.wallet_address, coinAddress)
+
+      commit('SET_LIMIT_POSITION_DATA', positionData)
       return positionData
     })()
   }

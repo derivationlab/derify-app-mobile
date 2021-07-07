@@ -71,15 +71,14 @@ Contract.prototype = {
    * @return {*}
    */
   closePosition: function (token, side, size) {
-    return this.contract.methods.closePosition(token, side, size * SOLIDITY_RATIO)
+    return this.contract.methods.closePosition(token, side, size)
       .send()
   },
   /**
    * 一键平仓
-   * @param trader 平仓账户
    */
-  closeAllPositions: function (trader) {
-    return this.contract.methods.closeAllPositions(trader)
+  closeAllPositions: function () {
+    return this.contract.methods.closeAllPositions()
       .send()
   },
   /**
@@ -239,6 +238,7 @@ Contract.prototype = {
   async getTraderViewPosition (trader, marketIdAddress, side) {
     let position = new PositionView()
     position.side = side
+    position.coinAddress = marketIdAddress
 
     // 1.获取持仓量、杠杆、开仓均价、时间戳
     position = Object.assign(position, await this.getTraderPosition(trader, marketIdAddress, side))
@@ -261,10 +261,48 @@ Contract.prototype = {
       , side, position.spotPrice, position.size, position.leverage, position.averagePrice))
 
     return position
+  },
+  async getTraderAllLimitPosition (trader, marketIdAddress) {
+    const positionArr = []
+
+    // 多
+    positionArr.push(await this.getTraderOrderLimitPosition(trader, marketIdAddress, 0))
+
+    // 空
+    positionArr.push(await this.getTraderOrderLimitPosition(trader, marketIdAddress, 1))
+
+    return positionArr
+  },
+  async getTraderOrderLimitPosition (trader, marketIdAddress, side) {
+    let orderLimitPositionView = new OrderLimitPositionView()
+
+    // 1.获取持仓量、杠杆、开仓均价、时间戳
+    orderLimitPositionView.limitOrders = await this.getTraderOrderLimitPositions(trader, marketIdAddress, side);
+
+    orderLimitPositionView.spotPrice = await this.getSpotPrice(marketIdAddress)
+
+    // 2.获取止盈、止损价格
+    // 2.1.获取止盈委托
+    const profitPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 0)
+
+    // 2.2.获取止损委托
+    const lossPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 1)
+
+    orderLimitPositionView.stopLossPrice = lossPostion.stopPrice;
+
+    orderLimitPositionView.stopProfitPrice = profitPostion.stopPrice;
+
+    return orderLimitPositionView
   }
 }
 
 export class PositionView {
+
+  /**
+   * 币的地址
+   */
+  coinAddress;
+
   // 多&空
   side;
 
@@ -306,6 +344,58 @@ export class PositionView {
 
   // 止损
   stopLossPrice;
+}
+
+export class LimitPoistion {
+  /**
+   * 仓量
+   */
+  size;
+
+  /**
+   * 开仓价格
+   */
+  price;
+
+  /**
+   * 杠杆
+   */
+  leverage;
+
+  /**
+   * 时间戳
+   */
+  timestamp;
+}
+/**
+ * 我的委托
+ */
+export class OrderLimitPositionView {
+
+  /**
+   * 币的地址
+   */
+  coinAddress;
+
+  // 多&空
+  side;
+
+  /**
+   * 止盈价格（精度为8位）
+   */
+  stopProfitPrice;
+
+  //止损价格
+  stopLossPrice;
+
+  //时间戳
+  stopTimestamp;
+
+  /**
+   * 时间戳
+   * Array<LimitPoistion>
+   */
+  limitOrders;
 }
 
 export default Contract

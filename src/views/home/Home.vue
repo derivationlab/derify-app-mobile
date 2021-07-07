@@ -96,7 +96,7 @@
     </template>
     <div class="home-last">
       <van-tabs v-model="active">
-        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
+        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value" @click="tabChange(key)">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -113,7 +113,7 @@
                   <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                   <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                 </div>
-                <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true)">
+                <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
                   <div class="fz-12">平仓</div>
                   <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                 </div>
@@ -175,7 +175,7 @@
                     <div class="fc-45">强平金额：</div>
                     <div>12323.44 USDT</div>
                   </div>
-                  <div class="exchange-item-right" @click="changeShowSet(true)">
+                  <div class="exchange-item-right" @click="changeShowSet(true, data)">
                     <div>设置止盈/止损</div>
                     <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                   </div>
@@ -185,31 +185,39 @@
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">委托价格：</div>
-                    <div>1234.59 USDT</div>
+                    <div>{{data.price | fck(-8)}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">委托类型：</div>
-                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">开仓 / 限价委托</div>
+                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">限价委托</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">委托数量：</div>
-                    <div>1234.59 ETH</div>
+                    <div>{{data.size}} ETH</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">委托时间：</div>
-                    <div>2021-03-20 10:00:50</div>
+                    <div>{{data.timestamp}}</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">止损设置：</div>
-                    <div>-</div>
+                    <div>
+                      <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
+                      <template v-else>-</template>
+                    </div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">止盈设置：</div>
-                    <div>-</div>
+                    <div>
+                      <div>
+                        <template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
+                        <template v-else>-</template>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -262,8 +270,8 @@
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
-    <set-popup :show="showSet" @closeSetPopup="changeShowSet" />
-    <unwind :show="showUwind" @closeUnwindPopup="changeShowUnwind" />
+    <set-popup :extraData="setExtraData" :show="showSet" @closeSetPopup="changeShowSet" />
+    <unwind :extraData="unwindExtraData" :show="showUwind" @closeUnwindPopup="changeShowUnwind" />
     <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
     <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
@@ -349,7 +357,9 @@ export default {
       openType: null, // 开仓类型
       showOpenStatus: false, // 开仓状态弹窗
       openStatus: 'fail', // 开仓状态
-      openExtraData: null
+      openExtraData: { size: 0 },
+      setExtraData: null,
+      unwindExtraData: { size: 0 }
     }
   },
   methods: {
@@ -365,11 +375,27 @@ export default {
       this.hintType = type
       this.showHint = bool
     },
-    changeShowSet (bool) {
+    changeShowSet (bool, position) {
       this.showSet = bool
+
+      if(!bool){
+        return
+      }
+
+
+      this.setExtraData = { ...position };
+
     },
-    changeShowUnwind (bool) {
+    changeShowUnwind (bool, position) {
       this.showUwind = bool
+
+      if(!bool){
+        return
+      }
+
+      console.log('changeShowUnwind', position)
+      this.unwindExtraData = { ...position }
+
     },
     changeShowOneKeyUnwind (bool) {
       this.showOneKeyUnwind = bool
@@ -407,6 +433,29 @@ export default {
     drawKline () {
       const myChart = this.$echarts.init(document.getElementById('myChart'))
       myChart.setOption(options)
+    },
+    tabChange (key) {
+      const self = this;
+      if(key === 'key2'){
+        const dataList = this.datalist;
+
+        dataList.splice(0)
+        self.loading = true
+        this.$store.dispatch('contract/loadOrderedPositionData').then(r => {
+          // Array<Position>
+          if (r === undefined) {
+            return
+          }
+
+          r.forEach((item) => {
+            if (item !== undefined || !isNaN(item)) {
+              dataList.push(item)
+            }
+          })
+
+          self.loading = false
+        })
+      }
     }
   },
   beforeMount () {
