@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 
+const cache = {}
 /**
  *
  * @param abi
@@ -72,7 +73,7 @@ Contract.prototype = {
    */
   closePosition: function (token, side, size) {
     return this.contract.methods.closePosition(token, side, size)
-      .send()
+      .call()
   },
   /**
    * 一键平仓
@@ -209,6 +210,27 @@ Contract.prototype = {
   getTraderPositionVariables (trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice) {
     return this.contract.methods.getTraderPositionVariables(trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice).call()
   },
+  /**
+   * 获取用户保证金信息
+   * @param trader
+   * @return {*}
+   */
+  getTraderVariables (trader) {
+    return this.contract.methods.getTraderVariables(trader).call()
+  },
+  /**
+   * 强平仓金额
+   * @param side
+   * @param spotPrice
+   * @param size
+   * @param marginMaintenanceRatio
+   * @param marginBalance
+   * @param totalPositionAmount
+   * @return {*}
+   */
+  getTraderPositionLiquidatePrice (side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount) {
+    return this.contract.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount).call()
+  },
 
   /**
    * 所有持仓
@@ -256,11 +278,31 @@ Contract.prototype = {
     position.stopProfitPrice = profitPostion.stopPrice
     position.stopLossPrice = lossPostion.stopPrice
 
+
     // 3.获取浮动盈亏、持仓保证金、回报率
-    position = Object.assign(position, await this.getTraderPositionVariables(trader, marketIdAddress
-      , side, position.spotPrice, position.size, position.leverage, position.averagePrice))
+    const variables = await this.getTraderPositionVariables(trader, marketIdAddress
+      , side, position.spotPrice, position.size, position.leverage, position.averagePrice)
+    position.margin = variables.margin
+    position.unrealizedPnl = variables.unrealizedPnl
+    position.margin = variables.margin
+
+    //4.获取用户参数
+    const tradeVariables = await this.getTraderVariablesWithCache(trader)
+    position.marginBalance = tradeVariables.marginBalance
+    position.totalPositionAmount = tradeVariables.totalPositionAmount
+    position.marginRate = tradeVariables.marginRate
+
+    position.liquidatePrice = await this.getTraderPositionLiquidatePrice(position.side, position.spotPrice, position.size, position.marginRate, position.marginBalance, position.totalPositionAmount);
 
     return position
+  },
+
+  async getTraderVariablesWithCache (trader) {
+    if(cache[trader] !== undefined){
+      return cache[trader]
+    }
+
+    return this.getTraderVariables(trader)
   },
   async getTraderAllLimitPosition (trader, marketIdAddress) {
     const positionArr = []
@@ -367,6 +409,9 @@ export class PositionView {
 
   // 止损
   stopLossPrice;
+
+  // 预估强平价格
+  liquidatePrice;
 }
 
 export class LimitPoistion {

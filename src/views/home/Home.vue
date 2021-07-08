@@ -173,7 +173,7 @@
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">强平金额：</div>
-                    <div>12323.44 USDT</div>
+                    <div>{{data.liquidatePrice | fck(-8)}} USDT</div>
                   </div>
                   <div class="exchange-item-right" @click="changeShowSet(true, data)">
                     <div>设置止盈/止损</div>

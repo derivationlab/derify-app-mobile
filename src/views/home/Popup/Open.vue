@@ -76,7 +76,7 @@ export default {
   data () {
     return {
       showPopup: this.show,
-      openType: this.type, // 0 1 2
+      openType: this.type, // 0 1
       openData: this.extraData,
       entrustTypeConfig: [
         { text: '市价委托', value: 0 },
@@ -111,10 +111,8 @@ export default {
       this.$emit('closeOpenPopup', false, this.openType)
     },
     submitThenClose () {
-      const size = this.openData.size * 1e8
-      const side = this.openData.side
+      const size = this.openData.size
       const leverage = this.leverageConfig[this.openData.leverage]
-      const openType = this.openType
       let price = null
       if (this.openData.entrustType === 0) {
         price = this.curSpotPrice
@@ -124,9 +122,9 @@ export default {
       }
 
       this.$store.dispatch('contract/openPosition', {
-        side,
+        side: this.openData.side,
         size: size,
-        openType,
+        openType: this.openData.entrustType,
         price,
         leverage
       })
