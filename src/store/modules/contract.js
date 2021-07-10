@@ -294,6 +294,22 @@ const actions = {
   },
   loadTradeRecords ({state, commit}, {coinAddress}) {
     return getTradeList(state.wallet_address)
+  },
+  getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
+
+    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+    if (idx === undefined) {
+      idx = 0
+    }
+
+    const coin = state.pairs[idx]
+
+    const marketIdAddress = coin.address;
+
+    const contract = web3Utils.contract(state.wallet_address)
+
+    return contract.getTraderOpenUpperBound(marketIdAddress, state.wallet_address, openType, price, leverage);
   }
 }
 

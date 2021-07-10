@@ -35,7 +35,7 @@
     <div class="home-mid">
       <div class="home-mid-one">
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig">
+          <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="updateTraderOpenUpperBound">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{entrustTypeConfig[entrustType].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -43,7 +43,7 @@
           </van-dropdown-item>
         </van-dropdown-menu>
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="leverage" :options="leverageConfig">
+          <van-dropdown-item v-model="leverage" :options="leverageConfig" @input="updateTraderOpenUpperBound">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{leverageConfig[leverage].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -57,7 +57,7 @@
           <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
         </div>
         <div class="home-mid-input" v-else>
-          <van-field class="derify-input" type="number" v-model.number="amount" />
+          <van-field class="derify-input" type="number" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
           <div class="fc-30">USDT</div>
         </div>
       </div>
@@ -65,7 +65,8 @@
         <div class="home-mid-two-title">
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
-            <span class="fc-65">可开：{{curTraderOpenUpperBound}} ETH</span>
+            <span class="fc-65">可开：{{unit === 0 ? curTraderOpenUpperBound.size
+                : unit === 1 ? curTraderOpenUpperBound.amount : 100}} {{unitConfig[unit].text}}</span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -290,6 +291,7 @@ import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
+import WebUtils from '@/utils/web3Utils'
 
 export default {
   name: 'Home',
@@ -319,9 +321,6 @@ export default {
     },
     curPositionChangeFeeRatio () {
       return this.$store.state.contract.contractData.positionChangeFeeRatio
-    },
-    curTraderOpenUpperBound () {
-      return this.$store.state.contract.contractData.traderOpenUpperBound.size
     }
   },
   data () {
@@ -332,6 +331,7 @@ export default {
       size: 0,
       value5: 20,
       unit: 0,
+      curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
         {text: '市价委托', value: 0},
         {text: '限价委托', value: 1}
@@ -522,9 +522,9 @@ export default {
     calculatePositionSize (sliderValue) {
       const {unit} = this// 0 ETH，1 USDT 2 %
       if (unit ===  0) {
-        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound)
+        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
       }else if (unit === 1) {
-        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound)
+        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
       }else{
         this.size = sliderValue
       }
@@ -536,28 +536,37 @@ export default {
       this.calculatePositionSize(this.value5)
     },
     positionSizeChange (size) {
-      if (size > this.curTraderOpenUpperBound) {
-        this.$toast('输入的开仓量超出上限')
-        this.size = this.curTraderOpenUpperBound;
-        return
+      const {unit} = this// 0 ETH，1 USDT 2 %
+
+      if(unit === 0){
+        if (size > this.curTraderOpenUpperBound.size) {
+          this.$toast('输入的开仓量超出上限')
+          this.size = this.curTraderOpenUpperBound.size
+          return
+        }
+        this.value5 = size / this.curTraderOpenUpperBound.size * 100
+      }else if(unit === 1){
+        if (size > this.curTraderOpenUpperBound.amount) {
+          this.$toast('输入的开仓量超出上限')
+          this.size = this.curTraderOpenUpperBound.amount;
+          return
+        }
+        this.value5 = size / this.curTraderOpenUpperBound.amount * 100
       }
-
-      const { contractData } = this;
-
-      this.value5 = size / this.curTraderOpenUpperBound * 100
-      //this.calculatePositionSize(this.value5)
     },
-    calMaxPositionSize (unit, coinType, leverage, price, margin){
-      //1.计算可用保证金
-      //MAX(0,保证金余额-所有交易对的总持仓保证金-所有交易对的限价委托单占用保证金)
+    updateTraderOpenUpperBound () {
+      //杠杆数发生变化, 重新计算仓量
 
-      //2.计算可开仓量
+      const openType = this.entrustType
+      const price = this.amount  * 1e8
+      const leverage = this.leverage  * 1e8
 
-      // TODO 可开量（币种）=可用保证金*杠杆/开仓价格；
-      // TODO 可开量（USDT计价）=可用保证金*杠杆；
-      // TODO（百分比计价）=输入小于100的百分比；
-      //  TODO 输入的开仓量必须小于等于该值，否则提示超额；
-      // TODO 此处需技术考虑延时原因导致的价格变化。
+      this.$store.dispatch("contract/getTraderOpenUpperBound",
+        {openType, price, leverage})
+        .then(r => {
+          console.log('getTraderOpenUpperBound', r)
+        this.curTraderOpenUpperBound = r;
+      });
     }
   },
   watch: {
@@ -599,6 +608,8 @@ export default {
 
       self.loading = false
     })
+
+    this.updateTraderOpenUpperBound()
   },
   mounted () {
     if (this.$route.name === 'exchange') {
