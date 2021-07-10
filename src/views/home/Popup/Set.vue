@@ -21,7 +21,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">止盈设置</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="0.00" @change="changeProfitPrice(position.stopProfitPriceInput)" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="0.00" @input="changeProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">当指数价格达到 <span class="fc-85">{{position.stopProfitPrice | fck(-8)}}</span> USDT时，将会触发市价平仓当前仓位，预计盈利 <span class="fc-green">{{ position.profitAmount  | fck(-8)}}</span> USDT</div>
@@ -29,7 +29,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">止损设置</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @change="changeLossPrice(position.stopLossPriceInput)" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" @input="changeLossPrice" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">当指数价格达到 {{position.stopLossPrice | fck(-8)}} USDT时，将会触发市价平仓当前仓位，预计亏损 {{ position.lostAmount  | fck(-8)}} USDT</div>
@@ -44,6 +44,7 @@
 
 <script>
 import {fck} from "@/utils/utils";
+import {SideEnum} from "@/store/modules/contract";
 
 export default {
   props: {
@@ -82,6 +83,8 @@ export default {
           stopLossPriceInput: fck(this.extraData.stopLossPrice, -8),
           lostAmount,
           profitAmount}, this.extraData);
+
+        this.calLossAndProfit()
       }
     }
   },
@@ -90,10 +93,43 @@ export default {
       this.$emit('closeSetPopup', false)
     },
     changeProfitPrice (price) {
+
+      const {position} = this;
+      //止盈价格：如果是多仓，则止盈价格应大于开仓均价，如果是空仓，止盈价格应小于开仓均价，否则提示错误
+
+      console.log(price * 1e8, position.averagePrice)
+      if(position.side === SideEnum.LONG && price * 1e8 <= position.averagePrice){
+        this.$toast('多仓止盈价格应大于开仓均价')
+        this.position.stopProfitPriceInput = this.position.stopProfitPrice / 1e8
+        return
+      }
+
+      if(position.side === SideEnum.SHORT && price * 1e8 >= position.averagePrice){
+        this.$toast('空仓止盈价格应小于开仓均价')
+        this.position.stopProfitPriceInput = this.position.stopProfitPrice / 1e8
+        return
+      }
+
+      this.position.stopProfitPriceInput = price;
       this.position.stopProfitPrice = price * 1e8
       this.calLossAndProfit();
     },
-    changeLossPrice (price) {
+    changeLossPrice (price, oldPrice) {
+      const {position} = this;
+
+      //止损价格：如果是多仓，则止损价格应小于开仓均价，如果是空仓，止损价格应大于开仓均价，否则提示错误；
+      if(position.side === SideEnum.LONG && price * 1e8 > position.averagePrice){
+        this.$toast('多仓止损价格应小于开仓均价')
+        this.position.stopProfitPriceInput = this.position.stopLossPrice / 1e8
+        return
+      }
+
+      if(position.side === SideEnum.SHORT && price * 1e8 < position.averagePrice){
+        this.$toast('空仓止损价格应大于开仓均价')
+        this.position.stopProfitPriceInput = this.position.stopLossPrice / 1e8
+        return
+      }
+      this.position.stopLossPriceInput = price;
       this.position.stopLossPrice = price * 1e8
       this.calLossAndProfit();
     },

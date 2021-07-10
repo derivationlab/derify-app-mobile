@@ -8,34 +8,33 @@ const cache = {}
  * @param option 对象,实际例子如右: {from: '',gasPrice: '20000000000'}
  * @constructor
  */
-function Contract (abi, address, option) {
-  const web3 = new Web3()
-  const provider = window.ethereum
-  web3.setProvider(provider)
+export default class Contract {
 
-  this.web3 = web3
-  this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
-}
+  constructor (abi, address, option) {
+    const web3 = new Web3()
+    const provider = window.ethereum
+    web3.setProvider(provider)
 
-const SOLIDITY_RATIO = 1e8
+    this.web3 = web3
+    this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
+  }
 
-Contract.prototype = {
   /**
    * 充值金额
    * @param amount
    * @return
    */
-  deposit: function (amount) {
+  deposit (amount) {
     return this.contract.methods.deposit(amount).send()
-  },
+  }
   /**
    * 提现
    * @param amount
    * @returns {*}
    */
-  withdraw: function (amount) {
+  withdraw (amount) {
     return this.contract.methods.withdraw(amount).send()
-  },
+  }
   /**
    * 开仓
    * @param token 当前合约币种地址
@@ -46,11 +45,11 @@ Contract.prototype = {
    * @param leverage 杠杆（精度为8位）
    * @return {*}
    */
-  openPosition: function (token, side, openType, size, price, leverage) {
+  openPosition (token, side, openType, size, price, leverage) {
     return this.contract.methods
       .openPosition(token, side, openType, size, price, leverage)
       .send()
-  },
+  }
 
   /**
    * 设置止盈止损委托
@@ -60,10 +59,10 @@ Contract.prototype = {
    * @param stopPrice
    * @return {*}
    */
-  orderStopPosition: function (token, side, stopType, stopPrice) {
+  orderStopPosition (token, side, stopType, stopPrice) {
     return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice)
       .send()
-  },
+  }
   /**
    * 平仓
    * @param token 当前合约币种地址
@@ -71,43 +70,43 @@ Contract.prototype = {
    * @param size 仓量
    * @return {*}
    */
-  closePosition: function (token, side, size) {
+  closePosition (token, side, size) {
     return this.contract.methods.closePosition(token, side, size)
       .call()
-  },
+  }
   /**
    * 一键平仓
    */
-  closeAllPositions: function () {
+  closeAllPositions () {
     return this.contract.methods.closeAllPositions()
       .send()
-  },
+  }
   /**
    * 获取账户信息
    * @param trader
    * @return {*}
    */
-  getTraderAccount: function (trader) {
+  getTraderAccount (trader) {
     return this.contract.methods.getTraderAccount(trader).call()
-  },
+  }
   /**
    * 设置币种的当前价格
    * @param marketIdAddress  币合约地址
    * @param price
    * @return {*}
    */
-  setSpotPrice: function (marketIdAddress, price) {
+  setSpotPrice (marketIdAddress, price) {
     return this.contract.methods.setSpotPrice(marketIdAddress, price).send()
-  },
+  }
 
   /**
    * 获取币种当前价格
    * @param marketIdAddress 币合约地址
    * @return {*}
    */
-  getSpotPrice: function (marketIdAddress) {
+  getSpotPrice (marketIdAddress) {
     return this.contract.methods.getSpotPrice(marketIdAddress).call()
-  },
+  }
 
   /**
    * 取消委托
@@ -117,17 +116,17 @@ Contract.prototype = {
    * @param timestamp
    * @return {*}
    */
-  cancleOrderedPosition: function (marketIdAddress, orderType, side, timestamp) {
+  cancleOrderedPosition (marketIdAddress, orderType, side, timestamp) {
     return this.contract.methods.cancleOrderedPosition(marketIdAddress, orderType, side, timestamp).send()
-  },
+  }
   /**
    * 取消全部委托
    * @param marketIdAddress
    * @return {*}
    */
-  cancleAllOrderedPositions: function (marketIdAddress) {
+  cancleAllOrderedPositions (marketIdAddress) {
     return this.contract.methods.cancleAllOrderedPositions(marketIdAddress).send()
-  },
+  }
   /**
    * 获取用户最大开仓量
    * @param marketIdAddress
@@ -137,9 +136,9 @@ Contract.prototype = {
    * @param leverage
    * @return {*}
    */
-  getTraderOpenUpperBound: function (marketIdAddress, trader, openType, price, leverage) {
+  getTraderOpenUpperBound (marketIdAddress, trader, openType, price, leverage) {
     return this.contract.methods.getTraderOpenUpperBound(marketIdAddress, trader, openType, price, leverage).call()
-  },
+  }
 
   /**
    * 获取持仓
@@ -152,9 +151,9 @@ Contract.prototype = {
    averagePrice: 开仓均价（精度为8位）
    timestamp: 时间戳
    */
-  getTraderPosition: function (trader, marketIdAddress, side) {
+  getTraderPosition (trader, marketIdAddress, side) {
     return this.contract.methods.getTraderPosition(trader, marketIdAddress, side).call()
-  },
+  }
   /**
    * 获取委托单
    * @param trader
@@ -163,9 +162,9 @@ Contract.prototype = {
    * @param stopType
    * @return {*}
    */
-  getTraderOrderStopPosition: function (trader, marketIdAddress, side, stopType) {
+  getTraderOrderStopPosition (trader, marketIdAddress, side, stopType) {
     return this.contract.methods.getTraderOrderStopPosition(trader, marketIdAddress, side, stopType).call()
-  },
+  }
 
   /**
    *
@@ -174,18 +173,17 @@ Contract.prototype = {
    * @param side
    * @return {*}
    */
-  getTraderOrderLimitPositions: function (trader, marketIdAddress, side) {
+  getTraderOrderLimitPositions (trader, marketIdAddress, side) {
     return this.contract.methods.getTraderOrderLimitPositions(trader, marketIdAddress, side).call()
-  },
-
+  }
   /**
    * 获取动仓费率
    * @param marketIdAddress
    * @return {*}
    */
-  getPositionChangeFeeRatio: function (marketIdAddress) {
+  getPositionChangeFeeRatio (marketIdAddress) {
     return this.contract.methods.getPositionChangeFeeRatio(marketIdAddress).call()
-  },
+  }
 
   /**
    * 获取系统最大开仓量
@@ -193,9 +191,9 @@ Contract.prototype = {
    * @param side
    * @return {*}
    */
-  getSysOpenUpperBound: function (marketIdAddress, side) {
+  getSysOpenUpperBound (marketIdAddress, side) {
     return this.contract.methods.getSysOpenUpperBound(marketIdAddress, side).call()
-  },
+  }
 
   /**
    * 计算保证金、浮动盈亏、回报率
@@ -209,7 +207,7 @@ Contract.prototype = {
    */
   getTraderPositionVariables (trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice) {
     return this.contract.methods.getTraderPositionVariables(trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice).call()
-  },
+  }
   /**
    * 获取用户保证金信息
    * @param trader
@@ -217,7 +215,7 @@ Contract.prototype = {
    */
   getTraderVariables (trader) {
     return this.contract.methods.getTraderVariables(trader).call()
-  },
+  }
   /**
    * 强平仓金额
    * @param side
@@ -230,7 +228,7 @@ Contract.prototype = {
    */
   getTraderPositionLiquidatePrice (side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount) {
     return this.contract.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount).call()
-  },
+  }
 
   /**
    * 所有持仓
@@ -248,7 +246,7 @@ Contract.prototype = {
     positionArr.push(await this.getTraderViewPosition(trader, marketIdAddress, 1))
 
     return positionArr
-  },
+  }
 
   /**
    * 获取某种持仓
@@ -295,7 +293,7 @@ Contract.prototype = {
     position.liquidatePrice = await this.getTraderPositionLiquidatePrice(position.side, position.spotPrice, position.size, position.marginRate, position.marginBalance, position.totalPositionAmount);
 
     return position
-  },
+  }
 
   async getTraderVariablesWithCache (trader) {
     if(cache[trader] !== undefined){
@@ -303,7 +301,7 @@ Contract.prototype = {
     }
 
     return this.getTraderVariables(trader)
-  },
+  }
   async getTraderAllLimitPosition (trader, marketIdAddress) {
     const positionArr = []
 
@@ -320,7 +318,7 @@ Contract.prototype = {
     })
 
     return positionArr
-  },
+  }
   async getTraderOrderLimitPosition (trader, marketIdAddress, side) {
 
     const arr = [];
@@ -338,7 +336,7 @@ Contract.prototype = {
 
     const spotPrice = await this.getSpotPrice(marketIdAddress)
 
-    limitOrders.forEach(async function (limitOrder) {
+    for (const limitOrder of limitOrders) {
       //LimitPoistion
 
       let orderLimitPositionView = new OrderLimitPositionView()
@@ -353,13 +351,14 @@ Contract.prototype = {
       orderLimitPositionView = Object.assign({}, orderLimitPositionView, limitOrder)
 
       arr.push(orderLimitPositionView)
-    });
-
+    }
 
 
     return arr
   }
 }
+
+const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
 
@@ -465,5 +464,3 @@ export class OrderLimitPositionView {
    */
   limitOrders;
 }
-
-export default Contract

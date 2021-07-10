@@ -70,9 +70,9 @@
           </div>
         </div>
         <div class="home-mid-input">
-          <van-field class="derify-input" type="number" v-model.number="size" />
+          <van-field class="derify-input" @input="positionSizeChange" type="number" v-model.number="size" />
           <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
-            <van-dropdown-item v-model="unit" :options="unitConfig">
+            <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{unitConfig[unit].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -82,7 +82,7 @@
         </div>
       </div>
       <div class="home-mid-three">
-        <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" />
+        <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
       </div>
       <div class="home-mid-four">
         <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
@@ -303,6 +303,12 @@ export default {
     Open,
     OpenStatus
   },
+  props:{
+    contractData: {
+      type: Object,
+      default: null
+    }
+  },
   computed: {
     curPair () {
       const {curPairKey, pairs} = this.$store.state.contract
@@ -512,6 +518,54 @@ export default {
             side: data.side,
             timestamp}).then(r => {
       })
+    },
+    calculatePositionSize (sliderValue) {
+      const {unit} = this// 0 ETH，1 USDT 2 %
+      if (unit ===  0) {
+        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound)
+      }else if (unit === 1) {
+        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound)
+      }else{
+        this.size = sliderValue
+      }
+
+    },
+    unitSelectChange (unit) {
+      console.log('unitSelectChange')
+      this.unit = unit;
+      this.calculatePositionSize(this.value5)
+    },
+    positionSizeChange (size) {
+      if (size > this.curTraderOpenUpperBound) {
+        this.$toast('输入的开仓量超出上限')
+        this.size = this.curTraderOpenUpperBound;
+        return
+      }
+
+      const { contractData } = this;
+
+      this.value5 = size / this.curTraderOpenUpperBound * 100
+      //this.calculatePositionSize(this.value5)
+    },
+    calMaxPositionSzie (unit, coinType, leverage, price, margin){
+      //1.计算可用保证金
+      //MAX(0,保证金余额-所有交易对的总持仓保证金-所有交易对的限价委托单占用保证金)
+
+      //2.计算可开仓量
+
+      // TODO 可开量（币种）=可用保证金*杠杆/开仓价格；
+      // TODO 可开量（USDT计价）=可用保证金*杠杆；
+      // TODO（百分比计价）=输入小于100的百分比；
+      //  TODO 输入的开仓量必须小于等于该值，否则提示超额；
+      // TODO 此处需技术考虑延时原因导致的价格变化。
+    }
+  },
+  watch: {
+    contractData:{
+      handler (val) {
+        this.contractData = val;
+      },
+      deep: true
     }
   },
   beforeMount () {
@@ -519,12 +573,13 @@ export default {
     this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
       self.positionChangeFeeRatio = r.positionChangeFeeRatio;
       console.log('loadHomeData', self.positionChangeFeeRatio)
+      this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound);
     })
 
-    this.$store.dispatch('contract/getMarketAccount').then(r => {
-      // TODO: render records in page
-      console.log('market======', r)
-    })
+    // this.$store.dispatch('contract/getMarketAccount').then(r => {
+    //   // TODO: render records in page
+    //   console.log('market======', r)
+    // })
 
     const dataList = this.datalist
 

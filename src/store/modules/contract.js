@@ -297,6 +297,20 @@ const actions = {
   }
 }
 
+export class SideEnum {
+  static get LONG (){
+    return 0;
+  }
+
+  static get SHORT (){
+    return 1;
+  }
+
+  static get HEDGE() {
+    return 2
+  }
+}
+
 export default {
   namespaced: true,
   state,
