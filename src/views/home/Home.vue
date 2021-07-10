@@ -547,7 +547,7 @@ export default {
       this.value5 = size / this.curTraderOpenUpperBound * 100
       //this.calculatePositionSize(this.value5)
     },
-    calMaxPositionSzie (unit, coinType, leverage, price, margin){
+    calMaxPositionSize (unit, coinType, leverage, price, margin){
       //1.计算可用保证金
       //MAX(0,保证金余额-所有交易对的总持仓保证金-所有交易对的限价委托单占用保证金)
 
