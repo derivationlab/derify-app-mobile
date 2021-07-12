@@ -72,7 +72,7 @@ export default class Contract {
    */
   closePosition (token, side, size) {
     return this.contract.methods.closePosition(token, side, size)
-      .call()
+      .send()
   }
   /**
    * 一键平仓
