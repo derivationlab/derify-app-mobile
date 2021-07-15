@@ -532,7 +532,7 @@ export default {
     self.loading = true
     this.$store.dispatch('contract/loadPositionData').then(r => {
       // Array<Position>
-      if (r === undefined) {
+      if (!(r instanceof Array)) {
         return
       }
 

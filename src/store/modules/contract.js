@@ -4,7 +4,7 @@ import * as axios from "@/utils/request";
 import {getTradeList} from "@/api/trade";
 
 const state = {
-  wallet_address: getCache('wallet_address') || '',
+  wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
   account: getCache('account') || null,
   pairs: [
     {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
@@ -174,6 +174,10 @@ const actions = {
     })
   },
   getMarketAccount ({state}) {
+    if(!state.wallet_address){
+      return {}
+    }
+
     return new Promise((resolve, reject) => {
       const idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
       web3Utils.getMarketAccount(state.wallet_address, idx).then(r => {
@@ -186,6 +190,9 @@ const actions = {
     // 加载首页合约数据
     return (async function () {
       const data = {curSpotPrice: 0, positionChangeFeeRatio: 0}
+      if(!state.wallet_address){
+        return {}
+      }
 
       const contract = web3Utils.contract(state.wallet_address)
 
@@ -223,7 +230,10 @@ const actions = {
   loadAccountData ({state, commit}) {
     // 1.获取
     return (async function () {
-      console.log('loadAccountData')
+      if(!state.wallet_address){
+        return {}
+      }
+
       const contract = web3Utils.contract(state.wallet_address)
 
       const accountData = await contract.getTraderAccount(state.wallet_address)
@@ -236,6 +246,10 @@ const actions = {
   },
   loadPositionData ({state, commit}) {
     return (async function () {
+      if(!state.wallet_address){
+        return {}
+      }
+
       const contract = web3Utils.contract(state.wallet_address)
 
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
@@ -256,6 +270,9 @@ const actions = {
   },
   loadOrderedPositionData ({state, commit}, {coinAddress}) {
     return (async function () {
+      if(!state.wallet_address){
+        return {}
+      }
 
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 

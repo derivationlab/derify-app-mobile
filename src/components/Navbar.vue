@@ -193,6 +193,9 @@ export default {
   computed: {
     walletAddress () {
       const address = this.$store.state.contract.wallet_address
+      if(!address){
+        return ''
+      }
       if (address.length === 42 && address.startsWith('0x')) {
         const length = address.length
         return `${address.substring(0, 6)}...${address.substring(
@@ -257,6 +260,15 @@ export default {
     if (this.walletAddress) {
       this.$store.dispatch('contract/setAccount')
     }
+
+    if(window.ethereum){
+      ethereum.autoRefreshOnNetworkChange = true
+      const self = this;
+      ethereum.on('accountsChanged', function (accounts) {
+        //
+      })
+    }
+
   }
 }
 </script>
