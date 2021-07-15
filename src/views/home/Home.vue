@@ -92,9 +92,7 @@
       </div>
     </div>
     </template>
-    <template v-else>
-      <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
-    </template>
+    <div id="myChart" :style="{width: '100%', height: '36.5rem', display: $route.name === 'home' ? 'none':'block'}"></div>
     <div class="home-last">
       <van-tabs v-model="active" @click="tabChange">
         <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
@@ -291,8 +289,10 @@ import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
-import WebUtils from '@/utils/web3Utils'
 
+const context = {
+  myChart: null
+};
 export default {
   name: 'Home',
   components: {
@@ -438,8 +438,11 @@ export default {
       this.$router.push({path: '/account'})
     },
     drawKline () {
-      const myChart = this.$echarts.init(document.getElementById('myChart'))
-      myChart.setOption(options)
+      if(context.myChart === null){
+        context.myChart = this.$echarts.init(document.getElementById('myChart'))
+        context.myChart.setOption(options)
+      }
+      context.myChart.resize()
     },
     tabChange (key) {
       console.log(`tabChange ${key}`)
@@ -611,10 +614,9 @@ export default {
 
     this.updateTraderOpenUpperBound()
   },
-  mounted () {
-    if (this.$route.name === 'exchange') {
-      this.drawKline()
-    }
+  updated () {
+    console.log('home-mounted', this.$route.name)
+    this.$nextTick(() => this.drawKline())
   }
 }
 </script>

@@ -1,4 +1,4 @@
-<template>
+<template v-if="show">
   <div class="home-container page-container">
     <navbar :title="$t('data.Data')" />
     <div class="home-top">
@@ -48,6 +48,9 @@ export default {
   },
   methods: {
     drawLine () {
+      if(!this.show){
+        return
+      }
       // 基于准备好的dom，初始化echarts实例
       const myChart = this.$echarts.init(document.getElementById('myChart'))
       // 绘制图表

@@ -234,9 +234,7 @@ export default {
         return
       }
       this.changeShowMenu(false)
-      setTimeout((_) => {
-        this.$router.push({ name })
-      }, 500)
+      this.$router.push({ name })
     },
     handleLogin () {
       if (!this.walletAddress) {
