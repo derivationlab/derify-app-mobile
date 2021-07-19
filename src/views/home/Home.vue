@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="home-mid-input">
-          <van-field class="derify-input" @input="positionSizeChange" type="number" v-model.number="size" />
+          <van-field class="derify-input" type="number" v-model.number="size" />
           <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
             <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                 <div class="derify-dropmenu-title" slot="title">
@@ -417,6 +417,21 @@ export default {
           this.$toast('please input size first')
           return
         }
+
+        if(type === 0 || type === 1){
+          if(unit === 0){
+            if (size > this.curTraderOpenUpperBound.size) {
+              this.$toast('输入的开仓量超出上限')
+              return
+            }
+          }else if(unit === 1){
+            if (size > this.curTraderOpenUpperBound.amount) {
+              this.$toast('输入的开仓量超出上限')
+              return
+            }
+          }
+        }
+
         this.openExtraData = {
           entrustType,
           leverage,
@@ -537,25 +552,6 @@ export default {
       console.log('unitSelectChange')
       this.unit = unit;
       this.calculatePositionSize(this.value5)
-    },
-    positionSizeChange (size) {
-      const {unit} = this// 0 ETH，1 USDT 2 %
-
-      if(unit === 0){
-        if (size > this.curTraderOpenUpperBound.size) {
-          this.$toast('输入的开仓量超出上限')
-          this.size = this.curTraderOpenUpperBound.size
-          return
-        }
-        this.value5 = size / this.curTraderOpenUpperBound.size * 100
-      }else if(unit === 1){
-        if (size > this.curTraderOpenUpperBound.amount) {
-          this.$toast('输入的开仓量超出上限')
-          this.size = this.curTraderOpenUpperBound.amount;
-          return
-        }
-        this.value5 = size / this.curTraderOpenUpperBound.amount * 100
-      }
     },
     updateTraderOpenUpperBound () {
       //杠杆数发生变化, 重新计算仓量

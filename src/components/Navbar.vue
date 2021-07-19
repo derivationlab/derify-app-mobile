@@ -12,11 +12,16 @@
       <template #title v-if="logo">
         <img src="@/assets/images/logo.png" alt="" srcset="" />
       </template>
+
+      <template #right v-if="walletAddress">
+        <div class="first-letter-wrap-inline" @click="changeRouter('account')">W</div>
+      </template>
+
     </van-nav-bar>
     <van-popup class="menu-popup" v-model="showMenu" position="left">
       <div class="interactive-error" v-if="loginError">{{ loginError }}</div>
       <div class="head-info" @click="handleLogin">
-        <div class="head-info-left" v-if="walletAddress">
+        <div class="head-info-left" v-if="walletAddress" @click="changeRouter('account')">
           <div class="first-letter-wrap">OK</div>
           <div class="info-div">
             <div class="info-name">USER_NAME</div>
@@ -272,6 +277,16 @@ export default {
 </script>
 
 <style lang="less">
+.first-letter-wrap-inline {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  border: 0.1rem solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+  line-height: 4rem;
+  display: inline-block;
+}
 .head-info {
   padding: 10rem 2rem 2.4rem 2rem;
   border-bottom: 0.1rem solid rgba(255, 255, 255, 0.15);
