@@ -30,7 +30,10 @@
 <script>
 import Navbar from '@/components/Navbar'
 import record from './record/index.vue'
+import {options,data0} from '@/utils/kExample'
 
+window.data0 = data0;
+const context = {};
 export default {
   name: 'Home',
   components: {
@@ -40,73 +43,94 @@ export default {
   },
   data () {
     return {
-      show: false
+      show: true
     }
   },
-  mounted () {
+  updated () {
     this.drawLine()
   },
   methods: {
     drawLine () {
+      console.log(this.show)
+
       if(!this.show){
         return
       }
       // 基于准备好的dom，初始化echarts实例
-      const myChart = this.$echarts.init(document.getElementById('myChart'))
+      if(context.myChart) {
+        context.myChart.dispose();
+
+      }
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
       // 绘制图表
-      myChart.setOption({
-        // title: { text: '在Vue中使用echarts' },
-        // link:"https://www.baidu.com/" ,
-        // textStyle:{},//设置标题的样式
-        tooltip: { // 信息提示
-          trigger: 'item', // 触发类型
-          // triggerOn:"click", //触发时机
-          formatter: '{b} 交易量为{c}' // 提示格式化
-          // formatter: function(arg){
-          //   console.log(arg)
-          //   return arg.seriesName
-          // }
+      context.myChart.setOption({
+        darkMode: true,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          }
+        },
+        legend: {
+          data: []
+        },
+        grid: {
+          left: '10%',
+          right: '10%',
+          bottom: '15%'
         },
         xAxis: {
-          type: 'category', // X轴
-          // data: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"],
-          data: ['1M', '2M', '3M', '4M', '5M', '6M', '7M', '8M', '9M', '10M', '11M', '12M'],
-          boundaryGap: false
+          type: 'category',
+          data: data0.categoryData,
+          scale: true,
+          boundaryGap: false,
+          axisLine: { onZero: false },
+          splitLine: { show: false },
+          splitNumber: 20
+          //min: 'dataMin',
+          //max: 'dataMax'
         },
         yAxis: {
-          type: 'value', // Y轴
-          scale: true
+          scale: true,
+          splitArea: {
+            show: true
+          }
         },
-        series: [{
-          name: '',
-          type: 'line',
-          barWidth: '10%',
-          data: [8, 12, 13, 14, 15, 16, 12, 13, 14, 16, 18, 12],
-          // smooth: true, // 平缓显示
-          lineStyle: {
-            color: '#0a5533',
-            type: 'solid'
-          }, // 折线样式
-          areaStyle: {
-            color: {
-              colorStops: [{
-                offset: 0, color: '#0a5533' // 0% 处的颜色
-              }, {
-                offset: 1, color: '#FAE247' // 100% 处的颜色
-              }]
-              // global: false // 缺省为 false
+        dataZoom: [
+          // {
+          //   type: 'inside',
+          //   start: 50,
+          //   end: 100
+          // },
+          // {
+          //   show: true,
+          //   type: 'slider',
+          //   top: '90%',
+          //   start: 50,
+          //   end: 100
+          // }
+        ],
+        series: [
+          {
+            name: '日K',
+            type: 'candlestick',
+            data: data0.values,
+            markPoint: {
+              label: {
+                normal: {
+                  formatter: function (param) {
+                    return param != null ? Math.round(param.value) : ''
+                  }
+                }
+              },
+              tooltip: {
+                formatter: function (param) {
+                  return param.name + '<br>' + (param.data.coord || '')
+                }
+              }
             }
           }
-          // areaStyle: {
-          //   color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          //     offset: 0,
-          //     color: '#0a5533'
-          //   }, {
-          //     offset: 1,
-          //     color: '#112023'
-          //   }])
-          // }
-        }]
+        ]
       })
     }
   }

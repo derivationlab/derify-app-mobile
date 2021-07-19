@@ -14,8 +14,8 @@
       </div>
       <div class="home-top-right">
         <div class="home-top-icons">
-          <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon">
-          <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon">
+          <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
+          <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
         </div>
         <div class="home-top-items">
           <span class="fc-65">动仓费率：</span>
@@ -452,11 +452,20 @@ export default {
     transfer () {
       this.$router.push({path: '/account'})
     },
-    drawKline () {
-      if(context.myChart === null){
-        context.myChart = this.$echarts.init(document.getElementById('myChart'))
-        context.myChart.setOption(options)
+    changeRouter (name) {
+      if (this.$route.name === name) {
+        return
       }
+      this.$router.push({name})
+    },
+    drawKline () {
+      console.log(context.myChart)
+      if(context.myChart){
+        context.myChart.dispose();
+      }
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+
+      context.myChart.setOption(options)
       context.myChart.resize()
     },
     tabChange (key) {
@@ -611,7 +620,6 @@ export default {
     this.updateTraderOpenUpperBound()
   },
   updated () {
-    console.log('home-mounted', this.$route.name)
     this.$nextTick(() => this.drawKline())
   }
 }
