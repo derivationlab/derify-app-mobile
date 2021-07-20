@@ -16,6 +16,9 @@
       <template #right v-if="walletAddress">
         <div class="first-letter-wrap-inline" @click="changeRouter('account')">W</div>
       </template>
+      <template #right v-else>
+        <div class="first-letter-wrap-inline" @click="handleLogin">C</div>
+      </template>
 
     </van-nav-bar>
     <van-popup class="menu-popup" v-model="showMenu" position="left">
