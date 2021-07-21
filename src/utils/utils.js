@@ -13,6 +13,10 @@ export function dfv (num, defaultValue) {
 
 export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = null) {
 
+  if(!num && zeroDefault !== null){
+    return zeroDefault
+  }
+
   if (/^-?\d+\.?\d*$/.test(`${num}`)) {
     let val = parseFloat(num)
 
