@@ -103,28 +103,28 @@
             @load="loadMore"
           >
             <div class="exchange-block" v-for="(data,i) in datalist" :key="i">
-              <div class="exchange-block-title">
-                <div class="left">
-
-                  <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                  <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                  <div class="fz-16 mr-4">ETH/USDT</div>
-                  <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                  <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                </div>
-                <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                  <div class="fz-12">平仓</div>
-                  <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                </div>
-                <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
-                  <div class="fz-12">取消委托</div>
-                  <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                </div>
-                <div class="right" v-if="active === 'key3'">
-                  <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
-                </div>
-              </div>
               <template v-if="active === 'key1'">
+                <div class="exchange-block-title">
+                  <div class="left">
+
+                    <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                    <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                    <div class="fz-16 mr-4">ETH/USDT</div>
+                    <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                    <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                  </div>
+                  <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
+                    <div class="fz-12">平仓</div>
+                    <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                  </div>
+                  <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
+                    <div class="fz-12">取消委托</div>
+                    <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                  </div>
+                  <div class="right" v-if="active === 'key3'">
+                    <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
+                  </div>
+                </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">浮动盈亏：</div>
@@ -181,6 +181,27 @@
                 </div>
               </template>
               <template v-if="active ==='key2'">
+                <div class="exchange-block-title">
+                  <div class="left">
+
+                    <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                    <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                    <div class="fz-16 mr-4">ETH/USDT</div>
+                    <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                    <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                  </div>
+                  <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
+                    <div class="fz-12">平仓</div>
+                    <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                  </div>
+                  <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
+                    <div class="fz-12">取消委托</div>
+                    <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                  </div>
+                  <div class="right" v-if="active === 'key3'">
+                    <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
+                  </div>
+                </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">委托价格：</div>
@@ -221,22 +242,32 @@
                 </div>
               </template>
               <template v-if="active ==='key3'">
+                <div class="exchange-block-title">
+                  <div class="left">
+
+                    <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                    <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                    <div class="fz-16 mr-4">ETH/USDT</div>
+                    <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                  </div>
+                  <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
+                </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">盈亏：</div>
-                    <div>{{data.realizedPnl}}</div>
+                    <div :class="data.pnl_usdt > 0 ? 'fc-red' : 'fc-green'">{{data.pnl_usdt | amountFormt(2, true, '-')}}</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">委托类型：</div>
-                    <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">
-                      {{data.tradeType}}
+                    <div>
+                      <span :class="getTradeType(data.type).showType">{{getTradeType(data.type).opType}}</span>/<span>{{getTradeType(data.type).tradeType}}</span>
                     </div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">成交价格：</div>
-                    <div>{{data.price}} USDT</div>
+                    <div>{{data.price | amountFormt(2, false, '-')}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">成交数量：</div>
@@ -246,21 +277,21 @@
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">成交金额：</div>
-                    <div>{{data.amount}} USDT</div>
+                    <div>{{data.amount | amountFormt(2, false, '-')}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">手续费：</div>
-                    <div>{{data.tradingFee}} USDT</div>
+                    <div>{{data.trading_fee | amountFormt(2, false, '-')}} USDT</div>
                   </div>
                 </div>
                 <div class="exchange-item">
                   <div class="exchange-item-left">
                     <div class="fc-45">动仓费：</div>
-                    <div>{{data.positionChangeFee}} USDT</div>
+                    <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
                   </div>
                   <div class="exchange-item-right">
                     <div class="fc-45">分摊补偿：</div>
-                    <div>{{data.shareCompensation}} bDRf</div>
+                    <div>{{data.pnl_bond  | amountFormt(2, false, '-')}} bDRf</div>
                   </div>
                 </div>
               </template>
@@ -290,8 +321,19 @@ import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
 
+const TradeTypeMap = {
+  0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
+  1:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-HedgeMarketPriceTrade, 市价委托(通过对冲开仓) & 开仓
+  2:{opType: '开仓', showType: 'fc-green', tradeType: '限价委托'},//-LimitPriceTrade, 限价委托 & 开仓
+  3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade, 止盈止损 & 平仓
+  4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade, 自动减仓 & 平仓
+  5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade, 自动平仓 & 平仓
+};
+
+
 const context = {
-  myChart: null
+  myChart: null,
+  loaded: false
 };
 export default {
   name: 'Home',
@@ -352,7 +394,7 @@ export default {
         key2: '当前委托',
         key3: '成交记录'
       },
-      datalist: [1, 2, 3, 4],
+      datalist: [],
       loading: false,
       finished: false,
       showMarket: false, // 市场弹窗，选择币种
@@ -372,6 +414,15 @@ export default {
     }
   },
   methods: {
+    getTradeType (tradeType){
+      const viewType = TradeTypeMap[tradeType]
+
+      if(viewType) {
+        return viewType
+      }
+
+      return {}
+    },
     ClickBox () {
       this.show = true
     },
@@ -459,7 +510,10 @@ export default {
       this.$router.push({name})
     },
     drawKline () {
-      console.log(context.myChart)
+      console.log('context.loaded', context.loaded)
+      if(!context.loaded){
+        return
+      }
       if(context.myChart){
         context.myChart.dispose();
       }
@@ -619,6 +673,9 @@ export default {
 
     this.updateTraderOpenUpperBound()
   },
+  mounted () {
+    context.loaded = true
+  },
   updated () {
     this.$nextTick(() => this.drawKline())
   }
@@ -690,8 +747,11 @@ export default {
       margin: 0 .4rem;
     }
   }
+  .home-top-items {
+    font-size: 0.1rem;
+  }
   .home-top-items + .home-top-items {
-    margin-top: .4rem;
+    margin-top: .1rem;
   }
 }
 .home-mid {

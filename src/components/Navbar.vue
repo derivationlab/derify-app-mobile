@@ -1,6 +1,7 @@
 <template>
   <div class="navbar-container">
     <van-nav-bar :title="title" :border="false" :fixed="true">
+
       <template #left>
         <img
           @click="changeShowMenu(true)"
@@ -9,6 +10,7 @@
           srcset=""
         />
       </template>
+
       <template #title v-if="logo">
         <img src="@/assets/images/logo.png" alt="" srcset="" />
       </template>

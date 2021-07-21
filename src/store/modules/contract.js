@@ -1,7 +1,7 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import * as axios from "@/utils/request";
-import {getTradeList} from "@/api/trade";
+import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
 
 const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
@@ -287,12 +287,11 @@ const actions = {
 
       const positionData = await contract.getTraderAllLimitPosition(state.wallet_address, coinAddress)
 
-      console.log('loadOrderedPositionData', positionData)
       commit('SET_LIMIT_POSITION_DATA', positionData)
       return positionData
     })()
   },
-  loadTradeRecords ({state, commit}, {coinAddress}) {
+  loadTradeRecords ({state, commit}) {
     return getTradeList(state.wallet_address)
   },
   getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
@@ -310,6 +309,9 @@ const actions = {
     const contract = web3Utils.contract(state.wallet_address)
 
     return contract.getTraderOpenUpperBound(marketIdAddress, state.wallet_address, openType, price, leverage);
+  },
+  getTraderTradeBalanceDetail ({state, commit}) {
+    return getTradeBalanceDetail(state.wallet_address)
   }
 }
 
