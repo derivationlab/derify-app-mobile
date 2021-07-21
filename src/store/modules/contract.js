@@ -16,7 +16,10 @@ const state = {
   contractData: {
     positionChangeFeeRatio: '-', // 动仓费率
     traderOpenUpperBound: '-',
-    curSpotPrice: 0
+    longPmrRate: '-', //挖矿收益 多
+    shortPmrRate: '-',//挖矿收益 空
+    tokenPriceRate: '-',//币种涨幅
+    curSpotPrice: 0//币种价格
   },
   accountData: {
     balance: 0,

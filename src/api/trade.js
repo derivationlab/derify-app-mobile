@@ -1,6 +1,8 @@
 import * as io from "@/utils/request";
 const TRADE_LIST_URL = "http://13.125.43.43:8081/api/trade_records/"
 const FUND_LIST_URL = "http://13.125.43.43:8081/api/trader_balance/"
+const POSITION_MININ_EVENT_URL = "//13.125.43.43:8081/api/position_mining_events/"
+const TOKEN_PRICE_EVENT_URL = "//13.125.43.43:8081/api/token_price_events/"
 
 /**
  *
@@ -36,6 +38,45 @@ export async function getTradeBalanceDetail (trader) {
 
   return [];
 }
+
+/**
+ * 获取挖矿收益率
+ * @param tokenAddr
+ * @param callback param PositionMiningRate
+ */
+export function createTokenMiningFeeEvenet (tokenAddr, callback){
+
+  //TODO mock
+  tokenAddr = '0xF3A6679B266899042276804930B3bFBaf807F15b'
+
+  const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
+
+  events.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data)
+    callback(tokenAddr, parsedData)
+  }
+
+  return events
+}
+
+/**
+ * 获取币种涨幅
+ * @param tokenKey
+ * @param callback tokenKey,涨幅
+ * @return {EventSource}
+ */
+export function createTokenPriceChangeEvenet (tokenKey, callback){
+
+  const events = new EventSource(TOKEN_PRICE_EVENT_URL + tokenKey);
+
+  events.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data)
+    callback(tokenKey, parsedData)
+  }
+
+  return events
+}
+
 
 /**
  * 交易记录
@@ -89,3 +130,8 @@ export class TradeBalanceDetail {
   update_time;// 更新后端数据库时间（UTC）
 }
 
+
+export class PositionMiningRate {
+  longPmrRate; //该交易对做多方向持仓挖矿收益率（为小数值，前端按百分比显示需*100）
+  shortPmrRate; //该交易对做空方向持仓挖矿收益率（为小数值，前端按百分比显示需*100）
+}

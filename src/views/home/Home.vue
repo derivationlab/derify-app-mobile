@@ -10,7 +10,9 @@
         <div class="home-top-num">
           {{curSpotPrice | fck(-8)}}
         </div>
-        <div class="home-top-percent up">+999.99%</div>
+        <div :class="curContractData.tokenPriceRate > 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
+          {{curContractData.tokenPriceRate > 0 ? '+' : ''}}{{curContractData.tokenPriceRate | fck(2,2)}}%</span>
+        </div>
       </div>
       <div class="home-top-right">
         <div class="home-top-icons">
@@ -24,10 +26,10 @@
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
           <span class="fc-green">多</span>
-          <span>0.01%</span>
+          <span>{{curContractData.longPmrRate | fck(2,2)}}%</span>
           <span class="fc-65 margin">/</span>
           <span class="fc-red">空</span>
-          <span>0.12%</span>
+          <span>{{curContractData.shortPmrRate | fck(2,2)}}%</span>
         </div>
       </div>
     </div>
@@ -320,6 +322,7 @@ import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
+import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
@@ -333,7 +336,7 @@ const TradeTypeMap = {
 
 const context = {
   myChart: null,
-  loaded: false
+  loaded: false,
 };
 export default {
   name: 'Home',
@@ -363,8 +366,12 @@ export default {
     },
     curPositionChangeFeeRatio () {
       return this.$store.state.contract.contractData.positionChangeFeeRatio
+    },
+    curContractData () {
+      return this.$store.state.contract.contractData
     }
   },
+
   data () {
     return {
       entrustType: 0,
@@ -675,6 +682,18 @@ export default {
   },
   mounted () {
     context.loaded = true
+
+    //TODO 币种切换处理
+
+    const tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+      //更新挖矿收益率
+      this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
+    })
+
+    const tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
+      //更新币种涨幅
+      this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
+    })
   },
   updated () {
     this.$nextTick(() => this.drawKline())
