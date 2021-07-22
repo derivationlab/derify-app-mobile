@@ -16,10 +16,12 @@
       </template>
 
       <template #right v-if="walletAddress">
-        <div class="first-letter-wrap-inline" @click="changeRouter('account')">W</div>
+        <div class="first-letter-wrap-inline" @click="changeRouter('account')">
+          <img  :src="user.chainEnum.logo"/>
+        </div>
       </template>
       <template #right v-else>
-        <div class="first-letter-wrap-inline" @click="handleLogin">C</div>
+        <div class="first-letter-wrap-inline" @click="handleLogin"></div>
       </template>
 
     </van-nav-bar>
@@ -27,9 +29,11 @@
       <div class="interactive-error" v-if="loginError">{{ loginError }}</div>
       <div class="head-info" @click="handleLogin">
         <div class="head-info-left" v-if="walletAddress" @click="changeRouter('account')">
-          <div class="first-letter-wrap">OK</div>
+          <div class="first-letter-wrap"><img :src="user.chainEnum.logo"/></div>
           <div class="info-div">
-            <div class="info-name">USER_NAME</div>
+            <div class="info-name">
+              钱包地址
+            </div>
             <div>{{ walletAddress }}</div>
           </div>
         </div>
@@ -185,7 +189,6 @@ export default {
   data () {
     return {
       showMenu: false,
-      showWallet: false,
       loginError: null,
       navIndex: 0,
       lanData: [
@@ -214,6 +217,12 @@ export default {
         )}`
       }
       return ''
+    },
+    showWallet () {
+      return this.$store.state.user.showWallet
+    },
+    user () {
+      return this.$store.state.user
     }
   },
   created () {
@@ -236,7 +245,7 @@ export default {
       this.showMenu = bool
     },
     changeShowWallet (bool) {
-      this.showWallet = bool
+      this.$store.commit("user/setShowWallet", bool)
     },
     changeRouter (name) {
       if (this.$route.name === name) {
@@ -291,6 +300,10 @@ export default {
   text-align: center;
   line-height: 4rem;
   display: inline-block;
+  img{
+    width: 4rem;
+    height: 4rem;
+  }
 }
 .head-info {
   padding: 10rem 2rem 2.4rem 2rem;
@@ -308,6 +321,10 @@ export default {
       border: 0.1rem solid rgba(255, 255, 255, 0.15);
       text-align: center;
       line-height: 5rem;
+      img{
+        width: 5rem;
+        height: 5rem;
+      }
     }
     .info-div {
       margin-left: 2rem;
@@ -384,4 +401,28 @@ export default {
     margin-left: 1.2rem;
   }
 }
+  .error-notice {
+    line-height: 4rem;
+    border-radius: 1rem;
+    margin: 2rem 1.5rem 2rem 1.5rem;
+    border: 0.1rem solid @red;
+    position: relative;
+    color: @red;
+    padding: 0 3rem 0 1rem;
+    .error-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: inline-block;
+      padding-right: 1rem;
+    }
+    .van-icon-cross{
+      position: relative;
+      display: inline-block;
+      font: normal normal normal 14px/1 'vant-icon';
+      font-size: inherit;
+      text-rendering: auto;
+      align-items: center;
+    }
+  }
 </style>

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -62,3 +63,24 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  if (window.ethereum && window.ethereum.isConnected() && window.ethereum.selectedAddress) { // 判断该路由是否需要登录权限
+    console.log('netmask connected', window.ethereum.selectedAddress)
+    store.commit("user/setShowWallet", false)
+  } else {
+    store.commit("user/setShowWallet", true)
+    console.log('netmask not login, goto login', window.ethereum.selectedAddress)
+  }
+  next()
+})
+
+if(window.ethereum){
+  window.ethereum.on('accountsChanged', function () {
+    location.reload()
+  })
+
+  window.ethereum.on('networkChanged', function () {
+    location.reload()
+  })
+}

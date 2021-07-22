@@ -59,3 +59,13 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+if(window.ethereum){
+  window.ethereum.on('accountsChanged', function () {
+    location.reload()
+  })
+
+  window.ethereum.on('networkChanged', function () {
+    location.reload()
+  })
+}
