@@ -343,6 +343,8 @@ const TradeTypeMap = {
 const context = {
   myChart: null,
   loaded: false,
+  tokenMiningRateEvent: null,
+  tokenPriceChangeEvenet: null
 };
 export default {
   name: 'Home',
@@ -679,15 +681,19 @@ export default {
 
     //TODO 币种切换处理
 
-    const tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-      //更新挖矿收益率
-      this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
-    })
+    if(context.tokenMiningRateEvent === null){
+      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+        //更新挖矿收益率
+        this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
+      })
+    }
 
-    const tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
-      //更新币种涨幅
-      this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
-    })
+    if(context.tokenPriceChangeEvenet === null) {
+      context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
+        //更新币种涨幅
+        this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
+      })
+    }
   },
   updated () {
     this.$nextTick(() => this.drawKline())

@@ -64,7 +64,7 @@ export default {
         return false
       }
       const a = parseFloat(this.amount)
-      const amount = parseInt(a)
+      const amount = parseInt(a) * 1e8
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         this.$toast('充值成功')
       })
@@ -75,7 +75,7 @@ export default {
         return false
       }
       const a = parseFloat(this.amount)
-      const amount = parseInt(a)
+      const amount = parseInt(a) * 1e8
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
         this.$toast('提现成功')
       })
