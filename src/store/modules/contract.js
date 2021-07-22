@@ -7,7 +7,7 @@ const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0x7afe7373126eb5ef766caad2072c4a87810fbfa3'},
     {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
