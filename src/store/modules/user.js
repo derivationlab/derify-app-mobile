@@ -70,6 +70,9 @@ const state = {
 const mutations = {
   setShowWallet (state, showWallet) {
     state.showWallet = showWallet
+  },
+  updateState (state, updates) {
+    state = Object.assign(state, updates)
   }
 }
 
