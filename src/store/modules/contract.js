@@ -24,7 +24,8 @@ const state = {
   accountData: {
     balance: 0,
     marginBalance: 0,
-    totalMargin: 0
+    totalMargin: 0,
+    marginRate: 0
   },
   positionData: [],
   limitPositionData: [],
@@ -50,7 +51,7 @@ const mutations = {
     state.contractData = Object.assign({}, state.contractData, {...updates})
   },
   SET_ACCOUNT_DATA (state, accountData) {
-    state.accountData = accountData
+    state.accountData = Object.assign(state.accountData, accountData)
   },
   SET_POSITION_DATA (state, positionData) {
     state.positionData = positionData

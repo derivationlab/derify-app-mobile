@@ -527,14 +527,10 @@ export default {
       this.$router.push({name})
     },
     drawKline () {
-      console.log('context.loaded', context.loaded)
-      if(!context.loaded){
-        return
+      if(!context.myChart){
+        return;
       }
-      if(context.myChart){
-        context.myChart.dispose();
-      }
-      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+
 
       context.myChart.setOption(options)
       context.myChart.resize()
@@ -564,6 +560,7 @@ export default {
       if(key === 'key2'){
         self.loading = true
         this.$store.dispatch('contract/loadOrderedPositionData', {}).then(r => {
+          console.debug('contract/loadOrderedPositionData', r)
           // Array<Position>
           if (r === undefined) {
             return
@@ -609,18 +606,18 @@ export default {
       })
     },
     calculatePositionSize (sliderValue) {
+      console.log(sliderValue)
       const {unit} = this// 0 ETH，1 USDT 2 %
       if (unit ===  0) {
         this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
       }else if (unit === 1) {
         this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
       }else{
-        this.size = sliderValue
+        this.size = sliderValue || 0
       }
 
     },
     unitSelectChange (unit) {
-      console.log('unitSelectChange')
       this.unit = unit;
       this.calculatePositionSize(this.value5)
     },
@@ -634,7 +631,6 @@ export default {
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
         .then(r => {
-          console.log('getTraderOpenUpperBound', r)
         this.curTraderOpenUpperBound = r;
       });
     }
@@ -650,6 +646,9 @@ export default {
   created () {
     this.$nextTick(() => {
 
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+      this.drawKline()
+
       if(!window.ethereum){
         return
       }
@@ -658,15 +657,16 @@ export default {
 
       const self = this
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
+
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-        console.log('loadHomeData', self.positionChangeFeeRatio)
-        this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound);
+        this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount);
       })
 
       const dataList = this.positions
 
       dataList.splice(0)
       self.loading = true
+
       this.$store.dispatch('contract/loadPositionData').then(r => {
         // Array<Position>
         if (!(r instanceof Array)) {
@@ -705,7 +705,6 @@ export default {
     }
   },
   updated () {
-    this.$nextTick(() => this.drawKline())
   }
 }
 </script>

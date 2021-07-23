@@ -227,9 +227,6 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      if (this.walletAddress) {
-        this.$store.dispatch('contract/setAccount')
-      }
     })
   },
   methods: {

@@ -19,7 +19,7 @@
     <div class="wallet-wrap">
       <div class="wallet-wrap-title">选择网络</div>
       <div class="wallet-select-area">
-        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.ETH.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.ETH)">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.Kovan.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.Kovan)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
           <div class="wallet-item-name">Ethereum (xDai)</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">

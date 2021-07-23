@@ -14,7 +14,7 @@
     </div>
     <div class="unit-tr">
       <div>{{accountData.marginBalance | fck(-8)}}<span>USDT</span></div>
-      <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{marginRate}}%)</span></div>
+      <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{accountData.marginRate}}%)</span></div>
     </div>
     <div class="recharge" @click="goTransfer('deposit')">充值</div>
     <div class="withdraw" @click="goTransfer('withdraw')">提现</div>

@@ -14,7 +14,7 @@ let locale = 'zh'
 try {
   const curLngStr = sessionStorage.getItem('locale')
   const lng = JSON.parse(curLngStr || '{}')
-  console.log(lng, 9999)
+
   if (lng.lng) {
     locale = lng.lng
     // store.commit('user/SET_CURLNG', lng)
@@ -65,7 +65,7 @@ if(window.ethereum){
     location.reload()
   })
 
-  window.ethereum.on('networkChanged', function () {
+  window.ethereum.on('chainChanged', function () {
     location.reload()
   })
 }

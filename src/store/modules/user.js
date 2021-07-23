@@ -49,7 +49,7 @@ export class WalletEnum {
   }
 }
 
-export const mainChain = ChainEnum.ETH
+export const mainChain = ChainEnum.Kovan
 
 const state = {
   selectedAddress: "",
