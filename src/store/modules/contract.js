@@ -315,6 +315,18 @@ const actions = {
   },
   getTraderTradeBalanceDetail ({state, commit}) {
     return getTradeBalanceDetail(state.wallet_address)
+  },
+  onDeposit ({state, commit, dispatch}) {
+    const self = this;
+    web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
+      dispatch("loadAccountData")
+    })
+  },
+  onWithDraw ({state, commit, dispatch}) {
+    const self = this;
+    web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
+      dispatch("loadAccountData")
+    })
   }
 }
 

@@ -67,7 +67,6 @@ export default {
       const amount = parseInt(a) * 1e8
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         this.$toast('充值成功')
-        this.$router.go(-1)
       })
     },
     withdraw () {

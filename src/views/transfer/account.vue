@@ -7,7 +7,6 @@
     </div>
     <div class="account-info">
       <div class="div-unmUnit"><span>{{balance | fck(-8)}}</span><span class="unit">USDT</span></div>
-      <span class="unm">+1,234.56</span>
     </div>
     <div class="title-div">
       <span>保证金余额</span>
@@ -25,7 +24,6 @@
 import Navbar from '@/components/Navbar'
 
 const state = {
-  marginRate: '0',
   marginBalance: 0,
   totalMargin: 0,
   balance: 0
@@ -38,9 +36,14 @@ export default {
   data () {
     return state
   },
-  mounted () {
-  },
   computed: {
+    state () {
+      return this.$store.state.contract.accountData
+    }
+  },
+  mounted () {
+    this.$store.dispatch('contract/onDeposit');
+    this.$store.dispatch('contract/onWithDraw');
   },
   beforeMount () {
     this.$store.dispatch('contract/loadAccountData').then(r => {

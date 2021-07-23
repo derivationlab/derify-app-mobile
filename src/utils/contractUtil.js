@@ -356,6 +356,12 @@ export default class Contract {
 
     return arr
   }
+  onDeposit (user, callback) {
+    this.contract.events.Deposit({user: user}, callback)
+  }
+  onWithdraw (user, callback) {
+    this.contract.events.Withdraw({user: user}, callback)
+  }
 }
 
 const SOLIDITY_RATIO = 1e8
