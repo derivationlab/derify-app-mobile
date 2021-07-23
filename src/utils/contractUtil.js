@@ -356,6 +356,29 @@ export default class Contract {
 
     return arr
   }
+
+  /**
+   * 获取手续费
+   * @param marketIdAddress
+   * @param size
+   * @param price
+   */
+  getTradingFee (marketIdAddress, size, price) {
+    return this.contract.methods.getTradingFee(marketIdAddress, size, price).call()
+  }
+
+  /**
+   * 获取动仓费
+   * @param marketIdAddress
+   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
+   * @param actionType 0 开仓, 1平仓
+   * @param size
+   * @param price
+   */
+  getPositionChangeFee (marketIdAddress, side, actionType, size, price) {
+    return this.contract.methods.getPositionChangeFee(marketIdAddress, side, actionType, size, price).call()
+  }
+
   onDeposit (user, callback) {
     this.contract.events.Deposit({user: user}, callback)
   }

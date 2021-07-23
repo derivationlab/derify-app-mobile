@@ -316,6 +316,29 @@ const actions = {
   getTraderTradeBalanceDetail ({state, commit}) {
     return getTradeBalanceDetail(state.wallet_address)
   },
+  async getPositionChangeFee ({state, commit, dispatch}, {side, actionType, size, price}) {
+
+    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+    if (idx === undefined) {
+      idx = 0
+    }
+
+    const coin = state.pairs[idx]
+
+    return web3Utils.contract(state.wallet_address).getTradingFee(coin.address, side, actionType, size, price)
+  },
+  getTradingFee ({state, commit, dispatch}, {size, price}) {
+    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+
+    if (idx === undefined) {
+      idx = 0
+    }
+
+    const coin = state.pairs[idx]
+
+    return web3Utils.contract(state.wallet_address).getTradingFee(coin.address, size, price)
+  },
   onDeposit ({state, commit, dispatch}) {
     const self = this;
     web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){

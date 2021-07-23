@@ -45,7 +45,7 @@
       <div class="system-popup-price">
         <div class="fc-45">手续费</div>
         <div>
-          <span class="fc-85">0.00</span>
+          <span class="fc-85">{{openData.tradingFee | fck(-8)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default {
       openType: this.type, // 0 1
       openData: this.extraData,
       entrustTypeConfig: [
-        { text: '市价委托', value: 0 },
+        { text: '市价委托', value: 0},
         { text: '限价委托', value: 1 }
       ],
       leverageConfig: [10, 5, 3],
@@ -89,6 +89,7 @@ export default {
   watch: {
     show () {
       this.openType = this.type
+
       this.$store.dispatch('contract/getSpotPrice').then(_ => {
         this.showPopup = this.show
       })
@@ -97,7 +98,8 @@ export default {
       deep: true,
       immediate: true,
       handler () {
-        this.openData = this.extraData
+        Object.assign(this.openData, {...this.extraData})
+        console.log('watch extraData', JSON.stringify(this.openData))
       }
     }
   },
@@ -123,10 +125,10 @@ export default {
 
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
-        size: size,
+        size: size * 1e8,
         openType: this.openData.entrustType,
-        price,
-        leverage
+        price: price,
+        leverage: leverage * 1e8
       })
       this.close()
     }

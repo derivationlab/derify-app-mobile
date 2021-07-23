@@ -329,6 +329,7 @@ import Open from './Popup/Open'
 import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
+import { fck } from '../../utils/utils'
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
@@ -476,11 +477,14 @@ export default {
     },
     changeShowOpen (bool, type) {
       if (bool) {
-        const {entrustType, leverage, amount, size, unit} = this
+        let {entrustType, leverage, amount, size, unit} = this
         if (entrustType === 1 && !amount) {
           this.$toast('please input amount first')
           return
+        }else{
+          amount = this.curSpotPrice / 1e8
         }
+
         if (!size) {
           this.$toast('please input size first')
           return
@@ -500,15 +504,43 @@ export default {
           }
         }
 
-        this.openExtraData = {
+        let tradingFee = 0;
+        let positionChangeFee = 0;
+
+        this.openExtraData = Object.assign(this.openExtraData, {
           entrustType,
           leverage,
           amount: amount,
           size: size,
           side: type,
           unit,
-          positionChangeFee: this.positionChangeFeeRatio * amount * size
-        }
+          positionChangeFee,
+          tradingFee
+        })
+
+        const self = this;
+        let loadNum = 0;
+        this.$store.dispatch("contract/getTradingFee", {size: size * 1e8, price: amount * 1e8}).then((tradingFee) => {
+          if(!tradingFee) {
+            return
+          }
+          Object.assign(this.openExtraData, {tradingFee});
+          loadNum++
+          self.showOpen = bool && loadNum > 1;
+        });
+
+        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: size*1e8, price:amount * 1e8})
+          .then((positionChangeFee) => {
+            if(!positionChangeFee) {
+              return
+            }
+
+            Object.assign(this.openExtraData, {positionChangeFee});
+
+            loadNum++
+
+            self.showOpen = bool && loadNum > 1;
+          })
       }
       this.openType = type
       this.showOpen = bool
