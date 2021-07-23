@@ -117,13 +117,6 @@ export default {
           this.this.loginError = null
         })
     }
-  },
-  onLoad () {
-    if(window.ethereum){
-      window.ethereum.on('networkChanged', function () {
-        location.reload()
-      })
-    }
   }
 }
 </script>

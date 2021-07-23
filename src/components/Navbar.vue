@@ -226,7 +226,11 @@ export default {
     }
   },
   created () {
-    // this.changeLan(window.sessionStorage.getItem('navIndex'))
+    this.$nextTick(() => {
+      if (this.walletAddress) {
+        this.$store.dispatch('contract/setAccount')
+      }
+    })
   },
   methods: {
     changeLan (index) {
@@ -272,20 +276,6 @@ export default {
           })
       }
     }
-  },
-  beforeMount () {
-    if (this.walletAddress) {
-      this.$store.dispatch('contract/setAccount')
-    }
-
-    if(window.ethereum){
-      ethereum.autoRefreshOnNetworkChange = true
-      const self = this;
-      ethereum.on('accountsChanged', function (accounts) {
-        //
-      })
-    }
-
   }
 }
 </script>
