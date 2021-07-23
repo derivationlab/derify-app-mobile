@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="error-notice" v-if="showNetworkError">
-      <span>您选择的主网与钱包的主网不一致，请将钱包主网切换至以太坊（{{user.chainEnum.name}}）后重新登录。</span>
+      <span>您选择的主网与钱包的主网不一致，请将钱包主网切换至以太坊（{{mainChain.name}}）后重新登录。</span>
       <div class="error-right">
         <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showNetworkError=false}"></van-icon>
       </div>
@@ -67,7 +67,7 @@ export default {
     return {
       showPopup: this.show,
       selectedWalletNetwork: {},
-      ChainEnum, WalletEnum,
+      ChainEnum, WalletEnum, mainChain,
       selectedWallet: null,
       showMetaMaskInstallError: false,
       showNetworkError: false,

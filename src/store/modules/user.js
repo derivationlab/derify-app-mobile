@@ -49,11 +49,11 @@ export class WalletEnum {
   }
 }
 
-export const mainChain = ChainEnum.Kovan
+export const mainChain = ChainEnum.ETH
 
 const state = {
   selectedAddress: "",
-  showWallet: true,
+  showWallet: false,
   chainEnum: mainChain,
   isEthum: false,
   networkVersion: "",

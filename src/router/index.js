@@ -89,7 +89,7 @@ window.onload = function (){
 
 
     const walletInfo = getWallet()
-    console.log(walletInfo)
+
     store.commit("user/updateState", walletInfo)
   }
 }
