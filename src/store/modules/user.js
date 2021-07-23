@@ -49,23 +49,34 @@ export class WalletEnum {
   }
 }
 
-let wethereum = window.ethereum
-
-if(!wethereum){
-  wethereum = {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false}
-}
-
 export const mainChain = ChainEnum.Kovan
 
 const state = {
-  selectedAddress: wethereum.selectedAddress,
-  showWallet: !wethereum.selectedAddress,
-  chainEnum: networkMap[parseInt(wethereum.chainId)],
-  isEthum: mainChain.chainId === parseInt(wethereum.chainId),
-  networkVersion: wethereum.networkVersion,
-  isMetaMask: wethereum.isMetaMask
-}
+  selectedAddress: "",
+  showWallet: true,
+  chainEnum: mainChain,
+  isEthum: false,
+  networkVersion: "",
+  isMetaMask: false
+};
 
+export function getWallet(){
+
+  if(!window.ethereum){
+    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false}
+  }
+
+  let wethereum = window.ethereum
+
+  return {
+    selectedAddress: wethereum.selectedAddress,
+    showWallet: !wethereum.selectedAddress,
+    chainEnum: networkMap[parseInt(wethereum.chainId)],
+    isEthum: mainChain.chainId === parseInt(wethereum.chainId),
+    networkVersion: wethereum.networkVersion,
+    isMetaMask: wethereum.isMetaMask
+  }
+}
 
 const mutations = {
   setShowWallet (state, showWallet) {

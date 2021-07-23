@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import {getWallet} from "@/store/modules/user";
 
 Vue.use(VueRouter)
 
@@ -74,12 +75,21 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-if(window.ethereum){
-  window.ethereum.on('accountsChanged', function () {
-    location.reload()
-  })
 
-  window.ethereum.on('networkChanged', function () {
-    location.reload()
-  })
+
+window.onload = function (){
+  if(window.ethereum){
+    window.ethereum.on('accountsChanged', function () {
+      location.reload()
+    })
+
+    window.ethereum.on('chainChanged', function () {
+      location.reload()
+    })
+
+
+    const walletInfo = getWallet()
+    console.log(walletInfo)
+    store.commit("user/updateState", walletInfo)
+  }
 }

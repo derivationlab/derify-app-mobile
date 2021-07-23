@@ -647,34 +647,43 @@ export default {
       deep: true
     }
   },
-  beforeMount () {
-    const self = this
-    this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
-      self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-      console.log('loadHomeData', self.positionChangeFeeRatio)
-      this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound);
-    })
+  created () {
+    this.$nextTick(() => {
 
-    const dataList = this.positions
-
-    dataList.splice(0)
-    self.loading = true
-    this.$store.dispatch('contract/loadPositionData').then(r => {
-      // Array<Position>
-      if (!(r instanceof Array)) {
+      if(!window.ethereum){
         return
       }
 
-      r.forEach((item) => {
-        if (item !== undefined || !isNaN(item)) {
-          dataList.push(item)
-        }
+      this.$store.commit("contract/SET_WALLET_ADDRESS", window.ethereum.selectedAddress)
+
+      const self = this
+      this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
+        self.positionChangeFeeRatio = r.positionChangeFeeRatio;
+        console.log('loadHomeData', self.positionChangeFeeRatio)
+        this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound);
       })
 
-      self.loading = false
-    })
+      const dataList = this.positions
 
-    this.updateTraderOpenUpperBound()
+      dataList.splice(0)
+      self.loading = true
+      this.$store.dispatch('contract/loadPositionData').then(r => {
+        // Array<Position>
+        if (!(r instanceof Array)) {
+          return
+        }
+
+        r.forEach((item) => {
+          if (item !== undefined || !isNaN(item)) {
+            dataList.push(item)
+          }
+        })
+
+        self.loading = false
+      })
+
+      this.updateTraderOpenUpperBound()
+    })
   },
   mounted () {
     context.loaded = true

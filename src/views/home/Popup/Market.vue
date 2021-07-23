@@ -58,8 +58,10 @@ export default {
       return this.$store.dispatch('contract/getSpotPrice')
     }
   },
-  beforeMount () {
-    this.getCurPrice()
+  created () {
+    this.$nextTick(() => {
+      this.getCurPrice()
+    })
   }
 }
 </script>
