@@ -6,15 +6,15 @@
       <span class="info" @click="lookFinDetail">资金明细 ></span>
     </div>
     <div class="account-info">
-      <div class="div-unmUnit"><span>{{balance | fck(-8)}}</span><span class="unit">USDT</span></div>
+      <div class="div-unmUnit"><span>{{accountData.balance | fck(-8)}}</span><span class="unit">USDT</span></div>
     </div>
     <div class="title-div">
       <span>保证金余额</span>
       <span>占用保证金</span>
     </div>
     <div class="unit-tr">
-      <div>{{marginBalance | fck(-8)}}<span>USDT</span></div>
-      <div>{{totalMargin | fck(-8)}}<span>USDT({{marginRate}}%)</span></div>
+      <div>{{accountData.marginBalance | fck(-8)}}<span>USDT</span></div>
+      <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{marginRate}}%)</span></div>
     </div>
     <div class="recharge" @click="goTransfer('deposit')">充值</div>
     <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
@@ -37,7 +37,7 @@ export default {
     return state
   },
   computed: {
-    state () {
+    accountData () {
       return this.$store.state.contract.accountData
     }
   },

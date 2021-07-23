@@ -68,6 +68,7 @@ export default {
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         this.$toast('充值成功')
       })
+      this.$router.go(-1)
     },
     withdraw () {
       if (!this.amount) {
@@ -79,6 +80,7 @@ export default {
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
         this.$toast('提现成功')
       })
+      this.$router.go(-1)
     }
   }
 }
