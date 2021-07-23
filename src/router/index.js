@@ -70,7 +70,6 @@ router.beforeEach((to, from, next) => {
     store.commit("user/setShowWallet", false)
   } else {
     store.commit("user/setShowWallet", true)
-    console.log('netmask not login, goto login', window.ethereum.selectedAddress)
   }
   next()
 })
