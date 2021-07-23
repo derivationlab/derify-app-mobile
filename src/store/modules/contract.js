@@ -1,6 +1,5 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
-import * as axios from "@/utils/request";
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
 
 const state = {

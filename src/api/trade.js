@@ -27,9 +27,6 @@ export async function getTradeList (trader) {
  * @returns {Promise<Array<TradeBalanceDetail>>}
  */
 export async function getTradeBalanceDetail (trader) {
-  //TODO mock
-  trader = "0xA0F53B952005A57260B19143708Bcd34eB6F78b6"
-
   const content =  await io.get(FUND_LIST_URL + trader)
   console.log(content)
   if(content) {
@@ -45,10 +42,6 @@ export async function getTradeBalanceDetail (trader) {
  * @param callback param PositionMiningRate
  */
 export function createTokenMiningFeeEvenet (tokenAddr, callback){
-
-  //TODO mock
-  tokenAddr = '0xF3A6679B266899042276804930B3bFBaf807F15b'
-
   const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
 
   events.onmessage = (event) => {
