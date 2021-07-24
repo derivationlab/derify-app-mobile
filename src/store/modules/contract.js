@@ -241,6 +241,11 @@ const actions = {
 
       const accountData = await contract.getTraderAccount(state.wallet_address)
 
+      const tradeVariables = await contract.getTraderVariables(state.wallet_address)
+      Object.assign(accountData, {marginBalance: tradeVariables.marginBalance
+        , totalPositionAmount: tradeVariables.totalPositionAmount
+        , marginRate: tradeVariables.marginRate})
+
       commit('SET_ACCOUNT_DATA', accountData)
 
       console.log('loadAccountData', accountData)
