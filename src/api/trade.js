@@ -11,7 +11,7 @@ const TOKEN_PRICE_EVENT_URL = "//13.125.43.43:8081/api/token_price_events/"
  */
 export async function getTradeList (trader) {
   //TODO mock
-  trader = "0xA0F53B952005A57260B19143708Bcd34eB6F78b6"
+  // trader = "0xA0F53B952005A57260B19143708Bcd34eB6F78b6"
   const content = await io.get(TRADE_LIST_URL + trader)
 
   if(content) {
