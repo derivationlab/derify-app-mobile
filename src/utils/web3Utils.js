@@ -1,66 +1,65 @@
-import Web3 from 'web3'
-import contractAbi from '@/utils/contractAbi'
-import derifyABI from './derifyExchange'
-import Contract from './contractUtil'
+import Contract, { contractDebug } from './contractUtil'
 
 const ethUrl = 'https://kovan.infura.io/v3/4790cd7bb24349738a3b05ee0c20746e'
-const contractAddress = '0xFb7297591A440b29CAc98DAe6bBcBD73B353b27c'
+
 
 export function contract (account) {
-  return new Contract(derifyABI, contractAddress, { from: account })
-}
 
-// create or get instance
-function _contractInstance () {
-  if (window.ethereum) {
-    window.web3 = new Web3(window.ethereum)
-  } else if (window.web3) {
-    window.web3 = new Web3(window.web3.currentProvider)
-  } else {
-    const web3 = new Web3(new Web3.providers.HttpProvider(ethUrl))
-    window.web3 = web3
+  const contractObj = new Contract({ from: account })
+
+  if(contractDebug){
+    return new Proxy(contractObj, {
+      get(target, propKey, receiver) {
+        const ret = Reflect.get(...arguments)
+
+        if(ret instanceof Function){
+          return new Proxy(ret, {
+            apply (target, ctx, args) {
+              console.log('contract.'+ propKey + ',args=' + JSON.stringify(args))
+              return Reflect.apply(...arguments);
+            }
+          })
+        }else{
+          return ret
+        }
+      }
+    });
+  }else{
+    return contractObj
   }
-  const contract = new window.web3.eth.Contract(contractAbi, contractAddress)
-  return contract
 }
 
-export function getAccount (address) {
-  const call = _contractInstance().methods.getAccount(address).call()
-  return call
-}
 
-export function deposit (address, amount) {
-  const transaction = _contractInstance().methods.deposit(amount).send({
-    from: address
-  })
-  return transaction
-}
+class Aop {
+  constructor(obj, beforeFork, afterFork) {
+    return new Proxy(obj, {
+      get: function (target, propKey, receiver) {
+        for (let key in beforeFork) {
+          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
+            beforeFork[key]?.(target[propKey]);
+          }
+        }
+        beforeFork[propKey]?.(target[propKey]);
+        //before
 
-export function withdraw (address, marketIdx, amount) {
-  console.log(address)
-  console.log(marketIdx)
-  console.log(amount)
-  const transaction = _contractInstance().methods.withdraw(marketIdx, amount).send({
-    from: address
-  })
-  return transaction
-}
+        var re = Reflect.get(target, propKey, receiver)();
 
-export function getSpotPrice (marketIdx) {
-  const call = _contractInstance().methods.getSpotPrice(marketIdx).call()
-  return call
-}
+        for (let key in afterFork) {
+          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
+            afterFork[key]?.(target[propKey]);
+          }
+        }
+        afterFork[propKey]?.(target[propKey]);
+        //after
 
-export function openPosition (address, marketIdx, side, size, price, leverage) {
-  const transaction = _contractInstance().methods.openPosition(marketIdx, side, size, price, leverage).send({
-    from: address
-  })
-  return transaction
-}
+        return ()=>{return re};
+      },
+      set: function (target, propKey, value, receiver) {
+        return Reflect.set(target, propKey, value, receiver);
+      },
 
-export function getMarketAccount (address, marketIdx) {
-  const call = _contractInstance().methods.getMarketAccount(marketIdx, address).call()
-  return call
+    });
+  }
 }
 
 export function enable () {

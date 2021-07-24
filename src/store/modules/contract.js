@@ -1,13 +1,14 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
+import { Token } from '../../utils/contractUtil'
 
 const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: '0x7afe7373126eb5ef766caad2072c4a87810fbfa3'},
-    {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
+    {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: Token.ETH},
     {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
@@ -163,7 +164,7 @@ const actions = {
     return new Promise((resolve, reject) => {
 
       web3Utils.contract(state.wallet_address)
-        .cancleOrderedPosition(coinAddress, orderType, side, timestamp).then(r => {
+        .cancleOrderedPosition(coinAddress, orderType, state.wallet_address, side, timestamp).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
@@ -171,24 +172,11 @@ const actions = {
   cancleAllOrderedPositions ({state}, {coinAddress}) {
     return new Promise((resolve, reject) => {
       web3Utils.contract(state.wallet_address)
-        .cancleAllOrderedPositions(coinAddress).then(r => {
+        .cancleAllOrderedPositions(coinAddress, state.wallet_address).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
   },
-  getMarketAccount ({state}) {
-    if(!state.wallet_address){
-      return {}
-    }
-
-    return new Promise((resolve, reject) => {
-      const idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
-      web3Utils.getMarketAccount(state.wallet_address, idx).then(r => {
-        resolve(r)
-      }).catch(e => reject(e))
-    })
-  },
-
   loadHomeData ({state, commit}, entrustType = 0) {
     // 加载首页合约数据
     return (async function () {

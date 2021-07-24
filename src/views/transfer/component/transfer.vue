@@ -78,9 +78,11 @@ export default {
       const a = parseFloat(this.amount)
       const amount = parseInt(a) * 1e8
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$toast('提现成功')
+        this.$router.go(-1)
+      }).catch(err => {
+        this.$toast(`出现异常:` + err)
       })
-      this.$router.go(-1)
+
     }
   }
 }

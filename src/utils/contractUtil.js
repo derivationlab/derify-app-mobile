@@ -1,6 +1,10 @@
 import Web3 from 'web3'
+import ABIData from './contract'
 
 const cache = {}
+
+export const contractDebug = true
+
 /**
  *
  * @param abi
@@ -10,13 +14,26 @@ const cache = {}
  */
 export default class Contract {
 
-  constructor (abi, address, option) {
+  constructor (option) {
+
+    //TODO 确认该值
+    const gasPrice = null;"20000000000"
+
     const web3 = new Web3()
     const provider = window.ethereum
     web3.setProvider(provider)
 
     this.web3 = web3
-    this.contract = new web3.eth.Contract(abi, address, Object.assign({ gasPrice: '20000000000' }, option))
+
+    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, Object.assign({ gasPrice }, option))
+
+    this.DerifyDerivative = {
+      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, Object.assign({ gasPrice }, option)),
+      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, Object.assign({ gasPrice }, option))
+    }
+
+    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
+    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
   }
 
   /**
@@ -25,7 +42,7 @@ export default class Contract {
    * @return
    */
   deposit (amount) {
-    return this.contract.methods.deposit(amount).send()
+    return this.DerifyExchange.methods.deposit(amount).send()
   }
   /**
    * 提现
@@ -33,7 +50,7 @@ export default class Contract {
    * @returns {*}
    */
   withdraw (amount) {
-    return this.contract.methods.withdraw(amount).send()
+    return this.DerifyExchange.methods.withdraw(amount).send()
   }
   /**
    * 开仓
@@ -46,21 +63,8 @@ export default class Contract {
    * @return {*}
    */
   openPosition (token, side, openType, size, price, leverage) {
-    return this.contract.methods
+    return this.DerifyExchange.methods
       .openPosition(token, side, openType, size, price, leverage)
-      .send()
-  }
-
-  /**
-   * 设置止盈止损委托
-   * @param token
-   * @param side
-   * @param stopType
-   * @param stopPrice
-   * @return {*}
-   */
-  orderStopPosition (token, side, stopType, stopPrice) {
-    return this.contract.methods.orderStopPosition(token, side, stopType, stopPrice)
       .send()
   }
   /**
@@ -71,61 +75,26 @@ export default class Contract {
    * @return {*}
    */
   closePosition (token, side, size) {
-    return this.contract.methods.closePosition(token, side, size)
+    return this.DerifyExchange.methods.closePosition(token, side, size)
       .send()
   }
+
   /**
    * 一键平仓
    */
   closeAllPositions () {
-    return this.contract.methods.closeAllPositions()
+    return this.DerifyExchange.methods.closeAllPositions()
       .send()
   }
+
+
   /**
    * 获取账户信息
    * @param trader
    * @return {*}
    */
   getTraderAccount (trader) {
-    return this.contract.methods.getTraderAccount(trader).call()
-  }
-  /**
-   * 设置币种的当前价格
-   * @param marketIdAddress  币合约地址
-   * @param price
-   * @return {*}
-   */
-  setSpotPrice (marketIdAddress, price) {
-    return this.contract.methods.setSpotPrice(marketIdAddress, price).send()
-  }
-
-  /**
-   * 获取币种当前价格
-   * @param marketIdAddress 币合约地址
-   * @return {*}
-   */
-  getSpotPrice (marketIdAddress) {
-    return this.contract.methods.getSpotPrice(marketIdAddress).call()
-  }
-
-  /**
-   * 取消委托
-   * @param marketIdAddress
-   * @param orderType
-   * @param side
-   * @param timestamp
-   * @return {*}
-   */
-  cancleOrderedPosition (marketIdAddress, orderType, side, timestamp) {
-    return this.contract.methods.cancleOrderedPosition(marketIdAddress, orderType, side, timestamp).send()
-  }
-  /**
-   * 取消全部委托
-   * @param marketIdAddress
-   * @return {*}
-   */
-  cancleAllOrderedPositions (marketIdAddress) {
-    return this.contract.methods.cancleAllOrderedPositions(marketIdAddress).send()
+    return this.DerifyExchange.methods.getTraderAccount(trader).call()
   }
   /**
    * 获取用户最大开仓量
@@ -137,52 +106,7 @@ export default class Contract {
    * @return {*}
    */
   getTraderOpenUpperBound (marketIdAddress, trader, openType, price, leverage) {
-    return this.contract.methods.getTraderOpenUpperBound(marketIdAddress, trader, openType, price, leverage).call()
-  }
-
-  /**
-   * 获取持仓
-   * @param trader
-   * @param marketIdAddress
-   * @param side
-   * @return position
-   size: 持仓量（精度为8位）
-   leverage: 杠杆（精度为8位）
-   averagePrice: 开仓均价（精度为8位）
-   timestamp: 时间戳
-   */
-  getTraderPosition (trader, marketIdAddress, side) {
-    return this.contract.methods.getTraderPosition(trader, marketIdAddress, side).call()
-  }
-  /**
-   * 获取委托单
-   * @param trader
-   * @param marketIdAddress
-   * @param side
-   * @param stopType
-   * @return {*}
-   */
-  getTraderOrderStopPosition (trader, marketIdAddress, side, stopType) {
-    return this.contract.methods.getTraderOrderStopPosition(trader, marketIdAddress, side, stopType).call()
-  }
-
-  /**
-   *
-   * @param trader
-   * @param marketIdAddress
-   * @param side
-   * @return {*}
-   */
-  getTraderOrderLimitPositions (trader, marketIdAddress, side) {
-    return this.contract.methods.getTraderOrderLimitPositions(trader, marketIdAddress, side).call()
-  }
-  /**
-   * 获取动仓费率
-   * @param marketIdAddress
-   * @return {*}
-   */
-  getPositionChangeFeeRatio (marketIdAddress) {
-    return this.contract.methods.getPositionChangeFeeRatio(marketIdAddress).call()
+    return this.DerifyExchange.methods.getTraderOpenUpperBound(marketIdAddress, trader, openType, price, leverage).call()
   }
 
   /**
@@ -192,7 +116,7 @@ export default class Contract {
    * @return {*}
    */
   getSysOpenUpperBound (marketIdAddress, side) {
-    return this.contract.methods.getSysOpenUpperBound(marketIdAddress, side).call()
+    return this.DerifyExchange.methods.getSysOpenUpperBound(marketIdAddress, side).call()
   }
 
   /**
@@ -206,7 +130,7 @@ export default class Contract {
    * @param averagePrice
    */
   getTraderPositionVariables (trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice) {
-    return this.contract.methods.getTraderPositionVariables(trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice).call()
+    return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
   }
   /**
    * 获取用户保证金信息
@@ -214,8 +138,9 @@ export default class Contract {
    * @return {*}
    */
   getTraderVariables (trader) {
-    return this.contract.methods.getTraderVariables(trader).call()
+    return this.DerifyExchange.methods.getTraderVariables(trader).call()
   }
+
   /**
    * 强平仓金额
    * @param side
@@ -227,23 +152,221 @@ export default class Contract {
    * @return {*}
    */
   getTraderPositionLiquidatePrice (side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount) {
-    return this.contract.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount).call()
+    return this.DerifyExchange.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginBalance, totalPositionAmount).call()
   }
 
+  onDeposit (user, callback) {
+    this.DerifyExchange.events.Deposit({user: user}, callback)
+  }
+  onWithdraw (user, callback) {
+    this.DerifyExchange.events.Withdraw({user: user}, callback)
+  }
+
+  /**
+   * 根据币种获取合约对象
+   * @param marketIdAddress
+   * @return {Web3.eth.Contract}
+   */
+  getDerifyDerivativeContract(marketIdAddress) {
+
+    if(ABIData.DerifyDerivative.BTC.token === marketIdAddress){
+      return this.DerifyDerivative.BTC
+    }
+
+    return this.DerifyDerivative.ETH
+  }
+  /**
+   * 获取持仓
+   * @param trader
+   * @param marketIdAddress
+   * @return {DerivativePositions}
+   */
+  getTraderPosition (trader, marketIdAddress) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.getTraderDerivativePositions(trader).call()
+  }
+
+  /**
+   * 设置币种的当前价格
+   * @param marketIdAddress  币合约地址
+   * @param price
+   * @return {*}
+   */
+  setSpotPrice (marketIdAddress, price) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.setSpotPrice(marketIdAddress, price).send()
+  }
+
+  /**
+   * 获取币种当前价格
+   * @param marketIdAddress 币合约地址
+   * @return {*}
+   */
+  getSpotPrice (marketIdAddress) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.getSpotPrice().call()
+  }
+
+  /**
+   * 设置止盈止损委托
+   * @param token
+   * @param trader
+   * @param side
+   * @param stopType
+   * @param stopPrice
+   * @return {*}
+   */
+  orderStopPosition (token, trader, side, stopType, stopPrice) {
+    return this.getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, stopPrice)
+      .send()
+  }
+
+  /**
+   * 取消委托
+   * @param marketIdAddress
+   * @param trader
+   * @param orderType LimitOrder-限价委托, StopProfitOrder-止盈委托, StopLossOrder-止损委托
+   * @param side
+   * @param timestamp
+   * @return {*}
+   */
+  cancleOrderedPosition (marketIdAddress, trader, orderType, side, timestamp) {
+    if (orderType === 0) {
+      return this.getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
+    } else {
+      return this.getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()
+    }
+
+  }
+  /**
+   * 取消全部委托
+   * @param marketIdAddress
+   * @param trader
+   * @return {*}
+   */
+  cancleAllOrderedPositions (marketIdAddress, trader) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.cancleAllOrderedPositions(trader).send()
+  }
+
+  /**
+   * 获取动仓费率
+   * @param marketIdAddress
+   * @return {*}
+   */
+  getPositionChangeFeeRatio (marketIdAddress) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFeeRatio().call()
+  }
+
+  /**
+   * 获取手续费
+   * @param marketIdAddress
+   * @param size
+   * @param price
+   */
+  getTradingFee (marketIdAddress, size, price) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.getTradingFee(size, price).call()
+  }
+
+  /**
+   * 获取动仓费
+   * @param marketIdAddress
+   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
+   * @param actionType 0 开仓, 1平仓
+   * @param size
+   * @param price
+   */
+  getPositionChangeFee (marketIdAddress, side, actionType, size, price) {
+    return this.getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFee(side, actionType, size, price).call()
+  }
+
+  /**
+   * 可兑换债券bDRF
+   * 从Derify账户转到钱包账户
+   * @param amount
+   * @return {*}
+   */
+  withdrawBond (amount) {
+    return this.DerifyBond.methods.withdrawBond(amount).send();
+  }
+
+  /**
+   * 可兑换债券bDRF
+   * 兑换，从Derify账户余额或者钱包账户余额 兑换 成USDT到钱包账户
+   * @param amount
+   * @param bondAccountType 债券账户种类 0-DerifyAccount-Derify账户, 1-WalletAccount-用户钱包账户
+   * @return {*}
+   */
+  exchangeBond (amount,bondAccountType) {
+    return this.DerifyBond.methods.exchangeBond(amount,bondAccountType).send();
+  }
+
+  /**
+   * 收益计划存入
+   * 存入，从Derify账户余额或者钱包账户余额 存入 "收益计划存入"
+   * @param amount
+   * @param bondAccountType
+   * @return {*}
+   */
+  depositBondToBank (amount,bondAccountType) {
+    return this.DerifyBond.methods.depositBondToBank(amount,bondAccountType).send();
+  }
+
+  /**
+   * 收益计划赎回
+   * 赎回，从 "收益计划存入" 赎回到 Derify账户余额或者钱包账户余额
+   * @param amount
+   * @param bondAccountType
+   * @return {*}
+   */
+  redeemBondFromBank (amount, bondAccountType) {
+    return this.DerifyBond.methods.redeemBondFromBank(amount,bondAccountType).send();
+  }
+
+  /**
+   * 获取用户"可兑换债券bDRF"余额，"收益计划存入"余额， "可兑换债券bDRF"钱包账户余额，债券年化收益率
+   * @param trader
+   * @return {BondInfo}
+   */
+  getBondInfo (trader) {
+    return this.DerifyBond.methods.getBondInfo(trader);
+  }
+
+  /**
+   * 获取用户"可兑换"bDRF上限。"可兑换债券bDRF"=>兑换=>可兑换 上限
+   * @param trader 用户账户地址
+   * @param bondAccountType 债券账户种类，0-DerifyAccount-Derify账户, 1-WalletAccount-用户钱包账户
+   * @return {int} bDRF可兑换最大值（精度为8位）
+   */
+  getExchangeBondSizeUpperBound (trader, bondAccountType) {
+    return this.DerifyBond.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
+  }
+
+  /**
+   * 提取持仓挖矿收益
+   * @param amount
+   * @return {*}
+   */
+  withdrawPMReward (amount) {
+    return this.DerifyStaking.methods.withdrawPMReward(amount).send();
+  }
+
+  /**
+   * 获取用户持仓挖矿收益
+   * @param trader 用户账户地址
+   * @return {int} 持仓挖矿收益（精度为8位）
+   */
+  getPMReward (trader) {
+    return this.DerifyStaking.methods.withdrawPMReward(trader).call();
+  }
   /**
    * 所有持仓
    * @param trader
    * @param marketIdAddress
-   * @return Array<Position>
+   * @return Array<PositionView>
    */
   async getTraderAllPosition (trader, marketIdAddress) {
     const positionArr = []
+    let derivativePosition = new DerivativePositions();
+    derivativePosition = await this.getTraderPosition(trader, marketIdAddress)
+    derivativePosition.long;
 
-    // 多
-    positionArr.push(await this.getTraderViewPosition(trader, marketIdAddress, 0))
-
-    // 空
-    positionArr.push(await this.getTraderViewPosition(trader, marketIdAddress, 1))
 
     return positionArr
   }
@@ -253,7 +376,7 @@ export default class Contract {
    * @param trader
    * @param marketIdAddress
    * @param side
-   * @return {Promise<Position>}
+   * @return {Promise<PositionView>}
    */
   async getTraderViewPosition (trader, marketIdAddress, side) {
     let position = new PositionView()
@@ -356,35 +479,6 @@ export default class Contract {
 
     return arr
   }
-
-  /**
-   * 获取手续费
-   * @param marketIdAddress
-   * @param size
-   * @param price
-   */
-  getTradingFee (marketIdAddress, size, price) {
-    return this.contract.methods.getTradingFee(marketIdAddress, size, price).call()
-  }
-
-  /**
-   * 获取动仓费
-   * @param marketIdAddress
-   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
-   * @param actionType 0 开仓, 1平仓
-   * @param size
-   * @param price
-   */
-  getPositionChangeFee (marketIdAddress, side, actionType, size, price) {
-    return this.contract.methods.getPositionChangeFee(marketIdAddress, side, actionType, size, price).call()
-  }
-
-  onDeposit (user, callback) {
-    this.contract.events.Deposit({user: user}, callback)
-  }
-  onWithdraw (user, callback) {
-    this.contract.events.Withdraw({user: user}, callback)
-  }
 }
 
 const SOLIDITY_RATIO = 1e8
@@ -442,6 +536,11 @@ export class PositionView {
   liquidatePrice;
 }
 
+export const Token = {
+  BTC: ABIData.DerifyDerivative.BTC.address,
+  ETH: ABIData.DerifyDerivative.ETH.address
+}
+
 export class LimitPoistion {
   /**
    * 仓量
@@ -492,4 +591,91 @@ export class OrderLimitPositionView {
    * Array<LimitPoistion>
    */
   limitOrders;
+}
+
+
+export class BondInfo {
+  /**
+   * "可兑换债券bDRF"Derify账户余额（精度为8位）
+   */
+  bondBalance;
+
+  /**
+   * "收益计划存入"余额（精度为8位）
+   */
+  bondReturnBalance;
+
+  /**
+   * "可兑换债券bDRF"钱包账户余额（精度为8位）
+   */
+  bondWalletBalance;
+
+  /**
+   * 债券年化收益率（精度为8位）
+   */
+  bondAnnualInterestRate;
+}
+
+export class DerivativePositions {
+  /**
+   * boolean
+   */
+  isUsed;
+  /**
+   *  // 多仓持仓
+   * Position
+   */
+  long;
+  /**
+   * Position
+   */
+  short; // 空仓持仓
+  /**
+   * Position[]
+   */
+  longOrderOpenPosition; // 多仓限价委托单
+  /**
+   * Position[]
+   */
+  shortOrderOpenPosition; // 空仓限价委托单
+  /**
+   * StopPosition
+   */
+  longOrderStopProfitPosition; // 多仓止盈委托单
+  /**
+   * StopPosition
+   */
+  longOrderStopLossPosition; // 多仓止损委托单
+  /**
+   * StopPosition
+   */
+  shortOrderStopProfitPosition; // 空仓止盈委托单
+  /**
+   * StopPosition
+   */
+  shortOrderStopLossPosition; // 空仓止损委托单
+}
+
+export class Position {
+  /**
+   * bool
+   */
+  isUsed;
+  /**
+   * uint256
+   */
+  size;
+  /**
+   * uint256
+   */
+  price;
+  /**
+   * uint256
+   */
+  leverage;
+
+  /**
+   * uint256
+   */
+  timestamp;
 }
