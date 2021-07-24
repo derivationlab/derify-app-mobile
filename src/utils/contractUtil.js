@@ -1,6 +1,28 @@
 import Web3 from 'web3'
 import ABIData from './contract'
 
+export class SideEnum {
+  static get LONG (){
+    return 0;
+  }
+
+  static get SHORT (){
+    return 1;
+  }
+
+  static get HEDGE() {
+    return 2
+  }
+}
+
+export const Token = {
+  BTC: ABIData.DerifyDerivative.BTC.address,
+  ETH: ABIData.DerifyDerivative.ETH.address,
+  DUSD: ABIData.DUSD.address,
+  bDRD: ABIData.bDRD.address,
+  USDT: ABIData.bDRD.address
+}
+
 const cache = {}
 
 export const contractDebug = true
@@ -16,8 +38,7 @@ export default class Contract {
 
   constructor (option) {
 
-    //TODO 确认该值
-    const gasPrice = null;"20000000000"
+    const gasPrice = (1e9).toString();
 
     const web3 = new Web3()
     const provider = window.ethereum
@@ -167,7 +188,7 @@ export default class Contract {
    * @param marketIdAddress
    * @return {Web3.eth.Contract}
    */
-  getDerifyDerivativeContract(marketIdAddress) {
+  __getDerifyDerivativeContract(marketIdAddress) {
 
     if(ABIData.DerifyDerivative.BTC.token === marketIdAddress){
       return this.DerifyDerivative.BTC
@@ -182,7 +203,7 @@ export default class Contract {
    * @return {DerivativePositions}
    */
   getTraderPosition (trader, marketIdAddress) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.getTraderDerivativePositions(trader).call()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getTraderDerivativePositions(trader).call()
   }
 
   /**
@@ -192,7 +213,7 @@ export default class Contract {
    * @return {*}
    */
   setSpotPrice (marketIdAddress, price) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.setSpotPrice(marketIdAddress, price).send()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.setSpotPrice(marketIdAddress, price).send()
   }
 
   /**
@@ -201,7 +222,7 @@ export default class Contract {
    * @return {*}
    */
   getSpotPrice (marketIdAddress) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.getSpotPrice().call()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getSpotPrice().call()
   }
 
   /**
@@ -214,7 +235,7 @@ export default class Contract {
    * @return {*}
    */
   orderStopPosition (token, trader, side, stopType, stopPrice) {
-    return this.getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, stopPrice)
+    return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, stopPrice)
       .send()
   }
 
@@ -229,9 +250,9 @@ export default class Contract {
    */
   cancleOrderedPosition (marketIdAddress, trader, orderType, side, timestamp) {
     if (orderType === 0) {
-      return this.getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
     } else {
-      return this.getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()
     }
 
   }
@@ -242,7 +263,7 @@ export default class Contract {
    * @return {*}
    */
   cancleAllOrderedPositions (marketIdAddress, trader) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.cancleAllOrderedPositions(trader).send()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleAllOrderedPositions(trader).send()
   }
 
   /**
@@ -251,7 +272,7 @@ export default class Contract {
    * @return {*}
    */
   getPositionChangeFeeRatio (marketIdAddress) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFeeRatio().call()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFeeRatio().call()
   }
 
   /**
@@ -261,7 +282,7 @@ export default class Contract {
    * @param price
    */
   getTradingFee (marketIdAddress, size, price) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.getTradingFee(size, price).call()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getTradingFee(size, price).call()
   }
 
   /**
@@ -273,7 +294,7 @@ export default class Contract {
    * @param price
    */
   getPositionChangeFee (marketIdAddress, side, actionType, size, price) {
-    return this.getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFee(side, actionType, size, price).call()
+    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFee(side, actionType, size, price).call()
   }
 
   /**
@@ -359,66 +380,119 @@ export default class Contract {
    * 所有持仓
    * @param trader
    * @param marketIdAddress
-   * @return Array<PositionView>
+   * @return {PositionView[]}
    */
   async getTraderAllPosition (trader, marketIdAddress) {
-    const positionArr = []
+
+    const positionDataView = new PositionDataView()
+
+    //1.我的持仓
+    const positions = []
     let derivativePosition = new DerivativePositions();
     derivativePosition = await this.getTraderPosition(trader, marketIdAddress)
-    derivativePosition.long;
 
+    const tradeVariables = await this.__getTraderVariablesWithCache(trader)
 
-    return positionArr
+    //1.1 多仓处理
+    const longPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.LONG
+      , derivativePosition.long, derivativePosition.longOrderStopProfitPosition, derivativePosition.longOrderStopLossPosition, tradeVariables);
+    positions.push(longPositionView)
+
+    //1.2 空仓处理
+    const shortPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.SHORT
+      , derivativePosition.long, derivativePosition.shortOrderStopProfitPosition, derivativePosition.shortOrderStopLossPosition, tradeVariables);
+    positions.push(shortPositionView)
+
+    positionDataView.positions = positions
+
+    //2.我的委托
+    const limitOrders = []
+    //2.1 多仓处理
+    const limitLongOrders = derivativePosition.longOrderOpenPosition
+    for(const limitOrder of limitLongOrders){
+      const limitLongOrderView = new OrderLimitPositionView()
+      limitLongOrderView.side = SideEnum.LONG
+      if(!derivativePosition.longOrderStopProfitPosition){
+        limitLongOrderView.stopProfitPrice = derivativePosition.longOrderStopProfitPosition.stopProfitPrice
+      }
+
+      if(!derivativePosition.longOrderStopLossPosition) {
+        limitLongOrderView.stopLossPrice = derivativePosition.longOrderStopLossPosition.stopLossPrice
+      }
+
+      Object.assign(limitLongOrderView, limitOrder)
+      limitOrders.push(limitLongOrderView)
+    }
+
+    //2.2 空仓处理
+    const limitShortOrders = derivativePosition.shortOrderOpenPosition
+
+    for(const limitOrder of limitShortOrders){
+      const limitShortOrderView = new OrderLimitPositionView()
+      limitShortOrderView.side = SideEnum.SHORT
+      if(!derivativePosition.shortOrderStopProfitPosition){
+        limitShortOrderView.stopProfitPrice = derivativePosition.shortOrderStopProfitPosition.stopProfitPrice
+      }
+
+      if(!derivativePosition.shortOrderStopProfitPosition) {
+        limitShortOrderView.stopLossPrice = derivativePosition.shortOrderStopProfitPosition.stopLossPrice
+      }
+
+      Object.assign(limitShortOrderView, limitOrder)
+      limitOrders.push(limitShortOrderView)
+    }
+
+    positionDataView.orderPositions = limitOrders
+
+    return positionDataView
   }
 
   /**
-   * 获取某种持仓
+   * 对象转换
    * @param trader
-   * @param marketIdAddress
-   * @param side
-   * @return {Promise<PositionView>}
+   * @param marketAddr
+   * @param side {SideEnum}
+   * @param positionDO {Position}
+   * @param stopProfitPosition {StopPosition}
+   * @param stopLossPosition {StopPosition}
+   * @param tradeVariables
+   * @private
    */
-  async getTraderViewPosition (trader, marketIdAddress, side) {
-    let position = new PositionView()
+  async __convertPositionToPositionView (trader, marketAddr, side, positionDO, stopProfitPosition, stopLossPosition, tradeVariables) {
+    const position = new PositionView()
+
+    position.coinAddress = marketAddr
     position.side = side
-    position.coinAddress = marketIdAddress
-
-    // 1.获取持仓量、杠杆、开仓均价、时间戳
-    position = Object.assign(position, await this.getTraderPosition(trader, marketIdAddress, side))
-    position.averagePrice = position.price
-    position.spotPrice = await this.getSpotPrice(marketIdAddress)
-
-    // 2.获取止盈、止损价格
-    // 2.1.获取止盈委托
-    const profitPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 0)
-
-    // 2.2.获取止损委托
-    const lossPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 1)
-
-    // 2.3.合并
-    position.stopProfitPrice = profitPostion.stopPrice
-    position.stopLossPrice = lossPostion.stopPrice
-
+    position.size = positionDO.size
+    position.leverage = positionDO.leverage
+    position.averagePrice = positionDO.price
+    position.timestamp = positionDO.timestamp
+    position.stopLossPrice = stopProfitPosition.stopPrice
+    position.stopProfitPrice = stopProfitPosition.stopPrice
+    position.spotPrice = await this.getSpotPrice()
 
     // 3.获取浮动盈亏、持仓保证金、回报率
-    const variables = await this.getTraderPositionVariables(trader, marketIdAddress
+    const variables = await this.getTraderPositionVariables(trader, marketAddr
       , side, position.spotPrice, position.size, position.leverage, position.averagePrice)
+
+
+
     position.margin = variables.margin
     position.unrealizedPnl = variables.unrealizedPnl
     position.margin = variables.margin
 
     //4.获取用户参数
-    const tradeVariables = await this.getTraderVariablesWithCache(trader)
     position.marginBalance = tradeVariables.marginBalance
     position.totalPositionAmount = tradeVariables.totalPositionAmount
     position.marginRate = tradeVariables.marginRate
 
     position.liquidatePrice = await this.getTraderPositionLiquidatePrice(position.side, position.spotPrice, position.size, position.marginRate, position.marginBalance, position.totalPositionAmount);
 
+
     return position
   }
 
-  async getTraderVariablesWithCache (trader) {
+  async __getTraderVariablesWithCache (trader) {
     if(cache[trader] !== undefined){
       return cache[trader]
     }
@@ -536,11 +610,6 @@ export class PositionView {
   liquidatePrice;
 }
 
-export const Token = {
-  BTC: ABIData.DerifyDerivative.BTC.address,
-  ETH: ABIData.DerifyDerivative.ETH.address
-}
-
 export class LimitPoistion {
   /**
    * 仓量
@@ -588,9 +657,22 @@ export class OrderLimitPositionView {
 
   /**
    * 时间戳
-   * Array<LimitPoistion>
+   *@return {LimitPoistion[]}
    */
   limitOrders;
+}
+
+
+export class PositionDataView {
+  /**
+   * @return {PositionView[]}
+   */
+  positions;
+
+  /**
+   * @return {OrderLimitPositionView[]}
+   */
+  orderPositions;
 }
 
 
@@ -622,36 +704,36 @@ export class DerivativePositions {
    */
   isUsed;
   /**
-   *  // 多仓持仓
-   * Position
+   *  多仓持仓
+   * @return {Position}
    */
   long;
   /**
-   * Position
+   * @return {Position}
    */
   short; // 空仓持仓
   /**
-   * Position[]
+   * @return {Position}
    */
   longOrderOpenPosition; // 多仓限价委托单
   /**
-   * Position[]
+   * @return {Position[]}
    */
   shortOrderOpenPosition; // 空仓限价委托单
   /**
-   * StopPosition
+   * @return {StopPosition}
    */
   longOrderStopProfitPosition; // 多仓止盈委托单
   /**
-   * StopPosition
+   * @return {StopPosition}
    */
   longOrderStopLossPosition; // 多仓止损委托单
   /**
-   * StopPosition
+   * @return {StopPosition}
    */
   shortOrderStopProfitPosition; // 空仓止盈委托单
   /**
-   * StopPosition
+   * @return {StopPosition}
    */
   shortOrderStopLossPosition; // 空仓止损委托单
 }
@@ -676,6 +758,23 @@ export class Position {
 
   /**
    * uint256
+   */
+  timestamp;
+}
+
+
+export class StopPosition {
+  /**
+   * {bool}
+   */
+  isUsed;
+  /**
+   * {int}
+   */
+  stopPrice;
+
+  /**
+   * {int}
    */
   timestamp;
 }

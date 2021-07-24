@@ -44,7 +44,7 @@
 
 <script>
 import {fck} from "@/utils/utils";
-import {SideEnum} from "@/store/modules/contract";
+import { SideEnum } from '../../../utils/contractUtil'
 
 export default {
   props: {

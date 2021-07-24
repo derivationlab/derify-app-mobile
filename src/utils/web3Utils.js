@@ -12,11 +12,28 @@ export function contract (account) {
       get(target, propKey, receiver) {
         const ret = Reflect.get(...arguments)
 
-        if(ret instanceof Function){
+        if(ret instanceof Function && !propKey.startsWith("__")){
           return new Proxy(ret, {
             apply (target, ctx, args) {
-              console.log('contract.'+ propKey + ',args=' + JSON.stringify(args))
-              return Reflect.apply(...arguments);
+              try{
+                const ret = Reflect.apply(...arguments)
+
+                if(ret instanceof Promise){
+
+                  return (async () => {
+                    let data = await ret;
+                    console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", data)
+                    return data
+                  })();
+
+                }else{
+                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", ret)
+                }
+                return ret;
+              }catch (e) {
+                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",error=", e)
+              }
+
             }
           })
         }else{

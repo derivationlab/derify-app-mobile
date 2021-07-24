@@ -1,7 +1,7 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
-import { Token } from '../../utils/contractUtil'
+import { Token,SideEnum } from '../../utils/contractUtil'
 
 const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
@@ -198,6 +198,7 @@ const actions = {
 
       data.curSpotPrice = await contract.getSpotPrice(coin.address)
 
+
       // 2.获取动仓费率
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(coin.address)
 
@@ -257,33 +258,7 @@ const actions = {
       const coin = state.pairs[idx]
 
       const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
-
-      console.log('loadPositionData', positionData);
-
       commit('SET_POSITION_DATA', positionData)
-      return positionData
-    })()
-  },
-  loadOrderedPositionData ({state, commit}, {coinAddress}) {
-    return (async function () {
-      if(!state.wallet_address){
-        return {}
-      }
-
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
-
-      if (idx === undefined) {
-        idx = 0
-      }
-
-      const coin = state.pairs[idx]
-
-      coinAddress = coin.address;
-      const contract = web3Utils.contract(state.wallet_address)
-
-      const positionData = await contract.getTraderAllLimitPosition(state.wallet_address, coinAddress)
-
-      commit('SET_LIMIT_POSITION_DATA', positionData)
       return positionData
     })()
   },
@@ -346,23 +321,11 @@ const actions = {
   }
 }
 
-export class SideEnum {
-  static get LONG (){
-    return 0;
-  }
-
-  static get SHORT (){
-    return 1;
-  }
-
-  static get HEDGE() {
-    return 2
-  }
-}
-
 export default {
   namespaced: true,
   state,
   mutations,
   actions
 }
+
+

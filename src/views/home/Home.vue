@@ -572,40 +572,11 @@ export default {
       const self = this;
 
       if(key === 'key1'){
-        self.loading = true
-        this.$store.dispatch('contract/loadPositionData').then(r => {
-          // Array<Position>
-          if (r === undefined) {
-            return
-          }
-          self.positions.splice(0)
-          r.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              self.positions.push(item)
-            }
-          })
 
-          self.loading = false
-        })
       }
 
       if(key === 'key2'){
-        self.loading = true
-        this.$store.dispatch('contract/loadOrderedPositionData', {}).then(r => {
-          console.debug('contract/loadOrderedPositionData', r)
-          // Array<Position>
-          if (r === undefined) {
-            return
-          }
-          self.positionOrders.splice(0)
-          r.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              self.positionOrders.push(item)
-            }
-          })
 
-          self.loading = false
-        })
       }
 
       if(key === 'key3'){
@@ -694,22 +665,34 @@ export default {
         this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount);
       })
 
-      const dataList = this.positions
+      const {positions, positionOrders} = this
 
-      dataList.splice(0)
+      positions.splice(0)
+      positionOrders.splice(0)
       self.loading = true
 
       this.$store.dispatch('contract/loadPositionData').then(r => {
         // Array<Position>
-        if (!(r instanceof Array)) {
+        if (!r.positions && !r.orderPositions) {
           return
         }
 
-        r.forEach((item) => {
-          if (item !== undefined || !isNaN(item)) {
-            dataList.push(item)
-          }
-        })
+        if(r.positions){
+          r.positions.forEach((item) => {
+            if (item !== undefined || !isNaN(item)) {
+              positions.push(item)
+            }
+          })
+        }
+
+
+        if(r.orderPositions){
+          r.orderPositions.forEach((item) => {
+            if (item !== undefined || !isNaN(item)) {
+              positionOrders.push(item)
+            }
+          })
+        }
 
         self.loading = false
       })
@@ -717,7 +700,7 @@ export default {
       this.updateTraderOpenUpperBound()
     })
   },
-  mounted () {
+  created () {
     context.loaded = true
 
     //TODO 币种切换处理
