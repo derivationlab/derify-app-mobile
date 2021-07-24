@@ -109,7 +109,7 @@ export default {
       this.$store.dispatch('contract/closePosition', {
         coinAddress,
         side,
-        size
+        size: size * 1e8
       })
       this.close()
     }

@@ -150,7 +150,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  closeAllPositions ({state}, { }) {
+  closeAllPositions ({state}) {
     return new Promise((resolve, reject) => {
 
       web3Utils.contract(state.wallet_address)
