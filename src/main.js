@@ -10,6 +10,7 @@ import '@/utils/web3Utils'
 import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
+import UserProcessBox from './components/UserProcessBox'
 let locale = 'zh'
 try {
   const curLngStr = sessionStorage.getItem('locale')
@@ -59,6 +60,8 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+Vue.prototype.$userProcessBox = UserProcessBox.install;
 
 if(window.ethereum){
   window.ethereum.on('accountsChanged', function () {

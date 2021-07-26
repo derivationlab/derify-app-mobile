@@ -49,6 +49,30 @@ export class WalletEnum {
   }
 }
 
+/**
+ * ÓÃ»§µÈ´ý×´Ì¬
+ * 0(finished)->1(waiting)->2(success)->0(finished)
+ * 0(finished)->1(waiting)->3(failed)->0(finished)
+ *
+ */
+export class UserProcessStatus {
+  static get finished() {
+    return 0
+  }
+
+  static get waiting() {
+    return 1
+  }
+
+  static get success() {
+    return 2
+  }
+
+  static get failed() {
+    return 3
+  }
+}
+
 export const mainChain = ChainEnum.Kovan
 
 const state = {
@@ -57,7 +81,9 @@ const state = {
   chainEnum: mainChain,
   isEthum: false,
   networkVersion: "",
-  isMetaMask: false
+  isMetaMask: false,
+  processStatus: UserProcessStatus.finished,
+  processStatusMsg: ''
 };
 
 export function getWallet(){
@@ -81,6 +107,10 @@ export function getWallet(){
 const mutations = {
   setShowWallet (state, showWallet) {
     state.showWallet = showWallet
+  },
+  updateProcessStatus (state, {status = UserProcessStatus.finished, msg = ''}) {
+    state.processStatus = status
+    state.processStatusMsg = msg
   },
   updateState (state, updates) {
     state = Object.assign(state, updates)

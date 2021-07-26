@@ -222,6 +222,9 @@ export default {
       }
       return ''
     },
+    showOpenStatus () {
+      return this.$store.state.user.processStatus > 0
+    },
     showWallet () {
       return this.$store.state.user.showWallet
     },
@@ -276,6 +279,10 @@ export default {
             this.this.loginError = null
           })
       }
+    },
+    closeOpenStatus () {
+      this.$store.commit("user/updateState", {processStatus: 0})
+      this.$emit("closeOpenStatusPopup")
     }
   }
 }

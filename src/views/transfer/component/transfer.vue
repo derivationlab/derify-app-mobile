@@ -36,6 +36,7 @@
 </template>
 <script>
 import { toContractUnit } from '../../../utils/contractUtil'
+import { UserProcessStatus } from '../../../store/modules/user'
 
 export default {
   name: 'transfer',
@@ -67,29 +68,44 @@ export default {
       }
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
-        this.$toast('充值成功')
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'});
+        setTimeout(() => {
+          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''});
+          this.$router.go(-1)
+        }, 1000)
+
+      }).catch(e => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
       }).finally( _ => {
-
+        this.$router.go(-1)
       })
-
-      this.$router.go(-1)
-
     },
     withdraw () {
       if (!this.amount) {
         this.$toast('请输入正确的数量')
         return false
       }
+
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
+
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$toast('提现成功')
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'})
+
+        setTimeout(() => {
+          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''})
+          this.$router.go(-1)
+        }, 1000)
+
       }).catch(err => {
         this.$toast(`出现异常:` + err)
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
+        this.$router.go(-1)
       })
-
-      this.$router.go(-1)
     }
   }
 }

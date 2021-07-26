@@ -1,17 +1,17 @@
 <template>
-  <van-popup class="derify-popup small" v-model="showPopup" round :closeable="false" @close="close">
+  <van-popup class="derify-popup small" v-model="show" round :closeable="false" @close="close">
     <div class="open-status-popup">
-      <template v-if="status === 'pending'">
+      <template v-if="status === UserProcessStatus.waiting">
         <img src="@/assets/images/home/open-pending.png" alt="" class="open-status-icon">
-        <div class="open-status-text">正在执行交易，请稍侯</div>
+        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
       </template>
-      <template v-if="status === 'success'">
+      <template v-if="status === UserProcessStatus.success">
         <img src="@/assets/images/home/open-success.png" alt="" class="open-status-icon">
-        <div class="open-status-text">开仓成功</div>
+        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
       </template>
-      <template v-if="status === 'fail'">
+      <template v-if="status === UserProcessStatus.failed">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
-        <div class="open-status-text">开仓失败，请重试</div>
+        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
         <div class="system-popup-buttons padding">
           <div class="system-popup-button confirm">确认</div>
         </div>
@@ -21,34 +21,25 @@
 </template>
 
 <script>
+import { UserProcessStatus } from '../../store/modules/user'
+
 export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    type: {
-      type: String,
-      default: 'pending'
-    }
-  },
   data () {
     return {
-      showPopup: this.show,
-      status: this.type
-    }
-  },
-  watch: {
-    show () {
-      this.showPopup = this.show
-    },
-    type () {
-      this.status = this.type
+      show: false,
+      msg: '',
+      status: UserProcessStatus.finished,
+      UserProcessStatus: UserProcessStatus
     }
   },
   methods: {
     close () {
       this.$emit('closeOpenStatusPopup', false, this.status)
+    },
+    updateData(data) {
+      this.show = data.show
+      this.msg = data.msg
+      this.status = data.status
     }
   }
 }
