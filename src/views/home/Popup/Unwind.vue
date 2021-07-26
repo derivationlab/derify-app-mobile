@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   props: {
     show: {
@@ -109,7 +111,7 @@ export default {
       this.$store.dispatch('contract/closePosition', {
         coinAddress,
         side,
-        size: size * 1e8
+        size: toContractUnit(size)
       })
       this.close()
     }

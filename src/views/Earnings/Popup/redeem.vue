@@ -26,7 +26,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">赎回</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">赎回</div>
       </div>
     </div>
   </van-popup>
@@ -36,6 +36,7 @@
 
 <script>
 import { Toast } from 'vant'
+import { toContractUnit } from '../../../utils/contractUtil'
 export default {
   props: ['show', 'redeemId'],
   data () {
@@ -77,6 +78,20 @@ export default {
       // 可以通过 close-on-click-action 属性开启自动收起
       this.show = false
       Toast(item.name)
+    },
+    submitThenClose () {
+      if (this.redeemId === 1) {
+        this.redeemName = 'eDRF'
+      } else {
+        this.$store.dispatch("earnings/redeemBondFromBank", {amount: toContractUnit(this.amount)}).then( r => {
+          this.close()
+        }).catch(e => {
+          this.close()
+        }).finally( p => {
+          this.close()
+        })
+      }
+
     }
   }
 }

@@ -5,7 +5,7 @@ const ethUrl = 'https://kovan.infura.io/v3/4790cd7bb24349738a3b05ee0c20746e'
 
 export function contract (account) {
 
-  const contractObj = new Contract({ from: account })
+  const contractObj = new Contract(account)
 
   if(contractDebug){
     return new Proxy(contractObj, {
@@ -19,6 +19,7 @@ export function contract (account) {
                 const ret = Reflect.apply(...arguments)
 
                 if(ret instanceof Promise){
+                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args))
 
                   return (async () => {
                     let data = await ret;
@@ -45,6 +46,8 @@ export function contract (account) {
     return contractObj
   }
 }
+
+
 
 
 class Aop {

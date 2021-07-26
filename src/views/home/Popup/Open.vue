@@ -58,6 +58,8 @@
 </template>
 
 <script>
+  import { toContractUnit, toHexString } from '../../../utils/contractUtil'
+
 export default {
   props: {
     show: {
@@ -120,15 +122,15 @@ export default {
         price = this.curSpotPrice
       } else {
         const a = parseFloat(this.openData.amount)
-        price = parseInt(a) * 1e8
+        price = toContractUnit(a)
       }
 
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
-        size: size * 1e8,
+        size: toContractUnit(size),
         openType: this.openData.entrustType,
-        price: price,
-        leverage: leverage * 1e8
+        price: toHexString(price),
+        leverage: toContractUnit(leverage)
       })
       this.close()
     }

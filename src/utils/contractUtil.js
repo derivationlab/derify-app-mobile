@@ -15,6 +15,60 @@ export class SideEnum {
   }
 }
 
+/**
+ * 债券账户种类
+ */
+export class BondAccountType {
+
+  /**
+   * 0-DerifyAccount-Derify账户
+   * @return {number}
+   */
+  static get DerifyAccount () {
+    return 0
+  }
+
+  /**
+   * 1-WalletAccount-用户钱包账户
+   * @return {number}
+   */
+  static get WalletAccount () {
+    return 1
+  }
+}
+
+/**
+ * 委托单类型
+ */
+export class OrderTypeEnum {
+  //-限价委托,
+ static get LimitOrder () {
+   return 0
+ }
+ //-止盈委托,
+ static get StopProfitOrder () {
+   return 1
+ }
+ //-止损委托
+ static get StopLossOrder () {
+   return 2
+ }
+
+}
+
+/**
+ * 开仓价格类型
+ */
+export class OpenType {
+  static get MarketOrder(){
+    return 0
+  }
+
+  static get LimitOrder() {
+    return 1
+  }
+}
+
 export const Token = {
   BTC: ABIData.DerifyDerivative.BTC.address,
   ETH: ABIData.DerifyDerivative.ETH.address,
@@ -27,6 +81,25 @@ const cache = {}
 
 export const contractDebug = true
 
+export const contractDecimals = 8
+
+export function toContractUnit (number) {
+  return "0x"+ toContractNum(number).toString(16)
+}
+
+export function toHexString (number) {
+  return "0x"+ parseFloat(number).toString(16)
+}
+
+export function toContractNum (number) {
+  return number * Math.pow(10, contractDecimals)
+}
+
+export function fromContractUnit (unit) {
+  const number = parseFloat(unit)
+  return number / Math.pow(10, contractDecimals)
+}
+
 /**
  *
  * @param abi
@@ -36,15 +109,17 @@ export const contractDebug = true
  */
 export default class Contract {
 
-  constructor (option) {
-
-    const gasPrice = (1e9).toString();
-
+  constructor (from) {
+    const option = {from}
     const web3 = new Web3()
+
+    const gasPrice = null;
+
     const provider = window.ethereum
     web3.setProvider(provider)
 
     this.web3 = web3
+    this.from = from
 
     this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, Object.assign({ gasPrice }, option))
 
@@ -55,6 +130,7 @@ export default class Contract {
 
     this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
     this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
+    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, Object.assign({ gasPrice }, option))
   }
 
   /**
@@ -63,7 +139,36 @@ export default class Contract {
    * @return
    */
   deposit (amount) {
-    return this.DerifyExchange.methods.deposit(amount).send()
+
+    const web3 = this.web3
+    const from = this.from
+    const tokenContract = this.DUSD
+
+    return new Promise((resolve, reject) => {
+      (async () => {
+
+        let decimals = await tokenContract.methods.decimals().call();
+
+        const decimalNum = parseInt(decimals)
+
+        const approveNum = "0x"+(amount * Math.pow(10, decimalNum - contractDecimals)).toString(16);
+
+        //钱包获取授权金额
+        let ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
+
+        if(ret){
+          try{
+            let depositRes = await  this.DerifyExchange.methods.deposit(amount).send();
+            resolve(depositRes)
+          }catch (e) {
+            reject(e)
+          }
+        }else{
+          reject('approve failed')
+        }
+
+      })()
+    })
   }
   /**
    * 提现
@@ -83,7 +188,7 @@ export default class Contract {
    * @param leverage 杠杆（精度为8位）
    * @return {*}
    */
-  openPosition (token, side, openType, size, price, leverage) {
+  openPosition ({token, side, openType, size, price, leverage}) {
     return this.DerifyExchange.methods
       .openPosition(token, side, openType, size, price, leverage)
       .send()
@@ -234,7 +339,7 @@ export default class Contract {
    * @param stopPrice
    * @return {*}
    */
-  orderStopPosition (token, trader, side, stopType, stopPrice) {
+  orderStopPosition ({token, trader, side, stopType, stopPrice}) {
     return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, stopPrice)
       .send()
   }
@@ -248,11 +353,11 @@ export default class Contract {
    * @param timestamp
    * @return {*}
    */
-  cancleOrderedPosition (marketIdAddress, trader, orderType, side, timestamp) {
+  cancleOrderedPosition ({marketIdAddress, trader, orderType, side, timestamp}) {
     if (orderType === 0) {
-      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
+      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedLimitPosition(trader, side, timestamp).call()
     } else {
-      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()
+      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedStopPosition(trader, orderType, side).call()
     }
 
   }
@@ -314,7 +419,7 @@ export default class Contract {
    * @param bondAccountType 债券账户种类 0-DerifyAccount-Derify账户, 1-WalletAccount-用户钱包账户
    * @return {*}
    */
-  exchangeBond (amount,bondAccountType) {
+  exchangeBond ({amount,bondAccountType}) {
     return this.DerifyBond.methods.exchangeBond(amount,bondAccountType).send();
   }
 
@@ -325,7 +430,7 @@ export default class Contract {
    * @param bondAccountType
    * @return {*}
    */
-  depositBondToBank (amount,bondAccountType) {
+  depositBondToBank ({amount,bondAccountType}) {
     return this.DerifyBond.methods.depositBondToBank(amount,bondAccountType).send();
   }
 
@@ -336,7 +441,7 @@ export default class Contract {
    * @param bondAccountType
    * @return {*}
    */
-  redeemBondFromBank (amount, bondAccountType) {
+  redeemBondFromBank ({amount, bondAccountType }) {
     return this.DerifyBond.methods.redeemBondFromBank(amount,bondAccountType).send();
   }
 
@@ -346,7 +451,7 @@ export default class Contract {
    * @return {BondInfo}
    */
   getBondInfo (trader) {
-    return this.DerifyBond.methods.getBondInfo(trader);
+    return this.DerifyBond.methods.getBondInfo(trader).call();
   }
 
   /**
@@ -374,7 +479,7 @@ export default class Contract {
    * @return {int} 持仓挖矿收益（精度为8位）
    */
   getPMReward (trader) {
-    return this.DerifyStaking.methods.withdrawPMReward(trader).call();
+    return this.DerifyStaking.methods.getPMReward(trader).call();
   }
   /**
    * 所有持仓
@@ -412,6 +517,8 @@ export default class Contract {
     for(const limitOrder of limitLongOrders){
       const limitLongOrderView = new OrderLimitPositionView()
       limitLongOrderView.side = SideEnum.LONG
+      limitLongOrderView.coinAddress = marketIdAddress
+      limitLongOrderView.orderType = OrderTypeEnum.LimitOrder
       if(!derivativePosition.longOrderStopProfitPosition){
         limitLongOrderView.stopProfitPrice = derivativePosition.longOrderStopProfitPosition.stopProfitPrice
       }
@@ -430,6 +537,8 @@ export default class Contract {
     for(const limitOrder of limitShortOrders){
       const limitShortOrderView = new OrderLimitPositionView()
       limitShortOrderView.side = SideEnum.SHORT
+      limitShortOrderView.coinAddress = marketIdAddress
+      limitShortOrderView.orderType = OrderTypeEnum.LimitOrder
       if(!derivativePosition.shortOrderStopProfitPosition){
         limitShortOrderView.stopProfitPrice = derivativePosition.shortOrderStopProfitPosition.stopProfitPrice
       }
@@ -498,60 +607,6 @@ export default class Contract {
     }
 
     return this.getTraderVariables(trader)
-  }
-  async getTraderAllLimitPosition (trader, marketIdAddress) {
-    const positionArr = []
-
-    const longArr = await this.getTraderOrderLimitPosition(trader, marketIdAddress, 0);
-
-    longArr.forEach(function(limitOrder){
-      positionArr.push(limitOrder)
-    })
-
-    const shortArr = await this.getTraderOrderLimitPosition(trader, marketIdAddress, 1);
-    // 多
-    shortArr.forEach(function(limitOrder){
-      positionArr.push(limitOrder)
-    })
-
-    return positionArr
-  }
-  async getTraderOrderLimitPosition (trader, marketIdAddress, side) {
-
-    const arr = [];
-
-
-    // 1.获取持仓量、杠杆、开仓均价、时间戳
-    const limitOrders = await this.getTraderOrderLimitPositions(trader, marketIdAddress, side);
-
-    // 2.获取止盈、止损价格
-    // 2.1.获取止盈委托
-    const profitPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 0)
-
-    // 2.2.获取止损委托
-    const lossPostion = await this.getTraderOrderStopPosition(trader, marketIdAddress, side, 1)
-
-    const spotPrice = await this.getSpotPrice(marketIdAddress)
-
-    for (const limitOrder of limitOrders) {
-      //LimitPoistion
-
-      let orderLimitPositionView = new OrderLimitPositionView()
-      orderLimitPositionView.side = side
-      orderLimitPositionView.coinAddress = marketIdAddress
-
-      orderLimitPositionView.spotPrice = spotPrice
-
-      orderLimitPositionView.stopLossPrice = lossPostion.stopPrice
-
-      orderLimitPositionView.stopProfitPrice = profitPostion.stopPrice
-      orderLimitPositionView = Object.assign({}, orderLimitPositionView, limitOrder)
-
-      arr.push(orderLimitPositionView)
-    }
-
-
-    return arr
   }
 }
 
@@ -640,6 +695,11 @@ export class OrderLimitPositionView {
    * 币的地址
    */
   coinAddress;
+
+  /**
+   * @return
+   */
+  orderType;
 
   // 多&空
   side;
@@ -778,3 +838,6 @@ export class StopPosition {
    */
   timestamp;
 }
+
+
+window.Contract = Contract

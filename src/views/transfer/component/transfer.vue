@@ -35,6 +35,8 @@
   </div>
 </template>
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   name: 'transfer',
   data () {
@@ -64,11 +66,15 @@ export default {
         return false
       }
       const a = parseFloat(this.amount)
-      const amount = parseInt(a) * 1e8
+      const amount = toContractUnit(a)
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         this.$toast('充值成功')
+      }).finally( _ => {
+
       })
+
       this.$router.go(-1)
+
     },
     withdraw () {
       if (!this.amount) {
@@ -76,13 +82,14 @@ export default {
         return false
       }
       const a = parseFloat(this.amount)
-      const amount = parseInt(a) * 1e8
+      const amount = toContractUnit(a)
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$router.go(-1)
+        this.$toast('提现成功')
       }).catch(err => {
         this.$toast(`出现异常:` + err)
       })
 
+      this.$router.go(-1)
     }
   }
 }

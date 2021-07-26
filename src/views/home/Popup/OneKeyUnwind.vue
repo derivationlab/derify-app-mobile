@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   props: {
     show: {
@@ -46,7 +48,7 @@ export default {
         price = this.curSpotPrice
       } else {
         const a = parseFloat(this.openData.amount)
-        price = parseInt(a) * 1e8
+        price = toContractUnit(a)
       }
 
       this.$store.dispatch('contract/closeAllPositions').then((r) => {

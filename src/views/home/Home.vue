@@ -96,14 +96,15 @@
     </template>
     <div id="myChart" :style="{width: '100%', height: '36.5rem', display: $route.name === 'home' ? 'none':'block'}"></div>
     <div class="home-last">
-      <van-tabs v-model="active" @click="tabChange">
-        <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="loadMore"
-          >
+      <template v-if="$route.name === 'home'">
+        <van-tabs v-model="active" @click="tabChange">
+          <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="loadMore"
+            >
 
               <template v-if="active === 'key1'">
                 <div class="exchange-block" v-for="(data,i) in positions" :key="i">
@@ -136,7 +137,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">持仓量：</div>
-                      <div>{{data.size}} ETH</div>
+                      <div>{{data.size | fck(-8)}} ETH</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -204,7 +205,7 @@
                       <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                     </div>
                     <div class="right" v-if="active === 'key3'">
-                      <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
+                      <div class="fz-12 fc-45">{{new Date(data.timestamp).Format("yyyy-MM-dd hh:mm:ss")}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -220,11 +221,11 @@
                   <div class="exchange-item">
                     <div class="exchange-item-left">
                       <div class="fc-45">委托数量：</div>
-                      <div>{{data.size}} ETH</div>
+                      <div>{{data.size | fck(-8)}} ETH</div>
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">委托时间：</div>
-                      <div>{{data.timestamp}}</div>
+                      <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -278,7 +279,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">成交数量：</div>
-                      <div>{{data.size}} ETH</div>
+                      <div>{{data.size | fck(-8)}} ETH</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -304,9 +305,16 @@
                 </div>
               </template>
 
-          </van-list>
-        </van-tab>
-      </van-tabs>
+            </van-list>
+          </van-tab>
+        </van-tabs>
+      </template>
+      <div v-else class="home-last-btn-wrap">
+        <template v-if="$route.name === 'exchange'">
+          <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
+          <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+        </template>
+      </div>
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
@@ -330,6 +338,7 @@ import OpenStatus from './Popup/OpenStatus'
 import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
 import { fck } from '../../utils/utils'
+import { toContractUnit } from '../../utils/contractUtil'
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
@@ -395,9 +404,9 @@ export default {
         {text: '限价委托', value: 1}
       ],
       leverageConfig: [
-        {text: '10x', value: 0},
-        {text: '5x', value: 1},
-        {text: '3x', value: 2}
+        {text: '10x', value: 10},
+        {text: '5x', value: 5},
+        {text: '3x', value: 3}
       ],
       unitConfig: [
         {text: 'USDT', value: 0},
@@ -482,7 +491,7 @@ export default {
           this.$toast('please input amount first')
           return
         }else{
-          amount = this.curSpotPrice / 1e8
+          amount = toContractUnit(this.curSpotPrice)
         }
 
         if (!size) {
@@ -520,7 +529,7 @@ export default {
 
         const self = this;
         let loadNum = 0;
-        this.$store.dispatch("contract/getTradingFee", {size: size * 1e8, price: amount * 1e8}).then((tradingFee) => {
+        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
@@ -529,7 +538,7 @@ export default {
           self.showOpen = bool && loadNum > 1;
         });
 
-        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: size*1e8, price:amount * 1e8})
+        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: toContractUnit(size), price: toContractUnit(amount)})
           .then((positionChangeFee) => {
             if(!positionChangeFee) {
               return
@@ -560,9 +569,8 @@ export default {
     },
     drawKline () {
       if(!context.myChart){
-        return;
+        context.myChart = this.$echarts.init(document.getElementById('myChart'))
       }
-
 
       context.myChart.setOption(options)
       context.myChart.resize()
@@ -598,14 +606,13 @@ export default {
       }
     },
     cancleOrderedPosition (data) {
-      const timestamp = new Date().getTime();
       //执行取消委托
       this.$store.dispatch('contract/cancleOrderedPosition',
           {
             coinAddress: data.coinAddress,
             orderType: data.orderType,
             side: data.side,
-            timestamp}).then(r => {
+            timestamp: data.timestamp}).then(r => {
       })
     },
     calculatePositionSize (sliderValue) {
@@ -628,8 +635,8 @@ export default {
       //杠杆数发生变化, 重新计算仓量
 
       const openType = this.entrustType
-      const price = this.amount  * 1e8
-      const leverage = this.leverage  * 1e8
+      const price = toContractUnit(this.amount)
+      const leverage = toContractUnit(this.leverage)
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
@@ -647,9 +654,25 @@ export default {
     }
   },
   created () {
+    context.loaded = true
+
+    //TODO 币种切换处理
     this.$nextTick(() => {
 
-      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+      if(context.tokenMiningRateEvent === null){
+        context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+          //更新挖矿收益率
+          this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
+        })
+      }
+
+      if(context.tokenPriceChangeEvenet === null) {
+        context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
+          //更新币种涨幅
+          this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
+        })
+      }
+
       this.drawKline()
 
       if(!window.ethereum){
@@ -700,26 +723,15 @@ export default {
       this.updateTraderOpenUpperBound()
     })
   },
-  created () {
-    context.loaded = true
-
-    //TODO 币种切换处理
-
-    if(context.tokenMiningRateEvent === null){
-      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //更新挖矿收益率
-        this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
-      })
-    }
-
-    if(context.tokenPriceChangeEvenet === null) {
-      context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
-        //更新币种涨幅
-        this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
-      })
+  destroyed () {
+    if(context.myChart){
+      context.myChart.dispose()
     }
   },
   updated () {
+    this.$nextTick(() => {
+      this.drawKline()
+    })
   }
 }
 </script>
@@ -863,6 +875,27 @@ export default {
 }
 .home-last {
   margin-top: 4rem;
+  .home-last-btn-wrap{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    flex-wrap: nowrap;
+    .home-last-four {
+      &-btn {
+        width: 45%;
+        flex-direction: column;
+        height: 4.8rem;
+        border-radius: 2.4rem;
+        line-height: 4.8rem;
+        text-align: center;
+        font-size: 1.8rem;
+        &.yellow-gra {
+          color: #140B32;
+        }
+      }
+    }
+  }
+
 }
 .exchange-block {
   margin-top: 3rem;

@@ -44,7 +44,7 @@
 
 <script>
 import {fck} from "@/utils/utils";
-import { SideEnum } from '../../../utils/contractUtil'
+import { fromContractUnit, SideEnum, toContractNum } from '../../../utils/contractUtil'
 
 export default {
   props: {
@@ -96,48 +96,40 @@ export default {
 
       const {position} = this;
       //止盈价格：如果是多仓，则止盈价格应大于开仓均价，如果是空仓，止盈价格应小于开仓均价，否则提示错误
-
-      console.log(price * 1e8, position.averagePrice)
-      if(position.side === SideEnum.LONG && price * 1e8 <= position.averagePrice){
+      if(position.side === SideEnum.LONG && toContractNum(price) <= position.averagePrice){
         this.$toast('多仓止盈价格应大于开仓均价')
-        this.position.stopProfitPriceInput = this.position.stopProfitPrice / 1e8
-        return
+        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopProfitPrice)
       }
 
-      if(position.side === SideEnum.SHORT && price * 1e8 >= position.averagePrice){
+      if(position.side === SideEnum.SHORT && toContractNum(price) >= position.averagePrice){
         this.$toast('空仓止盈价格应小于开仓均价')
-        this.position.stopProfitPriceInput = this.position.stopProfitPrice / 1e8
-        return
+        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopProfitPrice)
       }
 
       this.position.stopProfitPriceInput = price;
-      this.position.stopProfitPrice = price * 1e8
+      this.position.stopProfitPrice = toContractNum(price)
       this.calLossAndProfit();
     },
     changeLossPrice (price, oldPrice) {
       const {position} = this;
 
       //止损价格：如果是多仓，则止损价格应小于开仓均价，如果是空仓，止损价格应大于开仓均价，否则提示错误；
-      if(position.side === SideEnum.LONG && price * 1e8 > position.averagePrice){
+      if(position.side === SideEnum.LONG && toContractNum(price) > position.averagePrice){
         this.$toast('多仓止损价格应小于开仓均价')
-        this.position.stopProfitPriceInput = this.position.stopLossPrice / 1e8
-        return
+        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopLossPrice)
       }
 
-      if(position.side === SideEnum.SHORT && price * 1e8 < position.averagePrice){
+      if(position.side === SideEnum.SHORT && toContractNum(price) < position.averagePrice){
         this.$toast('空仓止损价格应大于开仓均价')
-        this.position.stopProfitPriceInput = this.position.stopLossPrice / 1e8
-        return
+        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopLossPrice)
       }
       this.position.stopLossPriceInput = price;
-      this.position.stopLossPrice = price * 1e8
+      this.position.stopLossPrice = toContractNum(price)
       this.calLossAndProfit();
     },
     calLossAndProfit(){
-      this.position.profitAmount = (this.position.stopProfitPrice - this.position.averagePrice) * this.position.size
-      this.position.lostAmount = (this.position.stopLossPrice - this.position.averagePrice) * this.position.size
-
-      console.log(this.position.lostAmount, fck(this.position.lostAmount, -8))
+      this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice)) * this.position.size
+      this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice)) * this.position.size
     },
     submitThenClose (){
       const side = this.position.side

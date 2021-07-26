@@ -3,11 +3,11 @@
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">质押{{pledgeName}}</div>
       <div>
-        <div>
+        <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="value1" :options="option1">
+            <van-dropdown-item v-model="value1" :options="option1"  @open="onDropDowOpen()" class="derify-dropmenu-item">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{option1[value1]}}</span>
+                  <span>{{option1[value1].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
@@ -25,24 +25,26 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">质押</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">质押</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   props: ['show', 'pledgeId'],
   data () {
     return {
       showPopup: this.show,
-      value1: null,
+      value1: 0,
       curPercent: 25,
       pledgeName: null,
       option1: [
-        { text: '市价委托', value: 0 },
-        { text: '限价委托', value: 1 }
+        { text: 'Derify账户', value: 0 },
+        { text: '钱包账户', value: 1 }
       ]
     }
   },
@@ -61,6 +63,17 @@ export default {
   methods: {
     close () {
       this.$emit('closePledge', false)
+    },
+    submitThenClose(){
+      if (this.pledgeId === 1) {
+        //eDRF
+
+      } else {
+        this.$store.dispatch("earnings/depositBondToBank", {amount: toContractUnit(this.value1), })
+      }
+    },
+    onDropDowOpen () {
+      return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     }
   }
 }

@@ -1,6 +1,10 @@
 import * as io from "@/utils/request";
 const TRADE_LIST_URL = "http://13.125.43.43:8081/api/trade_records/"
 const FUND_LIST_URL = "http://13.125.43.43:8081/api/trader_balance/"
+//用户债券bDRF流水明细
+const TRADER_BOND_BALANCE_URL = "http://13.125.43.43:8081/api/trader_bond_balance/"
+//用户持仓挖矿收益流水明细
+const TRADER_PMR_BALANCE_URL = "http:13.125.43.43:8081/api/trader_pmr_balance/"
 const POSITION_MININ_EVENT_URL = "//13.125.43.43:8081/api/position_mining_events/"
 const TOKEN_PRICE_EVENT_URL = "//13.125.43.43:8081/api/token_price_events/"
 
@@ -28,6 +32,26 @@ export async function getTradeList (trader) {
  */
 export async function getTradeBalanceDetail (trader) {
   const content =  await io.get(FUND_LIST_URL + trader)
+  console.log(content)
+  if(content) {
+    return content.data;
+  }
+
+  return [];
+}
+
+export async function getTraderBondBalance (trader) {
+  const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
+  console.log(content)
+  if(content) {
+    return content.data;
+  }
+
+  return [];
+}
+
+export async function getTraderPMRBalance (trader) {
+  const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
   console.log(content)
   if(content) {
     return content.data;
@@ -127,4 +151,46 @@ export class TradeBalanceDetail {
 export class PositionMiningRate {
   longPmrRate; //该交易对做多方向持仓挖矿收益率（为小数值，前端按百分比显示需*100）
   shortPmrRate; //该交易对做空方向持仓挖矿收益率（为小数值，前端按百分比显示需*100）
+}
+
+/**
+ * bDRF收益明细
+ */
+export class TraderBondBalance {
+  id;//uuid
+  tx;//智能合约事件transactionHash
+  user;//用户账户地址
+  amount;//每次进出的数值，进为正，出为负
+  balance;//变动后的余额
+  /**
+   0-Income, 收入（增发）
+   1-Withdraw, 提取
+   2-Exchange, 兑换
+   3-TransferFromBank, 存入（收益计划）
+   4-TransferToBank, 赎回（收益计划）
+   5-Interest, 收入（利息）
+   */
+  bond_update_type;
+  event_time;//智能合约事件时间（UTC）
+  update_time;//更新后端数据库时间（UTC）
+}
+
+/**
+ * 持仓挖矿收益明细
+ */
+export class TradePMRBalance {
+  id; //uuid
+  tx;//智能合约事件transactionHash
+  user;//用户账户地址
+  amount;//每次进出的数值，进为正，出为负
+  balance;//变动后的余额
+  /**
+   0-Income, 收入
+   1-Withdraw, 提取
+   */
+  pmr_update_type;
+
+  event_time;//智能合约事件时间（UTC）
+
+  update_time;//更新后端数据库时间（UTC）
 }

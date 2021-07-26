@@ -5,7 +5,7 @@
       <div>
         <div class="popup-text">提现数量</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -15,19 +15,21 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">提现</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">提现</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   props: ['show', 'withdrawId'],
   data () {
     return {
       showPopup: this.show,
-      value1: null,
+      amount: null,
       curPercent: 25,
       withdrawName: null
     }
@@ -49,6 +51,48 @@ export default {
   methods: {
     close () {
       this.$emit('closeWithdraw', false)
+    },
+    submitThenClose () {
+
+      if(this.withdrawId === 1) {
+        //挖矿持仓
+        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
+          this.close()
+        }).catch(e => {
+          this.close()
+        }).finally( p => {
+          this.close()
+        })
+
+        return
+      }
+
+      if(this.withdrawId === 2) {
+        //eDRF
+        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
+          this.close()
+        }).catch(e => {
+          this.close()
+        }).finally( p => {
+          this.close()
+        })
+
+        return
+      }
+
+      if(this.withdrawId === 3) {
+        //bDRF
+        this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
+          this.close()
+        }).catch(e => {
+          this.close()
+        }).finally( p => {
+          this.close()
+        })
+
+        return
+      }
+
     }
   }
 }

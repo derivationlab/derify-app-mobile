@@ -8,12 +8,12 @@
           <span class="span2 fz-12" @click="goDetail(1)">流水明细 ></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">2345.4</span>
+          <span class="span1">{{pmrReward | fck(-8)}}</span>
           <span class="span2">USDT</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
-            <span class="span1">24891.34</span>
+            <span class="span1">{{accountData.totalPositionAmount | fck(-8)}}</span>
             <span class="span2 fz-11">持仓额（USDT）</span>
           </div>
           <div class="div1">
@@ -31,7 +31,7 @@
       <!-- 质押权益 eDRF -->
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">持仓挖矿收益</span>
+          <span class="span1">质押权益 eDRF</span>
           <span class="span2 fz-12" @click="goDetail(2)">流水明细></span>
         </div>
         <div class="earnings-num">
@@ -66,20 +66,20 @@
       <!-- 可兑换债券 bDRF -->
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">持仓挖矿收益</span>
+          <span class="span1">可兑换债券 bDRF</span>
           <span class="span2 fz-12" @click="goDetail(3)">流水明细 ></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">2345.4</span>
+          <span class="span1">{{bondInfo.bondBalance | fck(-8)}}</span>
           <span class="span2">USDT</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
-            <span class="span1">24891.34</span>
+            <span class="span1">{{bondInfo.bondReturnBalance | fck(-8)}}</span>
             <span class="span2 fz-11">收益计划存入 ( bDRF )</span>
           </div>
           <div class="div1">
-            <span class="span1">12.34%</span>
+            <span class="span1">{{bondInfo.bondAnnualInterestRate | fck(-8)}}%</span>
             <span class="span2 fz-11">APY</span>
           </div>
         </div>
@@ -90,7 +90,7 @@
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="balance-o" size="18"/>
-            <span class="fz-13" @click="deposit(true)">存入</span>
+            <span class="fz-13" @click="deposit(true)">兑换</span>
           </div>
           <div class="item-div flex1">
             <van-icon class="van-icon" name="peer-pay" size="18"/>
@@ -136,6 +136,26 @@ export default {
       pledgeId: ''
     }
   },
+  computed: {
+    accountData () {
+      const accountData = this.$store.state.earnings.accountData
+      if (accountData) {
+        return accountData
+      }
+
+      return {}
+    },
+    pmrReward () {
+      return this.$store.state.earnings.pmrReward;
+    },
+    bondInfo () {
+      const bondInfo = this.$store.state.earnings.bondInfo
+      if(bondInfo) {
+        return bondInfo
+      }
+      return {}
+    },
+  },
   methods: {
     // 关闭提现弹框
     closeWithdraw (bool) {
@@ -179,10 +199,10 @@ export default {
     goDetail (id) {
       this.$router.push({ path: '/detail', query: { id } })
     }
+  },
+  mounted () {
+    this.$store.dispatch('earnings/loadEarningData')
   }
-  // beforeCreate () {
-  //   this.$store.dispatch('user/login')
-  // }
 }
 </script>
 

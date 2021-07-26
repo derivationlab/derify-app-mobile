@@ -128,8 +128,12 @@ const actions = {
 
       const coin = state.pairs[idx]
 
+      const params = {
+        token: coin.address, side, openType, size, price, leverage
+      }
+
       web3Utils.contract(state.wallet_address)
-        .openPosition(coin.address, side, openType, size, price, leverage).then(r => {
+        .openPosition(params).then(r => {
           resolve(r)
         }).catch(e => reject(e))
     })
@@ -145,8 +149,16 @@ const actions = {
   orderStopPosition ({state}, {coinAddress, side, stopType, stopPrice}) {
     return new Promise((resolve, reject) => {
 
+      const params = {
+        token: coinAddress,
+        trader: state.wallet_address,
+        side,
+        stopType,
+        stopPrice
+      }
+
       web3Utils.contract(state.wallet_address)
-        .orderStopPosition(coinAddress, side, stopType, stopPrice).then(r => {
+        .orderStopPosition(params).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
@@ -163,8 +175,16 @@ const actions = {
   cancleOrderedPosition ({state}, {coinAddress, orderType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
+      const params = {
+        marketIdAddress:coinAddress,
+        trader: state.wallet_address,
+        orderType: orderType,
+        side: side,
+        timestamp: timestamp
+      }
+
       web3Utils.contract(state.wallet_address)
-        .cancleOrderedPosition(coinAddress, orderType, state.wallet_address, side, timestamp).then(r => {
+        .cancleOrderedPosition(params).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
