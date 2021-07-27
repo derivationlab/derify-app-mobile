@@ -11,6 +11,7 @@ import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
+import { getWallet } from './store/modules/user'
 let locale = 'zh'
 try {
   const curLngStr = sessionStorage.getItem('locale')
@@ -54,7 +55,7 @@ Date.prototype.Format = function (fmt) {
   return fmt
 }
 
-new Vue({
+const vueApp = new Vue({
   router,
   i18n,
   store,
@@ -63,12 +64,33 @@ new Vue({
 
 Vue.prototype.$userProcessBox = UserProcessBox.install;
 
-if(window.ethereum){
-  window.ethereum.on('accountsChanged', function () {
-    location.reload()
-  })
 
-  window.ethereum.on('chainChanged', function () {
-    location.reload()
-  })
+Vue.prototype.$loginWallet = function () {
+  const walletInfo = getWallet()
+
+  this.$store.commit("user/updateState", walletInfo)
+}
+
+window.onload = function (){
+  if(window.ethereum){
+    window.ethereum.on('accountsChanged', function () {
+      updateWallet()
+    })
+
+    window.ethereum.on('chainChanged', function () {
+      updateWallet()
+    })
+  }
+
+  updateWallet()
+}
+
+window.vexstore = store
+window.vuexApp = vueApp
+
+function updateWallet () {
+  const walletInfo = getWallet()
+  walletInfo.showWallet = store.state.user.showWallet
+  console.log('updateWallet', walletInfo)
+  store.commit("user/updateState", walletInfo)
 }

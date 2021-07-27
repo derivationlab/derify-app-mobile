@@ -66,21 +66,8 @@ const actions = {
   loginWallet ({commit, dispatch}) {
     return new Promise((resolve, reject) => {
       web3Utils.enable().then(res => {
-        commit('SET_WALLET_ADDRESS', res[0])
-        dispatch('setAccount')
+        resolve(res)
       }).catch(err => reject(err))
-    })
-  },
-  setAccount ({commit, state}) {
-    return new Promise((resolve, reject) => {
-      if (!state.wallet_address) {
-        reject(new Error('log in wallet first'))
-      } else {
-        web3Utils.getAccount(state.wallet_address).then(r => {
-          commit('SET_ACCOUNT', r)
-          resolve(r)
-        }).catch(err => reject(err))
-      }
     })
   },
   depositAccount ({state}, amount) {

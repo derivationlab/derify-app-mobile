@@ -19,7 +19,7 @@
     <div class="wallet-wrap">
       <div class="wallet-wrap-title">选择网络</div>
       <div class="wallet-select-area">
-        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.Kovan.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.Kovan)">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === mainChain.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
           <div class="wallet-item-name">Ethereum (xDai)</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
@@ -101,21 +101,29 @@ export default {
     },
     handleLogin () {
 
-      if(this.selectedWallet !== WalletEnum.MetaMask || this.selectedWalletNetwork.chainId !== this.user.chainEnum.chainId) {
-        return
-      }
+      const isSelectMain = this.selectedWalletNetwork.chainId === mainChain.chainId
+      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
 
-      this.$store
-        .dispatch('contract/loginWallet')
-        .then((_) => {
-          this.$toast('Successfully log in wallet')
-        })
-        .catch((err) => {
-          this.$toast(err.message)
-        })
-        .finally((_) => {
-          this.this.loginError = null
-        })
+      const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
+      const walletMetaMask = this.$store.state.user.isMetaMask
+
+      if(isSelectMain && walletMain && isSelectMetaMask && walletMetaMask) {
+
+        this.$store
+          .dispatch('contract/loginWallet')
+          .then((_) => {
+
+            this.$toast('Successfully log in wallet')
+            this.showPopup = false
+            this.$forceUpdate()
+          })
+          .catch((err) => {
+            this.$toast(err.message)
+          })
+          .finally((_) => {
+            this.this.loginError = null
+          })
+      }
     }
   }
 }

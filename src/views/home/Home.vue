@@ -89,10 +89,15 @@
       <div class="home-mid-three">
         <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
       </div>
-      <div class="home-mid-four">
+      <div class="home-mid-four" v-if="isLogin">
         <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
         <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
         <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
+      </div>
+      <div class="home-mid-four" v-if="!isLogin">
+        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
       </div>
     </div>
     </template>
@@ -370,12 +375,6 @@ export default {
     Open,
     OpenStatus
   },
-  props:{
-    contractData: {
-      type: Object,
-      default: null
-    }
-  },
   computed: {
     curPair () {
       const {curPairKey, pairs} = this.$store.state.contract
@@ -391,11 +390,20 @@ export default {
       return this.$store.state.contract.contractData
     },
     curTraderOpenUpperBound () {
-      return this.$store.state.contract.contractData.traderOpenUpperBound
+
+      const traderOpenUpperBound = this.$store.state.contract.contractData.traderOpenUpperBound
+      if(!traderOpenUpperBound){
+        return {size : 0, amount: 0}
+      }
+
+      return traderOpenUpperBound
     },
     leverage () {
-      return this.leverageConfig[this.leverageUnit].val;
+      return this.leverageConfig[this.leverageUnit].val
     },
+    isLogin () {
+      return this.$store.state.user.isLogin
+    }
   },
 
   data () {
@@ -674,10 +682,18 @@ export default {
     }
   },
   watch: {
-    contractData:{
+    '$store.state.contract.contractData':{
+      handler () {
+        console.log('$store.state.contract.contractData change', arguments)
+        this.contractData = this.$store.state.contract.contractData;
+      },
+      immediate: true,
+      deep: true
+    },
+    '$store.state.user': {
       handler (val) {
-        console.log('contractData handler', val)
-        this.contractData = val;
+        //this.contractData = val;
+        console.log('$store.state.user change')
       },
       immediate: true,
       deep: true

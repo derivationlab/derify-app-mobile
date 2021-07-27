@@ -41,8 +41,6 @@ const networkMap = {
   // 1337: "Geth private chains (default)",
 }
 
-
-
 export class WalletEnum {
   static get MetaMask () {
     return 'MetaMask'
@@ -73,11 +71,12 @@ export class UserProcessStatus {
   }
 }
 
-export const mainChain = ChainEnum.Kovan
+export const mainChain = ChainEnum.Rinkeby
 
 const state = {
   selectedAddress: "",
   showWallet: false,
+  isLogin: false,
   chainEnum: mainChain,
   isEthum: false,
   networkVersion: "",
@@ -89,16 +88,17 @@ const state = {
 export function getWallet(){
 
   if(!window.ethereum){
-    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false}
+    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
 
   let wethereum = window.ethereum
-
+  const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
   return {
     selectedAddress: wethereum.selectedAddress,
-    showWallet: !wethereum.selectedAddress,
+    isLogin: wethereum.selectedAddress && isEthum,
+    showWallet: !wethereum.selectedAddress || !isEthum,
     chainEnum: networkMap[parseInt(wethereum.chainId)],
-    isEthum: mainChain.chainId === parseInt(wethereum.chainId),
+    isEthum,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
   }
@@ -113,7 +113,7 @@ const mutations = {
     state.processStatusMsg = msg
   },
   updateState (state, updates) {
-    state = Object.assign(state, updates)
+    state = Object.assign(state, {...updates})
   }
 }
 

@@ -1,5 +1,8 @@
 {
   "lng": "en",
+  "global" : {
+    "click connect wallet": "click connect wallet"
+  },
   "navbar":{
     "Home":"Home",
     "Trade": "Trade",

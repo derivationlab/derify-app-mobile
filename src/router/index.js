@@ -64,31 +64,3 @@ const router = new VueRouter({
 })
 
 export default router
-
-router.beforeEach((to, from, next) => {
-  if (window.ethereum && window.ethereum.isConnected() && window.ethereum.selectedAddress) { // 判断该路由是否需要登录权限
-    store.commit("user/setShowWallet", false)
-  } else {
-    store.commit("user/setShowWallet", true)
-  }
-  next()
-})
-
-
-
-window.onload = function (){
-  if(window.ethereum){
-    window.ethereum.on('accountsChanged', function () {
-      location.reload()
-    })
-
-    window.ethereum.on('chainChanged', function () {
-      location.reload()
-    })
-
-
-    const walletInfo = getWallet()
-
-    store.commit("user/updateState", walletInfo)
-  }
-}
