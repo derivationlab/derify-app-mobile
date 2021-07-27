@@ -1,6 +1,8 @@
 import Web3 from 'web3'
 import ABIData from './contract'
+import BigNumber from 'bignumber.js'
 
+window.BigNumber = BigNumber
 export class SideEnum {
   static get LONG (){
     return 0;
@@ -84,20 +86,34 @@ export const contractDebug = true
 export const contractDecimals = 8
 
 export function toContractUnit (number) {
-  return "0x"+ toContractNum(number).toString(16)
+  return toShiftedHexString(number, contractDecimals)
 }
 
+export function toShiftedHexString (number, decimals = 0) {
+  return "0x" + (new BigNumber(number)).shiftedBy(decimals).toString(16)
+}
+
+export function toShiftedString (number, decimals = 0, bit = 2) {
+  return (new BigNumber(number)).shiftedBy(decimals).toFixed(bit)
+}
+
+
 export function toHexString (number) {
-  return "0x"+ parseFloat(number).toString(16)
+  return toShiftedHexString(number)
 }
 
 export function toContractNum (number) {
-  return number * Math.pow(10, contractDecimals)
+  return (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
 }
 
+
 export function fromContractUnit (unit) {
-  const number = parseFloat(unit)
-  return number / Math.pow(10, contractDecimals)
+  const number = new BigNumber(unit)
+  return number.shiftedBy(-contractDecimals).toNumber()
+}
+
+export function stringFromContractUnit (unit, bit = 2) {
+  return toShiftedString(unit, -contractDecimals, bit)
 }
 
 /**
@@ -151,7 +167,7 @@ export default class Contract {
 
         const decimalNum = parseInt(decimals)
 
-        const approveNum = "0x"+(amount * Math.pow(10, decimalNum - contractDecimals)).toString(16);
+        const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
         //钱包获取授权金额
         let ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
@@ -231,7 +247,7 @@ export default class Contract {
    * @param leverage
    * @return {*}
    */
-  getTraderOpenUpperBound (marketIdAddress, trader, openType, price, leverage) {
+  getTraderOpenUpperBound ({marketIdAddress, trader, openType, price, leverage}) {
     return this.DerifyExchange.methods.getTraderOpenUpperBound(marketIdAddress, trader, openType, price, leverage).call()
   }
 
@@ -241,7 +257,7 @@ export default class Contract {
    * @param side
    * @return {*}
    */
-  getSysOpenUpperBound (marketIdAddress, side) {
+  getSysOpenUpperBound ({marketIdAddress, side}) {
     return this.DerifyExchange.methods.getSysOpenUpperBound(marketIdAddress, side).call()
   }
 
@@ -255,7 +271,7 @@ export default class Contract {
    * @param leverage
    * @param averagePrice
    */
-  getTraderPositionVariables (trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice) {
+  getTraderPositionVariables ({trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice}) {
     return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
   }
   /**
@@ -277,7 +293,7 @@ export default class Contract {
    * @param totalPositionAmount
    * @return {*}
    */
-  getTraderPositionLiquidatePrice (side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount) {
+  getTraderPositionLiquidatePrice ({side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount}) {
     return this.DerifyExchange.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginBalance, totalPositionAmount).call()
   }
 
@@ -355,9 +371,9 @@ export default class Contract {
    */
   cancleOrderedPosition ({marketIdAddress, trader, orderType, side, timestamp}) {
     if (orderType === 0) {
-      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedLimitPosition(trader, side, timestamp).call()
+      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
     } else {
-      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedStopPosition(trader, orderType, side).call()
+      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedStopPosition(trader, orderType, side).send()
     }
 
   }
@@ -499,14 +515,23 @@ export default class Contract {
     const tradeVariables = await this.__getTraderVariablesWithCache(trader)
 
     //1.1 多仓处理
-    const longPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.LONG
-      , derivativePosition.long, derivativePosition.longOrderStopProfitPosition, derivativePosition.longOrderStopLossPosition, tradeVariables);
-    positions.push(longPositionView)
+    if(derivativePosition.long && derivativePosition.long.leverage > 0
+      && derivativePosition.long.size > 0){
+      const longPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.LONG
+        , derivativePosition.long, derivativePosition.longOrderStopProfitPosition, derivativePosition.longOrderStopLossPosition, tradeVariables);
+      positions.push(longPositionView)
+    }
+
 
     //1.2 空仓处理
-    const shortPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.SHORT
-      , derivativePosition.long, derivativePosition.shortOrderStopProfitPosition, derivativePosition.shortOrderStopLossPosition, tradeVariables);
-    positions.push(shortPositionView)
+    if(derivativePosition.short
+      && derivativePosition.short.leverage > 0
+      && derivativePosition.short.size > 0){
+      const shortPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.SHORT
+        , derivativePosition.short, derivativePosition.shortOrderStopProfitPosition, derivativePosition.shortOrderStopLossPosition, tradeVariables);
+      positions.push(shortPositionView)
+    }
+
 
     positionDataView.positions = positions
 
@@ -576,15 +601,21 @@ export default class Contract {
     position.leverage = positionDO.leverage
     position.averagePrice = positionDO.price
     position.timestamp = positionDO.timestamp
-    position.stopLossPrice = stopProfitPosition.stopPrice
+    position.stopLossPrice = stopLossPosition.stopPrice
     position.stopProfitPrice = stopProfitPosition.stopPrice
     position.spotPrice = await this.getSpotPrice()
 
     // 3.获取浮动盈亏、持仓保证金、回报率
-    const variables = await this.getTraderPositionVariables(trader, marketAddr
-      , side, position.spotPrice, position.size, position.leverage, position.averagePrice)
+    const params = {trader:trader,
+      marketIdAddress: marketAddr,
+      side:  side,
+      spotPrice: position.spotPrice,
+      size:  position.size,
+      leverage: Math.max(position.leverage, 1),
+      averagePrice: position.averagePrice
+    }
 
-
+    const variables = await this.getTraderPositionVariables(params)
 
     position.margin = variables.margin
     position.unrealizedPnl = variables.unrealizedPnl
@@ -595,7 +626,15 @@ export default class Contract {
     position.totalPositionAmount = tradeVariables.totalPositionAmount
     position.marginRate = tradeVariables.marginRate
 
-    position.liquidatePrice = await this.getTraderPositionLiquidatePrice(position.side, position.spotPrice, position.size, position.marginRate, position.marginBalance, position.totalPositionAmount);
+    const liquidPriceParam = {
+      side: position.side,
+      spotPrice: position.spotPrice,
+      size: position.size,
+      marginMaintenanceRatio:  position.marginRate,
+      marginBalance: position.marginBalance,
+      totalPositionAmount: position.totalPositionAmount
+    }
+    position.liquidatePrice = await this.getTraderPositionLiquidatePrice(liquidPriceParam);
 
 
     return position

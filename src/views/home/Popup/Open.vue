@@ -5,7 +5,7 @@
       <div class="system-popup-price">
         <div class="fc-45">委托价格</div>
         <div v-if="openData.entrustType === 1">
-          <span class="fc-85">{{openData.amount | fck(-8,2)}}</span>
+          <span class="fc-85">{{openData.amount}}</span>
           <span class="fc-45">USDT</span>
         </div>
         <div v-else>
@@ -38,14 +38,14 @@
       <div class="system-popup-price">
         <div class="fc-45">动仓费</div>
         <div>
-          <span class="fc-85">{{openData.positionChangeFee | fck(-8)}}</span>
+          <span class="fc-85">{{openData.positionChangeFee}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
       <div class="system-popup-price">
         <div class="fc-45">手续费</div>
         <div>
-          <span class="fc-85">{{openData.tradingFee | fck(-8)}}</span>
+          <span class="fc-85">{{openData.tradingFee}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-  import { toContractUnit, toHexString } from '../../../utils/contractUtil'
+  import { fromContractUnit, toContractUnit, toHexString } from '../../../utils/contractUtil'
 
 export default {
   props: {
@@ -116,20 +116,19 @@ export default {
     },
     submitThenClose () {
       const size = this.openData.size
-      const leverage = this.leverageConfig[this.openData.leverage]
+      const leverage = this.openData.leverage
       let price = null
       if (this.openData.entrustType === 0) {
-        price = this.curSpotPrice
+        price = fromContractUnit(this.curSpotPrice)
       } else {
-        const a = parseFloat(this.openData.amount)
-        price = toContractUnit(a)
+        price = this.openData.amount
       }
 
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
         size: toContractUnit(size),
         openType: this.openData.entrustType,
-        price: toHexString(price),
+        price: toContractUnit(price),
         leverage: toContractUnit(leverage)
       })
       this.close()

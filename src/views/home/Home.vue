@@ -59,7 +59,7 @@
           <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
         </div>
         <div class="home-mid-input" v-else>
-          <van-field class="derify-input" type="number" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
+          <van-field class="derify-input" type="text" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
           <div class="fc-30">USDT</div>
         </div>
       </div>
@@ -339,7 +339,7 @@ import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
 import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
-import {fromContractUnit, toContractUnit} from '../../utils/contractUtil'
+import { fromContractUnit, OpenType, SideEnum, stringFromContractUnit, toContractUnit } from '../../utils/contractUtil'
 import {fck} from "@/utils/utils";
 
 const TradeTypeMap = {
@@ -390,9 +390,12 @@ export default {
     curContractData () {
       return this.$store.state.contract.contractData
     },
+    curTraderOpenUpperBound () {
+      return this.$store.state.contract.contractData.traderOpenUpperBound
+    },
     leverage () {
       return this.leverageConfig[this.leverageUnit].val;
-    }
+    },
   },
 
   data () {
@@ -403,7 +406,7 @@ export default {
       size: 0,
       value5: 20,
       unit: 0,
-      curTraderOpenUpperBound: {size: 0, amount: 0},
+      //curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
         {text: '市价委托', value: 0},
         {text: '限价委托', value: 1}
@@ -489,14 +492,17 @@ export default {
     changeShowOneKeyUnwind (bool) {
       this.showOneKeyUnwind = bool
     },
-    changeShowOpen (bool, type) {
+    changeShowOpen (bool, side) {
       if (bool) {
         let {entrustType, leverage, leverageUnit, amount, size, unit} = this
+
         if (entrustType === 1 && !amount) {
           this.$toast('please input amount first')
           return
-        }else{
-          amount = this.curSpotPrice
+        }
+
+        if(entrustType === 0){
+          amount = stringFromContractUnit(this.curSpotPrice)
         }
 
         if (!size) {
@@ -504,7 +510,7 @@ export default {
           return
         }
 
-        if(type === 0 || type === 1){
+        if(side === 0 || side === 1){
           if(unit === 0){
             if (size > this.curTraderOpenUpperBound.size) {
               this.$toast('输入的开仓量超出上限')
@@ -521,12 +527,17 @@ export default {
         let tradingFee = 0;
         let positionChangeFee = 0;
 
+        if(side === SideEnum.HEDGE && entrustType === OpenType.LimitOrder){
+          this.$toast('对冲交易只能选择市价委托')
+          return
+        }
+
         this.openExtraData = Object.assign(this.openExtraData, {
           entrustType,
           leverage,
           amount: amount,
           size: size,
-          side: type,
+          side: side,
           leverageUnit,
           unit,
           positionChangeFee,
@@ -535,29 +546,29 @@ export default {
 
         const self = this;
         let loadNum = 0;
-        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: amount}).then((tradingFee) => {
+        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
-          Object.assign(this.openExtraData, {tradingFee});
+          Object.assign(this.openExtraData, {tradingFee: fromContractUnit(tradingFee)});
           loadNum++
           self.showOpen = bool && loadNum > 1;
         });
 
-        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: toContractUnit(size), price: amount})
+        this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractUnit(size), price:toContractUnit(amount)})
           .then((positionChangeFee) => {
             if(!positionChangeFee) {
               return
             }
 
-            Object.assign(this.openExtraData, {positionChangeFee});
+            Object.assign(this.openExtraData, {positionChangeFee: fromContractUnit(positionChangeFee)});
 
             loadNum++
 
             self.showOpen = bool && loadNum > 1;
           })
       }
-      this.openType = type
+      this.openType = side
       this.showOpen = bool
     },
     changeShowOpenStatus (bool, status) {
@@ -637,14 +648,19 @@ export default {
       this.unit = unit;
       this.calculatePositionSize(this.value5)
     },
-    updateTraderOpenUpperBound () {
+    updateTraderOpenUpperBound (amount) {
       //杠杆数发生变化, 重新计算仓量
 
       const openType = this.entrustType
 
-      if(this.amount === 0 && openType === 1) {
-        this.amount = fck(this.curSpotPrice, -8, 2)
+      if(amount > 0){
+        this.amount = amount
+      }else{
+        if(this.amount === 0 && openType === 1) {
+          this.amount = fck(this.curSpotPrice, -8, 2)
+        }
       }
+
 
       const price = toContractUnit(this.amount);
 
@@ -652,16 +668,18 @@ export default {
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
-        .then(r => {
-        this.curTraderOpenUpperBound = r;
+        .then(traderOpenUpperBound => {
+          this.calculatePositionSize(this.value5)
       });
     }
   },
   watch: {
     contractData:{
       handler (val) {
+        console.log('contractData handler', val)
         this.contractData = val;
       },
+      immediate: true,
       deep: true
     }
   },

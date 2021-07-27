@@ -19,11 +19,11 @@ export function contract (account) {
                 const ret = Reflect.apply(...arguments)
 
                 if(ret instanceof Promise){
-                  console.log('request-call.contract.'+ propKey + ',args=' + JSON.stringify(args))
+                  console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args))
 
                   return (async () => {
                     let data = await ret;
-                    console.log('response-call.contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", data)
+                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", data)
                     return data
                   })();
 

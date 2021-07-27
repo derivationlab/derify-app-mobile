@@ -6,7 +6,7 @@
           <div class="system-popup-price">
             <div class="fc-45">开仓量</div>
             <div>
-              <span class="fc-85">{{position.size}}</span>
+              <span class="fc-85">{{position.size | fck(-8)}}</span>
               <span class="fc-45">ETH</span>
             </div>
           </div>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+  import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 
 export default {
   props: {
@@ -91,7 +91,7 @@ export default {
       immediate: true,
       handler () {
         this.position = this.extraData
-        this.value1 = Math.ceil(this.position.size * this.curPercent / 100);
+        this.value1 = fromContractUnit(Math.ceil(this.position.size * this.curPercent / 100))
       }
     }
   },
@@ -101,7 +101,7 @@ export default {
     },
     changePercentage (percent) {
       this.curPercent = percent
-      this.value1 = Math.ceil(this.extraData.size * this.curPercent / 100);
+      this.value1 = fromContractUnit(Math.ceil(this.extraData.size * this.curPercent / 100))
     },
     submitThenClose (){
       const size = this.value1

@@ -1,7 +1,7 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
-import { Token,SideEnum } from '../../utils/contractUtil'
+import { Token, SideEnum, toHexString, toContractUnit } from '../../utils/contractUtil'
 
 const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
@@ -15,7 +15,7 @@ const state = {
   curPairKey: 'ETH',
   contractData: {
     positionChangeFeeRatio: '-', // 动仓费率
-    traderOpenUpperBound: '-',
+    traderOpenUpperBound: {size: 0, amount: 0},
     longPmrRate: '-', //挖矿收益 多
     shortPmrRate: '-',//挖矿收益 空
     tokenPriceRate: '-',//币种涨幅
@@ -217,24 +217,26 @@ const actions = {
       const coin = state.pairs[idx]
 
       data.curSpotPrice = await contract.getSpotPrice(coin.address)
-
+      commit('SET_CONTRACT_DATA', data)
 
       // 2.获取动仓费率
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(coin.address)
+      commit('SET_CONTRACT_DATA', data)
 
       // 3.获取可转仓量
       const price = data.curSpotPrice// 价格
-      const leverage = 1e8// 杠杆
-      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound(coin.address, state.wallet_address, entrustType, price, leverage)
+      const leverage = 10// 杠杆
 
-      // 4.获取系统上限仓量
-      data.sysOpenUpperBound = await contract.getSysOpenUpperBound(coin.address, entrustType)
+      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({marketIdAddress:coin.address, trader: state.wallet_address
+        , openType: entrustType, price:  toHexString(price), leverage: toContractUnit(leverage)})
 
-      data.traderOpenUpperBound = data.sysOpenUpperBound
+
 
       commit('SET_CONTRACT_DATA', data)
 
-      console.log('loadHomeData', data);
+      // 4.获取系统上限仓量
+      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({marketIdAddress: coin.address, side: entrustType})
+      commit('SET_CONTRACT_DATA', data)
       return data
     }())
   },
@@ -251,6 +253,7 @@ const actions = {
       const accountData = await contract.getTraderAccount(state.wallet_address)
 
       const tradeVariables = await contract.getTraderVariables(state.wallet_address)
+
       Object.assign(accountData, {marginBalance: tradeVariables.marginBalance
         , totalPositionAmount: tradeVariables.totalPositionAmount
         , marginRate: tradeVariables.marginRate})
@@ -286,20 +289,26 @@ const actions = {
     return getTradeList(state.wallet_address)
   },
   getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
+    return (async () => {
+      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
-    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+      if (idx === undefined) {
+        idx = 0
+      }
 
-    if (idx === undefined) {
-      idx = 0
-    }
+      const coin = state.pairs[idx]
 
-    const coin = state.pairs[idx]
+      const marketIdAddress = coin.address;
 
-    const marketIdAddress = coin.address;
+      const contract = web3Utils.contract(state.wallet_address)
 
-    const contract = web3Utils.contract(state.wallet_address)
+      const data = await contract.getTraderOpenUpperBound({marketIdAddress: marketIdAddress
+        , trader:  state.wallet_address, openType, price, leverage})
 
-    return contract.getTraderOpenUpperBound(marketIdAddress, state.wallet_address, openType, price, leverage);
+      const update = Object.assign({}, state.contractData, {traderOpenUpperBound: data})
+      commit("SET_CONTRACT_DATA", update)
+      return data;
+    })()
   },
   getTraderTradeBalanceDetail ({state, commit}) {
     return getTradeBalanceDetail(state.wallet_address)

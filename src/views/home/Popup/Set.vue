@@ -44,7 +44,7 @@
 
 <script>
 import {fck} from "@/utils/utils";
-import { fromContractUnit, SideEnum, toContractNum } from '../../../utils/contractUtil'
+import { fromContractUnit, SideEnum, toContractNum, toHexString } from '../../../utils/contractUtil'
 
 export default {
   props: {
@@ -98,15 +98,14 @@ export default {
       //止盈价格：如果是多仓，则止盈价格应大于开仓均价，如果是空仓，止盈价格应小于开仓均价，否则提示错误
       if(position.side === SideEnum.LONG && toContractNum(price) <= position.averagePrice){
         this.$toast('多仓止盈价格应大于开仓均价')
-        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopProfitPrice)
       }
 
       if(position.side === SideEnum.SHORT && toContractNum(price) >= position.averagePrice){
         this.$toast('空仓止盈价格应小于开仓均价')
-        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopProfitPrice)
       }
 
       this.position.stopProfitPriceInput = price;
+
       this.position.stopProfitPrice = toContractNum(price)
       this.calLossAndProfit();
     },
@@ -116,12 +115,10 @@ export default {
       //止损价格：如果是多仓，则止损价格应小于开仓均价，如果是空仓，止损价格应大于开仓均价，否则提示错误；
       if(position.side === SideEnum.LONG && toContractNum(price) > position.averagePrice){
         this.$toast('多仓止损价格应小于开仓均价')
-        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopLossPrice)
       }
 
       if(position.side === SideEnum.SHORT && toContractNum(price) < position.averagePrice){
         this.$toast('空仓止损价格应大于开仓均价')
-        this.position.stopProfitPriceInput = fromContractUnit(this.position.stopLossPrice)
       }
       this.position.stopLossPriceInput = price;
       this.position.stopLossPrice = toContractNum(price)
@@ -137,12 +134,12 @@ export default {
 
       //设置止盈
       this.$store.dispatch('contract/orderStopPosition', {
-        coinAddress, side, stopType: 0, stopPrice: this.position.stopProfitPrice
+        coinAddress, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
       });
 
       //设置止损
       this.$store.dispatch('contract/orderStopPosition', {
-        coinAddress, side, stopType: 1, stopPrice: this.position.stopLossPrice
+        coinAddress, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
       });
       this.close()
     }
