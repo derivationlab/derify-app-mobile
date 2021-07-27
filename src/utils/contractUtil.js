@@ -70,8 +70,8 @@ export class OpenType {
 }
 
 export const Token = {
-  BTC: ABIData.DerifyDerivative.BTC.address,
-  ETH: ABIData.DerifyDerivative.ETH.address,
+  BTC: ABIData.DerifyDerivative.BTC.token,
+  ETH: ABIData.DerifyDerivative.ETH.token,
   DUSD: ABIData.DUSD.address,
   bDRD: ABIData.bDRD.address,
   USDT: ABIData.bDRD.address
