@@ -16,8 +16,14 @@
       <div>{{accountData.marginBalance | fck(-8)}}<span>USDT</span></div>
       <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{accountData.marginRate | fck(-8)}}%)</span></div>
     </div>
-    <div class="recharge" @click="goTransfer('deposit')">充值</div>
-    <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
+    <template v-if="isLogin">
+      <div class="recharge" @click="goTransfer('deposit')">充值</div>
+      <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
+    </template>
+    <template v-if="!isLogin">
+      <div class="recharge" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+      <div class="withdraw" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+    </template>
   </div>
 </template>
 <script>
@@ -39,6 +45,15 @@ export default {
   computed: {
     accountData () {
       return this.$store.state.contract.accountData
+    },
+    isLogin () {
+      return this.$store.state.user.isLogin
+    }
+  },
+  watch: {
+    '$store.state.user.isLogin': function() {
+      console.log('$store.state.user.isLogin change')
+      this.loadAccountData()
     }
   },
   mounted () {
@@ -46,10 +61,7 @@ export default {
     this.$store.dispatch('contract/onWithDraw');
   },
   beforeMount () {
-    this.$store.dispatch('contract/loadAccountData').then(r => {
-      Object.assign(state, r)
-      console.log(' loadAccountData ' + JSON.stringify(r))
-    })
+
   },
   methods: {
     lookFinDetail () {
@@ -57,6 +69,12 @@ export default {
     },
     goTransfer (type) {
       this.$router.push({ path: '/transfer', query: { type } })
+    },
+    loadAccountData () {
+      console.log('loadAccountData')
+      this.$store.dispatch('contract/loadAccountData').then(r => {
+        Object.assign(state, r)
+      })
     }
   }
 }

@@ -91,6 +91,7 @@ window.vuexApp = vueApp
 function updateWallet () {
   const walletInfo = getWallet()
   walletInfo.showWallet = store.state.user.showWallet
-  console.log('updateWallet', walletInfo)
   store.commit("user/updateState", walletInfo)
+
+  store.commit("contract/SET_WALLET_ADDRESS", walletInfo.selectedAddress)
 }

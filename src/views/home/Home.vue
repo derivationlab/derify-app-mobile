@@ -706,6 +706,7 @@ export default {
     this.$nextTick(() => {
 
       if(context.tokenMiningRateEvent === null){
+        console.log('context.tokenMiningRateEvent')
         context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
           //更新挖矿收益率
           this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
@@ -713,6 +714,7 @@ export default {
       }
 
       if(context.tokenPriceChangeEvenet === null) {
+        console.log('context.tokenPriceChangeEvenet')
         context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
           //更新币种涨幅
           this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
