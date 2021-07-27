@@ -45,9 +45,9 @@
           </van-dropdown-item>
         </van-dropdown-menu>
         <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="leverage" :options="leverageConfig" @input="updateTraderOpenUpperBound">
+          <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
               <div class="derify-dropmenu-title" slot="title">
-                <span>{{leverageConfig[leverage].text}}</span>
+                <span>{{leverageConfig[leverageUnit].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
               </div>
           </van-dropdown-item>
@@ -67,8 +67,10 @@
         <div class="home-mid-two-title">
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
-            <span class="fc-65">可开：{{unit === 0 ? curTraderOpenUpperBound.size
-                : unit === 1 ? curTraderOpenUpperBound.amount : 100}} {{unitConfig[unit].text}}</span>
+            <span class="fc-65">可开：
+              <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}}</template>
+              <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}}</template>
+              <template v-if="unit === 2">100%</template>{{unitConfig[unit].text}}</span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -337,8 +339,8 @@ import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
 import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
-import { fck } from '../../utils/utils'
-import { toContractUnit } from '../../utils/contractUtil'
+import {fromContractUnit, toContractUnit} from '../../utils/contractUtil'
+import {fck} from "@/utils/utils";
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
@@ -387,13 +389,16 @@ export default {
     },
     curContractData () {
       return this.$store.state.contract.contractData
+    },
+    leverage () {
+      return this.leverageConfig[this.leverageUnit].val;
     }
   },
 
   data () {
     return {
       entrustType: 0,
-      leverage: 0,
+      leverageUnit: 0,
       amount: 0,
       size: 0,
       value5: 20,
@@ -404,9 +409,9 @@ export default {
         {text: '限价委托', value: 1}
       ],
       leverageConfig: [
-        {text: '10x', value: 10},
-        {text: '5x', value: 5},
-        {text: '3x', value: 3}
+        {text: '10x', value: 0, val: 10},
+        {text: '5x', value: 1, val: 5},
+        {text: '3x', value: 2, val: 3}
       ],
       unitConfig: [
         {text: 'USDT', value: 0},
@@ -491,7 +496,7 @@ export default {
           this.$toast('please input amount first')
           return
         }else{
-          amount = toContractUnit(this.curSpotPrice)
+          amount = this.curSpotPrice
         }
 
         if (!size) {
@@ -529,7 +534,7 @@ export default {
 
         const self = this;
         let loadNum = 0;
-        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
+        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: amount}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
@@ -538,7 +543,7 @@ export default {
           self.showOpen = bool && loadNum > 1;
         });
 
-        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: toContractUnit(size), price: toContractUnit(amount)})
+        this.$store.dispatch("contract/getPositionChangeFee", {side: type, actionType: 0, size: toContractUnit(size), price: amount})
           .then((positionChangeFee) => {
             if(!positionChangeFee) {
               return
@@ -616,18 +621,18 @@ export default {
       })
     },
     calculatePositionSize (sliderValue) {
-      console.log(sliderValue)
       const {unit} = this// 0 ETH，1 USDT 2 %
       if (unit ===  0) {
-        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
+        this.size = fck(Math.round(sliderValue /100 * this.curTraderOpenUpperBound.size), -8, 2)
       }else if (unit === 1) {
-        this.size = Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount)
+        this.size = fck(Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount), -8, 2)
       }else{
         this.size = sliderValue || 0
       }
 
     },
     unitSelectChange (unit) {
+      console.log(unit)
       this.unit = unit;
       this.calculatePositionSize(this.value5)
     },
@@ -635,8 +640,15 @@ export default {
       //杠杆数发生变化, 重新计算仓量
 
       const openType = this.entrustType
-      const price = toContractUnit(this.amount)
+      if(this.amount === 0) {
+        this.amount = fck(this.curSpotPrice, -8, 2)
+      }
+
+      const price = toContractUnit(this.amount);
+
       const leverage = toContractUnit(this.leverage)
+      console.log('updateTraderOpenUpperBound', leverage)
+      console.log('updateTraderOpenUpperBound', price)
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
@@ -685,7 +697,7 @@ export default {
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-        this.size = Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount);
+        this.size = fck(Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount), -8, 2);
       })
 
       const {positions, positionOrders} = this
