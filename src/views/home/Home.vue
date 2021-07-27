@@ -70,7 +70,7 @@
             <span class="fc-65">可开：
               <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}}</template>
               <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}}</template>
-              <template v-if="unit === 2">100%</template>{{unitConfig[unit].text}}</span>
+              <template v-if="unit === 2">100</template>{{unitConfig[unit].text}}</span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -491,7 +491,7 @@ export default {
     },
     changeShowOpen (bool, type) {
       if (bool) {
-        let {entrustType, leverage, amount, size, unit} = this
+        let {entrustType, leverage, leverageUnit, amount, size, unit} = this
         if (entrustType === 1 && !amount) {
           this.$toast('please input amount first')
           return
@@ -527,6 +527,7 @@ export default {
           amount: amount,
           size: size,
           side: type,
+          leverageUnit,
           unit,
           positionChangeFee,
           tradingFee
@@ -640,15 +641,14 @@ export default {
       //杠杆数发生变化, 重新计算仓量
 
       const openType = this.entrustType
-      if(this.amount === 0) {
+
+      if(this.amount === 0 && openType === 1) {
         this.amount = fck(this.curSpotPrice, -8, 2)
       }
 
       const price = toContractUnit(this.amount);
 
       const leverage = toContractUnit(this.leverage)
-      console.log('updateTraderOpenUpperBound', leverage)
-      console.log('updateTraderOpenUpperBound', price)
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})

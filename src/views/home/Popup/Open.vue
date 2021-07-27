@@ -5,11 +5,11 @@
       <div class="system-popup-price">
         <div class="fc-45">委托价格</div>
         <div v-if="openData.entrustType === 1">
-          <span class="fc-85">{{openData.amount}}</span>
+          <span class="fc-85">{{openData.amount | fck(-8,2)}}</span>
           <span class="fc-45">USDT</span>
         </div>
         <div v-else>
-          <span class="fc-85">{{curSpotPrice | fck(-8)}}</span>
+          <span class="fc-85">{{curSpotPrice | fck(-8,2)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
@@ -17,15 +17,15 @@
         <div class="fc-45">开仓类型</div>
         <div v-if="openType === 1">
           <span class="fc-red">开空</span>
-          <span class="fc-red">{{leverageConfig[openData.leverage]}}x</span>
+          <span class="fc-red">{{openData.leverage}}x</span>
         </div>
         <div v-if="openType === 0">
           <span class="fc-green">开多</span>
-          <span class="fc-green">{{leverageConfig[openData.leverage]}}x</span>
+          <span class="fc-green">{{openData.leverage}}x</span>
         </div>
         <div v-if="openType === 2">
           <span class="fc-yellow">双向对冲</span>
-          <span class="fc-yellow">{{leverageConfig[openData.leverage]}}x</span>
+          <span class="fc-yellow">{{openData.leverage}}x</span>
         </div>
       </div>
       <div class="system-popup-price">
