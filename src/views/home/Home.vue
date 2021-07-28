@@ -68,9 +68,9 @@
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
             <span class="fc-65">可开：
-              <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}}</template>
-              <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}}</template>
-              <template v-if="unit === 2">100</template>{{unitConfig[unit].text}}</span>
+              <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
+              <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
+              <template v-if="unit === 2">100 %</template></span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
@@ -118,7 +118,7 @@
 
                       <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
                       <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">ETH/USDT</div>
+                      <div class="fz-16 mr-4">{{curPair.name}}</div>
                       <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
@@ -142,7 +142,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">持仓量：</div>
-                      <div>{{data.size | fck(-8)}} ETH</div>
+                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -152,7 +152,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">开仓均价：</div>
-                      <div>{{data.averagePrice | fck(-8)}} ETH</div>
+                      <div>{{data.averagePrice | fck(-8)}} {{curPair.key}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -197,7 +197,9 @@
 
                       <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
                       <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">ETH/USDT</div>
+                      <div class="fz-16 mr-4">
+
+                        /USDT</div>
                       <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
@@ -226,7 +228,7 @@
                   <div class="exchange-item">
                     <div class="exchange-item-left">
                       <div class="fc-45">委托数量：</div>
-                      <div>{{data.size | fck(-8)}} ETH</div>
+                      <div>{{data.size | fck(-8)}} {{curPair.name}}</div>
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">委托时间：</div>
@@ -260,7 +262,7 @@
 
                       <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
                       <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">ETH/USDT</div>
+                      <div class="fz-16 mr-4">{{curPair.name}}</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
                     <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
@@ -284,7 +286,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">成交数量：</div>
-                      <div>{{data.size | fck(-8)}} ETH</div>
+                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -349,7 +351,14 @@ import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
 import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
-import { fromContractUnit, OpenType, SideEnum, stringFromContractUnit, toContractUnit } from '../../utils/contractUtil'
+import {
+  fromContractUnit,
+  OpenType,
+  Position,
+  SideEnum,
+  stringFromContractUnit,
+  toContractUnit
+} from '../../utils/contractUtil'
 import {fck} from "@/utils/utils";
 
 const TradeTypeMap = {
@@ -412,6 +421,8 @@ export default {
   },
 
   data () {
+
+    const position = new Position()
     return {
       entrustType: 0,
       leverageUnit: 0,
@@ -455,10 +466,20 @@ export default {
       openType: null, // 开仓类型
       showOpenStatus: false, // 开仓状态弹窗
       openStatus: 'fail', // 开仓状态
-      openExtraData: {size: 0},
+      openExtraData: {
+        entrustType: null,
+        leverage: null,
+        amount: 0,
+        size: null,
+        side: null,
+        leverageUnit: null,
+        unit: null,
+        positionChangeFee: null,
+        tradingFee: null
+      },
       positionChangeFeeRatio: 0, //动仓费率
-      setExtraData: null,
-      unwindExtraData: {size: 0}
+      setExtraData: {...position},
+      unwindExtraData: {...position}
     }
   },
   methods: {
@@ -769,6 +790,14 @@ export default {
     },
     '$store.state.user.isLogin': {
       handler (val) {
+        this.homeInit()
+      },
+      immediate: true,
+      deep: true
+    },
+    '$store.state.contract.curPairKey' : {
+      handler (val) {
+        this.unitConfig[1].text = this.curPair.key
         this.homeInit()
       },
       immediate: true,

@@ -103,6 +103,14 @@ export default {
         Object.assign(this.openData, {...this.extraData})
         console.log('watch extraData', JSON.stringify(this.openData))
       }
+    },
+    '$store.state.contract.curPairKey' : {
+      handler (val) {
+        this.unitConfig[1].text = this.curPair.key
+        this.homeInit()
+      },
+      immediate: true,
+      deep: true
     }
   },
   computed: {
