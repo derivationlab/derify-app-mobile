@@ -9,7 +9,10 @@
     "Rewards":"收益",
     "Partners":"经纪商",
     "Data":"数据",
-    "Connect Wallet":"连接钱包"
+    "Connect Wallet":"连接钱包",
+    "Click To Log In": "点击登录",
+    "Wallet Address": "钱包地址",
+    "Click to connect your wallet": "连接钱包"
   },
   "Brokers":{
     "Brokers":"经济商",

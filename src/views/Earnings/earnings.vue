@@ -24,7 +24,12 @@
         <div class="earnings-item">
           <div class="item-div">
             <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13" @click="withdraw(true,1)">提现</span>
+            <template v-if="isLogin">
+              <span class="fz-13" @click="withdraw(true,1)">提现</span>
+            </template>
+            <template v-else>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+            </template>
           </div>
         </div>
       </div>
@@ -49,18 +54,26 @@
           </div>
         </div>
         <div class="earnings-item">
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13" @click="withdraw(true,2)">提现</span>
-          </div>
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="peer-pay" size="18"/>
-            <span class="fz-13" @click="redeem(true,1)">赎回</span>
-          </div>
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-            <span class="fz-13" @click="pledge(true,1)">质押</span>
-          </div>
+          <template v-if="isLogin">
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="refund-o" size="18"/>
+              <span class="fz-13" @click="withdraw(true,2)">提现</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="peer-pay" size="18"/>
+              <span class="fz-13" @click="redeem(true,1)">赎回</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
+              <span class="fz-13" @click="pledge(true,1)">质押</span>
+            </div>
+          </template>
+          <template v-else>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="refund-o" size="18"/>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+            </div>
+          </template>
         </div>
       </div>
       <!-- 可兑换债券 bDRF -->
@@ -84,22 +97,30 @@
           </div>
         </div>
         <div class="earnings-item">
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="refund-o" size="18"/>
-            <span class="fz-13" @click="withdraw(true,3)">提现</span>
-          </div>
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="balance-o" size="18"/>
-            <span class="fz-13" @click="deposit(true)">兑换</span>
-          </div>
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="peer-pay" size="18"/>
-            <span class="fz-13" @click="redeem(true,2)">赎回</span>
-          </div>
-          <div class="item-div flex1">
-            <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-            <span class="fz-13" @click="pledge(true,2)">质押</span>
-          </div>
+          <template v-if="isLogin">
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="refund-o" size="18"/>
+              <span class="fz-13" @click="withdraw(true,3)">提现</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="balance-o" size="18"/>
+              <span class="fz-13" @click="deposit(true)">兑换</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="peer-pay" size="18"/>
+              <span class="fz-13" @click="redeem(true,2)">赎回</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
+              <span class="fz-13" @click="pledge(true,2)">质押</span>
+            </div>
+          </template>
+          <template v-else>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="refund-o" size="18"/>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+            </div>
+          </template>
         </div>
       </div>
       <div style="margin-bottom:2rem">&nbsp;</div>
@@ -155,6 +176,14 @@ export default {
       }
       return {}
     },
+    isLogin () {
+      return this.$store.state.user.isLogin
+    }
+  },
+  watch: {
+    '$store.state.user.isLogin': function() {
+      this.loadEarningData()
+    }
   },
   methods: {
     // 关闭提现弹框
@@ -198,10 +227,13 @@ export default {
     },
     goDetail (id) {
       this.$router.push({ path: '/detail', query: { id } })
+    },
+    loadEarningData() {
+      this.$store.dispatch('earnings/loadEarningData')
     }
   },
   mounted () {
-    this.$store.dispatch('earnings/loadEarningData')
+
   }
 }
 </script>

@@ -45,7 +45,8 @@
           <img src="@/assets/images/Frame.png" alt="" srcset="">
         </div>
         <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
-        <div class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
+        <div v-if="isLogin" class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
+        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
       </div>
   </van-popup>
   <!-- 申请条件 -->
@@ -115,6 +116,11 @@ export default {
     }
   },
   created () {
+  },
+  computed: {
+    isLogin () {
+      return this.$store.state.user.isLogin
+    }
   },
   methods: {
     // 关闭申请弹框

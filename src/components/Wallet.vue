@@ -121,7 +121,7 @@ export default {
             this.$toast(err.message)
           })
           .finally((_) => {
-            this.this.loginError = null
+            this.loginError = null
           })
       }
     }

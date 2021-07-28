@@ -96,8 +96,6 @@
       </div>
       <div class="home-mid-four" v-if="!isLogin">
         <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
       </div>
     </div>
     </template>
@@ -318,9 +316,16 @@
       </template>
       <div v-else class="home-last-btn-wrap">
         <template v-if="$route.name === 'exchange'">
-          <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-          <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+          <template v-if="isLogin">
+            <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
+            <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+          </template>
+          <template v-if="!isLogin">
+            <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+          </template>
         </template>
+
+
       </div>
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
@@ -593,6 +598,11 @@ export default {
       this.$router.push({name})
     },
     drawKline () {
+
+      if(!context.loaded){
+        return
+      }
+
       if(!context.myChart){
         context.myChart = this.$echarts.init(document.getElementById('myChart'))
       }
@@ -679,47 +689,25 @@ export default {
         .then(traderOpenUpperBound => {
           this.calculatePositionSize(this.value5)
       });
-    }
-  },
-  watch: {
-    '$store.state.contract.contractData':{
-      handler () {
-        console.log('$store.state.contract.contractData change', arguments)
-        this.contractData = this.$store.state.contract.contractData;
-      },
-      immediate: true,
-      deep: true
     },
-    '$store.state.user': {
-      handler (val) {
-        //this.contractData = val;
-        console.log('$store.state.user change')
-      },
-      immediate: true,
-      deep: true
-    }
-  },
-  created () {
-    context.loaded = true
-
-    //TODO 币种切换处理
-    this.$nextTick(() => {
-
-      if(context.tokenMiningRateEvent === null){
-        console.log('context.tokenMiningRateEvent')
-        context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-          //更新挖矿收益率
-          this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
-        })
+    homeInit(){
+      if(context.tokenMiningRateEvent !== null){
+        context.tokenMiningRateEvent.close()
       }
 
-      if(context.tokenPriceChangeEvenet === null) {
-        console.log('context.tokenPriceChangeEvenet')
-        context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
-          //更新币种涨幅
-          this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
-        })
+      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+        //更新挖矿收益率
+        this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
+      })
+
+      if(context.tokenPriceChangeEvenet !== null) {
+        context.tokenPriceChangeEvenet.close()
       }
+
+      context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
+        //更新币种涨幅
+        this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
+      })
 
       this.drawKline()
 
@@ -769,6 +757,30 @@ export default {
       })
 
       this.updateTraderOpenUpperBound()
+    }
+  },
+  watch: {
+    '$store.state.contract.contractData':{
+      handler () {
+        this.contractData = this.$store.state.contract.contractData;
+      },
+      immediate: true,
+      deep: true
+    },
+    '$store.state.user.isLogin': {
+      handler (val) {
+        this.homeInit()
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  created () {
+    context.loaded = true
+
+    //TODO 币种切换处理
+    this.$nextTick(() => {
+
     })
   },
   destroyed () {

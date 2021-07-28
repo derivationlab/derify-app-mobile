@@ -15,28 +15,28 @@
         <img src="@/assets/images/logo.png" alt="" srcset="" />
       </template>
 
-      <template #right v-if="walletAddress">
+      <template #right v-if="isLogin">
         <div class="first-letter-wrap-inline" @click="changeRouter('account')">
           <img v-if="user.chainEnum"  :src="user.chainEnum ? user.chainEnum.logo : '#'"/>
           <template v-else>W</template>
         </div>
       </template>
       <template #right v-else>
-        <div class="first-letter-wrap-inline" @click="handleLogin"></div>
+        <div class="first-letter-wrap-inline" @click="$loginWallet()"></div>
       </template>
 
     </van-nav-bar>
     <van-popup class="menu-popup" v-model="showMenu" position="left">
       <div class="interactive-error" v-if="loginError">{{ loginError }}</div>
-      <div class="head-info" @click="handleLogin">
-        <div class="head-info-left" v-if="walletAddress" @click="changeRouter('account')">
+      <div class="head-info" @click="$loginWallet()">
+        <div class="head-info-left" v-if="isLogin" @click="changeRouter('account')">
           <div class="first-letter-wrap">
             <img v-if="user.chainEnum"  :src="user.chainEnum ? user.chainEnum.logo : '#'"/>
             <template v-else>W</template>
           </div>
           <div class="info-div">
             <div class="info-name">
-              钱包地址
+              {{$t('navbar.Wallet Address')}}
             </div>
             <div>{{ walletAddress }}</div>
           </div>
@@ -44,8 +44,8 @@
         <div class="head-info-left" v-else>
           <div class="first-letter-wrap">C</div>
           <div class="info-div">
-            <div class="info-name">Click To Log In</div>
-            <div>click to log in wallet</div>
+            <div class="info-name">{{$t('navbar.Click To Log In')}}</div>
+            <div>{{$t('navbar.Click to connect your wallet')}}</div>
           </div>
         </div>
         <van-icon
@@ -230,6 +230,9 @@ export default {
     },
     user () {
       return this.$store.state.user
+    },
+    isLogin () {
+      return this.$store.state.user.isLogin
     }
   },
   created () {

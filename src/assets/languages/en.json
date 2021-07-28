@@ -9,7 +9,10 @@
     "Rewards":"Rewards",
     "Partners":"Partners",
     "Data":"Data",
-    "Connect Wallet":"Connect Wallet"
+    "Connect Wallet":"Connect Wallet",
+    "Click To Log In": "Click To Log In",
+    "Wallet Address": "Wallet Address",
+    "Click to connect your wallet": "Click to connect your wallet"
   },
   "Brokers":{
     "Brokers":"Brokers",
