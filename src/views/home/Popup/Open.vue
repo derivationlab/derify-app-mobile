@@ -32,7 +32,7 @@
         <div class="fc-45">开仓量</div>
         <div>
           <span class="fc-85">{{openData.size}}</span>
-          <span class="fc-45">{{unitConfig[openData.unit]}}</span>
+          <span class="fc-45">{{unitConfig[openData.unit].text}}</span>
         </div>
       </div>
       <div class="system-popup-price">
@@ -85,7 +85,11 @@ export default {
         { text: '限价委托', value: 1 }
       ],
       leverageConfig: [10, 5, 3],
-      unitConfig: ['USDT', 'ETH', '%']
+      unitConfig: [
+        {text: 'USDT', value: 0},
+        {text: 'ETH', value: 1},
+        {text: '%', value: 2}
+      ]
     }
   },
   watch: {
@@ -107,7 +111,6 @@ export default {
     '$store.state.contract.curPairKey' : {
       handler (val) {
         this.unitConfig[1].text = this.curPair.key
-        this.homeInit()
       },
       immediate: true,
       deep: true
@@ -116,6 +119,10 @@ export default {
   computed: {
     curSpotPrice () {
       return this.$store.state.contract.curSpotPrice
+    },
+    curPair () {
+      const {curPairKey, pairs} = this.$store.state.contract
+      return pairs.find(pair => pair.key === curPairKey)
     }
   },
   methods: {

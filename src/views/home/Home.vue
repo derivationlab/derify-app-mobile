@@ -467,15 +467,15 @@ export default {
       showOpenStatus: false, // 开仓状态弹窗
       openStatus: 'fail', // 开仓状态
       openExtraData: {
-        entrustType: null,
-        leverage: null,
+        entrustType: OpenType.MarketOrder,
+        leverage: 10,
         amount: 0,
-        size: null,
-        side: null,
-        leverageUnit: null,
-        unit: null,
-        positionChangeFee: null,
-        tradingFee: null
+        size: 0,
+        side: SideEnum.SHORT,
+        leverageUnit: 0,
+        unit: 0,
+        positionChangeFee: 0,
+        tradingFee: 0
       },
       positionChangeFeeRatio: 0, //动仓费率
       setExtraData: {...position},
@@ -797,6 +797,7 @@ export default {
     },
     '$store.state.contract.curPairKey' : {
       handler (val) {
+        console.log('$store.state.contract.curPairKey', this.curPair.key)
         this.unitConfig[1].text = this.curPair.key
         this.homeInit()
       },

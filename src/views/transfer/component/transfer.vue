@@ -25,18 +25,20 @@
         v-model="amount"
         class="derify-input no-padding-hor"
         type="number"
+        @input="changeAmount"
       >
       </van-field>
-      <span class="unit">USDT</span>
+      <span class="unit">DUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：{{account.accountBalance | fck(-8)}} USDT</span><span class="span2">全部划转</span></div>
-    <div class="pay-div" v-if="type === 'deposit'" @click="deposit">充值</div>
-    <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">提现</div>
+    <div class="transfer-div"><span class="span1">可划转：{{balanceOfDUSD | fck(-8)}} DUSD</span><span class="span2">全部划转</span></div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">充值</div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">提现</div>
   </div>
 </template>
 <script>
 import { toContractUnit } from '../../../utils/contractUtil'
 import { UserProcessStatus } from '../../../store/modules/user'
+import {toContractNum} from "@/utils/contractUtil";
 
 export default {
   name: 'transfer',
@@ -48,11 +50,19 @@ export default {
   },
   computed: {
     account () {
-      return this.$store.state.contract.account
+      return this.$store.state.contract.accountData
+    },
+    balanceOfDUSD () {
+      return this.$store.state.user.balanceOfDUSD
     }
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
+  },
+  watch:{
+    '$store.state.user.isLogin': function (){
+      this.$store.dispatch('user/getBalanceOfDUSD')
+    }
   },
   methods: {
     onClickLeft () {
@@ -61,13 +71,27 @@ export default {
     changeType () {
       this.type = this.type === 'deposit' ? 'withdraw' : 'deposit'
     },
+    changeAmount (val) {
+      if(val <= 0) {
+
+      }else{
+
+      }
+    },
     deposit () {
       if (!this.amount) {
         this.$toast('请输入正确的数量')
         return false
       }
+
+
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
+
+      if(toContractNum(this.amount) > this.account.marginBalance) {
+        this.$toast('超出限额，请重新输入')
+        return  false
+      }
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
@@ -78,7 +102,7 @@ export default {
         }, 1000)
 
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + e})
       }).finally( _ => {
         this.$router.go(-1)
       })
@@ -166,7 +190,12 @@ export default {
   font-size: 1.7rem;
   font-weight: 500;
   margin-top: 9rem;
+  &.disabled {
+    color: #e0e0e0;
+    background: #ccc;
+  }
 }
+
 .van-cell-group {
   background-color: #140b32;
 }

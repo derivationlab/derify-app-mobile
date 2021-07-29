@@ -116,6 +116,10 @@ export function stringFromContractUnit (unit, bit = 2) {
   return toShiftedString(unit, -contractDecimals, bit)
 }
 
+export function convertTokenNumToContractNum (amount, tokenDecimals) {
+  return (new BigNumber(amount)).shiftedBy(contractDecimals - tokenDecimals).toNumber()
+}
+
 /**
  *
  * @param abi
@@ -170,7 +174,15 @@ export default class Contract {
         const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
         //钱包获取授权金额
-        let ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
+        let ret = false;
+
+        try{
+          ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
+        }catch (e){
+          reject('授权拒绝')
+          return
+        }
+
 
         if(ret){
           try{
@@ -194,6 +206,27 @@ export default class Contract {
   withdraw (amount) {
     return this.DerifyExchange.methods.withdraw(amount).send()
   }
+
+  balanceOf (trader, token) {
+
+    const DUSD = this.DUSD;
+    return (async () => {
+      let decimals = await DUSD.methods.decimals().call();
+      console.log(decimals)
+      let tokenAmount = 0;
+      if(ABIData.DUSD.address === token){
+        tokenAmount = await this.DUSD.methods.balanceOf(trader).call()
+        console.log(tokenAmount)
+      }else if(ABIData.bDRD.address === token){
+        tokenAmount = 0
+      }
+
+
+      return convertTokenNumToContractNum(tokenAmount, decimals)
+    })()
+
+  }
+
   /**
    * 开仓
    * @param token 当前合约币种地址

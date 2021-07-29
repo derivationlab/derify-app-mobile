@@ -51,8 +51,8 @@ export default {
     }
   },
   watch: {
-    '$store.state.user.isLogin': function() {
-      console.log('$store.state.user.isLogin change')
+    '$store.state.user.isLogin': function(newVal, oldVal) {
+      console.log('$store.state.user.isLogin change, new=' + newVal + ',old=' + oldVal)
       this.loadAccountData()
     }
   },
@@ -61,7 +61,7 @@ export default {
     this.$store.dispatch('contract/onWithDraw');
   },
   beforeMount () {
-
+    this.loadAccountData()
   },
   methods: {
     lookFinDetail () {
@@ -71,7 +71,6 @@ export default {
       this.$router.push({ path: '/transfer', query: { type } })
     },
     loadAccountData () {
-      console.log('loadAccountData')
       this.$store.dispatch('contract/loadAccountData').then(r => {
         Object.assign(state, r)
       })

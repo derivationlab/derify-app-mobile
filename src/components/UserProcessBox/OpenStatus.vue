@@ -13,7 +13,7 @@
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
         <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
         <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm">确认</div>
+          <div class="system-popup-button confirm" @click="close">确认</div>
         </div>
       </template>
     </div>
@@ -34,6 +34,7 @@ export default {
   },
   methods: {
     close () {
+      this.show = false
       this.$emit('closeOpenStatusPopup', false, this.status)
     },
     updateData(data) {

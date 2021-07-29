@@ -1,3 +1,5 @@
+import * as web3Utils from '@/utils/web3Utils'
+import {toContractNum, Token} from "@/utils/contractUtil";
 
 export class ChainEnum {
   constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png')){
@@ -82,7 +84,8 @@ const state = {
   networkVersion: "",
   isMetaMask: false,
   processStatus: UserProcessStatus.finished,
-  processStatusMsg: ''
+  processStatusMsg: '',
+  balanceOfDUSD: 0
 };
 
 export function getWallet(){
@@ -118,8 +121,15 @@ const mutations = {
 }
 
 const actions = {
-  checkLogin ({commit, dispatch}) {
+  getBalanceOfDUSD ({state, commit, dispatch}) {
+    return (async () => {
+      const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
 
+      toContractNum()
+
+      commit('updateState', {balanceOfDUSD : balanceOf})
+      return balanceOf;
+    })();
   }
 }
 
