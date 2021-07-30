@@ -124,9 +124,7 @@ const actions = {
   getBalanceOfDUSD ({state, commit, dispatch}) {
     return (async () => {
       const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
-
-      toContractNum()
-
+      console.log(balanceOf)
       commit('updateState', {balanceOfDUSD : balanceOf})
       return balanceOf;
     })();

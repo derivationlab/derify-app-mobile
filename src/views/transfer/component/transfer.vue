@@ -30,7 +30,9 @@
       </van-field>
       <span class="unit">DUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：{{balanceOfDUSD | fck(-8)}} DUSD</span><span class="span2">全部划转</span></div>
+    <div class="transfer-div"><span class="span1">可划转：
+      <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
+      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2">全部划转</span></div>
     <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">充值</div>
     <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">提现</div>
   </div>
@@ -52,9 +54,12 @@ export default {
     account () {
       return this.$store.state.contract.accountData
     },
-    balanceOfDUSD () {
+    balanceOfWallet () {
       return this.$store.state.user.balanceOfDUSD
-    }
+    },
+    balanceOfDerify () {
+      return this.$store.state.contract.accountData.marginBalance
+    },
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
@@ -88,7 +93,7 @@ export default {
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
 
-      if(toContractNum(this.amount) > this.account.marginBalance) {
+      if(toContractNum(this.amount) > this.balanceOfWallet) {
         this.$toast('超出限额，请重新输入')
         return  false
       }
@@ -113,6 +118,11 @@ export default {
         return false
       }
 
+      if(toContractNum(this.amount) > this.account.marginBalance) {
+        this.$toast('超出限额，请重新输入')
+        return  false
+      }
+
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
@@ -126,7 +136,6 @@ export default {
         }, 1000)
 
       }).catch(err => {
-        this.$toast(`出现异常:` + err)
         this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
         this.$router.go(-1)
       })

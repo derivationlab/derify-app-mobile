@@ -82,6 +82,7 @@ const actions = {
   },
   withdrawAccount ({state}, amount) {
     return new Promise((resolve, reject) => {
+
       if (!state.wallet_address) {
         reject(new Error('log in wallet first'))
       } else {
@@ -91,6 +92,12 @@ const actions = {
   },
   getSpotPrice ({state, commit}) {
     return new Promise((resolve, reject) => {
+
+      if(state.wallet_address){
+        resolve({})
+        return
+      }
+
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
       if (idx === undefined) {
@@ -107,6 +114,12 @@ const actions = {
   },
   openPosition ({state}, {side, size, openType, price, leverage}) {
     return new Promise((resolve, reject) => {
+
+      if(state.wallet_address){
+        resolve({})
+        return
+      }
+
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
       if (idx === undefined) {
@@ -127,6 +140,11 @@ const actions = {
   },
   closePosition ({state}, {coinAddress, side, size}) {
     return new Promise((resolve, reject) => {
+
+      if(!state.wallet_address){
+        return resolve({})
+      }
+
       web3Utils.contract(state.wallet_address)
         .closePosition(coinAddress, side, size).then(r => {
         resolve(r)
@@ -135,6 +153,11 @@ const actions = {
   },
   orderStopPosition ({state}, {coinAddress, side, stopType, stopPrice}) {
     return new Promise((resolve, reject) => {
+
+      if(!state.wallet_address){
+        return resolve({})
+      }
+
 
       const params = {
         token: coinAddress,
@@ -153,6 +176,11 @@ const actions = {
   closeAllPositions ({state}) {
     return new Promise((resolve, reject) => {
 
+      if(!state.wallet_address){
+        return resolve({})
+      }
+
+
       web3Utils.contract(state.wallet_address)
         .closeAllPositions().then(r => {
         resolve(r)
@@ -161,6 +189,10 @@ const actions = {
   },
   cancleOrderedPosition ({state}, {coinAddress, orderType, side, timestamp}) {
     return new Promise((resolve, reject) => {
+
+      if(!state.wallet_address){
+        return resolve({})
+      }
 
       const params = {
         marketIdAddress:coinAddress,
@@ -178,6 +210,12 @@ const actions = {
   },
   cancleAllOrderedPositions ({state}, {coinAddress}) {
     return new Promise((resolve, reject) => {
+
+      if(!state.wallet_address){
+        resolve({})
+        return
+      }
+
       web3Utils.contract(state.wallet_address)
         .cancleAllOrderedPositions(coinAddress, state.wallet_address).then(r => {
         resolve(r)
@@ -214,7 +252,7 @@ const actions = {
       const price = data.curSpotPrice// 价格
       const leverage = 10// 杠杆
 
-      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({marketIdAddress:coin.address, trader: state.wallet_address
+      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({marketIdAddress: coin.address, trader: state.wallet_address
         , openType: entrustType, price:  toHexString(price), leverage: toContractUnit(leverage)})
 
 
@@ -277,6 +315,11 @@ const actions = {
   },
   getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
     return (async () => {
+
+      if(!state.wallet_address){
+        return {}
+      }
+
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
       if (idx === undefined) {
@@ -302,6 +345,10 @@ const actions = {
   },
   async getPositionChangeFee ({state, commit, dispatch}, {side, actionType, size, price}) {
 
+    if(!state.wallet_address){
+      return {}
+    }
+
     let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
     if (idx === undefined) {
@@ -324,12 +371,20 @@ const actions = {
     return web3Utils.contract(state.wallet_address).getTradingFee(coin.address, size, price)
   },
   onDeposit ({state, commit, dispatch}) {
+    if(!state.wallet_address){
+      return {}
+    }
+
     const self = this;
     web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
       dispatch("loadAccountData")
     })
   },
   onWithDraw ({state, commit, dispatch}) {
+    if(!state.wallet_address){
+      return {}
+    }
+
     const self = this;
     web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
       dispatch("loadAccountData")

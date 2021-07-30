@@ -8,6 +8,7 @@ const TRADER_PMR_BALANCE_URL = "http:13.125.43.43:8081/api/trader_pmr_balance/"
 const POSITION_MININ_EVENT_URL = "//13.125.43.43:8081/api/position_mining_events/"
 const TOKEN_PRICE_EVENT_URL = "//13.125.43.43:8081/api/token_price_events/"
 
+const isNotCallEvent = true;
 /**
  *
  * @param trader
@@ -66,6 +67,9 @@ export async function getTraderPMRBalance (trader) {
  * @param callback param PositionMiningRate
  */
 export function createTokenMiningFeeEvenet (tokenAddr, callback){
+  if(isNotCallEvent){
+    return null
+  }
   const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
 
   events.onmessage = (event) => {
@@ -83,6 +87,9 @@ export function createTokenMiningFeeEvenet (tokenAddr, callback){
  * @return {EventSource}
  */
 export function createTokenPriceChangeEvenet (tokenKey, callback){
+  if(isNotCallEvent){
+    return null
+  }
 
   const events = new EventSource(TOKEN_PRICE_EVENT_URL + tokenKey);
 

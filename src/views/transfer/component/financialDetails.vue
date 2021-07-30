@@ -26,7 +26,7 @@
       <div class="heard" v-for="(data, i) in list" :key="i">
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
         <div>
-          <div :class="data.amount > 0 ? 'fc-red' : 'fc-green'">{{data.amount | amountFormt(2, true)}}</div>
+          <div :class="data.amount < 0 ? 'fc-red' : 'fc-green'">{{data.amount | amountFormt(2, true)}}</div>
           <div class="unit-span mrt-5">bDRF</div>
         </div>
         <div class="center-span">

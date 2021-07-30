@@ -95,17 +95,15 @@ export default {
   watch: {
     show () {
       this.openType = this.type
+      this.showPopup = this.show
 
-      this.$store.dispatch('contract/getSpotPrice').then(_ => {
-        this.showPopup = this.show
-      })
+      this.$store.dispatch('contract/getSpotPrice')
     },
     extraData: {
       deep: true,
       immediate: true,
       handler () {
         Object.assign(this.openData, {...this.extraData})
-        console.log('watch extraData', JSON.stringify(this.openData))
       }
     },
     '$store.state.contract.curPairKey' : {

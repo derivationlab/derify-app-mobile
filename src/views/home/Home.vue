@@ -438,7 +438,9 @@ export default {
       leverageConfig: [
         {text: '10x', value: 0, val: 10},
         {text: '5x', value: 1, val: 5},
-        {text: '3x', value: 2, val: 3}
+        {text: '3x', value: 2, val: 3},
+        {text: '2x', value: 3, val: 2},
+        {text: '1x', value: 4, val: 1}
       ],
       unitConfig: [
         {text: 'USDT', value: 0},
@@ -579,14 +581,11 @@ export default {
         })
 
         const self = this;
-        let loadNum = 0;
         this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
           Object.assign(this.openExtraData, {tradingFee: fromContractUnit(tradingFee)});
-          loadNum++
-          self.showOpen = bool && loadNum > 1;
         });
 
         this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractUnit(size), price:toContractUnit(amount)})
@@ -596,10 +595,6 @@ export default {
             }
 
             Object.assign(this.openExtraData, {positionChangeFee: fromContractUnit(positionChangeFee)});
-
-            loadNum++
-
-            self.showOpen = bool && loadNum > 1;
           })
       }
       this.openType = side

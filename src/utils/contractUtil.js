@@ -117,7 +117,8 @@ export function stringFromContractUnit (unit, bit = 2) {
 }
 
 export function convertTokenNumToContractNum (amount, tokenDecimals) {
-  return (new BigNumber(amount)).shiftedBy(contractDecimals - tokenDecimals).toNumber()
+  console.log('convertTokenNumToContractNum', amount, tokenDecimals)
+  return (new BigNumber(amount)).shiftedBy(tokenDecimals).toNumber()
 }
 
 /**
@@ -212,17 +213,14 @@ export default class Contract {
     const DUSD = this.DUSD;
     return (async () => {
       let decimals = await DUSD.methods.decimals().call();
-      console.log(decimals)
       let tokenAmount = 0;
       if(ABIData.DUSD.address === token){
-        tokenAmount = await this.DUSD.methods.balanceOf(trader).call()
-        console.log(tokenAmount)
+        tokenAmount = await DUSD.methods.balanceOf(trader).call()
       }else if(ABIData.bDRD.address === token){
         tokenAmount = 0
       }
 
-
-      return convertTokenNumToContractNum(tokenAmount, decimals)
+      return convertTokenNumToContractNum(tokenAmount, contractDecimals - decimals)
     })()
 
   }
