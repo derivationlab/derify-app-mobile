@@ -28,7 +28,7 @@ try {
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
-  locale: locale, // 定义默认语言为中文
+  locale: locale, // set default language
   messages: {
     zh: require('@/assets/languages/zh.json'),
     en: require('@/assets/languages/en.json')
