@@ -1,12 +1,12 @@
 import * as io from "@/utils/request";
-const TRADE_LIST_URL = "http://13.125.43.43:8081/api/trade_records/"
-const FUND_LIST_URL = "http://13.125.43.43:8081/api/trader_balance/"
+const TRADE_LIST_URL = "/api/trade_records/"
+const FUND_LIST_URL = "/api/trader_balance/"
 //User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = "http://13.125.43.43:8081/api/trader_bond_balance/"
+const TRADER_BOND_BALANCE_URL = "/api/trader_bond_balance/"
 //User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = "http:13.125.43.43:8081/api/trader_pmr_balance/"
-const POSITION_MININ_EVENT_URL = "//13.125.43.43:8081/api/position_mining_events/"
-const TOKEN_PRICE_EVENT_URL = "//13.125.43.43:8081/api/token_price_events/"
+const TRADER_PMR_BALANCE_URL = "/api/trader_pmr_balance/"
+const POSITION_MININ_EVENT_URL = "/api/position_mining_events/"
+const TOKEN_PRICE_EVENT_URL = "/api/token_price_events/"
 
 const isNotCallEvent = true;
 /**

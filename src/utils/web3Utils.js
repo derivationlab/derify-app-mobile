@@ -1,13 +1,14 @@
 import Contract, { contractDebug } from './contractUtil'
 
-const ethUrl = 'https://kovan.infura.io/v3/4790cd7bb24349738a3b05ee0c20746e'
-
-
 export function contract (account) {
 
   const contractObj = new Contract(account)
 
   if(contractDebug){
+
+    /**
+     * debug log
+     */
     return new Proxy(contractObj, {
       get(target, propKey, receiver) {
         const ret = Reflect.get(...arguments)

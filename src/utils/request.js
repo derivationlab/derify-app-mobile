@@ -9,9 +9,9 @@ import store from '../store/index'
 
 // Environment switch
 if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = '/api'
+  axios.defaults.baseURL = 'http://13.125.43.43:8081'
 } else if (process.env.NODE_ENV === 'debug') {
-  axios.defaults.baseURL = ''
+  axios.defaults.baseURL = 'http://13.125.43.43:8081'
 } else if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = 'http://api.123dailu.com/'
 }
