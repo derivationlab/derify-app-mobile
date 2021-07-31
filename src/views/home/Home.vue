@@ -660,7 +660,7 @@ export default {
       //执行取消委托
       this.$store.dispatch('contract/cancleOrderedPosition',
           {
-            coinAddress: data.coinAddress,
+            token: data.token,
             orderType: data.orderType,
             side: data.side,
             timestamp: data.timestamp}).then(r => {

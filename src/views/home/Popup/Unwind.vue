@@ -106,10 +106,10 @@ export default {
     submitThenClose (){
       const size = this.value1
       const side = this.position.side
-      const coinAddress = this.position.coinAddress
+      const token = this.position.token
 
       this.$store.dispatch('contract/closePosition', {
-        coinAddress,
+        token,
         side,
         size: toContractUnit(size)
       })

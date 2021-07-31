@@ -268,38 +268,38 @@ export default class Contract {
   }
   /**
    * Get the user's maximum open position
-   * @param marketIdAddress
+   * @param token
    * @param trader
    * @param openType enum OpenType { MarketOrder, LimitOrder }
    * @param price
    * @param leverage
    * @return {*}
    */
-  getTraderOpenUpperBound ({marketIdAddress, trader, openType, price, leverage}) {
-    return this.DerifyExchange.methods.getTraderOpenUpperBound(marketIdAddress, trader, openType, price, leverage).call()
+  getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
+    return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
   }
 
   /**
    * Get the maximum open position of the system
-   * @param marketIdAddress
+   * @param token
    * @param side
    * @return {*}
    */
-  getSysOpenUpperBound ({marketIdAddress, side}) {
-    return this.DerifyExchange.methods.getSysOpenUpperBound(marketIdAddress, side).call()
+  getSysOpenUpperBound ({token, side}) {
+    return this.DerifyExchange.methods.getSysOpenUpperBound(token, side).call()
   }
 
   /**
    * Calculate margin, floating profit and loss, rate of return
    * @param trader
-   * @param marketIdAddress
+   * @param token
    * @param side
    * @param spotPrice
    * @param size
    * @param leverage
    * @param averagePrice
    */
-  getTraderPositionVariables ({trader, marketIdAddress, side, spotPrice, size, leverage, averagePrice}) {
+  getTraderPositionVariables ({trader, token, side, spotPrice, size, leverage, averagePrice}) {
     return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
   }
   /**
@@ -345,12 +345,12 @@ export default class Contract {
 
   /**
    * Obtain contract objects based on currency
-   * @param marketIdAddress
+   * @param token
    * @return {Web3.eth.Contract}
    */
-  __getDerifyDerivativeContract(marketIdAddress) {
+  __getDerifyDerivativeContract(token) {
 
-    if(ABIData.DerifyDerivative.BTC.token === marketIdAddress){
+    if(ABIData.DerifyDerivative.BTC.token === token){
       return this.DerifyDerivative.BTC
     }
 
@@ -359,30 +359,30 @@ export default class Contract {
   /**
    * Get positions
    * @param trader
-   * @param marketIdAddress
+   * @param token
    * @return {DerivativePositions}
    */
-  getTraderPosition (trader, marketIdAddress) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getTraderDerivativePositions(trader).call()
+  getTraderPosition (trader, token) {
+    return this.__getDerifyDerivativeContract(token).methods.getTraderDerivativePositions(trader).call()
   }
 
   /**
    * Set the current price of the currency
-   * @param marketIdAddress  token contract address
+   * @param token  token contract address
    * @param price
    * @return {*}
    */
-  setSpotPrice (marketIdAddress, price) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.setSpotPrice(marketIdAddress, price).send()
+  setSpotPrice (token, price) {
+    return this.__getDerifyDerivativeContract(token).methods.setSpotPrice(token, price).send()
   }
 
   /**
    * Get the current price of the token
-   * @param marketIdAddress 币合约地址
+   * @param token 币合约地址
    * @return {*}
    */
-  getSpotPrice (marketIdAddress) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getSpotPrice().call()
+  getSpotPrice (token) {
+    return this.__getDerifyDerivativeContract(token).methods.getSpotPrice().call()
   }
 
   /**
@@ -401,60 +401,60 @@ export default class Contract {
 
   /**
    * Cancel order
-   * @param marketIdAddress
+   * @param token
    * @param trader
    * @param orderType 0-LimitOrder, 1-StopProfitOrder, 2-StopLossOrder
    * @param side
    * @param timestamp
    * @return {*}
    */
-  cancleOrderedPosition ({marketIdAddress, trader, orderType, side, timestamp}) {
+  cancleOrderedPosition ({token, trader, orderType, side, timestamp}) {
     if (orderType === 0) {
-      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
     } else {
-      return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleOrderedStopPosition(trader, orderType, side).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()
     }
 
   }
   /**
    * Cancel all orders
-   * @param marketIdAddress
+   * @param token
    * @param trader
    * @return {*}
    */
-  cancleAllOrderedPositions (marketIdAddress, trader) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.cancleAllOrderedPositions(trader).send()
+  cancleAllOrderedPositions (token, trader) {
+    return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
   }
 
   /**
    * getPositionChangeFeeRatio
-   * @param marketIdAddress
+   * @param token
    * @return {*}
    */
-  getPositionChangeFeeRatio (marketIdAddress) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFeeRatio().call()
+  getPositionChangeFeeRatio (token) {
+    return this.__getDerifyDerivativeContract(token).methods.getPositionChangeFeeRatio().call()
   }
 
   /**
    * getTradingFee
-   * @param marketIdAddress
+   * @param token
    * @param size
    * @param price
    */
-  getTradingFee (marketIdAddress, size, price) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getTradingFee(size, price).call()
+  getTradingFee (token, size, price) {
+    return this.__getDerifyDerivativeContract(token).methods.getTradingFee(size, price).call()
   }
 
   /**
    * getPositionChangeFee
-   * @param marketIdAddress
+   * @param token
    * @param side 0-LONG，1-SHORT，2-HEDGE
    * @param actionType 0-open, 1-close
    * @param size
    * @param price
    */
-  getPositionChangeFee (marketIdAddress, side, actionType, size, price) {
-    return this.__getDerifyDerivativeContract(marketIdAddress).methods.getPositionChangeFee(side, actionType, size, price).call()
+  getPositionChangeFee (token, side, actionType, size, price) {
+    return this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price).call()
   }
 
   /**
@@ -540,24 +540,24 @@ export default class Contract {
   /**
    * get All positions
    * @param trader
-   * @param marketIdAddress
+   * @param token
    * @return {PositionView[]}
    */
-  async getTraderAllPosition (trader, marketIdAddress) {
+  async getTraderAllPosition (trader, token) {
 
     const positionDataView = new PositionDataView()
 
     //1.getTraderPosition
     const positions = []
     let derivativePosition = new DerivativePositions();
-    derivativePosition = await this.getTraderPosition(trader, marketIdAddress)
+    derivativePosition = await this.getTraderPosition(trader, token)
 
     const tradeVariables = await this.__getTraderVariablesWithCache(trader)
 
     //1.1 long position
     if(derivativePosition.long && derivativePosition.long.leverage > 0
       && derivativePosition.long.size > 0){
-      const longPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.LONG
+      const longPositionView = await this.__convertPositionToPositionView(trader, token, SideEnum.LONG
         , derivativePosition.long, derivativePosition.longOrderStopProfitPosition, derivativePosition.longOrderStopLossPosition, tradeVariables);
       positions.push(longPositionView)
     }
@@ -567,7 +567,7 @@ export default class Contract {
     if(derivativePosition.short
       && derivativePosition.short.leverage > 0
       && derivativePosition.short.size > 0){
-      const shortPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.SHORT
+      const shortPositionView = await this.__convertPositionToPositionView(trader, token, SideEnum.SHORT
         , derivativePosition.short, derivativePosition.shortOrderStopProfitPosition, derivativePosition.shortOrderStopLossPosition, tradeVariables);
       positions.push(shortPositionView)
     }
@@ -582,7 +582,7 @@ export default class Contract {
     for(const limitOrder of limitLongOrders){
       const limitLongOrderView = new OrderLimitPositionView()
       limitLongOrderView.side = SideEnum.LONG
-      limitLongOrderView.coinAddress = marketIdAddress
+      limitLongOrderView.token = token
       limitLongOrderView.orderType = OrderTypeEnum.LimitOrder
       if(!derivativePosition.longOrderStopProfitPosition){
         limitLongOrderView.stopProfitPrice = derivativePosition.longOrderStopProfitPosition.stopProfitPrice
@@ -602,7 +602,7 @@ export default class Contract {
     for(const limitOrder of limitShortOrders){
       const limitShortOrderView = new OrderLimitPositionView()
       limitShortOrderView.side = SideEnum.SHORT
-      limitShortOrderView.coinAddress = marketIdAddress
+      limitShortOrderView.token = token
       limitShortOrderView.orderType = OrderTypeEnum.LimitOrder
       if(!derivativePosition.shortOrderStopProfitPosition){
         limitShortOrderView.stopProfitPrice = derivativePosition.shortOrderStopProfitPosition.stopProfitPrice
@@ -635,7 +635,7 @@ export default class Contract {
   async __convertPositionToPositionView (trader, marketAddr, side, positionDO, stopProfitPosition, stopLossPosition, tradeVariables) {
     const position = new PositionView()
 
-    position.coinAddress = marketAddr
+    position.token = marketAddr
     position.side = side
     position.size = positionDO.size
     position.leverage = positionDO.leverage
@@ -647,7 +647,7 @@ export default class Contract {
 
     // 3.Get floating profit and loss, position margin, rate of return
     const params = {trader:trader,
-      marketIdAddress: marketAddr,
+      token: marketAddr,
       side:  side,
       spotPrice: position.spotPrice,
       size:  position.size,
@@ -696,7 +696,7 @@ export class PositionView {
   /**
    * token
    */
-  coinAddress;
+  token;
 
   /**
    * @see {SideEnum}
@@ -750,7 +750,7 @@ export class OrderLimitPositionView {
   /**
    * token
    */
-  coinAddress;
+  token;
 
   /**
    * @see {OrderTypeEnum}

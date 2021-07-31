@@ -130,16 +130,16 @@ export default {
     },
     submitThenClose (){
       const side = this.position.side
-      const coinAddress = this.position.coinAddress
+      const token = this.position.token
 
       //设置止盈
       this.$store.dispatch('contract/orderStopPosition', {
-        coinAddress, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
+        token, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
       });
 
       //设置止损
       this.$store.dispatch('contract/orderStopPosition', {
-        coinAddress, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
+        token, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
       });
       this.close()
     }

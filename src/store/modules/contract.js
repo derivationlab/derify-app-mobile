@@ -138,7 +138,7 @@ const actions = {
         }).catch(e => reject(e))
     })
   },
-  closePosition ({state}, {coinAddress, side, size}) {
+  closePosition ({state}, {token, side, size}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -146,12 +146,12 @@ const actions = {
       }
 
       web3Utils.contract(state.wallet_address)
-        .closePosition(coinAddress, side, size).then(r => {
+        .closePosition(token, side, size).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
   },
-  orderStopPosition ({state}, {coinAddress, side, stopType, stopPrice}) {
+  orderStopPosition ({state}, {token, side, stopType, stopPrice}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -160,7 +160,7 @@ const actions = {
 
 
       const params = {
-        token: coinAddress,
+        token: token,
         trader: state.wallet_address,
         side,
         stopType,
@@ -187,7 +187,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleOrderedPosition ({state}, {coinAddress, orderType, side, timestamp}) {
+  cancleOrderedPosition ({state}, {token, orderType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -195,7 +195,7 @@ const actions = {
       }
 
       const params = {
-        marketIdAddress:coinAddress,
+        token:token,
         trader: state.wallet_address,
         orderType: orderType,
         side: side,
@@ -208,7 +208,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleAllOrderedPositions ({state}, {coinAddress}) {
+  cancleAllOrderedPositions ({state}, {token}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -217,7 +217,7 @@ const actions = {
       }
 
       web3Utils.contract(state.wallet_address)
-        .cancleAllOrderedPositions(coinAddress, state.wallet_address).then(r => {
+        .cancleAllOrderedPositions(token, state.wallet_address).then(r => {
         resolve(r)
       }).catch(e => reject(e))
     })
@@ -252,7 +252,7 @@ const actions = {
       const price = data.curSpotPrice
       const leverage = 10
 
-      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({marketIdAddress: coin.address, trader: state.wallet_address
+      data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({token: coin.address, trader: state.wallet_address
         , openType: entrustType, price:  toHexString(price), leverage: toContractUnit(leverage)})
 
 
@@ -260,7 +260,7 @@ const actions = {
       commit('SET_CONTRACT_DATA', data)
 
       // 4.get sysOpenUpperBound
-      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({marketIdAddress: coin.address, side: entrustType})
+      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: coin.address, side: entrustType})
       commit('SET_CONTRACT_DATA', data)
       return data
     }())
@@ -328,11 +328,11 @@ const actions = {
 
       const coin = state.pairs[idx]
 
-      const marketIdAddress = coin.address;
+      const token = coin.address;
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      const data = await contract.getTraderOpenUpperBound({marketIdAddress: marketIdAddress
+      const data = await contract.getTraderOpenUpperBound({token: token
         , trader:  state.wallet_address, openType, price, leverage})
 
       const update = Object.assign({}, state.contractData, {traderOpenUpperBound: data})
