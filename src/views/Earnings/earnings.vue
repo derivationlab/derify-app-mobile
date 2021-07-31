@@ -1,7 +1,6 @@
 <template>
   <div class="home-container page-container">
     <navbar title="收益" />
-    <!-- 持仓挖矿收益 -->
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">持仓挖矿收益</span>
@@ -33,7 +32,6 @@
           </div>
         </div>
       </div>
-      <!-- 质押权益 eDRF -->
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">质押权益 eDRF</span>
@@ -76,7 +74,6 @@
           </template>
         </div>
       </div>
-      <!-- 可兑换债券 bDRF -->
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">可兑换债券 bDRF</span>

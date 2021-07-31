@@ -14,12 +14,12 @@ const state = {
   ],
   curPairKey: 'ETH',
   contractData: {
-    positionChangeFeeRatio: '-', // 动仓费率
+    positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
-    longPmrRate: '-', //挖矿收益 多
-    shortPmrRate: '-',//挖矿收益 空
-    tokenPriceRate: '-',//币种涨幅
-    curSpotPrice: 0//币种价格
+    longPmrRate: '-',
+    shortPmrRate: '-',
+    tokenPriceRate: '-',
+    curSpotPrice: 0
   },
   accountData: {
     balance: 0,
@@ -223,7 +223,7 @@ const actions = {
     })
   },
   loadHomeData ({state, commit}, entrustType = 0) {
-    // 加载首页合约数据
+    // load home page data
     return (async function () {
       const data = {curSpotPrice: 0, positionChangeFeeRatio: 0}
       if(!state.wallet_address){
@@ -232,7 +232,7 @@ const actions = {
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      // 1.获取当前币种价格
+      // 1.get cur token spotPrice
       let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
 
       if (idx === undefined) {
@@ -244,13 +244,13 @@ const actions = {
       data.curSpotPrice = await contract.getSpotPrice(coin.address)
       commit('SET_CONTRACT_DATA', data)
 
-      // 2.获取动仓费率
+      // 2.get positionChangeFeeRatio
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(coin.address)
       commit('SET_CONTRACT_DATA', data)
 
-      // 3.获取可转仓量
-      const price = data.curSpotPrice// 价格
-      const leverage = 10// 杠杆
+      // 3.get traderOpenUpperBound
+      const price = data.curSpotPrice
+      const leverage = 10
 
       data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({marketIdAddress: coin.address, trader: state.wallet_address
         , openType: entrustType, price:  toHexString(price), leverage: toContractUnit(leverage)})
@@ -259,7 +259,7 @@ const actions = {
 
       commit('SET_CONTRACT_DATA', data)
 
-      // 4.获取系统上限仓量
+      // 4.get sysOpenUpperBound
       data.sysOpenUpperBound = await contract.getSysOpenUpperBound({marketIdAddress: coin.address, side: entrustType})
       commit('SET_CONTRACT_DATA', data)
       return data
@@ -267,7 +267,7 @@ const actions = {
   },
 
   loadAccountData ({state, commit}) {
-    // 1.获取
+    // 1.get user account data
     return (async function () {
       if(!state.wallet_address){
         return {}

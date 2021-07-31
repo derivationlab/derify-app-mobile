@@ -18,12 +18,12 @@ export class SideEnum {
 }
 
 /**
- * 债券账户种类
+ * Bond account types
  */
 export class BondAccountType {
 
   /**
-   * 0-DerifyAccount-Derify账户
+   * 0-DerifyAccount
    * @return {number}
    */
   static get DerifyAccount () {
@@ -31,7 +31,7 @@ export class BondAccountType {
   }
 
   /**
-   * 1-WalletAccount-用户钱包账户
+   * 1-WalletAccount
    * @return {number}
    */
   static get WalletAccount () {
@@ -40,18 +40,15 @@ export class BondAccountType {
 }
 
 /**
- * 委托单类型
+ * Order type
  */
 export class OrderTypeEnum {
-  //-限价委托,
  static get LimitOrder () {
    return 0
  }
- //-止盈委托,
  static get StopProfitOrder () {
    return 1
  }
- //-止损委托
  static get StopLossOrder () {
    return 2
  }
@@ -59,7 +56,7 @@ export class OrderTypeEnum {
 }
 
 /**
- * 开仓价格类型
+ * Opening price type
  */
 export class OpenType {
   static get MarketOrder(){
@@ -125,7 +122,7 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
  *
  * @param abi
  * @param address
- * @param option 对象,实际例子如右: {from: '',gasPrice: '20000000000'}
+ * @param option Object, the actual example: {from: '',gasPrice: '20000000000'}
  * @constructor
  */
 export default class Contract {
@@ -155,7 +152,7 @@ export default class Contract {
   }
 
   /**
-   * 充值金额
+   * deposit amount
    * @param amount
    * @return
    */
@@ -174,13 +171,13 @@ export default class Contract {
 
         const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
-        //钱包获取授权金额
+        //The wallet obtains the authorized amount
         let ret = false;
 
         try{
           ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
         }catch (e){
-          reject('授权拒绝')
+          reject('approve denied')
           return
         }
 
@@ -200,7 +197,7 @@ export default class Contract {
     })
   }
   /**
-   * 提现
+   * withdraw
    * @param amount
    * @returns {*}
    */
@@ -226,13 +223,13 @@ export default class Contract {
   }
 
   /**
-   * 开仓
-   * @param token 当前合约币种地址
-   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
-   * @param openType MarketOrder-市价委托，LimitOrder-限价委托
-   * @param size 开仓量（按币种计价）
-   * @param price 开仓价（精度为8位）
-   * @param leverage 杠杆（精度为8位）
+   * Open a position
+   * @param token Current contract token address
+   * @param side LONG，SHORT，HEDGE
+   * @param openType 0-MarketOrder，1-LimitOrder
+   * @param size Open position volume (based on currency, precision is 8 digits)
+   * @param price Opening price (precision is 8 digits)
+   * @param leverage（precision is 8 digits）
    * @return {*}
    */
   openPosition ({token, side, openType, size, price, leverage}) {
@@ -242,9 +239,9 @@ export default class Contract {
   }
   /**
    * 平仓
-   * @param token 当前合约币种地址
-   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
-   * @param size 仓量
+   * @param token Current contract currency address
+   * @param side LONG，SHORT，HEDGE
+   * @param size size for close position volume (based on currency, precision is 8 digits)
    * @return {*}
    */
   closePosition (token, side, size) {
@@ -253,7 +250,7 @@ export default class Contract {
   }
 
   /**
-   * 一键平仓
+   * closeAllPositions
    */
   closeAllPositions () {
     return this.DerifyExchange.methods.closeAllPositions()
@@ -262,7 +259,7 @@ export default class Contract {
 
 
   /**
-   * 获取账户信息
+   * getTraderAccount
    * @param trader
    * @return {*}
    */
@@ -270,7 +267,7 @@ export default class Contract {
     return this.DerifyExchange.methods.getTraderAccount(trader).call()
   }
   /**
-   * 获取用户最大开仓量
+   * Get the user's maximum open position
    * @param marketIdAddress
    * @param trader
    * @param openType enum OpenType { MarketOrder, LimitOrder }
@@ -283,7 +280,7 @@ export default class Contract {
   }
 
   /**
-   * 获取系统最大开仓量
+   * Get the maximum open position of the system
    * @param marketIdAddress
    * @param side
    * @return {*}
@@ -293,7 +290,7 @@ export default class Contract {
   }
 
   /**
-   * 计算保证金、浮动盈亏、回报率
+   * Calculate margin, floating profit and loss, rate of return
    * @param trader
    * @param marketIdAddress
    * @param side
@@ -306,7 +303,7 @@ export default class Contract {
     return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
   }
   /**
-   * 获取用户保证金信息
+   * Get user margin information
    * @param trader
    * @return {*}
    */
@@ -315,7 +312,7 @@ export default class Contract {
   }
 
   /**
-   * 强平仓金额
+   * Forced liquidation amount
    * @param side
    * @param spotPrice
    * @param size
@@ -328,15 +325,26 @@ export default class Contract {
     return this.DerifyExchange.methods.getTraderPositionLiquidatePrice(side, spotPrice, size, marginBalance, totalPositionAmount).call()
   }
 
+  /**
+   * deposit event
+   * @param user
+   * @param callback
+   */
   onDeposit (user, callback) {
     this.DerifyExchange.events.Deposit({user: user}, callback)
   }
+
+  /**
+   * withdraw event
+   * @param user
+   * @param callback
+   */
   onWithdraw (user, callback) {
     this.DerifyExchange.events.Withdraw({user: user}, callback)
   }
 
   /**
-   * 根据币种获取合约对象
+   * Obtain contract objects based on currency
    * @param marketIdAddress
    * @return {Web3.eth.Contract}
    */
@@ -349,7 +357,7 @@ export default class Contract {
     return this.DerifyDerivative.ETH
   }
   /**
-   * 获取持仓
+   * Get positions
    * @param trader
    * @param marketIdAddress
    * @return {DerivativePositions}
@@ -359,8 +367,8 @@ export default class Contract {
   }
 
   /**
-   * 设置币种的当前价格
-   * @param marketIdAddress  币合约地址
+   * Set the current price of the currency
+   * @param marketIdAddress  token contract address
    * @param price
    * @return {*}
    */
@@ -369,7 +377,7 @@ export default class Contract {
   }
 
   /**
-   * 获取币种当前价格
+   * Get the current price of the token
    * @param marketIdAddress 币合约地址
    * @return {*}
    */
@@ -378,7 +386,7 @@ export default class Contract {
   }
 
   /**
-   * 设置止盈止损委托
+   * Set up a stop-profit and stop-loss commission
    * @param token
    * @param trader
    * @param side
@@ -392,10 +400,10 @@ export default class Contract {
   }
 
   /**
-   * 取消委托
+   * Cancel order
    * @param marketIdAddress
    * @param trader
-   * @param orderType LimitOrder-限价委托, StopProfitOrder-止盈委托, StopLossOrder-止损委托
+   * @param orderType 0-LimitOrder, 1-StopProfitOrder, 2-StopLossOrder
    * @param side
    * @param timestamp
    * @return {*}
@@ -409,7 +417,7 @@ export default class Contract {
 
   }
   /**
-   * 取消全部委托
+   * Cancel all orders
    * @param marketIdAddress
    * @param trader
    * @return {*}
@@ -419,7 +427,7 @@ export default class Contract {
   }
 
   /**
-   * 获取动仓费率
+   * getPositionChangeFeeRatio
    * @param marketIdAddress
    * @return {*}
    */
@@ -428,7 +436,7 @@ export default class Contract {
   }
 
   /**
-   * 获取手续费
+   * getTradingFee
    * @param marketIdAddress
    * @param size
    * @param price
@@ -438,10 +446,10 @@ export default class Contract {
   }
 
   /**
-   * 获取动仓费
+   * getPositionChangeFee
    * @param marketIdAddress
-   * @param side LONG-做多，SHORT-做空，HEDGE-对冲
-   * @param actionType 0 开仓, 1平仓
+   * @param side 0-LONG，1-SHORT，2-HEDGE
+   * @param actionType 0-open, 1-close
    * @param size
    * @param price
    */
@@ -450,8 +458,8 @@ export default class Contract {
   }
 
   /**
-   * 可兑换债券bDRF
-   * 从Derify账户转到钱包账户
+   * Convertible bond bDRF
+   * Transfer from Derify account to wallet account
    * @param amount
    * @return {*}
    */
@@ -460,10 +468,10 @@ export default class Contract {
   }
 
   /**
-   * 可兑换债券bDRF
-   * 兑换，从Derify账户余额或者钱包账户余额 兑换 成USDT到钱包账户
+   * Convertible bond bDRF
+   * Transfer from Derify account balance or wallet account balance to USDT to wallet account
    * @param amount
-   * @param bondAccountType 债券账户种类 0-DerifyAccount-Derify账户, 1-WalletAccount-用户钱包账户
+   * @param bondAccountType 0-DerifyAccount, 1-WalletAccount
    * @return {*}
    */
   exchangeBond ({amount,bondAccountType}) {
@@ -471,8 +479,8 @@ export default class Contract {
   }
 
   /**
-   * 收益计划存入
-   * 存入，从Derify账户余额或者钱包账户余额 存入 "收益计划存入"
+   * Income plan deposit
+   * deposit f rom Derify account balance or wallet account balance
    * @param amount
    * @param bondAccountType
    * @return {*}
@@ -482,8 +490,8 @@ export default class Contract {
   }
 
   /**
-   * 收益计划赎回
-   * 赎回，从 "收益计划存入" 赎回到 Derify账户余额或者钱包账户余额
+   * Income plan redemption
+   * redemption，from "Income plan deposit" to your Derify account balance or wallet account balance
    * @param amount
    * @param bondAccountType
    * @return {*}
@@ -493,7 +501,8 @@ export default class Contract {
   }
 
   /**
-   * 获取用户"可兑换债券bDRF"余额，"收益计划存入"余额， "可兑换债券bDRF"钱包账户余额，债券年化收益率
+   * Get the user's "convertible bond bDRF" balance, "income plan deposit" balance
+   * , "convertible bond bDRF" wallet account balance, bond annualized yield
    * @param trader
    * @return {BondInfo}
    */
@@ -502,10 +511,10 @@ export default class Contract {
   }
 
   /**
-   * 获取用户"可兑换"bDRF上限。"可兑换债券bDRF"=>兑换=>可兑换 上限
-   * @param trader 用户账户地址
-   * @param bondAccountType 债券账户种类，0-DerifyAccount-Derify账户, 1-WalletAccount-用户钱包账户
-   * @return {int} bDRF可兑换最大值（精度为8位）
+   * Get the upper limit of the user's "redeemable" bDRF. "Convertible bond bDRF"=>Exchange=>Convertible upper limit
+   * @param trader User account address
+   * @param bondAccountType，0-DerifyAccount, 1-WalletAccount
+   * @return {int} bDRF exchangeable maximum（The precision is 8 bits）
    */
   getExchangeBondSizeUpperBound (trader, bondAccountType) {
     return this.DerifyBond.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
@@ -521,7 +530,7 @@ export default class Contract {
   }
 
   /**
-   * 获取用户持仓挖矿收益
+   * Obtain user's holding mining income
    * @param trader 用户账户地址
    * @return {int} 持仓挖矿收益（精度为8位）
    */
@@ -529,7 +538,7 @@ export default class Contract {
     return this.DerifyStaking.methods.getPMReward(trader).call();
   }
   /**
-   * 所有持仓
+   * get All positions
    * @param trader
    * @param marketIdAddress
    * @return {PositionView[]}
@@ -538,14 +547,14 @@ export default class Contract {
 
     const positionDataView = new PositionDataView()
 
-    //1.我的持仓
+    //1.getTraderPosition
     const positions = []
     let derivativePosition = new DerivativePositions();
     derivativePosition = await this.getTraderPosition(trader, marketIdAddress)
 
     const tradeVariables = await this.__getTraderVariablesWithCache(trader)
 
-    //1.1 多仓处理
+    //1.1 long position
     if(derivativePosition.long && derivativePosition.long.leverage > 0
       && derivativePosition.long.size > 0){
       const longPositionView = await this.__convertPositionToPositionView(trader, marketIdAddress, SideEnum.LONG
@@ -554,7 +563,7 @@ export default class Contract {
     }
 
 
-    //1.2 空仓处理
+    //1.2 short position
     if(derivativePosition.short
       && derivativePosition.short.leverage > 0
       && derivativePosition.short.size > 0){
@@ -566,9 +575,9 @@ export default class Contract {
 
     positionDataView.positions = positions
 
-    //2.我的委托
+    //2.my order position
     const limitOrders = []
-    //2.1 多仓处理
+    //2.1 long position
     const limitLongOrders = derivativePosition.longOrderOpenPosition
     for(const limitOrder of limitLongOrders){
       const limitLongOrderView = new OrderLimitPositionView()
@@ -587,7 +596,7 @@ export default class Contract {
       limitOrders.push(limitLongOrderView)
     }
 
-    //2.2 空仓处理
+    //2.2 short position
     const limitShortOrders = derivativePosition.shortOrderOpenPosition
 
     for(const limitOrder of limitShortOrders){
@@ -613,7 +622,7 @@ export default class Contract {
   }
 
   /**
-   * 对象转换
+   * build PositionToPositionView
    * @param trader
    * @param marketAddr
    * @param side {SideEnum}
@@ -636,7 +645,7 @@ export default class Contract {
     position.stopProfitPrice = stopProfitPosition.stopPrice
     position.spotPrice = await this.getSpotPrice()
 
-    // 3.获取浮动盈亏、持仓保证金、回报率
+    // 3.Get floating profit and loss, position margin, rate of return
     const params = {trader:trader,
       marketIdAddress: marketAddr,
       side:  side,
@@ -652,7 +661,7 @@ export default class Contract {
     position.unrealizedPnl = variables.unrealizedPnl
     position.margin = variables.margin
 
-    //4.获取用户参数
+    //4.Get trader parameters
     position.marginBalance = tradeVariables.marginBalance
     position.totalPositionAmount = tradeVariables.totalPositionAmount
     position.marginRate = tradeVariables.marginRate
@@ -685,108 +694,87 @@ const SOLIDITY_RATIO = 1e8
 export class PositionView {
 
   /**
-   * 币的地址
+   * token
    */
   coinAddress;
 
-  // 多&空
+  /**
+   * @see {SideEnum}
+   */
   side;
 
-  // 持仓量
   size;
 
-  // 杠杆
   leverage;
 
-  // 开仓均价
   averagePrice;
 
-  // 时间戳
   timestamp;
 
-  // 浮动盈亏
   unrealizedPnl;
 
-  // 回报率
   returnRate;
 
-  // 当前价格
   spotPrice;
 
-  // 持仓保证金
   margin;
 
-  // 持仓保证金率
   marginRate;
 
-  // 保证金余额
   marginBalance;
 
-  // 持仓总额
   totalPositionAmount;
 
-  // 止盈
   stopProfitPrice;
 
-  // 止损
   stopLossPrice;
 
-  // 预估强平价格
   liquidatePrice;
 }
 
 export class LimitPoistion {
-  /**
-   * 仓量
-   */
+
   size;
 
-  /**
-   * 开仓价格
-   */
+
   price;
 
-  /**
-   * 杠杆
-   */
+
   leverage;
 
-  /**
-   * 时间戳
-   */
   timestamp;
 }
-/**
- * 我的委托
- */
+
 export class OrderLimitPositionView {
 
   /**
-   * 币的地址
+   * token
    */
   coinAddress;
 
   /**
-   * @return
+   * @see {OrderTypeEnum}
    */
   orderType;
 
-  // 多&空
+  /**
+   * @see {SideEnum}
+   */
   side;
 
   /**
-   * 止盈价格（精度为8位）
+   * stopProfitPrice（precision is 8 digits）
    */
   stopProfitPrice;
 
-  //止损价格
+  //precision is 8 digits
   stopLossPrice;
 
   //时间戳
   stopTimestamp;
 
   /**
-   * 时间戳
+   *
    *@return {LimitPoistion[]}
    */
   limitOrders;
@@ -808,22 +796,22 @@ export class PositionDataView {
 
 export class BondInfo {
   /**
-   * "可兑换债券bDRF"Derify账户余额（精度为8位）
+   * The precision is 8 bits
    */
   bondBalance;
 
   /**
-   * "收益计划存入"余额（精度为8位）
+   * The precision is 8 bits
    */
   bondReturnBalance;
 
   /**
-   * "可兑换债券bDRF"钱包账户余额（精度为8位）
+   * The precision is 8 bits
    */
   bondWalletBalance;
 
   /**
-   * 债券年化收益率（精度为8位）
+   * The precision is 8 bits
    */
   bondAnnualInterestRate;
 }
@@ -834,38 +822,37 @@ export class DerivativePositions {
    */
   isUsed;
   /**
-   *  多仓持仓
    * @return {Position}
    */
   long;
   /**
    * @return {Position}
    */
-  short; // 空仓持仓
+  short;
   /**
    * @return {Position}
    */
-  longOrderOpenPosition; // 多仓限价委托单
+  longOrderOpenPosition;
   /**
    * @return {Position[]}
    */
-  shortOrderOpenPosition; // 空仓限价委托单
+  shortOrderOpenPosition;
   /**
    * @return {StopPosition}
    */
-  longOrderStopProfitPosition; // 多仓止盈委托单
+  longOrderStopProfitPosition;
   /**
    * @return {StopPosition}
    */
-  longOrderStopLossPosition; // 多仓止损委托单
+  longOrderStopLossPosition;
   /**
    * @return {StopPosition}
    */
-  shortOrderStopProfitPosition; // 空仓止盈委托单
+  shortOrderStopProfitPosition;
   /**
    * @return {StopPosition}
    */
-  shortOrderStopLossPosition; // 空仓止损委托单
+  shortOrderStopLossPosition;
 }
 
 export class Position {

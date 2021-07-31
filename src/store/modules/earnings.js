@@ -19,22 +19,24 @@ const state = {
   pmrReward: 0,
   bondInfo: {
     /**
-     * "可兑换债券bDRF"Derify账户余额（精度为8位）
+     * Convertible bond bDRF
+     * Derify account balance (accuracy of 8 digits)
      */
     bondBalance: 0,
 
     /**
-     * "收益计划存入"余额（精度为8位）
+     * Income plan deposit (accuracy of 8 digits)
      */
     bondReturnBalance: 0,
 
     /**
-     * "可兑换债券bDRF"钱包账户余额（精度为8位）
+     * Convertible bond for bDRF
+     * Wallet account balance (accuracy of 8 digits)
      */
     bondWalletBalance: 0,
 
     /**
-     * 债券年化收益率（精度为8位）
+     * Annualized bond yield（accuracy of 8 digits）
      */
     bondAnnualInterestRate: 0
   }

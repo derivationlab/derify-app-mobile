@@ -1,5 +1,5 @@
-/** axios封装
- * 请求拦截、相应拦截、错误统一处理
+/** axios package
+ * Request interception, corresponding interception, unified error handling
  */
 import axios from 'axios'
 import QS from 'qs'
@@ -7,7 +7,7 @@ import { Toast } from 'vant'
 import router from '../router/index'
 import store from '../store/index'
 
-// 环境的切换
+// Environment switch
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = '/api'
 } else if (process.env.NODE_ENV === 'debug') {
@@ -16,17 +16,17 @@ if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = 'http://api.123dailu.com/'
 }
 
-// 请求超时时间
+// Request timeout
 axios.defaults.timeout = 10000
 
-// post请求头
+// post request header
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
-// 请求拦截器
+// Request interceptor
 axios.interceptors.request.use(
   config => {
-    // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
-    // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
+    // Before each request is sent, determine whether there is a token. If it exists, the token will be added to the header of the http request. There is no need to manually add it for each request.
+    // Even if there is a token locally, it is possible that the token is expired, so the return status should be judged in the response interceptor
     const token = store.state.token
     token && (config.headers.Authorization = token)
     return config
@@ -35,7 +35,7 @@ axios.interceptors.request.use(
     return Promise.error(error)
   })
 
-// 响应拦截器
+// Response interceptor
 axios.interceptors.response.use(
   response => {
     if (response.status === 200) {
@@ -44,33 +44,33 @@ axios.interceptors.response.use(
       return Promise.reject(response)
     }
   },
-  // 服务器状态码不是200的情况
+  // When the server status code is not 200
   error => {
     if (error.response.status) {
       switch (error.response.status) {
-        // 401: 未登录
-        // 未登录则跳转登录页面，并携带当前页面的路径
-        // 在登录成功后返回当前页面，这一步需要在登录页操作。
+        // 401: Not logged in
+        // Jump to the login page if you are not logged in, and carry the path of the current page
+        // Return to the current page after successful login, this step needs to be operated on the login page.
         case 401:
           router.replace({
             path: '/login',
             query: { redirect: router.currentRoute.fullPath }
           })
           break
-          // 403 token过期
-          // 登录过期对用户进行提示
-          // 清除本地token和清空vuex中token对象
-          // 跳转登录页面
+          // 403 token expired
+          // Prompt the user after login expiration
+          // Clear the local token and empty the token object in vuex
+          // Jump to login page
         case 403:
           Toast({
-            message: '登录过期，请重新登录',
+            message: 'Login expired, please log in again\n',
             duration: 1000,
             forbidClick: true
           })
-          // 清除token
+          // Clear token
           localStorage.removeItem('token')
           store.commit('loginSuccess', null)
-          // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面
+          // Jump to the login page, and pass the fullPath of the page to be browsed, after successful login, jump to the page that needs to be visited
           setTimeout(() => {
             router.replace({
               path: '/login',
@@ -80,15 +80,15 @@ axios.interceptors.response.use(
             })
           }, 1000)
           break
-          // 404请求不存在
+          // 404 request does not exist
         case 404:
           Toast({
-            message: '网络请求不存在',
+            message: 'Network request does not exist\n',
             duration: 1500,
             forbidClick: true
           })
           break
-          // 其他错误，直接抛出错误提示
+          // Other errors, throw an error prompt directly
         default:
           Toast({
             message: error.response.data.message,
@@ -101,9 +101,9 @@ axios.interceptors.response.use(
   }
 )
 /**
-  * get方法，对应get请求
-  * @param {String} url [请求的url地址]
-  * @param {Object} params [请求时携带的参数]
+  * getMethod, corresponding to get request
+ * @param {String} url [Requested url address]
+  * @param {Object} params [Parameters carried in the request]
   */
 export function get (url, params) {
   return new Promise((resolve, reject) => {
@@ -119,9 +119,9 @@ export function get (url, params) {
   })
 }
 /**
-  * post方法，对应post请求
-  * @param {String} url [请求的url地址]
-  * @param {Object} params [请求时携带的参数]
+  * post method, corresponding to post request
+ * @param {String} url [Requested url address]
+  * @param {Object} params [Parameters carried in the request]
   */
 export function post (url, params) {
   return new Promise((resolve, reject) => {

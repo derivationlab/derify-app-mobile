@@ -56,13 +56,13 @@ export default {
       if(!this.show){
         return
       }
-      // 基于准备好的dom，初始化echarts实例
+      // Based on the prepared dom, initialize the echarts instance
       if(context.myChart) {
         context.myChart.dispose();
 
       }
       context.myChart = this.$echarts.init(document.getElementById('myChart'))
-      // 绘制图表
+      // Draw a chart
       context.myChart.setOption({
         darkMode: true,
         tooltip: {

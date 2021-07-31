@@ -712,7 +712,7 @@ export default {
       }
 
       context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //更新挖矿收益率
+        //update mining fee
         this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
       })
 
@@ -721,7 +721,7 @@ export default {
       }
 
       context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
-        //更新币种涨幅
+        //Update token price change
         this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
       })
 
