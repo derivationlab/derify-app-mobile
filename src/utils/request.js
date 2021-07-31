@@ -6,7 +6,7 @@ import QS from 'qs'
 import { Toast } from 'vant'
 import router from '../router/index'
 import store from '../store/index'
-import cfg from '../config/config'
+import cfg from '../config'
 
 // Environment switch
 if (process.env.NODE_ENV === 'development') {
