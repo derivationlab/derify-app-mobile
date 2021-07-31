@@ -6,14 +6,15 @@ import QS from 'qs'
 import { Toast } from 'vant'
 import router from '../router/index'
 import store from '../store/index'
+import cfg from '../config/config'
 
 // Environment switch
 if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = 'http://13.125.43.43:8081'
+  axios.defaults.baseURL = cfg.server.development
 } else if (process.env.NODE_ENV === 'debug') {
-  axios.defaults.baseURL = 'http://13.125.43.43:8081'
+  axios.defaults.baseURL = cfg.server.debug
 } else if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'http://api.123dailu.com/'
+  axios.defaults.baseURL = cfg.server.production
 }
 
 // Request timeout
