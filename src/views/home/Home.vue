@@ -338,7 +338,7 @@
             </template>
 
             <template v-if="active === 'key2'">
-              <div class="home-last-batch-btn base-bg-color" @click="changeShowOpen(true, 0)">取消所有委托</div>
+              <div class="home-last-batch-btn base-bg-color" @click="closeAllPositions">取消所有委托</div>
             </template>
           </template>
           <template v-if="!isLogin">
@@ -378,6 +378,7 @@ import {
 } from '../../utils/contractUtil'
 import {fck} from "@/utils/utils";
 import { UnitTypeEnum } from '../../store/modules/contract'
+import { UserProcessStatus } from '../../store/modules/user'
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade
@@ -771,6 +772,16 @@ export default {
       }
 
       return pair
+    },
+    closeAllPositions () {
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+
+      this.$store.dispatch('contract/closeAllPositions').then(() => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+      }).catch((ex) => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+      })
     }
   },
   watch: {
