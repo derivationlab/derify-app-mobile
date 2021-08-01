@@ -55,6 +55,8 @@ export default {
         return false
       }
       this.$store.commit('contract/SET_CURPAIRKEY', pair.key)
+
+      this.close()
     }
   },
   mounted () {
