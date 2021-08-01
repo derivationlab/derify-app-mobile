@@ -18,6 +18,7 @@
 
 <script>
 import { toContractUnit } from '../../../utils/contractUtil'
+import { UserProcessStatus } from '../../../store/modules/user'
 
 export default {
   props: {
@@ -41,18 +42,12 @@ export default {
       this.$emit('closeOneKeyUnwindPopup', false)
     },
     submitThenClose () {
-      const size = this.openData.size
-      const leverage = this.leverageConfig[this.openData.leverage]
-      let price = null
-      if (this.openData.entrustType === 0) {
-        price = this.curSpotPrice
-      } else {
-        const a = parseFloat(this.openData.amount)
-        price = toContractUnit(a)
-      }
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
 
       this.$store.dispatch('contract/closeAllPositions').then((r) => {
-
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+      }).catch((msg) => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
       });
 
       this.close();

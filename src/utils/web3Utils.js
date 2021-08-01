@@ -1,7 +1,7 @@
 import Contract from './contractUtil'
 import * as CfgUtil from '../config'
 
-const contractDebug = CfgUtil.isCurrentProduction()
+const contractDebug = !CfgUtil.isCurrentProduction()
 
 export function contract (account) {
 

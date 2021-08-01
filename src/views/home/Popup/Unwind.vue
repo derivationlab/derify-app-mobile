@@ -7,7 +7,7 @@
             <div class="fc-45">开仓量</div>
             <div>
               <span class="fc-85">{{position.size | fck(-8)}}</span>
-              <span class="fc-45">ETH</span>
+              <span class="fc-45">{{getPairByAddress(position.token).key}}</span>
             </div>
           </div>
           <div class="system-popup-price">
@@ -29,7 +29,7 @@
         <div class="system-popup-input-title">平仓量</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="0.00" type="number" v-model="value1" />
-          <div class="unit">ETH</div>
+          <div class="unit">{{getPairByAddress(position.token).key}}</div>
         </div>
         <div class="unwind-popup-set">
           <div class="unwind-popup-set-item" :class="curPercent === percent.value ? 'active' : ''"
@@ -46,6 +46,7 @@
 
 <script>
   import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
+  import { UserProcessStatus } from '../../../store/modules/user'
 
 export default {
   props: {
@@ -65,13 +66,13 @@ export default {
   data () {
     console.log('unwind popup', this.extraData)
 
-    const defaultPercent = 25
+    const defaultPercent = 100
     const size = this.extraData == null ? 0 : this.extraData.size
 
     const value1 = Math.ceil(size * defaultPercent / 100)
     return {
       showPopup: this.show,
-      value1: value1,
+      value1: fromContractUnit(this.closeUpperBound),
       position: Object.assign({size : 0}, this.extraData),
       percents: [
         {name: '25%', value: 25},
@@ -82,16 +83,29 @@ export default {
       curPercent: defaultPercent
     }
   },
+  computed: {
+    closeUpperBound () {
+      return this.$store.state.contract.contractData.closeUpperBound.size
+    }
+  },
   watch: {
     show () {
       this.showPopup = this.show
+      this.$store.dispatch("contract/getCloseUpperBound", {token: this.extraData.token, side: this.extraData.side}).then((closeUpperBound) => {
+
+        if(!closeUpperBound) {
+          return
+        }
+
+        this.value1 = fromContractUnit(closeUpperBound.size)
+      })
     },
     extraData: {
       deep: true,
       immediate: true,
       handler () {
         this.position = this.extraData
-        this.value1 = fromContractUnit(Math.ceil(this.position.size * this.curPercent / 100))
+        this.value1 = fromContractUnit(Math.ceil(this.closeUpperBound * this.curPercent / 100))
       }
     }
   },
@@ -101,20 +115,45 @@ export default {
     },
     changePercentage (percent) {
       this.curPercent = percent
-      this.value1 = fromContractUnit(Math.ceil(this.extraData.size * this.curPercent / 100))
+      this.value1 = fromContractUnit(Math.ceil(this.closeUpperBound * this.curPercent / 100))
     },
     submitThenClose (){
       const size = this.value1
       const side = this.position.side
       const token = this.position.token
 
+      if(size > fromContractUnit(this.closeUpperBound)) {
+        this.$toast('超出最大可平量，请重新设置')
+        return
+      }
+
+      if(size <= 0) {
+        this.$toast('输入数量有误，请重新输入')
+        return
+      }
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
         size: toContractUnit(size)
+      }).then(() => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+      }).catch((msg) => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败:' + msg})
       })
+
       this.close()
-    }
+    },
+    getPairByAddress (token) {
+      const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)
+      if(!pair){
+        return {name: 'unknown', key: 'unknown'}
+      }
+
+      return pair
+    },
+
   }
 }
 </script>

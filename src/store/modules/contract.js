@@ -35,6 +35,7 @@ const state = {
     positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
     sysOpenUpperBound: {size: 0, amount: 0},
+    closeUpperBound: {size: 0, amount: 0},
     longPmrRate: '-',
     shortPmrRate: '-',
     tokenPriceRate: '-',
@@ -163,6 +164,20 @@ const actions = {
         resolve(r)
       }).catch(e => reject(e))
     })
+  },
+  getCloseUpperBound ({state, commit, dispatch}, {token, side}) {
+
+    return (async () => {
+
+      if(!state.wallet_address || token === undefined || side === undefined){
+        return
+      }
+
+      const closeUpperBound = await web3Utils.contract(state.wallet_address).getCloseUpperBound({token, trader: state.wallet_address, side})
+
+      commit('SET_CONTRACT_DATA', {closeUpperBound})
+      return closeUpperBound
+    })()
   },
   openPosition ({state}, {side, size, openType, price, leverage}) {
     return new Promise((resolve, reject) => {
@@ -397,7 +412,6 @@ const actions = {
     }())
   },
   loadPositionData ({state, commit}) {
-    console.log(`loadPositionData, -------`)
     return new Promise((resolve, reject) => {
       if(!state.wallet_address){
         return {}

@@ -442,6 +442,9 @@ export default class Contract {
   getTradingFee (token, size, price) {
     return this.__getDerifyDerivativeContract(token).methods.getTradingFee(size, price).call()
   }
+  getCloseUpperBound ({token, trader, side}) {
+    return this.DerifyExchange.methods.getCloseUpperBound(token, trader, side).call()
+  }
 
   /**
    * getPositionChangeFee
@@ -635,6 +638,7 @@ export default class Contract {
 
     position.token = token
     position.side = side
+    position.isUsed = positionDO.isUsed
     position.size = positionDO.size
     position.leverage = positionDO.leverage
     position.averagePrice = positionDO.price
@@ -689,6 +693,7 @@ export default class Contract {
 const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
+  isUsed;
   /**
    * token
    */
@@ -726,6 +731,7 @@ export class PositionView {
   stopLossPrice;
 
   liquidatePrice;
+  isUsed;
 }
 
 export class LimitPoistion {
@@ -742,6 +748,7 @@ export class LimitPoistion {
 }
 
 export class OrderLimitPositionView {
+  isUsed;
 
   /**
    * token
