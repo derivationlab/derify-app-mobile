@@ -402,28 +402,5 @@ export default {
     margin-left: 1.2rem;
   }
 }
-  .error-notice {
-    line-height: 4rem;
-    border-radius: 1rem;
-    margin: 2rem 1.5rem 2rem 1.5rem;
-    border: 0.1rem solid @red;
-    position: relative;
-    color: @red;
-    padding: 0 3rem 0 1rem;
-    .error-right {
-      position: absolute;
-      right: 0;
-      top: 0;
-      display: inline-block;
-      padding-right: 1rem;
-    }
-    .van-icon-cross{
-      position: relative;
-      display: inline-block;
-      font: normal normal normal 14px/1 'vant-icon';
-      font-size: inherit;
-      text-rendering: auto;
-      align-items: center;
-    }
-  }
+
 </style>

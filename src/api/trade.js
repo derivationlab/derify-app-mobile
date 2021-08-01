@@ -1,14 +1,18 @@
 import * as io from "@/utils/request";
-const TRADE_LIST_URL = "/api/trade_records/"
-const FUND_LIST_URL = "/api/trader_balance/"
-//User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = "/api/trader_bond_balance/"
-//User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = "/api/trader_pmr_balance/"
-const POSITION_MININ_EVENT_URL = "/api/position_mining_events/"
-const TOKEN_PRICE_EVENT_URL = "/api/token_price_events/"
+import * as configUtil from '../config'
 
-const isNotCallEvent = true;
+const serverEndPoint = configUtil.getCurrentServerEndPoint()
+
+const TRADE_LIST_URL = serverEndPoint + "/api/trade_records/"
+const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
+//User bond bDRF turnover breakdown
+const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
+//User holdings and mining revenue flow details
+const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
+const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
+const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
+
+const isNotCallEvent = false;
 /**
  *
  * @param trader
@@ -68,6 +72,8 @@ export function createTokenMiningFeeEvenet (tokenAddr, callback){
   if(isNotCallEvent){
     return null
   }
+
+
   const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
 
   events.onmessage = (event) => {
@@ -207,3 +213,5 @@ export class TradePMRBalance {
 
   update_time;//db update time£¨UTC£©
 }
+
+window.axios = io

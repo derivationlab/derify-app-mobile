@@ -27,11 +27,11 @@
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
         <div>
           <div :class="data.amount < 0 ? 'fc-red' : 'fc-green'">{{data.amount | amountFormt(2, true)}}</div>
-          <div class="unit-span mrt-5">bDRF</div>
+          <div class="unit-span mrt-5">USDT</div>
         </div>
         <div class="center-span">
           <div class="color-type">{{data.balance | amountFormt(2, false)}}</div>
-          <div class="unit-span mrt-5">bDRF</div>
+          <div class="unit-span mrt-5">USDT</div>
         </div>
         <div class="center-span unit-span">
           {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
@@ -46,16 +46,16 @@
   import { amountFormt } from '../../../utils/utils'
 
   const feeTypeMap = {
-    0: "手续费", //-TradingFee, 手续费
-    1: "动仓费", //-PositionChangeFee, 动仓费
-    2: "盈亏", //-ProfitAndLoss, 盈亏（根据amount正负判断盈/亏）
-    3: "盈亏", //-ProfitAndLossAuto, 盈亏（自动减仓和强制平仓时的盈亏）
-    4: "gas费", //-GasFee, gas费
-    5: "清算费用", //-Liquidation，清算费用
-    6: "系统补偿", //-SysCompensation, 系统补偿
-    7: "系统亏损分摊", //-SysLossApportionment, 系统亏损分摊
-    100: "资金转入", //-Deposit, 资金转入
-    101: "资金转出" //-Withdraw, 资金转出
+    0: "手续费", //-TradingFee,
+    1: "动仓费", //-PositionChangeFee
+    2: "盈亏", //-ProfitAndLoss
+    3: "盈亏", //-ProfitAndLossAuto
+    4: "gas费", //-GasFee
+    5: "清算费用", //-Liquidation
+    6: "系统补偿", //-SysCompensation
+    7: "系统亏损分摊", //-SysLossApportionment
+    100: "资金转入", //-Deposit
+    101: "资金转出" //-Withdraw
   }
 
 export default {
