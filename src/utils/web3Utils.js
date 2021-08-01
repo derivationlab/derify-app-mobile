@@ -1,4 +1,7 @@
-import Contract, { contractDebug } from './contractUtil'
+import Contract from './contractUtil'
+import * as CfgUtil from '../config'
+
+const contractDebug = CfgUtil.isCurrentProduction()
 
 export function contract (account) {
 

@@ -46,7 +46,7 @@ const state = {
     totalMargin: 0,
     marginRate: 0
   },
-  positionData: [],
+  positionData: {positions: [], orderPositions: []},
   limitPositionData: [],
   curSpotPrice: 0
 }
@@ -87,8 +87,26 @@ const mutations = {
   SET_ACCOUNT_DATA (state, accountData) {
     state.accountData = Object.assign(state.accountData, accountData)
   },
-  SET_POSITION_DATA (state, positionData) {
-    state.positionData = positionData
+  RESET_POSITION_DATA (state) {
+    state.positionData.positions.splice(0, state.positionData.positions.length)
+    state.positionData.orderPositions.splice(0, state.positionData.orderPositions.length)
+  },
+  ADD_POSITION_DATA (state, {positionData, pair}) {
+    if(!positionData) {
+      return
+    }
+
+    if(positionData.positions) {
+      positionData.positions.forEach((position) => {
+        state.positionData.positions.push(position)
+      })
+    }
+
+    if(positionData.orderPositions) {
+      positionData.orderPositions.forEach((position) => {
+        state.positionData.orderPositions.push(position)
+      })
+    }
   },
   SET_LIMIT_POSITION_DATA (state, positionData) {
     state.limitPositionData = positionData
@@ -379,25 +397,33 @@ const actions = {
     }())
   },
   loadPositionData ({state, commit}) {
-    return (async function () {
+    console.log(`loadPositionData, -------`)
+    return new Promise((resolve, reject) => {
       if(!state.wallet_address){
         return {}
       }
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+      commit('RESET_POSITION_DATA')
+      state.pairs.forEach((pair) => {
 
-      if (idx === undefined) {
-        idx = 0
-      }
+        const pairItem = pair
+        if(!pairItem.enable){
+          return
+        }
 
-      const coin = state.pairs[idx]
+        contract.getTraderAllPosition(state.wallet_address, pairItem.address).then((positionData) => {
+          console.log(`loadPositionData ${pairItem.key}`, positionData)
 
-      const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
-      commit('SET_POSITION_DATA', positionData)
-      return positionData
-    })()
+          commit('ADD_POSITION_DATA', {positionData, pair: pairItem})
+
+          resolve(state.positionData)
+        }).catch(() => {
+          reject()
+        })
+      })
+    })
   },
   loadTradeRecords ({state, commit}) {
     return getTradeList(state.wallet_address)

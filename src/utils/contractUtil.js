@@ -78,8 +78,6 @@ export const Token = {
 
 const cache = {}
 
-export const contractDebug = true
-
 export const contractDecimals = 8
 
 export function toContractUnit (number) {
@@ -541,7 +539,7 @@ export default class Contract {
    * get All positions
    * @param trader
    * @param token
-   * @return {PositionView[]}
+   * @return {PositionDataView}
    */
   async getTraderAllPosition (trader, token) {
 
@@ -624,7 +622,7 @@ export default class Contract {
   /**
    * build PositionToPositionView
    * @param trader
-   * @param marketAddr
+   * @param token
    * @param side {SideEnum}
    * @param positionDO {Position}
    * @param stopProfitPosition {StopPosition}
@@ -632,10 +630,10 @@ export default class Contract {
    * @param tradeVariables
    * @private
    */
-  async __convertPositionToPositionView (trader, marketAddr, side, positionDO, stopProfitPosition, stopLossPosition, tradeVariables) {
+  async __convertPositionToPositionView (trader, token, side, positionDO, stopProfitPosition, stopLossPosition, tradeVariables) {
     const position = new PositionView()
 
-    position.token = marketAddr
+    position.token = token
     position.side = side
     position.size = positionDO.size
     position.leverage = positionDO.leverage
@@ -647,7 +645,7 @@ export default class Contract {
 
     // 3.Get floating profit and loss, position margin, rate of return
     const params = {trader:trader,
-      token: marketAddr,
+      token: token,
       side:  side,
       spotPrice: position.spotPrice,
       size:  position.size,
@@ -659,7 +657,6 @@ export default class Contract {
 
     position.margin = variables.margin
     position.unrealizedPnl = variables.unrealizedPnl
-    position.margin = variables.margin
 
     //4.Get trader parameters
     position.marginBalance = tradeVariables.marginBalance
@@ -692,7 +689,6 @@ export default class Contract {
 const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
-
   /**
    * token
    */

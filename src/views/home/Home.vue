@@ -119,9 +119,9 @@
                   <div class="exchange-block-title">
                     <div class="left">
 
-                      <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                      <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">{{curPair.name}}</div>
+                      <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
+                      <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
+                      <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                       <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
@@ -133,19 +133,16 @@
                       <div class="fz-12">取消委托</div>
                       <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                     </div>
-                    <div class="right" v-if="active === 'key3'">
-                      <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
-                    </div>
                   </div>
                   <div class="exchange-item">
                     <div class="exchange-item-left">
                       <div class="fc-45">浮动盈亏：</div>
-                      <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">{{data.unrealizedPnl | fck(-8)}}</div>
+                      <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">{{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}</div>
                       <div>USDT</div>
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">持仓量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
+                      <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -200,9 +197,7 @@
 
                       <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
                       <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">
-
-                        /USDT</div>
+                      <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                       <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
@@ -231,7 +226,7 @@
                   <div class="exchange-item">
                     <div class="exchange-item-left">
                       <div class="fc-45">委托数量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.name}}</div>
+                      <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">委托时间：</div>
@@ -265,7 +260,7 @@
 
                       <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
                       <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">{{curPair.name}}</div>
+                      <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                       <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                     </div>
                     <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
@@ -289,7 +284,7 @@
                     </div>
                     <div class="exchange-item-right">
                       <div class="fc-45">成交数量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
+                      <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
                     </div>
                   </div>
                   <div class="exchange-item">
@@ -329,8 +324,6 @@
             <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
           </template>
         </template>
-
-
       </div>
     </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
@@ -366,18 +359,19 @@ import {fck} from "@/utils/utils";
 import { UnitTypeEnum } from '../../store/modules/contract'
 
 const TradeTypeMap = {
-  0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
-  1:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-HedgeMarketPriceTrade, 市价委托(通过对冲开仓) & 开仓
-  2:{opType: '开仓', showType: 'fc-green', tradeType: '限价委托'},//-LimitPriceTrade, 限价委托 & 开仓
-  3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade, 止盈止损 & 平仓
-  4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade, 自动减仓 & 平仓
-  5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade, 自动平仓 & 平仓
+  0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade
+  1:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-HedgeMarketPriceTrade
+  2:{opType: '开仓', showType: 'fc-green', tradeType: '限价委托'},//-LimitPriceTrade
+  3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade
+  4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade
+  5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade
 }
 
 
 const context = {
   myChart: null,
   loaded: false,
+  loadStamp: 0,
   tokenMiningRateEvent: null,
   tokenPriceChangeEvenet: null
 };
@@ -428,6 +422,7 @@ export default {
 
     const position = new Position()
     return {
+      SideEnum,
       entrustType: 0,
       leverageUnit: 0,
       amount: 0,
@@ -462,16 +457,16 @@ export default {
       tradeRecords: [],
       loading: false,
       finished: false,
-      showMarket: false, // 市场弹窗，选择币种
-      showHint: false, // 概念提示弹窗
-      hintType: 'key1', // 概念提示的种类
-      showSet: false, // 止盈止损弹窗
-      showUwind: false, // 平仓弹窗
-      showOneKeyUnwind: false, // 一键平仓弹窗
-      showOpen: false, // 开仓确认弹窗
-      openType: null, // 开仓类型
-      showOpenStatus: false, // 开仓状态弹窗
-      openStatus: 'fail', // 开仓状态
+      showMarket: false, // market popup，change token pair
+      showHint: false, // show hit popup
+      hintType: 'key1', // show hit type
+      showSet: false, // show stopPrift/stopLoss set popup
+      showUwind: false, // show cancelPosition popup
+      showOneKeyUnwind: false, // show one key cancelAllPosition popup
+      showOpen: false, // show open position confirm popup
+      openType: null, // open position type {@see OpenType}
+      showOpenStatus: false, // smart contract processing popup type
+      openStatus: 'fail', // smart contract processing satus
       openExtraData: {
         entrustType: OpenType.MarketOrder,
         leverage: 10,
@@ -483,7 +478,7 @@ export default {
         positionChangeFee: 0,
         tradingFee: 0
       },
-      positionChangeFeeRatio: 0, //动仓费率
+      positionChangeFeeRatio: 0,
       setExtraData: {...position},
       unwindExtraData: {...position}
     }
@@ -708,6 +703,13 @@ export default {
       });
     },
     homeInit(){
+      var timestamp = (new Date()).getTime()
+      if((timestamp - context.loadStamp) < 3000){
+        return
+      }
+
+      context.loadStamp = timestamp
+
       if(context.tokenMiningRateEvent !== null){
         context.tokenMiningRateEvent.close()
       }
@@ -733,39 +735,21 @@ export default {
         this.size = fck(Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount), -8, 2);
       })
 
-      const {positions, positionOrders} = this
-
-      positions.splice(0)
-      positionOrders.splice(0)
       self.loading = true
 
       this.$store.dispatch('contract/loadPositionData').then(r => {
-        // Array<Position>
-        if (!r.positions && !r.orderPositions) {
-          return
-        }
-
-        if(r.positions){
-          r.positions.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              positions.push(item)
-            }
-          })
-        }
-
-
-        if(r.orderPositions){
-          r.orderPositions.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              positionOrders.push(item)
-            }
-          })
-        }
-
         self.loading = false
       })
 
       this.updateTraderOpenUpperBound()
+    },
+    getPairByAddress (token) {
+      const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)
+      if(!pair){
+        return {name: 'unknown', key: 'unknown'}
+      }
+
+      return pair
     }
   },
   watch: {
@@ -785,13 +769,33 @@ export default {
     },
     '$store.state.contract.curPairKey' : {
       handler (val) {
-        console.log('$store.state.contract.curPairKey', this.curPair.key)
         this.unitConfig[1].text = this.curPair.key
         this.homeInit()
       },
       immediate: true,
       deep: true
-    }
+    },
+    '$store.state.contract.positionData.positions': {
+      handler (val) {
+        this.positions.splice(0, this.positions.length)
+        this.$store.state.contract.positionData.positions.forEach((item) => {
+          this.positions.push(item)
+        })
+      },
+      immediate: true,
+      deep: true
+    },
+    '$store.state.contract.positionData.orderPositions': {
+      handler (val) {
+        this.positionOrders.splice(0, this.positionOrders.length)
+
+        this.$store.state.contract.positionData.orderPositions.forEach((item) => {
+          this.positionOrders.push(item)
+        })
+      },
+      immediate: true,
+      deep: true
+    },
   },
   created () {
     context.loaded = true

@@ -128,4 +128,12 @@ export function getCurrentServerEndPoint() {
   return config.server[currentEnv]
 }
 
+export function getCurrentEnv() {
+  return currentEnv
+}
+
+export function isCurrentProduction() {
+  return currentEnv === 'production'
+}
+
 export default config
