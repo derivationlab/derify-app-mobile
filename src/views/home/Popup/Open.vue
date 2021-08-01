@@ -56,7 +56,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div :class="confirmDisabled ? 'system-popup-button disabled' : 'system-popup-button confirm'" @click="submitThenClose">确认</div>
+        <div :class="confirmDisabled ? 'system-popup-button disabled-btn' : 'system-popup-button confirm'" @click="submitThenClose">确认</div>
       </div>
     </div>
   </van-popup>

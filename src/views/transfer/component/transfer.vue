@@ -25,20 +25,19 @@
         v-model="amount"
         class="derify-input no-padding-hor"
         type="number"
-        @input="changeAmount"
       >
       </van-field>
       <span class="unit">DUSD</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">可划转：
       <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
-      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2">全部划转</span></div>
+      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">全部划转</span></div>
     <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">充值</div>
     <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">提现</div>
   </div>
 </template>
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+  import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import { UserProcessStatus } from '../../../store/modules/user'
 import {toContractNum} from "@/utils/contractUtil";
 
@@ -76,11 +75,14 @@ export default {
     changeType () {
       this.type = this.type === 'deposit' ? 'withdraw' : 'deposit'
     },
-    changeAmount (val) {
-      if(val <= 0) {
 
-      }else{
+    transferAll () {
+      if(this.type === 'deposit') {
+        this.amount = fromContractUnit(this.balanceOfWallet)
+      }
 
+      if(this.type === 'withdraw') {
+        this.amount = this.amount = fromContractUnit(this.balanceOfDerify)
       }
     },
     deposit () {
