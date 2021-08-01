@@ -9,6 +9,6 @@ Vue.filter('dfv', (value, defaultValue) => {
   return dfv(value, defaultValue)
 })
 
-Vue.filter('amountFormt', (value, bit, showPositive, zeroDefault) => {
-  return amountFormt(value, bit, showPositive, zeroDefault)
+Vue.filter('amountFormt', (value, bit, showPositive, zeroDefault, shiftNum) => {
+  return amountFormt(value, bit, showPositive, zeroDefault, shiftNum)
 })

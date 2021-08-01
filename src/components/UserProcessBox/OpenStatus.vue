@@ -12,10 +12,10 @@
       <template v-if="status === UserProcessStatus.failed">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
         <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
-        <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm" @click="close">确认</div>
-        </div>
       </template>
+      <div class="system-popup-buttons padding">
+        <div class="system-popup-button confirm" @click="close">确认</div>
+      </div>
     </div>
   </van-popup>
 </template>

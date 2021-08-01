@@ -7,7 +7,11 @@ import bDRD from '../utils/contract/bDRD'
 
 import Cfg from '../config'
 
-export default {
+const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
+
+
+const config = {
+  currentEnv: currentEnv,
   server: {
     development: "http://13.125.43.43:8081",
     debug: "http://13.125.43.43:8081",
@@ -115,3 +119,13 @@ export default {
     }
   }
 }
+
+export function getCurrentContractConfig() {
+  return config.contract[currentEnv]
+}
+
+export function getCurrentServerEndPoint() {
+  return config.server[currentEnv]
+}
+
+export default config

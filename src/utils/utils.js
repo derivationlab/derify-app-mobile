@@ -11,7 +11,7 @@ export function dfv (num, defaultValue) {
   return num ? num : defaultValue
 }
 
-export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = null) {
+export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = null, shiftNum = 0) {
 
   if(!num && zeroDefault !== null){
     return zeroDefault
@@ -23,6 +23,8 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
     if(val === 0 && zeroDefault !== null) {
       return zeroDefault
     }
+
+    val *= Math.pow(10, shiftNum)
 
     if(showPositive && val > 0) {
       return "+" +  Number(val).toFixed(bit)

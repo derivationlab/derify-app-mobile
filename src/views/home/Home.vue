@@ -10,8 +10,8 @@
         <div class="home-top-num">
           {{curSpotPrice | fck(-8)}}
         </div>
-        <div :class="curContractData.tokenPriceRate > 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
-          {{curContractData.tokenPriceRate > 0 ? '+' : ''}}{{curContractData.tokenPriceRate | fck(2,2)}}%</span>
+        <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
+          {{curContractData.tokenPriceRate}}%</span>
         </div>
       </div>
       <div class="home-top-right">
@@ -21,15 +21,15 @@
         </div>
         <div class="home-top-items">
           <span class="fc-65">动仓费率：</span>
-          <span class="fc-red">{{curPositionChangeFeeRatio | fck(-8)}}%</span>
+          <span :class="curPositionChangeFeeRatio > 0 ? 'fc-red' : 'fc-green'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
         </div>
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
           <span class="fc-green">多</span>
-          <span>{{curContractData.longPmrRate | fck(2,2)}}%</span>
+          <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
           <span class="fc-65 margin">/</span>
           <span class="fc-red">空</span>
-          <span>{{curContractData.shortPmrRate | fck(2,2)}}%</span>
+          <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
         </div>
       </div>
     </div>
@@ -68,14 +68,17 @@
           <div class="fc-65 fz-12">开仓量</div>
           <div class="fz-12">
             <span class="fc-65">可开：
+              <!-- USDT -->
               <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
+              <!-- curToken -->
               <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
-              <template v-if="unit === 2">100 %</template></span>
+              <!-- percent -->
+              <template v-if="unit === 2">100%</template></span>
             <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
         <div class="home-mid-input">
-          <van-field class="derify-input" type="number" v-model.number="size" />
+          <van-field class="derify-input" type="number" v-model.number="size" @input="calculateSliderValue"/>
           <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
             <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                 <div class="derify-dropmenu-title" slot="title">
@@ -360,6 +363,7 @@ import {
   toContractUnit
 } from '../../utils/contractUtil'
 import {fck} from "@/utils/utils";
+import { UnitTypeEnum } from '../../store/modules/contract'
 
 const TradeTypeMap = {
   0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
@@ -368,7 +372,7 @@ const TradeTypeMap = {
   3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade, 止盈止损 & 平仓
   4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade, 自动减仓 & 平仓
   5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade, 自动平仓 & 平仓
-};
+}
 
 
 const context = {
@@ -541,22 +545,20 @@ export default {
           amount = stringFromContractUnit(this.curSpotPrice)
         }
 
-        if (!size) {
-          this.$toast('please input size first')
+        if (!size || size <= 0) {
+          this.$toast('输入数量有误，请重新输入')
           return
         }
 
-        if(side === 0 || side === 1){
-          if(unit === 0){
-            if (size > this.curTraderOpenUpperBound.size) {
-              this.$toast('输入的开仓量超出上限')
-              return
-            }
-          }else if(unit === 1){
-            if (size > this.curTraderOpenUpperBound.amount) {
-              this.$toast('输入的开仓量超出上限')
-              return
-            }
+        if(unit !== UnitTypeEnum.USDT){
+          if (size > fromContractUnit(this.curTraderOpenUpperBound.size)) {
+            this.$toast('超出限额，请重新输入')
+            return
+          }
+        } else {
+          if (size > fromContractUnit(this.curTraderOpenUpperBound.amount)) {
+            this.$toast('超出限额，请重新输入')
+            return
           }
         }
 
@@ -627,16 +629,9 @@ export default {
       context.myChart.resize()
     },
     tabChange (key) {
-      console.log(`tabChange ${key}`)
+
       const self = this;
 
-      if(key === 'key1'){
-
-      }
-
-      if(key === 'key2'){
-
-      }
 
       if(key === 'key3'){
         self.loading = true
@@ -657,7 +652,6 @@ export default {
       }
     },
     cancleOrderedPosition (data) {
-      //执行取消委托
       this.$store.dispatch('contract/cancleOrderedPosition',
           {
             token: data.token,
@@ -668,22 +662,29 @@ export default {
     },
     calculatePositionSize (sliderValue) {
       const {unit} = this// 0 ETH，1 USDT 2 %
-      if (unit ===  0) {
-        this.size = fck(Math.round(sliderValue /100 * this.curTraderOpenUpperBound.size), -8, 2)
-      }else if (unit === 1) {
-        this.size = fck(Math.round(sliderValue /100 * this.curTraderOpenUpperBound.amount), -8, 2)
+      this.size = Math.round(sliderValue / 100 * this.getMaxSize(unit))
+    },
+    getMaxSize(unit) {
+      let maxSize = 100;
+      if (unit ===  UnitTypeEnum.USDT) {
+        maxSize = fck(Math.round(this.curTraderOpenUpperBound.size), -8, 2)
+      }else if (unit === UnitTypeEnum.CurPair) {
+        maxSize = fck(Math.round(this.curTraderOpenUpperBound.amount), -8, 2)
       }else{
-        this.size = sliderValue || 0
+        maxSize = 100
       }
 
+      return maxSize
+    },
+    calculateSliderValue () {
+      this.value5 = Math.min(Math.round(this.size * 100 / this.getMaxSize(this.unit)), 100)
     },
     unitSelectChange (unit) {
-      console.log(unit)
       this.unit = unit;
       this.calculatePositionSize(this.value5)
     },
     updateTraderOpenUpperBound (amount) {
-      //杠杆数发生变化, 重新计算仓量
+      //leverage change, recalculate bound
 
       const openType = this.entrustType
 
@@ -713,16 +714,8 @@ export default {
 
       context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
         //update mining fee
-        this.$store.commit('contract/SET_CONTRACT_DATA', {...positionMiniRate})
-      })
-
-      if(context.tokenPriceChangeEvenet !== null) {
-        context.tokenPriceChangeEvenet.close()
-      }
-
-      context.tokenPriceChangeEvenet = createTokenPriceChangeEvenet(this.curPair.key, (tokenKey, priceChangeRate) => {
-        //Update token price change
-        this.$store.commit('contract/SET_CONTRACT_DATA', {tokenPriceRate: priceChangeRate})
+        //{"longPmrRate":0,"shortPmrRate":0}
+        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
       })
 
       this.drawKline()
@@ -803,7 +796,6 @@ export default {
   created () {
     context.loaded = true
 
-    //TODO 币种切换处理
     this.$nextTick(() => {
 
     })

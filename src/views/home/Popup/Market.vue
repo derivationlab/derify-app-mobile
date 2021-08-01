@@ -40,6 +40,9 @@ export default {
   watch: {
     show () {
       this.showPopup = this.show
+      if(this.showPopup){
+        this.$store.dispatch('contract/updateAllPairPrice')
+      }
     }
   },
   methods: {
@@ -52,16 +55,12 @@ export default {
         return false
       }
       this.$store.commit('contract/SET_CURPAIRKEY', pair.key)
-      this.getCurPrice().then(_ => { this.close() })
-    },
-    getCurPrice () {
-      return this.$store.dispatch('contract/getSpotPrice')
+
+      this.close()
     }
   },
-  created () {
-    this.$nextTick(() => {
-      this.getCurPrice()
-    })
+  mounted () {
+
   }
 }
 </script>
