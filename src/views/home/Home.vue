@@ -680,7 +680,6 @@ export default {
       this.value5 = Math.min(Math.round(this.size * 100 / this.getMaxSize(this.unit)), 100)
     },
     unitSelectChange (unit) {
-      console.log(unit)
       this.unit = unit;
       this.calculatePositionSize(this.value5)
     },
