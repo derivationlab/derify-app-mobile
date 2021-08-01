@@ -3,20 +3,20 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :finished-text="$t('data.NoMoreData')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>合约</div>
-        <div>交易类型</div>
-        <div class="center-span">仓位</div>
-        <div class="center-span">时间</div>
+        <div>{{$t('data.contract')}}</div>
+        <div>{{$t('data.dealingSlip')}}</div>
+        <div class="center-span">{{$t('data.freightSpace')}}</div>
+        <div class="center-span">{{$t('data.Time')}}</div>
       </div>
       <div class="heard">
         <div class="color-type">ETH / USDT</div>
         <div>
-          <div class="color-type">开仓</div>
-          <div class="unit-span mrt-5">多</div>
+          <div class="color-type">{{$t('data.open')}}</div>
+          <div class="unit-span mrt-5">{{$t('data.more')}}</div>
         </div>
         <div class="center-span">
           <div class="color-type">7890.12</div>

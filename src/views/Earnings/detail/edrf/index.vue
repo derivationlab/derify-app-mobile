@@ -12,20 +12,22 @@
         <div class="center-span">余额</div>
         <div class="center-span">时间</div>
       </div>
-      <div class="heard">
-        <div class="color-type">提现</div>
-        <div>
-          <div class="color-type">-1234.56</div>
-          <div class="unit-span mrt-5">eDRF</div>
+      <template v-for="(data,key) in list">
+        <div class="heard" :key="key">
+          <div class="color-type">{{data.pmr_update_type === 0 ? '收入' : '提取'}}</div>
+          <div>
+            <div class="color-type">{{data.amount | amountFormt(2, true, '-')}}</div>
+            <div class="unit-span mrt-5">eDRF</div>
+          </div>
+          <div class="center-span">
+            <div class="color-type">{{data.balance | amountFormt(2, true, '-')}}</div>
+            <div class="unit-span mrt-5">eDRF</div>
+          </div>
+          <div class="center-span unit-span">
+            {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
+          </div>
         </div>
-        <div class="center-span">
-          <div class="color-type">7890.12</div>
-          <div class="unit-span mrt-5">eDRF</div>
-        </div>
-        <div class="center-span unit-span">
-          2021-12-31
-        </div>
-      </div>
+      </template>
         <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
       </van-list>
   </div>
@@ -41,20 +43,19 @@ export default {
   },
   methods: {
     onLoad () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
     }
+  },
+  mounted () {
+    const self = this;
+    self.loading = true
+    this.$store.dispatch("earnings/getTraderBondBalance").then((data) => {
+
+      if(data instanceof Array){
+        self.list.splice(0)
+        data.forEach((item) => self.list.push(item))
+        self.loading = false
+      }
+    });
   }
 }
 </script>

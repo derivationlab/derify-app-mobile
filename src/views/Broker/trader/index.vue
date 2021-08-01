@@ -7,13 +7,13 @@
         @load="onLoad"
       >
       <div class="heard">
-        <div>类型</div>
-        <div>金额</div>
-        <div class="center-span">余额</div>
-        <div class="center-span">时间</div>
+        <div>{{$t('Brokers.Type')}}</div>
+        <div>{{$t('Brokers.Amount')}}</div>
+        <div class="center-span">{{$t('Brokers.Balance')}}</div>
+        <div class="center-span">{{$t('Brokers.Time')}}</div>
       </div>
       <div class="heard">
-        <div class="color-type">提现</div>
+        <div class="color-type">{{$t('Brokers.Earnings')}}</div>
         <div>
           <div class="color-type">-1234.56</div>
           <div class="unit-span mrt-5">USDT</div>

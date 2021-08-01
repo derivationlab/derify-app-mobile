@@ -10,13 +10,15 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="close">确认</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">确认</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
+import { toContractUnit } from '../../../utils/contractUtil'
+
 export default {
   props: {
     show: {
@@ -37,6 +39,23 @@ export default {
   methods: {
     close () {
       this.$emit('closeOneKeyUnwindPopup', false)
+    },
+    submitThenClose () {
+      const size = this.openData.size
+      const leverage = this.leverageConfig[this.openData.leverage]
+      let price = null
+      if (this.openData.entrustType === 0) {
+        price = this.curSpotPrice
+      } else {
+        const a = parseFloat(this.openData.amount)
+        price = toContractUnit(a)
+      }
+
+      this.$store.dispatch('contract/closeAllPositions').then((r) => {
+
+      });
+
+      this.close();
     }
   }
 }

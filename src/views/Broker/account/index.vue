@@ -3,12 +3,12 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :finished-text="$t('Brokers.NoMoreData')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>类型</div>
-        <div class="rigth-span">时间</div>
+        <div>{{$t('Brokers.Type')}}</div>
+        <div class="rigth-span">{{$t('Brokers.Time')}}</div>
       </div>
       <div class="heard">
         <div class="color-type width-70">0x40d276e6a7C80562BB1848e3ACB7B7629234C5a6</div>
