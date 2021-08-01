@@ -26,10 +26,10 @@
         <div class="home-top-items">
           <span class="fc-65">持仓挖矿奖励：</span>
           <span class="fc-green">多</span>
-          <span>{{curContractData.longPmrRate | fck(2,2)}}%</span>
+          <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
           <span class="fc-65 margin">/</span>
           <span class="fc-red">空</span>
-          <span>{{curContractData.shortPmrRate | fck(2,2)}}%</span>
+          <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
         </div>
       </div>
     </div>
