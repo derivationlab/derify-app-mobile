@@ -189,6 +189,10 @@ export default {
     checkAndGetMaxBound () {
       const {size, side, unit} = this.extraData
 
+      if(side === SideEnum.HEDGE) {
+        return size
+      }
+
       const self = this;
       if(!this.sysOpenUpperBound){
         return 0
