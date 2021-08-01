@@ -545,7 +545,7 @@ export default {
           amount = stringFromContractUnit(this.curSpotPrice)
         }
 
-        if (!size) {
+        if (!size || size <= 0) {
           this.$toast('输入数量有误，请重新输入')
           return
         }
