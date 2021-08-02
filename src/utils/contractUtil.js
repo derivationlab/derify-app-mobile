@@ -619,6 +619,32 @@ export default class Contract {
 
     positionDataView.orderPositions = limitOrders
 
+    positionDataView.stopOrderPoistions = []
+    positionDataView.stopOrderPoistions.push({side: SideEnum.SHORT,
+      orderType: OrderTypeEnum.StopLossOrder,
+      stopPrice: derivativePosition.shortOrderStopLossPosition.stopPrice,
+      timestamp: derivativePosition.shortOrderStopLossPosition.timestamp,
+      isUsed: derivativePosition.shortOrderStopLossPosition.isUsed});
+
+    positionDataView.stopOrderPoistions.push({side: SideEnum.SHORT,
+      orderType: OrderTypeEnum.StopProfitOrder,
+      stopPrice: derivativePosition.shortOrderStopProfitPosition.stopPrice,
+      timestamp: derivativePosition.shortOrderStopProfitPosition.timestamp,
+      isUsed: derivativePosition.shortOrderStopProfitPosition.isUsed});
+
+    positionDataView.stopOrderPoistions.push({side: SideEnum.LONG,
+      orderType: OrderTypeEnum.StopLossOrder,
+      stopPrice: derivativePosition.longOrderStopLossPosition.stopPrice,
+      timestamp: derivativePosition.longOrderStopLossPosition.timestamp,
+      isUsed: derivativePosition.longOrderStopLossPosition.isUsed});
+
+    positionDataView.stopOrderPoistions.push({side: SideEnum.LONG,
+      orderType: OrderTypeEnum.StopProfitOrder,
+      stopPrice: derivativePosition.longOrderStopProfitPosition.stopPrice,
+      timestamp: derivativePosition.longOrderStopProfitPosition.timestamp,
+      isUsed: derivativePosition.longOrderStopProfitPosition.isUsed});
+
+
     return positionDataView
   }
 
@@ -794,6 +820,39 @@ export class PositionDataView {
    * @return {OrderLimitPositionView[]}
    */
   orderPositions;
+
+  /**
+   * @return {OrderStopPoistionView[]}
+   */
+  stopOrderPoistions;
+}
+
+export class OrderStopPoistionView {
+
+  /**
+   * @return {boolean}
+   */
+  isUsed;
+
+  /**
+   * @return {SideEnum}
+   */
+  side;
+
+  /**
+   * @return {OrderTypeEnum}
+   */
+  orderType;
+
+  /**
+   * @return {int}
+   */
+  stopPrice;
+
+  /**
+   * @return {long}
+   */
+  timestamp;
 }
 
 
