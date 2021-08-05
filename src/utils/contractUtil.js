@@ -3,6 +3,7 @@ import ABIData from './contract'
 import BigNumber from 'bignumber.js'
 
 window.BigNumber = BigNumber
+window.Web3 = Web3;
 export class SideEnum {
   static get LONG (){
     return 0;
@@ -127,12 +128,9 @@ export default class Contract {
 
   constructor (from) {
     const option = {from}
-    const web3 = new Web3()
+    const web3 = new Web3(window.ethereum)
 
     const gasPrice = null;
-
-    const provider = window.ethereum
-    web3.setProvider(provider)
 
     this.web3 = web3
     this.from = from
@@ -620,25 +618,25 @@ export default class Contract {
     positionDataView.orderPositions = limitOrders
 
     positionDataView.stopOrderPoistions = []
-    positionDataView.stopOrderPoistions.push({side: SideEnum.SHORT,
+    positionDataView.orderPositions.push({side: SideEnum.SHORT,
       orderType: OrderTypeEnum.StopLossOrder,
       stopPrice: derivativePosition.shortOrderStopLossPosition.stopPrice,
       timestamp: derivativePosition.shortOrderStopLossPosition.timestamp,
       isUsed: derivativePosition.shortOrderStopLossPosition.isUsed});
 
-    positionDataView.stopOrderPoistions.push({side: SideEnum.SHORT,
+    positionDataView.orderPositions.push({side: SideEnum.SHORT,
       orderType: OrderTypeEnum.StopProfitOrder,
       stopPrice: derivativePosition.shortOrderStopProfitPosition.stopPrice,
       timestamp: derivativePosition.shortOrderStopProfitPosition.timestamp,
       isUsed: derivativePosition.shortOrderStopProfitPosition.isUsed});
 
-    positionDataView.stopOrderPoistions.push({side: SideEnum.LONG,
+    positionDataView.orderPositions.push({side: SideEnum.LONG,
       orderType: OrderTypeEnum.StopLossOrder,
       stopPrice: derivativePosition.longOrderStopLossPosition.stopPrice,
       timestamp: derivativePosition.longOrderStopLossPosition.timestamp,
       isUsed: derivativePosition.longOrderStopLossPosition.isUsed});
 
-    positionDataView.stopOrderPoistions.push({side: SideEnum.LONG,
+    positionDataView.orderPositions.push({side: SideEnum.LONG,
       orderType: OrderTypeEnum.StopProfitOrder,
       stopPrice: derivativePosition.longOrderStopProfitPosition.stopPrice,
       timestamp: derivativePosition.longOrderStopProfitPosition.timestamp,
@@ -757,7 +755,6 @@ export class PositionView {
   stopLossPrice;
 
   liquidatePrice;
-  isUsed;
 }
 
 export class LimitPoistion {

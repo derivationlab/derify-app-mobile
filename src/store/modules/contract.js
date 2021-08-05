@@ -98,12 +98,37 @@ const mutations = {
     }
 
     if(positionData.positions) {
+      const positionIndexOfPair = [];
+
+      state.positionData.positions.forEach((position, index) => {
+        if(position.token === pair.address){
+          positionIndexOfPair.push(index)
+        }
+      })
+
+      positionIndexOfPair.forEach((index) => {
+        state.positionData.positions.splice(index, 1)
+      })
+
       positionData.positions.forEach((position) => {
         state.positionData.positions.push(position)
       })
     }
 
     if(positionData.orderPositions) {
+      const positionIndexOfPair = [];
+
+      state.positionData.orderPositions.forEach((position, index) => {
+        if(position.token === pair.address){
+          positionIndexOfPair.push(index)
+        }
+      })
+
+      positionIndexOfPair.forEach((index) => {
+        state.positionData.orderPositions.splice(index, 1)
+      })
+
+
       positionData.orderPositions.forEach((position) => {
         state.positionData.orderPositions.push(position)
       })
@@ -419,7 +444,6 @@ const actions = {
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      commit('RESET_POSITION_DATA')
       state.pairs.forEach((pair) => {
 
         const pairItem = pair
@@ -428,8 +452,6 @@ const actions = {
         }
 
         contract.getTraderAllPosition(state.wallet_address, pairItem.address).then((positionData) => {
-          console.log(`loadPositionData ${pairItem.key}`, positionData)
-
           commit('ADD_POSITION_DATA', {positionData, pair: pairItem})
 
           resolve(state.positionData)

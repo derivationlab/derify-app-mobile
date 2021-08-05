@@ -393,6 +393,7 @@ const TradeTypeMap = {
 const context = {
   myChart: null,
   loaded: false,
+  timer: null,
   loadStamp: 0,
   tokenMiningRateEvent: null,
   tokenPriceChangeEvenet: null
@@ -831,6 +832,16 @@ export default {
   },
   created () {
     context.loaded = true
+    const self = this;
+    if(context.timer !== null) {
+      clearInterval(context.timer)
+    }
+
+    // context.timer = setInterval(() => {
+    //   self.$store.dispatch('contract/loadPositionData').then(r => {
+    //     self.loading = false
+    //   })
+    // }, 3000)
 
     this.$nextTick(() => {
 

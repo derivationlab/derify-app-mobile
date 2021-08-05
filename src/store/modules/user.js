@@ -96,11 +96,16 @@ export function getWallet(){
 
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+
+  const chainId = parseInt(wethereum.chainId)
+
+  const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
+
   return {
     selectedAddress: wethereum.selectedAddress,
     isLogin: wethereum.selectedAddress && isEthum,
     showWallet: !wethereum.selectedAddress || !isEthum,
-    chainEnum: networkMap[parseInt(wethereum.chainId)],
+    chainEnum: chainEnum,
     isEthum,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
