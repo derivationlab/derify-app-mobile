@@ -264,8 +264,8 @@
                     <div class="exchange-block-title">
                       <div class="left">
 
-                        <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                        <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                        <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
+                        <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
                         <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                         <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                       </div>
@@ -274,7 +274,7 @@
                     <div class="exchange-item">
                       <div class="exchange-item-left">
                         <div class="fc-45">盈亏：</div>
-                        <div :class="data.pnl_usdt > 0 ? 'fc-red' : 'fc-green'">{{data.pnl_usdt | amountFormt(2, true, '-')}}</div>
+                        <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}}</div>
                       </div>
                       <div class="exchange-item-right">
                         <div class="fc-45">委托类型：</div>
@@ -379,15 +379,29 @@ import {
 import {fck} from "@/utils/utils";
 import { UnitTypeEnum } from '../../store/modules/contract'
 import { UserProcessStatus } from '../../store/modules/user'
+class OpTypeEnum {
+  constructor(opType, opTypeDesc) {
+    this.opType = opType
+    this.opTypeDesc = opTypeDesc
+  }
+  static get OpenPosition() {
+    return new OpTypeEnum(1, "开仓")
+  }
 
-const TradeTypeMap = {
-  0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade
-  1:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-HedgeMarketPriceTrade
-  2:{opType: '开仓', showType: 'fc-green', tradeType: '限价委托'},//-LimitPriceTrade
-  3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade
-  4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade
-  5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade
+  static get ClosePosition() {
+    return new OpTypeEnum(2, "平仓")
+  }
 }
+const TradeTypeMap = {
+  0: {opType: '开仓', showType: 'fc-green', tradeType: '市价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceTrade
+  1: {opType: '开仓', showType: 'fc-green', tradeType: '市价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceTrade
+  2: {opType: '开仓', showType: 'fc-green', tradeType: '限价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceTrade
+  3: {opType: '平仓', showType: 'fc-red', tradeType: '止盈止损', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossTrade
+  4: {opType: '平仓', showType: 'fc-red', tradeType: '自动减仓', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingTrade
+  5: {opType: '平仓', showType: 'fc-red', tradeType: '强制平仓', opTypeEnum: OpTypeEnum.ClosePosition}//-MandatoryLiquidationTrade
+}
+
+
 
 
 const context = {
@@ -446,6 +460,7 @@ export default {
     const position = new Position()
     return {
       SideEnum,
+      OpTypeEnum,
       entrustType: 0,
       leverageUnit: 0,
       amount: 0,

@@ -1,9 +1,9 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
-import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit } from '../../utils/contractUtil'
-import { amountFormt, fck } from '../../utils/utils'
-import { createTokenPriceChangeEvenet } from '../../api/trade'
+import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit } from '@/utils/contractUtil'
+import { amountFormt, fck } from '@/utils/utils'
+import { createTokenPriceChangeEvenet } from '@/api/trade'
 
 const tokenPriceRateEnventMap = {};
 

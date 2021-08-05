@@ -7,7 +7,7 @@
           <span class="span2 fz-12" @click="goDetail(1)">流水明细 ></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">{{pmrReward | fck(-8)}}</span>
+          <span class="span1">{{pmrReward | fck(-8, 2)}}</span>
           <span class="span2">USDT</span>
         </div>
         <div class="earnings-info">
@@ -89,7 +89,7 @@
             <span class="span2 fz-11">收益计划存入 ( bDRF )</span>
           </div>
           <div class="div1">
-            <span class="span1">{{bondInfo.bondAnnualInterestRate | fck(-8)}}%</span>
+            <span class="span1">{{bondInfo.bondAnnualInterestRate | fck(-8,2)}}%</span>
             <span class="span2 fz-11">APY</span>
           </div>
         </div>

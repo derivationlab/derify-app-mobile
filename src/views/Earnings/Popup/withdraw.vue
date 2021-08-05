@@ -9,13 +9,20 @@
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可提现：1234567.00000000 {{withdrawName}}</span>
-          <span class="popup-span2">全部提现</span>
+          <span class="popup-span1">可提现：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
+          <span class="popup-span2" @click="() => {
+            this.amount = fck(maxAmout,-8)
+          }">全部提现</span>
         </div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">提现</div>
+        <template v-if="amount > 0">
+          <div class="system-popup-button confirm" @click="submitThenClose">提现</div>
+        </template>
+        <template v-else>
+          <div class="system-popup-button disabled-btn">提现</div>
+        </template>
       </div>
     </div>
   </van-popup>
@@ -23,6 +30,8 @@
 
 <script>
 import { toContractUnit } from '../../../utils/contractUtil'
+import {fck} from '@/utils/utils'
+import {UserProcessStatus} from "@/store/modules/user";
 
 export default {
   props: ['show', 'withdrawId'],
@@ -30,6 +39,7 @@ export default {
     return {
       showPopup: this.show,
       amount: null,
+      maxAmout: 10*1e8,
       curPercent: 25,
       withdrawName: null
     }
@@ -54,27 +64,31 @@ export default {
     },
     submitThenClose () {
 
+
       if(this.withdrawId === 1) {
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         //挖矿持仓
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
-          this.close()
         }).finally( p => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
         })
 
         return
       }
 
       if(this.withdrawId === 2) {
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
-          this.close()
+
         }).finally( p => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
         })
 
         return
@@ -82,15 +96,14 @@ export default {
 
       if(this.withdrawId === 3) {
         //bDRF
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
           this.close()
         }).finally( p => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
         })
-
-        return
       }
 
     }

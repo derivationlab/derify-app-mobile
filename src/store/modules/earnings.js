@@ -39,7 +39,8 @@ const state = {
      * Annualized bond yield£¨accuracy of 8 digits£©
      */
     bondAnnualInterestRate: 0
-  }
+  },
+  exchangeBondSizeUpperBound: 0
 }
 
 const mutations = {
@@ -83,12 +84,18 @@ const actions = {
     return contract.redeemBondFromBank({amount, bondAccountType })
   },
   getTraderPMRBalance ({state, commit, dispatch}) {
-    const contract = web3Util.contract(state.wallet_address)
     return getTraderPMRBalance(state.wallet_address)
   },
   getTraderBondBalance ({state, commit, dispatch}) {
-    const contract = web3Util.contract(state.wallet_address)
     return getTraderBondBalance(state.wallet_address)
+  },
+  getExchangeBondSizeUpperBound ({state, commit, dispatch}, {bondAccountType}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+      const exchangeBondSizeUpperBound = await contract.getExchangeBondSizeUpperBound({trader: state.wallet_address, bondAccountType})
+      commit("updateState", {exchangeBondSizeUpperBound})
+      return maxBound
+    })();
   }
 }
 
