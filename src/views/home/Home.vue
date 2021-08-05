@@ -196,66 +196,46 @@
               <template v-if="active ==='key2'">
                 <template  v-for="(data,i) in positionOrders">
                   <div class="exchange-block" v-if="data.isUsed" :key="i">
-                  <div class="exchange-block-title">
-                    <div class="left">
+                    <div class="exchange-block-title">
+                      <div class="left">
 
-                      <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                      <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
-                      <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                      <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                    </div>
-                    <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                      <div class="fz-12">平仓</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
-                      <div class="fz-12">取消委托</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key3'">
-                      <div class="fz-12 fc-45">{{new Date(data.timestamp).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">委托价格：</div>
-                      <div>{{data.price | fck(-8)}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">委托类型：</div>
-                      <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">限价委托</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">委托数量：</div>
-                      <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">委托时间：</div>
-                      <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">止损设置：</div>
-                      <div>
-                        <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
-                        <template v-else>-</template>
+                        <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                        <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                        <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                        <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                        <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                      </div>
+                      <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(data)">
+                        <div class="fz-12">取消委托</div>
+                        <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                       </div>
                     </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">止盈设置：</div>
-                      <div>
-                        <div>
-                          <template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
-                          <template v-else>-</template>
-                        </div>
+                    <div class="exchange-item">
+                      <div class="exchange-item-left">
+                        <div class="fc-45">委托价格：</div>
+                        <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} USDT</div></template>
+                        <template v-else><div>{{data.stopPrice | fck(-8)}} USDT</div></template>
+
+
+                      </div>
+                      <div class="exchange-item-right">
+                        <div class="fc-45">委托类型：</div>
+                        <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">开仓</span>/<span>限价委托</span></div></template>
+                        <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">平仓</span>/<span>止盈委托</span></div></template>
+                        <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">平仓</span>/<span>止损委托</span></div></template>
+                      </div>
+                    </div>
+                    <div class="exchange-item">
+                      <div class="exchange-item-left" v-if="data.orderType === OrderTypeEnum.LimitOrder">
+                        <div class="fc-45">委托数量：</div>
+                        <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                      </div>
+                      <div class="exchange-item-right">
+                        <div class="fc-45">委托时间：</div>
+                        <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
                       </div>
                     </div>
                   </div>
-                </div>
                 </template>
               </template>
               <template v-if="active ==='key3'">
@@ -354,6 +334,7 @@
     <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
     <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
+    <close-position :show="showClosePositionWind" :operateType="closePositionOrderType" @onClosePosition="changeClosePosistionStatus"/>
   </div>
 </template>
 
@@ -370,7 +351,7 @@ import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
 import {
   fromContractUnit,
-  OpenType,
+  OpenType, OrderTypeEnum,
   Position,
   SideEnum,
   stringFromContractUnit,
@@ -379,6 +360,7 @@ import {
 import {fck} from "@/utils/utils";
 import { UnitTypeEnum } from '../../store/modules/contract'
 import { UserProcessStatus } from '../../store/modules/user'
+import ClosePosition from './Popup/ClosePosition'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -415,6 +397,7 @@ const context = {
 export default {
   name: 'Home',
   components: {
+    ClosePosition,
     Navbar,
     Market,
     Hint,
@@ -459,6 +442,7 @@ export default {
 
     const position = new Position()
     return {
+      OrderTypeEnum,
       SideEnum,
       OpTypeEnum,
       entrustType: 0,
@@ -504,6 +488,8 @@ export default {
       showOpen: false, // show open position confirm popup
       openType: null, // open position type {@see OpenType}
       showOpenStatus: false, // smart contract processing popup type
+      showClosePositionWind: false,
+      closePositionOrderType: 0,
       openStatus: 'fail', // smart contract processing satus
       openExtraData: {
         entrustType: OpenType.MarketOrder,
@@ -639,6 +625,10 @@ export default {
       this.openStatus = status
       this.showOpenStatus = bool
     },
+    changeClosePosistionStatus (bool, closePositionOrderType) {
+      this.showClosePositionWind = bool
+      this.closePositionOrderType = closePositionOrderType
+    },
     transfer () {
       this.$router.push({path: '/account'})
     },
@@ -685,6 +675,7 @@ export default {
       }
     },
     cancleOrderedPosition (data) {
+
       this.$store.dispatch('contract/cancleOrderedPosition',
           {
             token: data.token,

@@ -405,7 +405,7 @@ export default class Contract {
    * @return {*}
    */
   cancleOrderedPosition ({token, trader, orderType, side, timestamp}) {
-    if (orderType === 0) {
+    if (orderType === OrderTypeEnum.LimitOrder) {
       return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
     } else {
       return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, orderType, side).send()

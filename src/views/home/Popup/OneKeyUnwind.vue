@@ -29,7 +29,12 @@ export default {
   },
   data () {
     return {
-      showPopup: this.show
+      showPopup: this.show,
+      popupInfo: [
+        {type: 'cancleAllOrderedPositions', title: '取消委托', content: '点击确定，取消该委托单'},
+        {type: 'cancleOrderedStopPosition', title: '取消委托', content: '点击确定，取消该委托单'},
+        {type: 'cancleOrderedLimitPosition', title: '取消委托', content: '点击确定，取消所有委托单'},
+      ]
     }
   },
   watch: {

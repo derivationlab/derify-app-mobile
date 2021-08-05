@@ -16,7 +16,7 @@ export function contract (account) {
       get(target, propKey, receiver) {
         const ret = Reflect.get(...arguments)
 
-        if(ret instanceof Function && !propKey.startsWith("__")){
+        if(ret instanceof Function && isProxyPropertyKey(propKey)){
           return new Proxy(ret, {
             apply (target, ctx, args) {
               try{
@@ -84,6 +84,18 @@ class Aop {
 
     });
   }
+}
+
+function isProxyPropertyKey(key) {
+  if(key.startsWith('__')) {
+    return false
+  }
+
+  if(key === 'getSpotPrice'){
+    return false
+  }
+
+  return true
 }
 
 export function enable () {
