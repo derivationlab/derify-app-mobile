@@ -517,7 +517,7 @@ export default class Contract {
    * @param bondAccountType，0-DerifyAccount, 1-WalletAccount
    * @return {int} bDRF exchangeable maximum（The precision is 8 bits）
    */
-  getExchangeBondSizeUpperBound (trader, bondAccountType) {
+  getExchangeBondSizeUpperBound ({trader, bondAccountType}) {
     return this.DerifyBond.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
   }
 

@@ -5,9 +5,10 @@
       <div>
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="value1" :options="option1" class="derify-dropmenu-item" @open="onDropDowOpen">
+            <van-dropdown-item v-model="accountType" :options="option1"
+                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="exchangeBondSizeUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{option1[value1].text}}</span>
+                  <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
@@ -15,42 +16,59 @@
         </div>
         <div class="popup-text">兑换数量</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">bDRF</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可兑换：1234567.00000000 bDRF</span>
-          <span class="popup-span2">全部兑换</span>
+          <span class="popup-span1">可兑换：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
+          <span class="popup-span2" @click="
+          () => {
+            this.amount = fck(exchangeBondSizeUpperBound, -8, 4)
+          }">全部兑换</span>
         </div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">兑换</div>
+        <template v-if="amount > 0">
+          <div class="system-popup-button confirm" @click="submitThenClose">兑换</div>
+        </template>
+        <template v-else>
+          <div class="system-popup-button disabled-btn" @click="submitThenClose">兑换</div>
+        </template>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+import { toContractUnit,fromContractUnit } from '@/utils/contractUtil'
+import {UserProcessStatus} from "@/store/modules/user"
+import {fck} from '@/utils/utils';
 
 export default {
   props: ['show', 'withdrawId'],
   data () {
     return {
       showPopup: this.show,
-      value1: 0,
+      accountType: 0,
+      amount: 0,
       curPercent: 25,
       withdrawName: null,
-      option1: [
+      accountOptions: [
         { text: 'Derify账户', value: 0 },
         { text: '钱包账户', value: 1 }
       ]
     }
   },
+  computed: {
+    exchangeBondSizeUpperBound () {
+      return this.$store.state.earnings.exchangeBondSizeUpperBound
+    }
+  },
   watch: {
     show () {
       this.showPopup = this.show
+      this.updateExchangeBondSizeUpperBound()
     },
     withdrawId () {
       if (this.withdrawId === 1) {
@@ -60,6 +78,9 @@ export default {
       } else {
         this.withdrawName = 'bDRF'
       }
+    },
+    '$store.state.earnings.exchangeBondSizeUpperBound': function (){
+      this.resetAmount()
     }
   },
   methods: {
@@ -67,16 +88,38 @@ export default {
       this.$emit('closeDeposit', false)
     },
     submitThenClose () {
-      this.$store.dispatch("earnings/exchangeBond", {amount: toContractUnit(this.amount)}).then( r => {
-        this.close()
+
+      if(!this.checkAmount()) {
+        return
+      }
+
+      this.close()
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
+
+      this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行成功'})
       }).catch(e => {
         this.close()
       }).finally( p => {
-        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行失败'})
       })
     },
     onDropDowOpen () {
       return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+    },
+    updateExchangeBondSizeUpperBound() {
+      this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
+    },
+    resetAmount () {
+      this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
+    },
+    checkAmount () {
+      if(toContractUnit(this.amount) > this.exchangeBondSizeUpperBound) {
+        this.$toast('超出限额，请重新输入')
+        return false
+      }
+
+      return true
     }
   }
 }
