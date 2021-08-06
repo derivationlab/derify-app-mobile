@@ -489,7 +489,7 @@ export default {
       openType: null, // open position type {@see OpenType}
       showOpenStatus: false, // smart contract processing popup type
       showClosePositionWind: false,
-      closePositionOrderType: 0,
+      closePositionOrderType: '',
       openStatus: 'fail', // smart contract processing satus
       openExtraData: {
         entrustType: OpenType.MarketOrder,
