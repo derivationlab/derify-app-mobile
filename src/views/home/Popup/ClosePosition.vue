@@ -6,16 +6,17 @@
         <span class="fc-65">{{popupInfos[popupInfoIndex].content}}</span>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">È¡Ïû</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">È·ÈÏ</div>
+        <div class="system-popup-button cancel" @click="close">å–æ¶ˆ</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">ç¡®è®¤</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+import { PositionView, toContractUnit } from '../../../utils/contractUtil'
 import { UserProcessStatus } from '../../../store/modules/user'
+import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
 
 export default {
   props: {
@@ -23,9 +24,15 @@ export default {
       type: Boolean,
       default: false
     },
-    operateType: {
-      type: String,
+    closePositionOrderType: {
+      type: Number,
       default: null
+    },
+    extraData: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data () {
@@ -33,28 +40,52 @@ export default {
       showPopup: this.show,
       popupInfoIndex: 0,
       popupInfos: [
-        {type: 'cancleAllOrderedPositions', title: 'È¡ÏûÎ¯ÍĞ', content: 'µã»÷È·¶¨£¬È¡Ïû¸ÃÎ¯ÍĞµ¥'},
-        {type: 'cancleOrderedStopPosition', title: 'È¡ÏûÎ¯ÍĞ', content: 'µã»÷È·¶¨£¬È¡Ïû¸ÃÎ¯ÍĞµ¥'},
-        {type: 'cancleOrderedLimitPosition', title: 'È¡ÏûÎ¯ÍĞ', content: 'µã»÷È·¶¨£¬È¡ÏûËùÓĞÎ¯ÍĞµ¥'},
+        {type: CancelOrderedPositionTypeEnum.StopLossOrder, title: 'å–æ¶ˆå§”æ‰˜', content: 'ç‚¹å‡»ç¡®å®šï¼Œå–æ¶ˆè¯¥å§”æ‰˜å•', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'å–æ¶ˆå§”æ‰˜', content: 'ç‚¹å‡»ç¡®å®šï¼Œå–æ¶ˆè¯¥å§”æ‰˜å•', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'å–æ¶ˆå§”æ‰˜', content: 'ç‚¹å‡»ç¡®å®šï¼Œå–æ¶ˆè¯¥å§”æ‰˜å•', calfunc: 'cancleOrderedPosition'},
+
+        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'å–æ¶ˆå§”æ‰˜', content: 'ç‚¹å‡»ç¡®å®šï¼Œå–æ¶ˆæ‰€æœ‰å§”æ‰˜å•', calfunc: 'cancleAllOrderedPositions'},
       ]
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
+    },
+    closePositionOrderType () {
+      const opType = this.closePositionOrderType
+      this.popupInfoIndex = this.popupInfos.findIndex(item => item.type === opType)
+    },
+    extraData: {
+      immediate: true,
+      deep: true,
+      handler () {
+
+      }
     }
   },
   methods: {
     close () {
-      this.$emit('onClosePosition', false)
+      this.$emit('onClosePosition', false, this.extraData)
     },
     submitThenClose () {
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '½»Ò×Ö´ĞĞÖĞ,ÇëµÈ´ı'})
+      const closePositionOrderType = this.closePositionOrderType
+      const closePositionOrderTypeMap = {}
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.AllOrder] = 'closeAllPositions'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.LimitedOrder] = 'cancleOrderedPosition'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopLossOrder] = 'cancleOrderedPosition'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopProfitOrder] = 'cancleOrderedPosition'
 
-      this.$store.dispatch('contract/closeAllPositions').then((r) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '½»Ò×Ö´ĞĞ³É¹¦'})
+      const action = closePositionOrderTypeMap[closePositionOrderType]
+
+      const param = {...this.extraData}
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: 'äº¤æ˜“æ‰§è¡Œä¸­,è¯·ç­‰å¾…'})
+
+      this.$store.dispatch('contract/' + action, param).then((r) => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: 'äº¤æ˜“æ‰§è¡ŒæˆåŠŸ'})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '½»Ò×Ö´ĞĞÊ§°Ü'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: 'äº¤æ˜“æ‰§è¡Œå¤±è´¥'})
       });
 
       this.close();

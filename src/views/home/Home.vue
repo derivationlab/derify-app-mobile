@@ -205,7 +205,7 @@
                         <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                         <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                       </div>
-                      <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(data)">
+                      <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
                         <div class="fz-12">取消委托</div>
                         <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                       </div>
@@ -226,7 +226,7 @@
                       </div>
                     </div>
                     <div class="exchange-item">
-                      <div class="exchange-item-left" v-if="data.orderType === OrderTypeEnum.LimitOrder">
+                      <div class="exchange-item-left">
                         <div class="fc-45">委托数量：</div>
                         <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
                       </div>
@@ -318,7 +318,7 @@
             </template>
 
             <template v-if="active === 'key2'">
-              <div class="home-last-batch-btn base-bg-color" @click="closeAllPositions">取消所有委托</div>
+              <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">取消所有委托</div>
             </template>
           </template>
           <template v-if="!isLogin">
@@ -334,7 +334,7 @@
     <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
     <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
-    <close-position :show="showClosePositionWind" :operateType="closePositionOrderType" @onClosePosition="changeClosePosistionStatus"/>
+    <close-position :show="showClosePositionWind" :extraData="extClosePositionData" :closePositionOrderType="closePositionOrderType" @onClosePosition="changeClosePosistionStatus"/>
   </div>
 </template>
 
@@ -358,7 +358,7 @@ import {
   toContractUnit
 } from '../../utils/contractUtil'
 import {fck} from "@/utils/utils";
-import { UnitTypeEnum } from '../../store/modules/contract'
+import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../../store/modules/contract'
 import { UserProcessStatus } from '../../store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
 class OpTypeEnum {
@@ -489,7 +489,8 @@ export default {
       openType: null, // open position type {@see OpenType}
       showOpenStatus: false, // smart contract processing popup type
       showClosePositionWind: false,
-      closePositionOrderType: '',
+      closePositionOrderType: 0,
+      extClosePositionData: {...position},
       openStatus: 'fail', // smart contract processing satus
       openExtraData: {
         entrustType: OpenType.MarketOrder,
@@ -625,9 +626,22 @@ export default {
       this.openStatus = status
       this.showOpenStatus = bool
     },
-    changeClosePosistionStatus (bool, closePositionOrderType) {
+    changeClosePosistionStatus (bool, data) {
       this.showClosePositionWind = bool
-      this.closePositionOrderType = closePositionOrderType
+
+      const cancelOrderTypeMap = {}
+      cancelOrderTypeMap[OrderTypeEnum.LimitOrder] = CancelOrderedPositionTypeEnum.LimitedOrder
+      cancelOrderTypeMap[OrderTypeEnum.StopLossOrder] = CancelOrderedPositionTypeEnum.StopLossOrder
+      cancelOrderTypeMap[OrderTypeEnum.StopProfitOrder] = CancelOrderedPositionTypeEnum.StopProfitOrder
+
+      if(data && cancelOrderTypeMap.hasOwnProperty(data.orderType)){
+        this.closePositionOrderType = cancelOrderTypeMap[data.orderType]
+      }else{
+        this.closePositionOrderType = CancelOrderedPositionTypeEnum.AllOrder
+      }
+
+      this.extClosePositionData = data
+
     },
     transfer () {
       this.$router.push({path: '/account'})

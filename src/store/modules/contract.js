@@ -21,6 +21,24 @@ export class UnitTypeEnum {
   }
 }
 
+export class CancelOrderedPositionTypeEnum {
+  static get LimitedOrder() {
+    return 0
+  }
+
+  static get StopProfitOrder() {
+    return 1
+  }
+
+  static get StopLossOrder() {
+    return 2
+  }
+
+  static get AllOrder() {
+    return 3
+  }
+}
+
 const state = {
   wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
   account: getCache('account') || null,

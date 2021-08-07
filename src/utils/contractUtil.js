@@ -619,25 +619,34 @@ export default class Contract {
 
     positionDataView.stopOrderPoistions = []
     positionDataView.orderPositions.push({side: SideEnum.SHORT,
+      token,
+      size: derivativePosition.short.size,
+      leverage: derivativePosition.short.leverage,
       orderType: OrderTypeEnum.StopLossOrder,
       stopPrice: derivativePosition.shortOrderStopLossPosition.stopPrice,
       timestamp: derivativePosition.shortOrderStopLossPosition.timestamp,
       isUsed: derivativePosition.shortOrderStopLossPosition.isUsed});
 
-    positionDataView.orderPositions.push({side: SideEnum.SHORT,
+    positionDataView.orderPositions.push({side: SideEnum.SHORT, token,
       orderType: OrderTypeEnum.StopProfitOrder,
+      size: derivativePosition.short.size,
+      leverage: derivativePosition.short.leverage,
       stopPrice: derivativePosition.shortOrderStopProfitPosition.stopPrice,
       timestamp: derivativePosition.shortOrderStopProfitPosition.timestamp,
       isUsed: derivativePosition.shortOrderStopProfitPosition.isUsed});
 
-    positionDataView.orderPositions.push({side: SideEnum.LONG,
+    positionDataView.orderPositions.push({side: SideEnum.LONG, token,
       orderType: OrderTypeEnum.StopLossOrder,
+      size: derivativePosition.long.size,
+      leverage: derivativePosition.long.leverage,
       stopPrice: derivativePosition.longOrderStopLossPosition.stopPrice,
       timestamp: derivativePosition.longOrderStopLossPosition.timestamp,
       isUsed: derivativePosition.longOrderStopLossPosition.isUsed});
 
-    positionDataView.orderPositions.push({side: SideEnum.LONG,
+    positionDataView.orderPositions.push({side: SideEnum.LONG, token,
       orderType: OrderTypeEnum.StopProfitOrder,
+      size: derivativePosition.long.size,
+      leverage: derivativePosition.long.leverage,
       stopPrice: derivativePosition.longOrderStopProfitPosition.stopPrice,
       timestamp: derivativePosition.longOrderStopProfitPosition.timestamp,
       isUsed: derivativePosition.longOrderStopProfitPosition.isUsed});

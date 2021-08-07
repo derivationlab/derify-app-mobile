@@ -44,6 +44,8 @@ export default {
       this.show = data.show
       this.msg = data.msg
       this.status = data.status
+
+      this.$forceUpdate()
     }
   }
 }
