@@ -1,72 +1,74 @@
 <template>
   <div class="home-container page-container">
     <navbar :logo="true" title="首页" />
-    <div class="home-top">
-      <div class="home-top-left">
-        <div class="home-top-coin" @click="changeShowMarket(true)">
-          <span class="home-top-coin-name">{{curPair.name}}</span>
-          <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
-        </div>
-        <div class="home-top-num">
-          {{curSpotPrice | fck(-8)}}
-        </div>
-        <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
+
+    <div class="home-content">
+      <div class="home-top">
+        <div class="home-top-left">
+          <div class="home-top-coin" @click="changeShowMarket(true)">
+            <span class="home-top-coin-name">{{curPair.name}}</span>
+            <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
+          </div>
+          <div class="home-top-num">
+            {{curSpotPrice | fck(-8)}}
+          </div>
+          <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
           {{curContractData.tokenPriceRate}}%</span>
+          </div>
+        </div>
+        <div class="home-top-right">
+          <div class="home-top-icons">
+            <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
+            <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
+          </div>
+          <div class="home-top-items">
+            <span class="fc-65">动仓费率：</span>
+            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-red' : 'fc-green'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
+          </div>
+          <div class="home-top-items">
+            <span class="fc-65">持仓挖矿奖励：</span>
+            <span class="fc-green">多</span>
+            <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
+            <span class="fc-65 margin">/</span>
+            <span class="fc-red">空</span>
+            <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
+          </div>
         </div>
       </div>
-      <div class="home-top-right">
-        <div class="home-top-icons">
-          <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
-          <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
-        </div>
-        <div class="home-top-items">
-          <span class="fc-65">动仓费率：</span>
-          <span :class="curPositionChangeFeeRatio > 0 ? 'fc-red' : 'fc-green'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
-        </div>
-        <div class="home-top-items">
-          <span class="fc-65">持仓挖矿奖励：</span>
-          <span class="fc-green">多</span>
-          <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
-          <span class="fc-65 margin">/</span>
-          <span class="fc-red">空</span>
-          <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
-        </div>
-      </div>
-    </div>
-    <template v-if="$route.name === 'home'">
-    <div class="home-mid">
-      <div class="home-mid-one">
-        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="updateTraderOpenUpperBound">
-              <div class="derify-dropmenu-title" slot="title">
-                <span>{{entrustTypeConfig[entrustType].text}}</span>
-                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-              </div>
-          </van-dropdown-item>
-        </van-dropdown-menu>
-        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
-              <div class="derify-dropmenu-title" slot="title">
-                <span>{{leverageConfig[leverageUnit].text}}</span>
-                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-              </div>
-          </van-dropdown-item>
-        </van-dropdown-menu>
-      </div>
-      <div class="home-mid-two">
-        <div class="fc-65 fz-12">开仓价</div>
-        <div class="home-mid-input" v-if="entrustType === 0">
-          <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
-        </div>
-        <div class="home-mid-input" v-else>
-          <van-field class="derify-input" type="text" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
-          <div class="fc-30">USDT</div>
-        </div>
-      </div>
-      <div class="home-mid-two">
-        <div class="home-mid-two-title">
-          <div class="fc-65 fz-12">开仓量</div>
-          <div class="fz-12">
+      <template v-if="$route.name === 'home'">
+        <div class="home-mid">
+          <div class="home-mid-one">
+            <van-dropdown-menu :overlay="false" class="derify-dropmenu">
+              <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="updateTraderOpenUpperBound">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{entrustTypeConfig[entrustType].text}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+              </van-dropdown-item>
+            </van-dropdown-menu>
+            <van-dropdown-menu :overlay="false" class="derify-dropmenu">
+              <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{leverageConfig[leverageUnit].text}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+              </van-dropdown-item>
+            </van-dropdown-menu>
+          </div>
+          <div class="home-mid-two">
+            <div class="fc-65 fz-12">开仓价</div>
+            <div class="home-mid-input" v-if="entrustType === 0">
+              <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
+            </div>
+            <div class="home-mid-input" v-else>
+              <van-field class="derify-input" type="text" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
+              <div class="fc-30">USDT</div>
+            </div>
+          </div>
+          <div class="home-mid-two">
+            <div class="home-mid-two-title">
+              <div class="fc-65 fz-12">开仓量</div>
+              <div class="fz-12">
             <span class="fc-65">可开：
               <!-- USDT -->
               <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
@@ -74,262 +76,290 @@
               <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
               <!-- percent -->
               <template v-if="unit === 2">100%</template></span>
-            <span class="fc-yellow" @click="transfer">划转</span>
+                <span class="fc-yellow" @click="transfer">划转</span>
+              </div>
+            </div>
+            <div class="home-mid-input">
+              <van-field class="derify-input" type="number" v-model.number="size" @input="calculateSliderValue"/>
+              <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
+                <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
+                  <div class="derify-dropmenu-title" slot="title">
+                    <span>{{unitConfig[unit].text}}</span>
+                    <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                  </div>
+                </van-dropdown-item>
+              </van-dropdown-menu>
+            </div>
+          </div>
+          <div class="home-mid-three">
+            <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
+          </div>
+          <div class="home-mid-four" v-if="isLogin">
+            <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
+            <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+            <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
+          </div>
+          <div class="home-mid-four" v-if="!isLogin">
+            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
           </div>
         </div>
-        <div class="home-mid-input">
-          <van-field class="derify-input" type="number" v-model.number="size" @input="calculateSliderValue"/>
-          <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
-            <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
-                <div class="derify-dropmenu-title" slot="title">
-                  <span>{{unitConfig[unit].text}}</span>
-                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-                </div>
-            </van-dropdown-item>
-          </van-dropdown-menu>
+      </template>
+      <div class="k-chart-wrap" :style="{display: $route.name === 'exchange' ? 'block' : 'none'}">
+        <div class="k-chart-xtype-list">
+          <template v-for="(gap,key) in kChartTimeMinGaps">
+            <template v-if="key <= showTimeGapNum">
+              <div :key="key"
+                   :class="gap.value === kChartTimeGapValue ? 'k-chart-xtype xtype-active' : 'k-chart-xtype'"
+                   @click="changeKChartTimeGap(gap)"
+              >{{gap.text}}</div>
+            </template>
+          </template>
+          <div class="k-chart-xtype last-xtype" @click="toggleTimeGap(!showTimeGapDropDown)">
+            <svg v-if="!showTimeGapDropDown" t="1628433867256" class="arrow-down-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2971" width="200" height="200"><path d="M482.133333 738.133333L136.533333 392.533333c-17.066667-17.066667-17.066667-42.666667 0-59.733333 8.533333-8.533333 19.2-12.8 29.866667-12.8h689.066667c23.466667 0 42.666667 19.2 42.666666 42.666667 0 10.666667-4.266667 21.333333-12.8 29.866666L541.866667 738.133333c-17.066667 17.066667-42.666667 17.066667-59.733334 0z" p-id="2972" fill="#ADAAB7"></path></svg>
+            <svg v-else t="1628434121366" class="arrow-up-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3272" width="200" height="200"><path d="M541.866667 285.866667l345.6 345.6c17.066667 17.066667 17.066667 42.666667 0 59.733333-8.533333 8.533333-19.2 12.8-29.866667 12.8H168.533333c-23.466667 0-42.666667-19.2-42.666666-42.666667 0-10.666667 4.266667-21.333333 12.8-29.866666l343.466666-345.6c17.066667-17.066667 42.666667-17.066667 59.733334 0z" p-id="3273" fill="rgba(255,255,255,0.85)"></path></svg>
+          </div>
+        </div>
+        <div v-if="showTimeGapDropDown" class="k-chart-dropdown">
+          <template v-for="(gap,key) in kChartTimeMinGaps">
+            <template v-if="key > showTimeGapNum">
+              <div :key="key"
+                   :class="gap.value === kChartTimeGapValue ? 'k-chart-dropdown-item xtype-active' : 'k-chart-dropdown-item'"
+                   @click="changeKChartTimeGap(gap)"
+              >{{gap.text}}</div>
+            </template>
+          </template>
+        </div>
+        <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
+      </div>
+      <div class="home-last">
+        <template v-if="$route.name === 'home'">
+          <van-tabs v-model="active" @click="tabChange">
+            <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
+              <van-list
+                v-model="loading"
+                :finished="finished"
+                finished-text="没有更多了"
+                @load="loadMore"
+              >
+
+                <template v-if="active === 'key1'">
+                  <template  v-for="(data,i) in positions">
+                    <div class="exchange-block" v-if="data.isUsed" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
+
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
+                          <div class="fz-12">平仓</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                        <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
+                          <div class="fz-12">取消委托</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">浮动盈亏：</div>
+
+                          <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
+                            {{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}
+                          </div>
+                          <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '-', -8)}}%)</span></template></div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">持仓量：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">当前价格：</div>
+                          <div>{{data.spotPrice | fck(-8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">开仓均价：</div>
+                          <div>{{data.averagePrice | fck(-8)}} USDT</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">止损设置：</div>
+                          <div>
+                            <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
+                            <template v-else>-</template></div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">止盈设置：</div>
+                          <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
+                            <template v-else>-</template></div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">持仓保证金：</div>
+                          <div>{{data.margin | fck(-8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">保证金率：</div>
+                          <div>{{data.marginRate | fck(-8)}}%</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">强平金额：</div>
+                          <div>{{data.liquidatePrice | fck(-8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right" @click="changeShowSet(true, data)">
+                          <div>设置止盈/止损</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+
+                </template>
+                <template v-if="active ==='key2'">
+                  <template  v-for="(data,i) in positionOrders">
+                    <div class="exchange-block" v-if="data.isUsed" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
+
+                          <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
+                          <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
+                          <div class="fz-12">取消委托</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">委托价格：</div>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} USDT</div></template>
+                          <template v-else><div>{{data.stopPrice | fck(-8)}} USDT</div></template>
+
+
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">委托类型：</div>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">开仓</span>/<span>限价委托</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">平仓</span>/<span>止盈委托</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">平仓</span>/<span>止损委托</span></div></template>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">委托数量：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">委托时间：</div>
+                          <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </template>
+                <template v-if="active ==='key3'">
+                  <template  v-for="(data,i) in tradeRecords">
+                    <div class="exchange-block" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
+
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">盈亏：</div>
+                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}}</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">委托类型：</div>
+                          <div>
+                            <span :class="getTradeType(data.type).showType">{{getTradeType(data.type).opType}}</span>/<span>{{getTradeType(data.type).tradeType}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">成交价格：</div>
+                          <div>{{data.price | amountFormt(2, false, '-')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">成交数量：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">成交金额：</div>
+                          <div>{{data.amount | amountFormt(2, false, '-')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">手续费：</div>
+                          <div>{{data.trading_fee | amountFormt(2, false, '-')}} USDT</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">动仓费：</div>
+                          <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">分摊补偿：</div>
+                          <div>{{data.pnl_bond  | amountFormt(2, false, '-')}} bDRf</div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </template>
+
+              </van-list>
+            </van-tab>
+          </van-tabs>
+        </template>
+        <div class="home-last-btn-wrap">
+          <template v-if="$route.name === 'exchange'">
+            <template v-if="isLogin">
+              <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
+              <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+            </template>
+            <template v-if="!isLogin">
+              <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+            </template>
+          </template>
+          <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
+            <template v-if="isLogin">
+              <template v-if="active === 'key1'">
+                <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">一键平仓</div>
+              </template>
+
+              <template v-if="active === 'key2'">
+                <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">取消所有委托</div>
+              </template>
+            </template>
+            <template v-if="!isLogin">
+              <div class="home-last-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+            </template>
+          </template>
         </div>
       </div>
-      <div class="home-mid-three">
-        <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
-      </div>
-      <div class="home-mid-four" v-if="isLogin">
-        <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-        <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
-        <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
-      </div>
-      <div class="home-mid-four" v-if="!isLogin">
-        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-      </div>
     </div>
-    </template>
-    <div id="myChart" :style="{width: '100%', height: '36.5rem', display: $route.name === 'home' ? 'none':'block'}"></div>
-    <div class="home-last">
-      <template v-if="$route.name === 'home'">
-        <van-tabs v-model="active" @click="tabChange">
-          <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
-            <van-list
-              v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="loadMore"
-            >
 
-              <template v-if="active === 'key1'">
-                <template  v-for="(data,i) in positions">
-                  <div class="exchange-block" v-if="data.isUsed" :key="i">
-                    <div class="exchange-block-title">
-                      <div class="left">
-
-                        <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
-                        <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
-                        <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
-                        <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                        <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                      </div>
-                      <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                        <div class="fz-12">平仓</div>
-                        <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                      </div>
-                      <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
-                        <div class="fz-12">取消委托</div>
-                        <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">浮动盈亏：</div>
-
-                        <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
-                          {{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}
-                        </div>
-                        <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '-', -8)}}%)</span></template></div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">持仓量：</div>
-                        <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">当前价格：</div>
-                        <div>{{data.spotPrice | fck(-8)}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">开仓均价：</div>
-                        <div>{{data.averagePrice | fck(-8)}} USDT</div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">止损设置：</div>
-                        <div>
-                          <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
-                          <template v-else>-</template></div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">止盈设置：</div>
-                        <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
-                          <template v-else>-</template></div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">持仓保证金：</div>
-                        <div>{{data.margin | fck(-8)}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">保证金率：</div>
-                        <div>{{data.marginRate | fck(-8)}}%</div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">强平金额：</div>
-                        <div>{{data.liquidatePrice | fck(-8)}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right" @click="changeShowSet(true, data)">
-                        <div>设置止盈/止损</div>
-                        <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-
-              </template>
-              <template v-if="active ==='key2'">
-                <template  v-for="(data,i) in positionOrders">
-                  <div class="exchange-block" v-if="data.isUsed" :key="i">
-                    <div class="exchange-block-title">
-                      <div class="left">
-
-                        <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                        <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                        <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
-                        <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                        <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                      </div>
-                      <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
-                        <div class="fz-12">取消委托</div>
-                        <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">委托价格：</div>
-                        <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} USDT</div></template>
-                        <template v-else><div>{{data.stopPrice | fck(-8)}} USDT</div></template>
-
-
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">委托类型：</div>
-                        <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">开仓</span>/<span>限价委托</span></div></template>
-                        <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">平仓</span>/<span>止盈委托</span></div></template>
-                        <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">平仓</span>/<span>止损委托</span></div></template>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">委托数量：</div>
-                        <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">委托时间：</div>
-                        <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </template>
-              <template v-if="active ==='key3'">
-                <template  v-for="(data,i) in tradeRecords">
-                  <div class="exchange-block" :key="i">
-                    <div class="exchange-block-title">
-                      <div class="left">
-
-                        <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
-                        <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
-                        <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
-                        <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                      </div>
-                      <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">盈亏：</div>
-                        <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}}</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">委托类型：</div>
-                        <div>
-                          <span :class="getTradeType(data.type).showType">{{getTradeType(data.type).opType}}</span>/<span>{{getTradeType(data.type).tradeType}}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">成交价格：</div>
-                        <div>{{data.price | amountFormt(2, false, '-')}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">成交数量：</div>
-                        <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">成交金额：</div>
-                        <div>{{data.amount | amountFormt(2, false, '-')}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">手续费：</div>
-                        <div>{{data.trading_fee | amountFormt(2, false, '-')}} USDT</div>
-                      </div>
-                    </div>
-                    <div class="exchange-item">
-                      <div class="exchange-item-left">
-                        <div class="fc-45">动仓费：</div>
-                        <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
-                      </div>
-                      <div class="exchange-item-right">
-                        <div class="fc-45">分摊补偿：</div>
-                        <div>{{data.pnl_bond  | amountFormt(2, false, '-')}} bDRf</div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-              </template>
-
-            </van-list>
-          </van-tab>
-        </van-tabs>
-      </template>
-      <div class="home-last-btn-wrap">
-        <template v-if="$route.name === 'exchange'">
-          <template v-if="isLogin">
-            <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-            <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
-          </template>
-          <template v-if="!isLogin">
-            <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-          </template>
-        </template>
-        <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
-          <template v-if="isLogin">
-            <template v-if="active === 'key1'">
-              <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">一键平仓</div>
-            </template>
-
-            <template v-if="active === 'key2'">
-              <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">取消所有委托</div>
-            </template>
-          </template>
-          <template v-if="!isLogin">
-            <div class="home-last-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-          </template>
-        </template>
-      </div>
-    </div>
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
     <set-popup :extraData="setExtraData" :show="showSet" @closeSetPopup="changeShowSet" />
@@ -493,6 +523,20 @@ export default {
         key2: '当前委托',
         key3: '成交记录'
       },
+      showTimeGapDropDown: false,
+      showTimeGapNum: 4,
+      kChartTimeGapValue: 1,
+      kChartTimeMinGaps: [
+        {value: 1, text: '1m'},
+        {value: 5, text: '5m'},
+        {value: 15, text: '15m'},
+        {value: 30, text: '30m'},
+        {value: 60, text: '1h'},
+        {value: 60*4, text: '4h'},
+        {value: 60*24, text: '1D'},
+        {value: 60*24 * 7, text: '1W'},
+        {value: 60*24 * 30, text: '1M'},
+      ],
       positions: [],
       positionOrders: [],
       tradeRecords: [],
@@ -674,6 +718,9 @@ export default {
       this.$router.push({name})
     },
     drawKline () {
+      if(this.$route.name !== 'exchange') {
+        return
+      }
       if(!context.myChart){
         context.myChart = this.$echarts.init(document.getElementById('myChart'))
       }
@@ -823,7 +870,14 @@ export default {
       }).catch((ex) => {
         this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
       })
-    }
+    },
+    changeKChartTimeGap (gap) {
+      this.kChartTimeGapValue = gap.value
+      this.toggleTimeGap(false)
+    },
+    toggleTimeGap (bool) {
+      this.showTimeGapDropDown = bool
+    },
   },
   watch: {
     '$store.state.contract.contractData':{
@@ -889,10 +943,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.home-container{
+  background-color: #0C071E;
+  padding-top: 6.6rem;
+  padding-left: 0;
+  padding-right: 0;
+}
 .home-top {
-  padding: 2rem 0.4rem;
+  padding: 2rem 1.4rem;
   display: flex;
   justify-content: space-between;
+  background-color: #140B32;
   &-left, &-right {
     display: flex;
     flex-direction: column;
@@ -964,6 +1025,7 @@ export default {
   background: #272354;
   border-radius: 1.6rem;
   padding: 2.5rem 1.6rem;
+  margin: 0 1.6rem;
   &-one {
     display: flex;
     justify-content: space-between;
@@ -1102,5 +1164,61 @@ export default {
       justify-content: flex-end;
     }
   }
+}
+
+.k-chart-wrap {
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+  .k-chart-xtype-list{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    background-color: #140B32;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 2rem;
+   .k-chart-xtype{
+     width: 3.6rem;
+     height: 3.6rem;
+     line-height: 3.6rem;
+     text-align: center;
+     color: rgba(255,255,255,0.45);
+     font-size: 1.3rem;
+     &.xtype-active{
+       color: rgba(255,255,255,0.85);
+       border-bottom: 0.1rem solid rgba(255,255,255,0.85);
+     }
+     &.last-xtype {
+       .arrow-down-icon,.arrow-up-icon{
+         width: 1.3rem;
+         height: 1.3rem;
+       }
+     }
+   }
+  }
+  .k-chart-ctn{
+    background-color: #140B32;
+  }
+  .k-chart-dropdown {
+    position: absolute;
+    right: 0.5rem;
+    top: 3.6rem;
+    width: 6rem;
+    background-color: #343166;
+    z-index: 2010;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    .k-chart-dropdown-item{
+      height: 4.8rem;
+      line-height: 4.8rem;
+      text-align: center;
+      color: rgba(255,255,255,0.65);
+      &.xtype-active{
+        background-color: #4E4D7A;
+      }
+    }
+  }
+
 }
 </style>
