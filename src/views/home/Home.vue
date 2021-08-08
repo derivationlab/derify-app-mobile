@@ -138,8 +138,11 @@
                     <div class="exchange-item">
                       <div class="exchange-item-left">
                         <div class="fc-45">浮动盈亏：</div>
-                        <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">{{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}</div>
-                        <div>USDT</div>
+
+                        <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
+                          {{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}
+                        </div>
+                        <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '-', -8)}}%)</span></template></div>
                       </div>
                       <div class="exchange-item-right">
                         <div class="fc-45">持仓量：</div>
