@@ -721,6 +721,12 @@ export default {
       if(this.$route.name !== 'exchange') {
         return
       }
+      if(context.myChart){
+        context.myChart.dispose()
+      }
+
+      window.context = context
+
       context.myChart = this.$echarts.init(document.getElementById('myChart'))
       context.myChart.setOption(options)
       context.myChart.resize()

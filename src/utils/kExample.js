@@ -138,6 +138,7 @@ export default {
     right: '0%',
     bottom: '10%'
   },
+  dataZoom: [],
   xAxis: {
     type: 'category',
     data: data0.categoryData,
@@ -205,7 +206,7 @@ export default {
           [
             {
               name: 'curSpotPrice',
-              coord: [data0.categoryData[0], data0.values[data0.categoryData.length - 1]],
+              coord: [data0.categoryData[0], data0.values[data0.categoryData.length - 1][0]],
               symbolSize: 10,
               label: {
                 show: false
@@ -217,7 +218,7 @@ export default {
               }
             },
             {
-              coord: [data0.categoryData[data0.categoryData.length - 1], data0.values[data0.categoryData.length - 1]],
+              coord: [data0.categoryData[data0.categoryData.length - 1], data0.values[data0.categoryData.length - 1][0]],
               symbolSize: 10,
               label: {
                 show: false
