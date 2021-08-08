@@ -5,14 +5,12 @@
       <div>
         <div class="popup-text">提现数量</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0" type="number" v-model="amount" />
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
           <span class="popup-span1">可提现：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
-          <span class="popup-span2" @click="() => {
-            this.amount = fck(maxAmout,-8)
-          }">全部提现</span>
+          <span class="popup-span2" @click="exchangeAll">全部提现</span>
         </div>
       </div>
       <div class="system-popup-buttons">
@@ -29,31 +27,47 @@
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
+import { EarningType } from '../../../store/modules/earnings'
 
 export default {
   props: ['show', 'withdrawId'],
   data () {
     return {
       showPopup: this.show,
-      amount: null,
-      maxAmout: 10*1e8,
+      amount: 0,
+      //maxAmout: 10*1e8,
       curPercent: 25,
       withdrawName: null
+    }
+  },
+  computed: {
+    maxAmout () {
+      if (this.withdrawId === EarningType.MIN) {
+        return this.$store.state.earnings.pmrReward
+      } else if (this.withdrawId === EarningType.EDRF) {
+        return 0
+      } else if(this.withdrawId === EarningType.BDRF){
+        return this.$store.state.earnings.bondInfo.bondBalance
+      }
+      return 0
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
+      if(this.show) {
+        this.amount = 0
+      }
     },
     withdrawId () {
-      if (this.withdrawId === 1) {
+      if (this.withdrawId === EarningType.MIN) {
         this.withdrawName = 'USDT'
-      } else if (this.withdrawId === 2) {
+      } else if (this.withdrawId === EarningType.EDRF) {
         this.withdrawName = 'eDRF'
-      } else {
+      } else if(this.withdrawId === EarningType.BDRF){
         this.withdrawName = 'bDRF'
       }
     }
@@ -62,47 +76,56 @@ export default {
     close () {
       this.$emit('closeWithdraw', false)
     },
+    exchangeAll () {
+      this.amount = fck(this.maxAmout, -8, 4)
+    },
     submitThenClose () {
+      if(this.amount > fromContractUnit(this.maxAmout)) {
+        this.$toast('超出限额，请重新输入')
+        return
+      }
 
+      if(this.withdrawId === EarningType.MIN) {
 
-      if(this.withdrawId === 1) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         //挖矿持仓
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
-        }).finally( p => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        }).finally( p => {
+          this.$store.dispatch('earnings/loadEarningData')
         })
 
         return
       }
 
-      if(this.withdrawId === 2) {
+      if(this.withdrawId === EarningType.EDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
-
-        }).finally( p => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        }).finally( p => {
+          this.$store.dispatch('earnings/loadEarningData')
         })
 
         return
       }
 
-      if(this.withdrawId === 3) {
+      if(this.withdrawId === EarningType.BDRF) {
+        this.close()
         //bDRF
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
         this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
         }).catch(e => {
-          this.close()
-        }).finally( p => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        }).finally( p => {
+          this.$store.dispatch('earnings/loadEarningData')
         })
       }
 

@@ -361,6 +361,7 @@ import {fck} from "@/utils/utils";
 import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../../store/modules/contract'
 import { UserProcessStatus } from '../../store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
+import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -769,8 +770,6 @@ export default {
         return
       }
 
-      this.$store.commit("contract/SET_WALLET_ADDRESS", window.ethereum.selectedAddress)
-
       const self = this
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
@@ -857,14 +856,8 @@ export default {
       clearInterval(context.timer)
     }
 
-    // context.timer = setInterval(() => {
-    //   self.$store.dispatch('contract/loadPositionData').then(r => {
-    //     self.loading = false
-    //   })
-    // }, 3000)
-
-    this.$nextTick(() => {
-
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.homeInit()
     })
   },
   destroyed () {

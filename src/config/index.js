@@ -3,9 +3,7 @@ import DerifyDerivative from '../utils/contract/DerifyDerivative'
 import DerifyExchange from '../utils/contract/DerifyExchange'
 import DerifyStaking from '../utils/contract/DerifyStaking'
 import DUSD from '../utils/contract/DUSD'
-import bDRD from '../utils/contract/bDRD'
-
-import Cfg from '../config'
+import bDRF from '../utils/contract/bDRF'
 
 const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
 
@@ -46,8 +44,8 @@ const config = {
         abi: DUSD,
         address: '0xcA6C365a22e18a4fE36B175899E918357489A416'
       },
-      bDRD: {
-        abi: bDRD,
+      bDRF: {
+        abi: bDRF,
         address: '0x0cA0e7810d00A9268478aF0eC03C49bD37862D00'
       },
     },
@@ -79,8 +77,8 @@ const config = {
         abi: DUSD,
         address: '0xcA6C365a22e18a4fE36B175899E918357489A416'
       },
-      bDRD: {
-        abi: bDRD,
+      bDRF: {
+        abi: bDRF,
         address: '0x0cA0e7810d00A9268478aF0eC03C49bD37862D00'
       },
     },
@@ -112,8 +110,8 @@ const config = {
         abi: DUSD,
         address: '0xcA6C365a22e18a4fE36B175899E918357489A416'
       },
-      bDRD: {
-        abi: bDRD,
+      bDRF: {
+        abi: bDRF,
         address: '0x0cA0e7810d00A9268478aF0eC03C49bD37862D00'
       },
     }

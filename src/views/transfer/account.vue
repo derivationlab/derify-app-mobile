@@ -1,6 +1,17 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="Derity Account" />
+    <van-nav-bar
+      title="Derity Account"
+      left-arrow
+      :border="false"
+      :fixed="true"
+      @click-left="onClickLeft"
+    >
+      <template #left>
+        <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
+      </template>
+    </van-nav-bar>
+
     <div class="account-num">
       <span class="num">账户余额</span>
       <span class="info" @click="lookFinDetail">资金明细 ></span>
@@ -28,6 +39,7 @@
 </template>
 <script>
 import Navbar from '@/components/Navbar'
+import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
 
 const state = {
   marginBalance: 0,
@@ -37,7 +49,7 @@ const state = {
 export default {
   name: 'account',
   components: {
-    Navbar
+
   },
   data () {
     return state
@@ -56,9 +68,14 @@ export default {
       this.loadAccountData()
     }
   },
-  mounted () {
+  created () {
     this.$store.dispatch('contract/onDeposit');
     this.$store.dispatch('contract/onWithDraw');
+
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      console.log('account wallet change')
+      this.loadAccountData()
+    })
   },
   beforeMount () {
     this.loadAccountData()
@@ -74,6 +91,9 @@ export default {
       this.$store.dispatch('contract/loadAccountData').then(r => {
         Object.assign(state, r)
       })
+    },
+    onClickLeft() {
+      this.$router.go(-1)
     }
   }
 }

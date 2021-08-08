@@ -104,7 +104,7 @@ export function getWallet(){
   return {
     selectedAddress: wethereum.selectedAddress,
     isLogin: wethereum.selectedAddress && isEthum,
-    showWallet: !wethereum.selectedAddress || !isEthum,
+    showWallet: false,
     chainEnum: chainEnum,
     isEthum,
     networkVersion: wethereum.networkVersion,

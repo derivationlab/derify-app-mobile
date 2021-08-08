@@ -5,8 +5,8 @@
       <div>
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="accountType" :options="option1"
-                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="exchangeBondSizeUpperBound">
+            <van-dropdown-item v-model="accountType" :options="accountOptions"
+                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -21,10 +21,7 @@
         </div>
         <div class="system-popup-num">
           <span class="popup-span1">可兑换：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
-          <span class="popup-span2" @click="
-          () => {
-            this.amount = fck(exchangeBondSizeUpperBound, -8, 4)
-          }">全部兑换</span>
+          <span class="popup-span2" @click="exchangeAll">全部兑换</span>
         </div>
       </div>
       <div class="system-popup-buttons">
@@ -44,13 +41,14 @@
 import { toContractUnit,fromContractUnit } from '@/utils/contractUtil'
 import {UserProcessStatus} from "@/store/modules/user"
 import {fck} from '@/utils/utils';
+import { BondAccountType } from '../../../utils/contractUtil'
 
 export default {
-  props: ['show', 'withdrawId'],
+  props: ['show', 'depositId'],
   data () {
     return {
       showPopup: this.show,
-      accountType: 0,
+      accountType: BondAccountType.DerifyAccount,
       amount: 0,
       curPercent: 25,
       withdrawName: null,
@@ -79,8 +77,12 @@ export default {
         this.withdrawName = 'bDRF'
       }
     },
-    '$store.state.earnings.exchangeBondSizeUpperBound': function (){
-      this.resetAmount()
+    '$store.state.earnings.exchangeBondSizeUpperBound': {
+      handler() {
+        this.resetAmount()
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -90,18 +92,18 @@ export default {
     submitThenClose () {
 
       if(!this.checkAmount()) {
+        this.$toast('超出限额，请重新输入')
         return
       }
 
       this.close()
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
-
       this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
       }).catch(e => {
-        this.close()
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
       }).finally( p => {
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行失败'})
+        this.$store.dispatch('earnings/loadEarningData')
       })
     },
     onDropDowOpen () {
@@ -113,9 +115,11 @@ export default {
     resetAmount () {
       this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
     },
+    exchangeAll () {
+      this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
+    },
     checkAmount () {
-      if(toContractUnit(this.amount) > this.exchangeBondSizeUpperBound) {
-        this.$toast('超出限额，请重新输入')
+      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
         return false
       }
 

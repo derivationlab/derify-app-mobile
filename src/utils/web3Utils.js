@@ -2,6 +2,7 @@ import Contract from './contractUtil'
 import * as CfgUtil from '../config'
 
 const contractDebug = !CfgUtil.isCurrentProduction()
+export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {
 
@@ -48,41 +49,6 @@ export function contract (account) {
     });
   }else{
     return contractObj
-  }
-}
-
-
-
-
-class Aop {
-  constructor(obj, beforeFork, afterFork) {
-    return new Proxy(obj, {
-      get: function (target, propKey, receiver) {
-        for (let key in beforeFork) {
-          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
-            beforeFork[key]?.(target[propKey]);
-          }
-        }
-        beforeFork[propKey]?.(target[propKey]);
-        //before
-
-        var re = Reflect.get(target, propKey, receiver)();
-
-        for (let key in afterFork) {
-          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
-            afterFork[key]?.(target[propKey]);
-          }
-        }
-        afterFork[propKey]?.(target[propKey]);
-        //after
-
-        return ()=>{return re};
-      },
-      set: function (target, propKey, value, receiver) {
-        return Reflect.set(target, propKey, value, receiver);
-      },
-
-    });
   }
 }
 

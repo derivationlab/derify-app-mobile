@@ -73,8 +73,9 @@ export const Token = {
   BTC: ABIData.DerifyDerivative.BTC.token,
   ETH: ABIData.DerifyDerivative.ETH.token,
   DUSD: ABIData.DUSD.address,
-  bDRD: ABIData.bDRD.address,
-  USDT: ABIData.bDRD.address
+  bDRF: ABIData.bDRF.address,
+  eDRF: ABIData.bDRF.address,
+  USDT: ABIData.DUSD.address
 }
 
 const cache = {}
@@ -145,6 +146,7 @@ export default class Contract {
     this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
     this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
     this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, Object.assign({ gasPrice }, option))
+    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, Object.assign({ gasPrice }, option))
   }
 
   /**
@@ -161,24 +163,9 @@ export default class Contract {
     return new Promise((resolve, reject) => {
       (async () => {
 
-        let decimals = await tokenContract.methods.decimals().call();
+        const approveRet = await this.__approve(tokenContract, this.DerifyExchange, amount)
 
-        const decimalNum = parseInt(decimals)
-
-        const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
-
-        //The wallet obtains the authorized amount
-        let ret = false;
-
-        try{
-          ret = await tokenContract.methods.approve(ABIData.DerifyExchange.address, approveNum).send()
-        }catch (e){
-          reject('approve denied')
-          return
-        }
-
-
-        if(ret){
+        if(approveRet){
           try{
             let depositRes = await  this.DerifyExchange.methods.deposit(amount).send();
             resolve(depositRes)
@@ -202,15 +189,16 @@ export default class Contract {
   }
 
   balanceOf (trader, token) {
-
-    const DUSD = this.DUSD;
     return (async () => {
-      let decimals = await DUSD.methods.decimals().call();
-      let tokenAmount = 0;
+
+      let tokenAmount = 0
+      let decimals = 18
       if(ABIData.DUSD.address === token){
-        tokenAmount = await DUSD.methods.balanceOf(trader).call()
-      }else if(ABIData.bDRD.address === token){
-        tokenAmount = 0
+        decimals = await this.DUSD.methods.decimals().call()
+        tokenAmount = await this.DUSD.methods.balanceOf(trader).call()
+      }else if(ABIData.bDRF.address === token){
+        decimals = await this.bDRF.methods.decimals().call()
+        tokenAmount = await this.bDRF.methods.balanceOf(trader).call()
       }
 
       return convertTokenNumToContractNum(tokenAmount, contractDecimals - decimals)
@@ -473,8 +461,29 @@ export default class Contract {
    * @param bondAccountType 0-DerifyAccount, 1-WalletAccount
    * @return {*}
    */
-  exchangeBond ({amount,bondAccountType}) {
-    return this.DerifyBond.methods.exchangeBond(amount,bondAccountType).send();
+  exchangeBond ({amount, bondAccountType}) {
+
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try{
+          let approveRet = false
+
+          if(bondAccountType === BondAccountType.WalletAccount) {
+            approveRet = await this.__approve(this.bDRF, this.DerifyBond, amount)
+          }else{
+            approveRet = true
+          }
+
+          if(approveRet){
+            resolve(await this.DerifyBond.methods.exchangeBond(amount, bondAccountType).send())
+          }else{
+            reject('approve failed')
+          }
+        }catch (e){
+          reject(e)
+        }
+      })()
+    })
   }
 
   /**
@@ -485,7 +494,47 @@ export default class Contract {
    * @return {*}
    */
   depositBondToBank ({amount,bondAccountType}) {
-    return this.DerifyBond.methods.depositBondToBank(amount,bondAccountType).send();
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try{
+          let approveRet = false
+
+          if(bondAccountType === BondAccountType.WalletAccount) {
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
+          }else{
+            approveRet = true
+          }
+
+          if(approveRet){
+            resolve(await this.DerifyBond.methods.depositBondToBank(amount, bondAccountType).send())
+          }else{
+            reject('approve failed')
+          }
+        }catch (e) {
+          reject('approve failed')
+        }
+
+      })()
+    })
+  }
+
+  async __approve(tokenContract, contractABI, amount) {
+    let decimals = await tokenContract.methods.decimals().call();
+
+    const decimalNum = parseInt(decimals)
+
+    const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
+
+    //The wallet obtains the authorized amount
+    let ret = false;
+
+    try {
+      ret = await tokenContract.methods.approve(contractABI.address, approveNum).send()
+
+      return ret
+    } catch (e) {
+      return false
+    }
   }
 
   /**
@@ -496,7 +545,7 @@ export default class Contract {
    * @return {*}
    */
   redeemBondFromBank ({amount, bondAccountType }) {
-    return this.DerifyBond.methods.redeemBondFromBank(amount,bondAccountType).send();
+    return this.DerifyBond.methods.redeemBondFromBank(amount, bondAccountType).send();
   }
 
   /**
@@ -531,7 +580,7 @@ export default class Contract {
   /**
    * Obtain user's holding mining income
    * @param trader 用户账户地址
-   * @return {int} 持仓挖矿收益（精度为8位）
+   * @return {Promise<int>} 持仓挖矿收益（精度为8位）
    */
   getPMReward (trader) {
     return this.DerifyStaking.methods.getPMReward(trader).call();

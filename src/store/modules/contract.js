@@ -40,7 +40,9 @@ export class CancelOrderedPositionTypeEnum {
 }
 
 const state = {
-  wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
+  get wallet_address () {
+    return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+  },
   account: getCache('account') || null,
   pairs: [
     {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC},
@@ -71,10 +73,6 @@ const state = {
 }
 
 const mutations = {
-  SET_WALLET_ADDRESS (state, address) {
-    state.wallet_address = address
-    setCache('wallet_address', address)
-  },
   UPDATE_PAIRS (state, pairs) {
     const pairMap = {};
     state.pairs.forEach((item, index) => {

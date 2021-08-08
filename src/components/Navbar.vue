@@ -209,7 +209,7 @@ export default {
   },
   computed: {
     walletAddress () {
-      const address = this.$store.state.contract.wallet_address
+      const address = this.$store.state.user.selectedAddress
       if(!address){
         return ''
       }
