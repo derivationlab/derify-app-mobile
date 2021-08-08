@@ -1,7 +1,7 @@
 import Contract from './contractUtil'
 import * as CfgUtil from '../config'
 
-const contractDebug = true
+const contractDebug = CfgUtil.isDebug()
 export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {

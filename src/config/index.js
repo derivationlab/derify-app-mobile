@@ -10,6 +10,7 @@ const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) 
 
 const config = {
   currentEnv: currentEnv,
+  debug: true,
   server: {
     development: "http://13.125.43.43:8081",
     debug: "http://13.125.43.43:8081",
@@ -132,6 +133,14 @@ export function getCurrentEnv() {
 
 export function isCurrentProduction() {
   return currentEnv === 'production'
+}
+
+export function  isDebug() {
+  if(config.debug) {
+    return true
+  }
+
+  return !isCurrentProduction()
 }
 
 export default config
