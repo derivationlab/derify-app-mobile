@@ -525,7 +525,7 @@ export default {
       },
       showTimeGapDropDown: false,
       showTimeGapNum: 4,
-      kChartTimeGapValue: 1,
+      kChartTimeGapValue: 15,
       kChartTimeMinGaps: [
         {value: 1, text: '1m'},
         {value: 5, text: '5m'},
@@ -721,10 +721,7 @@ export default {
       if(this.$route.name !== 'exchange') {
         return
       }
-      if(!context.myChart){
-        context.myChart = this.$echarts.init(document.getElementById('myChart'))
-      }
-
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
       context.myChart.setOption(options)
       context.myChart.resize()
     },
@@ -936,7 +933,9 @@ export default {
   },
   updated () {
     this.$nextTick(() => {
-      this.drawKline()
+      if(context.myChart){
+        context.myChart.resize()
+      }
     })
   }
 }
