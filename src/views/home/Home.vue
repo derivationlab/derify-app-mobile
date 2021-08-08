@@ -1019,9 +1019,6 @@ export default {
       margin: 0 .4rem;
     }
   }
-  .home-top-items {
-    font-size: 1rem;
-  }
   .home-top-items + .home-top-items {
     margin-top: .1rem;
   }
