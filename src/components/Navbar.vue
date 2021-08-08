@@ -1,6 +1,6 @@
 <template>
   <div class="navbar-container">
-    <van-nav-bar :title="title" :border="false" :fixed="true">
+    <van-nav-bar :title="title" :border="false" :fixed="true" v-if="!showGoback">
 
       <template #left>
         <img
@@ -186,7 +186,7 @@
 import Wallet from './Wallet'
 
 export default {
-  props: ['logo', 'title'],
+  props: ['logo', 'title', 'showGoback'],
   components: {
     Wallet
   },

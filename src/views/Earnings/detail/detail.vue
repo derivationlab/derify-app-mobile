@@ -1,5 +1,6 @@
 <template>
   <div class="home-container page-container">
+    <navbar title="资金划转" showGoback="true" />
     <van-nav-bar
       title="资金划转"
       left-arrow

@@ -1,5 +1,6 @@
 <template>
   <div class="home-container page-container">
+    <navbar title="Derity Account" showGoback="true" />
     <van-nav-bar
       title="Derity Account"
       left-arrow
@@ -49,7 +50,7 @@ const state = {
 export default {
   name: 'account',
   components: {
-
+    Navbar
   },
   data () {
     return state
