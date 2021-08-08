@@ -439,6 +439,21 @@ export default {
     },
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    finished () {
+      if(this.active === 'key1') {
+        return this.positionFinished
+      }
+
+      if(this.active === 'key2') {
+        return this.positionOrdersFinished
+      }
+
+      if(this.active === 'key3') {
+        return this.tradeRecordsFinished
+      }
+
+      return true
     }
   },
 
@@ -482,7 +497,9 @@ export default {
       positionOrders: [],
       tradeRecords: [],
       loading: false,
-      finished: false,
+      positionFinished: false,
+      positionOrdersFinished: false,
+      tradeRecordsFinished: false,
       showMarket: false, // market popup，change token pair
       showHint: false, // show hit popup
       hintType: 'key1', // show hit type
@@ -781,9 +798,15 @@ export default {
       })
 
       self.loading = true
+      self.positionFinished = false
+      self.positionOrdersFinished = false
+      self.tradeRecordsFinished = false
 
       this.$store.dispatch('contract/loadPositionData').then(r => {
         self.loading = false
+        self.positionFinished = true
+        self.positionOrdersFinished = true
+        self.tradeRecordsFinished = true
       })
 
       this.updateTraderOpenUpperBound()
