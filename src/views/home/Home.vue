@@ -1094,7 +1094,8 @@ export default {
 }
 .home-last {
   margin-top: 4rem;
-  padding-bottom: 2rem;
+  padding: 0 2rem 2rem;
+
   .home-last-btn-wrap{
     display: flex;
     justify-content: space-around;
