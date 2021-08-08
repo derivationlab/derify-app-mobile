@@ -22,7 +22,7 @@
         </div>
       </template>
       <template #right v-else>
-        <div class="first-letter-wrap-inline" @click="$loginWallet()"></div>
+        <div class="first-letter-wrap-inline" @click="$loginWallet()">C</div>
       </template>
 
     </van-nav-bar>
