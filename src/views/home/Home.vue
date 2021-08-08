@@ -674,11 +674,6 @@ export default {
       this.$router.push({name})
     },
     drawKline () {
-
-      if(!context.loaded){
-        return
-      }
-
       if(!context.myChart){
         context.myChart = this.$echarts.init(document.getElementById('myChart'))
       }
@@ -838,24 +833,17 @@ export default {
       immediate: true,
       deep: true
     },
-    '$store.state.user.isLogin': {
-      handler (val) {
-        this.homeInit()
-      },
-      immediate: true,
-      deep: true
-    },
     '$store.state.contract.curPairKey' : {
       handler (val) {
         this.unitConfig[1].text = this.curPair.key
         this.homeInit()
       },
-      immediate: true,
+      immediate: false,
       deep: true
     },
     '$store.state.contract.positionData.positions': {
       handler (val) {
-        this.positions.splice(0, this.positions.length)
+        this.positions.splice(0)
         this.$store.state.contract.positionData.positions.forEach((item) => {
           this.positions.push(item)
         })
@@ -865,7 +853,7 @@ export default {
     },
     '$store.state.contract.positionData.orderPositions': {
       handler (val) {
-        this.positionOrders.splice(0, this.positionOrders.length)
+        this.positionOrders.splice(0)
 
         this.$store.state.contract.positionData.orderPositions.forEach((item) => {
           this.positionOrders.push(item)
@@ -874,22 +862,23 @@ export default {
       immediate: true,
       deep: true
     },
+    '$route.name': function (){
+      this.drawKline()
+    }
   },
-  created () {
+  mounted () {
+
     context.loaded = true
     const self = this;
     if(context.timer !== null) {
       clearInterval(context.timer)
     }
 
+    this.homeInit()
+
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.homeInit()
     })
-  },
-  destroyed () {
-    if(context.myChart){
-      context.myChart.dispose()
-    }
   },
   updated () {
     this.$nextTick(() => {

@@ -46,22 +46,19 @@ export default {
       show: true
     }
   },
-  updated () {
+  mounted () {
     this.drawLine()
   },
   methods: {
     drawLine () {
-      console.log(this.show)
-
       if(!this.show){
         return
       }
       // Based on the prepared dom, initialize the echarts instance
-      if(context.myChart) {
-        context.myChart.dispose();
-
+      if(!context.myChart) {
+        context.myChart = this.$echarts.init(document.getElementById('myChart'))
       }
-      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+
       // Draw a chart
       context.myChart.setOption({
         darkMode: true,
@@ -132,6 +129,7 @@ export default {
           }
         ]
       })
+      context.myChart.resize()
     }
   }
 }
