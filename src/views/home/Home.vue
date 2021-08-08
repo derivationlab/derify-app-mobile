@@ -1020,7 +1020,7 @@ export default {
     }
   }
   .home-top-items {
-    font-size: 0.1rem;
+    font-size: 1rem;
   }
   .home-top-items + .home-top-items {
     margin-top: .1rem;
