@@ -68,6 +68,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
         },
         markLine: {
           symbol: ['none', 'none'],
+          show: categoryData.length > 1,
           data: [
             [
               {
@@ -75,7 +76,11 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
                 coord: [0, curPrice],
                 symbolSize: 10,
                 label: {
-                  show: true
+                  show: categoryData.length > 1,
+                  color: '#fff',
+                  backgroundColor:'#EA446B',
+                  position: 'end',
+                  distance: -(String.valueOf(curPrice).length)*40
                 },
                 emphasis: {
                   label: {
@@ -84,6 +89,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
                 }
               },
               {
+                name: curPrice+'',
                 coord: [categoryData.length - 1, curPrice],
                 symbolSize: 10,
                 label: {

@@ -723,17 +723,13 @@ export default {
         return
       }
 
-      if(context.myChart){
+      if(context.myChart !== null){
         context.myChart.dispose()
+        context.myChart = null
       }
 
       if(!options) {
-        options = buildEchartsOptions({
-          categoryData: [0],
-          values: [0,0,0,0],
-          curPrice: fromContractUnit(this.curSpotPrice)
-        })
-
+        options = {}
       }
 
       window.context = context
@@ -840,13 +836,17 @@ export default {
         this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
       })
 
-      this.drawKline()
-
       if(!window.ethereum){
         return
       }
 
+
+
+
       const self = this
+
+      self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
@@ -944,7 +944,7 @@ export default {
       this.drawKline()
     }
   },
-  mounted () {
+  created () {
 
     context.loaded = true
     const self = this;
