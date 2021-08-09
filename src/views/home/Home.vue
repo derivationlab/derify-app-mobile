@@ -335,8 +335,8 @@
         <div class="home-last-btn-wrap">
           <template v-if="$route.name === 'exchange'">
             <template v-if="isLogin">
-              <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-              <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+              <div class="home-last-four-btn green-gra" @click="changeRouter('home')">看涨 开多</div>
+              <div class="home-last-four-btn red-gra" @click="changeRouter('home')">看跌 开空</div>
             </template>
             <template v-if="!isLogin">
               <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
