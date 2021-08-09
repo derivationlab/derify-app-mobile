@@ -43,7 +43,7 @@
       <div class="system-popup-price">
         <div class="fc-45">动仓费</div>
         <div>
-          <span class="fc-85">{{-openData.positionChangeFee | amountFormt(4, true, 0)}}</span>
+          <span :class="'fc-85 ' + (-openData.positionChangeFee >= 0 ? 'fc-green' : 'fc-red')">{{-openData.positionChangeFee | amountFormt(4, true, 0)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>

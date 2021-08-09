@@ -339,7 +339,7 @@
               <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
             </template>
             <template v-if="!isLogin">
-              <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+              <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
             </template>
           </template>
           <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
