@@ -2,10 +2,13 @@ import * as web3Utils from '@/utils/web3Utils'
 import {toContractNum, Token} from "@/utils/contractUtil";
 
 export class ChainEnum {
-  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png')){
+  static values = []
+  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true){
     this.chainId = chainId
     this.name = name
     this.logo = logo
+    this.disabled = disabled
+    ChainEnum.values.push(this)
   }
 
   static get ETH() {
@@ -13,7 +16,7 @@ export class ChainEnum {
   }
 
   static get Kovan() {
-    return new ChainEnum(42, "Kovan")
+    return new ChainEnum(42, "Kovan", true)
   }
 
   static get Goerli() {
@@ -30,6 +33,10 @@ export class ChainEnum {
 
   static get Morden() {
     return new ChainEnum(2, "Morden")
+  }
+
+  static get values() {
+    return ChainEnum.values
   }
 }
 
