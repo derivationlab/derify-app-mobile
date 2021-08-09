@@ -163,7 +163,7 @@ export default class Contract {
     return new Promise((resolve, reject) => {
       (async () => {
 
-        const approveRet = await this.__approve(tokenContract, this.DerifyExchange, amount)
+        const approveRet = await this.__approve(tokenContract, ABIData.DerifyExchange, amount)
 
         if(approveRet){
           try{
@@ -469,7 +469,7 @@ export default class Contract {
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
-            approveRet = await this.__approve(this.bDRF, this.DerifyBond, amount)
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
           }else{
             approveRet = true
           }
