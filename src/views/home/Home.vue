@@ -344,11 +344,11 @@
           </template>
           <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
             <template v-if="isLogin">
-              <template v-if="active === 'key1'">
+              <template v-if="active === 'key1' && positions.length > 0">
                 <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">一键平仓</div>
               </template>
 
-              <template v-if="active === 'key2'">
+              <template v-if="active === 'key2' && positionOrders.length">
                 <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">取消所有委托</div>
               </template>
             </template>
