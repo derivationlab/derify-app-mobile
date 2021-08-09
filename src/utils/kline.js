@@ -72,7 +72,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
             [
               {
                 name: 'curSpotPrice',
-                coord: [categoryData[0], curPrice],
+                coord: [0, curPrice],
                 symbolSize: 10,
                 label: {
                   show: false
@@ -84,7 +84,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
                 }
               },
               {
-                coord: [categoryData[categoryData.length - 1], curPrice],
+                coord: [categoryData.length - 1, curPrice],
                 symbolSize: 10,
                 label: {
                   show: false
