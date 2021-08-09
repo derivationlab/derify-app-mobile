@@ -109,7 +109,7 @@
           <template v-for="(gap,key) in kChartTimeMinGaps">
             <template v-if="key <= showTimeGapNum">
               <div :key="key"
-                   :class="gap.value === kChartTimeGapValue ? 'k-chart-xtype xtype-active' : 'k-chart-xtype'"
+                   :class="gap.value === kChartTimeGap.value ? 'k-chart-xtype xtype-active' : 'k-chart-xtype'"
                    @click="changeKChartTimeGap(gap)"
               >{{gap.text}}</div>
             </template>
@@ -123,7 +123,7 @@
           <template v-for="(gap,key) in kChartTimeMinGaps">
             <template v-if="key > showTimeGapNum">
               <div :key="key"
-                   :class="gap.value === kChartTimeGapValue ? 'k-chart-dropdown-item xtype-active' : 'k-chart-dropdown-item'"
+                   :class="gap.value === kChartTimeGap.value ? 'k-chart-dropdown-item xtype-active' : 'k-chart-dropdown-item'"
                    @click="changeKChartTimeGap(gap)"
               >{{gap.text}}</div>
             </template>
@@ -380,7 +380,6 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
-import options from '@/utils/kExample'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
 import {
   fromContractUnit,
@@ -395,6 +394,7 @@ import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../../store/modules
 import { UserProcessStatus } from '../../store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
 import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
+import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -424,6 +424,7 @@ const context = {
   myChart: null,
   loaded: false,
   timer: null,
+  klineTimer: null,
   loadStamp: 0,
   tokenMiningRateEvent: null,
   tokenPriceChangeEvenet: null
@@ -525,14 +526,14 @@ export default {
       },
       showTimeGapDropDown: false,
       showTimeGapNum: 4,
-      kChartTimeGapValue: 15,
+      kChartTimeGap: {value: 15, text: '15m'},
       kChartTimeMinGaps: [
         {value: 1, text: '1m'},
         {value: 5, text: '5m'},
         {value: 15, text: '15m'},
         {value: 30, text: '30m'},
-        {value: 60, text: '1h'},
-        {value: 60*4, text: '4h'},
+        {value: 60, text: '1H'},
+        {value: 60*4, text: '4H'},
         {value: 60*24, text: '1D'},
         {value: 60*24 * 7, text: '1W'},
         {value: 60*24 * 30, text: '1M'},
@@ -717,12 +718,22 @@ export default {
       }
       this.$router.push({name})
     },
-    drawKline () {
+    drawKline (options) {
       if(this.$route.name !== 'exchange') {
         return
       }
+
       if(context.myChart){
         context.myChart.dispose()
+      }
+
+      if(!options) {
+        options = buildEchartsOptions({
+          categoryData: [0],
+          values: [0,0,0,0],
+          curPrice: fromContractUnit(this.curSpotPrice)
+        })
+
       }
 
       window.context = context
@@ -875,12 +886,22 @@ export default {
       })
     },
     changeKChartTimeGap (gap) {
-      this.kChartTimeGapValue = gap.value
+      this.kChartTimeGap = gap
       this.toggleTimeGap(false)
+
+      this.updateKLine(this.curPair.key, gap.text)
     },
     toggleTimeGap (bool) {
       this.showTimeGapDropDown = bool
     },
+    updateKLine(token, gap) {
+      const self = this
+      getEchartsOptions({token,
+        bar: gap,
+        curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
+        self.drawKline(options)
+      })
+    }
   },
   watch: {
     '$store.state.contract.contractData':{
@@ -929,7 +950,21 @@ export default {
     const self = this;
     if(context.timer !== null) {
       clearInterval(context.timer)
+      context.timer = null
     }
+
+    if(context.klineTimer !== null){
+      clearInterval(context.klineTimer)
+      context.klineTimer = null
+    }
+
+    context.klineTimer = setInterval(() => {
+      self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+    }, 3000)
+
+    context.timer = setInterval(() => {
+      self.$store.dispatch('contract/getSpotPrice')
+    }, 3000)
 
     this.homeInit()
 

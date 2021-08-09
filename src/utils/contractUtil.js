@@ -357,7 +357,7 @@ export default class Contract {
    * @return {*}
    */
   setSpotPrice (token, price) {
-    return this.__getDerifyDerivativeContract(token).methods.setSpotPrice(token, price).send()
+    return this.__getDerifyDerivativeContract(token).methods.setSpotPrice(price).send()
   }
 
   /**

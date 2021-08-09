@@ -187,7 +187,7 @@ const actions = {
   getSpotPrice ({state, commit}) {
     return new Promise((resolve, reject) => {
 
-      if(state.wallet_address){
+      if(!state.wallet_address){
         resolve({})
         return
       }
@@ -395,7 +395,6 @@ const actions = {
     if(!state.wallet_address){
       return {}
     }
-
 
     state.pairs.forEach((pair) => {
 

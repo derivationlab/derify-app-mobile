@@ -16,6 +16,11 @@ const config = {
     debug: "http://13.125.43.43:8081",
     production: "http://13.125.43.43:8081"
   },
+  kdata:{
+    development: 'http://app-test.haoping.video',
+    debug: 'http://app-test.haoping.video',
+    production: 'http://app-test.haoping.video',
+  },
   contract: {
     development: {
       DerifyBond: {
@@ -125,6 +130,10 @@ export function getCurrentContractConfig() {
 
 export function getCurrentServerEndPoint() {
   return config.server[currentEnv]
+}
+
+export function getCurrentKdataEndPoint() {
+  return config.kdata[currentEnv]
 }
 
 export function getCurrentEnv() {
