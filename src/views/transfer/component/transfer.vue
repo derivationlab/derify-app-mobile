@@ -62,11 +62,7 @@ export default {
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
-  },
-  watch:{
-    '$store.state.user.isLogin': function (){
-      this.$store.dispatch('user/getBalanceOfDUSD')
-    }
+    this.$store.dispatch('user/getBalanceOfDUSD')
   },
   methods: {
     onClickLeft () {
