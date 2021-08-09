@@ -71,11 +71,11 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
           data: [
             [
               {
-                name: 'curSpotPrice',
+                name: curPrice+'',
                 coord: [0, curPrice],
                 symbolSize: 10,
                 label: {
-                  show: false
+                  show: true
                 },
                 emphasis: {
                   label: {
