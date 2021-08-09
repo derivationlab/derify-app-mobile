@@ -514,7 +514,7 @@ export default {
       ],
       unitConfig: [
         {text: 'USDT', value: 0},
-        {text: 'ETH', value: 1},
+        {text: this.$store.state.contract.curPairKey, value: 1},
         {text: '%', value: 2}
       ],
       active: 'key1',
