@@ -182,7 +182,7 @@ export default {
       }).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: '开仓成功'})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '开仓失败:' + msg})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: '开仓失败'})
       })
 
     },
