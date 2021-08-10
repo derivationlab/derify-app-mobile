@@ -103,10 +103,16 @@ export function toContractNum (number) {
   return (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
 }
 
-
-export function fromContractUnit (unit) {
+export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
+  return numConvert(unit, -contractDecimals, bit, rounding)
+}
+export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
   const number = new BigNumber(unit)
-  return number.shiftedBy(-contractDecimals).toNumber()
+  if(bit < 0) {
+    return number.shiftedBy(pow).toNumber()
+  }
+
+  return number.shiftedBy(pow).dp(bit, rounding).toNumber()
 }
 
 export function stringFromContractUnit (unit, bit = 2) {

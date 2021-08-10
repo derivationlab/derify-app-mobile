@@ -36,7 +36,7 @@
       <div class="system-popup-price">
         <div class="fc-45">开仓量</div>
         <div>
-          <span class="fc-85">{{openData.size | amountFormt(4, false, 0)}}</span>
+          <span class="fc-85">{{size | amountFormt(4, false, 0)}}</span>
           <span class="fc-45">{{unitConfig[openData.unit].text}}</span>
         </div>
       </div>
@@ -96,27 +96,30 @@ export default {
         { text: '市价委托', value: 0},
         { text: '限价委托', value: 1 }
       ],
-      leverageConfig: [10, 5, 3],
       unitConfig: [
         {text: 'USDT', value: 0},
-        {text: 'ETH', value: 1},
-        {text: '%', value: 2}
+        {text: 'BTC', value: 1}
       ]
     }
   },
   watch: {
     show () {
-      this.sideType = this.type
-      this.showPopup = this.show
 
-      this.$store.dispatch('contract/getSpotPrice')
-      this.$store.dispatch('contract/getSysOpenUpperBound', {side: this.extraData.side})
+      this.showPopup = this.show
+      if(this.showPopup){
+        this.sideType = this.type
+        this.showError = false
+        this.errorMsg = ''
+        this.le
+        this.$store.dispatch('contract/getSpotPrice')
+        this.$store.dispatch('contract/getSysOpenUpperBound', {side: this.extraData.side})
+      }
     },
     extraData: {
       deep: true,
       immediate: true,
       handler () {
-        Object.assign(this.openData, {...this.extraData})
+        this.openData = Object.assign({}, this.openData, {...this.extraData})
       }
     },
     '$store.state.contract.curPairKey' : {
@@ -147,6 +150,9 @@ export default {
     },
     confirmDisabled(){
       return this.checkAndGetMaxBound() <= 0
+    },
+    size () {
+      return this.checkAndGetMaxBound()
     }
   },
   methods: {
@@ -163,7 +169,7 @@ export default {
 
       const leverage = this.openData.leverage
       let price = null
-      if (this.openData.entrustType === 0) {
+      if (this.openData.entrustType === OpenType.MarketOrder) {
         price = fromContractUnit(this.curSpotPrice)
       } else {
         price = this.openData.amount
@@ -187,9 +193,13 @@ export default {
 
     },
     checkAndGetMaxBound () {
-      const {size, side, unit} = this.extraData
+      const {size, side, unit, entrustType} = this.extraData
 
       if(side === SideEnum.HEDGE) {
+        return size
+      }
+
+      if(entrustType !== OpenType.MarketOrder) {
         return size
       }
 

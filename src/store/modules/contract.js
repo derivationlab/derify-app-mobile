@@ -114,40 +114,46 @@ const mutations = {
     }
 
     if(positionData.positions) {
-      const positionIndexOfPair = [];
+      const positionsMap = {};
 
       state.positionData.positions.forEach((position, index) => {
-        if(position.token === pair.address){
-          positionIndexOfPair.push(index)
-        }
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
       })
 
-      positionIndexOfPair.forEach((index) => {
-        state.positionData.positions.splice(index, 1)
-      })
 
       positionData.positions.forEach((position) => {
-        state.positionData.positions.push(position)
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
       })
+
+      state.positionData.positions.splice(0)
+
+      for(var key in positionsMap) {
+        state.positionData.positions.push(positionsMap[key])
+      }
+
+
     }
 
     if(positionData.orderPositions) {
-      const positionIndexOfPair = [];
+      const positionsMap = {};
 
       state.positionData.orderPositions.forEach((position, index) => {
-        if(position.token === pair.address){
-          positionIndexOfPair.push(index)
-        }
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
       })
 
-      positionIndexOfPair.forEach((index) => {
-        state.positionData.orderPositions.splice(index, 1)
+      positionData.orderPositions.forEach((position, index) => {
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
       })
 
+      state.positionData.orderPositions.splice(0)
 
-      positionData.orderPositions.forEach((position) => {
-        state.positionData.orderPositions.push(position)
-      })
+      for(key in positionsMap) {
+        state.positionData.orderPositions.push(positionsMap[key])
+      }
     }
   },
   SET_LIMIT_POSITION_DATA (state, positionData) {
@@ -516,15 +522,13 @@ const actions = {
       return {}
     }
 
-    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+    let token = state.pairs.find(pair => pair.key === state.curPairKey)
 
-    if (idx === undefined) {
-      idx = 0
+    if (!token) {
+      return
     }
 
-    const coin = state.pairs[idx]
-
-    return web3Utils.contract(state.wallet_address).getTradingFee(coin.address, side, actionType, size, price)
+    return web3Utils.contract(state.wallet_address).getPositionChangeFee(token.address, side, actionType, size, price)
   },
   getTradingFee ({state, commit, dispatch}, {size, price}) {
     let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)

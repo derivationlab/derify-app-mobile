@@ -23,7 +23,7 @@
           </div>
           <div class="home-top-items">
             <span class="fc-65">动仓费率：</span>
-            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-red' : 'fc-green'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
+            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
           </div>
           <div class="home-top-items">
             <span class="fc-65">持仓挖矿奖励：</span>
@@ -61,7 +61,7 @@
               <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
             </div>
             <div class="home-mid-input" v-else>
-              <van-field class="derify-input" type="text" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
+              <van-field class="derify-input" type="text" v-model.number="amount" @change="updateTraderOpenUpperBound"/>
               <div class="fc-30">USDT</div>
             </div>
           </div>
@@ -71,16 +71,16 @@
               <div class="fz-12">
             <span class="fc-65">可开：
               <!-- USDT -->
-              <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
+              <template v-if="unit === UnitTypeEnum.USDT">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
               <!-- curToken -->
-              <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
+              <template v-if="unit === UnitTypeEnum.CurPair">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
               <!-- percent -->
-              <template v-if="unit === 2">100%</template></span>
+              <template v-if="unit === UnitTypeEnum.Percent">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template></span>
                 <span class="fc-yellow" @click="transfer">划转</span>
               </div>
             </div>
             <div class="home-mid-input">
-              <van-field class="derify-input" type="number" v-model.number="size" @input="calculateSliderValue"/>
+              <van-field class="derify-input" type="number" v-model.number="size" @input="onPositionSizeChange"/>
               <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
                 <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                   <div class="derify-dropmenu-title" slot="title">
@@ -92,7 +92,7 @@
             </div>
           </div>
           <div class="home-mid-three">
-            <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
+            <van-slider bar-height=".4rem" button-size="1.8rem" v-model="sliderValue" @input="onSliderValueChange"/>
           </div>
           <div class="home-mid-four" v-if="isLogin">
             <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
@@ -148,8 +148,8 @@
                       <div class="exchange-block-title">
                         <div class="left">
 
-                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
-                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-green">多</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-red">空</div>
                           <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                           <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                           <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
@@ -168,9 +168,9 @@
                           <div class="fc-45">浮动盈亏：</div>
 
                           <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
-                            {{data.unrealizedPnl | amountFormt(2, true, '-', -8)}}
+                            {{data.unrealizedPnl | amountFormt(2, true, '--', -8)}}
                           </div>
-                          <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '-', -8)}}%)</span></template></div>
+                          <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -8)}}%)</span></template></div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">持仓量：</div>
@@ -230,8 +230,8 @@
                       <div class="exchange-block-title">
                         <div class="left">
 
-                          <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                          <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
+                          <div v-if="data.side === 0" class="mr-4 text-icon-green">多</div>
+                          <div v-if="data.side === 1" class="mr-4 text-icon-red">空</div>
                           <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                           <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
                           <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
@@ -275,8 +275,8 @@
                       <div class="exchange-block-title">
                         <div class="left">
 
-                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-red">多</div>
-                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-green">空</div>
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-green">多</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-red">空</div>
                           <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
                           <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                         </div>
@@ -297,7 +297,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">成交价格：</div>
-                          <div>{{data.price | amountFormt(2, false, '-')}} USDT</div>
+                          <div>{{data.price | amountFormt(2, false, '--')}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">成交数量：</div>
@@ -307,11 +307,11 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">成交金额：</div>
-                          <div>{{data.amount | amountFormt(2, false, '-')}} USDT</div>
+                          <div>{{data.amount | amountFormt(2, false, '--')}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">手续费：</div>
-                          <div>{{data.trading_fee | amountFormt(2, false, '-')}} USDT</div>
+                          <div>{{data.trading_fee | amountFormt(2, false, '--')}} USDT</div>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -321,7 +321,7 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">分摊补偿：</div>
-                          <div>{{data.pnl_bond  | amountFormt(2, false, '-')}} bDRf</div>
+                          <div>{{data.pnl_bond  | amountFormt(2, false, '--')}} bDRf</div>
                         </div>
                       </div>
                     </div>
@@ -382,7 +382,7 @@ import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
 import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
 import {
-  fromContractUnit,
+  fromContractUnit, numConvert,
   OpenType, OrderTypeEnum,
   Position,
   SideEnum,
@@ -495,11 +495,12 @@ export default {
       OrderTypeEnum,
       SideEnum,
       OpTypeEnum,
+      UnitTypeEnum,
       entrustType: 0,
       leverageUnit: 0,
       amount: 0,
       size: 0,
-      value5: 20,
+      sliderValue: 20,
       unit: 0,
       //curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
@@ -628,7 +629,7 @@ export default {
         }
 
         if(entrustType === 0){
-          amount = stringFromContractUnit(this.curSpotPrice)
+          amount = fromContractUnit(this.curSpotPrice)
         }
 
         if (!size || size <= 0) {
@@ -654,6 +655,24 @@ export default {
         if(side === SideEnum.HEDGE && entrustType === OpenType.LimitOrder){
           this.$toast('对冲交易只能选择市价委托')
           return
+        }
+
+        if(entrustType === OpenType.LimitOrder) {
+          if(side === SideEnum.LONG && amount >= fromContractUnit(this.curSpotPrice)){
+            entrustType = OpenType.MarketOrder
+            amount = fromContractUnit(this.curSpotPrice)
+          }
+
+          if(side === SideEnum.SHORT && amount <= fromContractUnit(this.curSpotPrice)){
+            entrustType = OpenType.MarketOrder
+            amount = fromContractUnit(this.curSpotPrice)
+          }
+
+        }
+
+        if(UnitTypeEnum.Percent === unit) {
+          unit = UnitTypeEnum.CurPair
+          size = this.calculatePositionSize(unit, this.sliderValue)
         }
 
         this.openExtraData = Object.assign(this.openExtraData, {
@@ -771,16 +790,34 @@ export default {
             timestamp: data.timestamp}).then(r => {
       })
     },
-    calculatePositionSize (sliderValue) {
-      const {unit} = this// 0 ETH，1 USDT 2 %
-      this.size = Math.round(sliderValue / 100 * this.getMaxSize(unit))
+    onPositionSizeChange (size) {
+      const {unit} = this
+      const maxSize = this.getMaxSize(unit)
+      if(size > maxSize) {
+        this.size = maxSize
+      }
+
+      this.calculateSliderValue()
+    },
+    onSliderValueChange() {
+      const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
+      this.size = this.calculatePositionSize(unit, sliderValue)
+    },
+    calculatePositionSize (unit, sliderValue) {
+
+      const maxSize = this.getMaxSize(unit)
+      if(maxSize > 0){
+        return numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
+      }
+
+      return 0
     },
     getMaxSize(unit) {
       let maxSize = 100;
       if (unit ===  UnitTypeEnum.USDT) {
-        maxSize = fck(Math.round(this.curTraderOpenUpperBound.size), -8, 2)
+        maxSize = fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
       }else if (unit === UnitTypeEnum.CurPair) {
-        maxSize = fck(Math.round(this.curTraderOpenUpperBound.amount), -8, 2)
+        maxSize = fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
       }else{
         maxSize = 100
       }
@@ -788,34 +825,36 @@ export default {
       return maxSize
     },
     calculateSliderValue () {
-      this.value5 = Math.min(Math.round(this.size * 100 / this.getMaxSize(this.unit)), 100)
+      const maxSize = this.getMaxSize(this.unit)
+      if(maxSize > 0) {
+        this.sliderValue = Math.min(Math.round(this.size * 100 / maxSize), 100)
+      }
     },
     unitSelectChange (unit) {
       this.unit = unit;
-      this.calculatePositionSize(this.value5)
+      this.size = this.calculatePositionSize(unit, this.sliderValue)
     },
-    updateTraderOpenUpperBound (amount) {
+    updateTraderOpenUpperBound () {
       //leverage change, recalculate bound
 
       const openType = this.entrustType
-
-      if(amount > 0){
-        this.amount = amount
-      }else{
-        if(this.amount === 0 && openType === 1) {
-          this.amount = fck(this.curSpotPrice, -8, 2)
-        }
+      let amount = this.amount
+      if(openType === OpenType.MarketOrder) {
+        amount = fromContractUnit(this.curSpotPrice)
       }
 
+      if(amount <= 0) {
+        return
+      }
 
-      const price = toContractUnit(this.amount);
+      const price = toContractUnit(amount);
 
       const leverage = toContractUnit(this.leverage)
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
         .then(traderOpenUpperBound => {
-          this.calculatePositionSize(this.value5)
+          this.calculatePositionSize(this.sliderValue)
       });
     },
     homeInit(){
@@ -850,7 +889,10 @@ export default {
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-        this.size = fck(Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount), -8, 2);
+        if(self.curTraderOpenUpperBound.amount > 0) {
+          self.size = fromContractUnit(self.sliderValue / 100 * self.curTraderOpenUpperBound.amount, 2);
+        }
+
       })
 
       self.loading = true
@@ -960,11 +1002,12 @@ export default {
 
     context.klineTimer = setInterval(() => {
       self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
-    }, 3000)
+    }, 15000)
 
     context.timer = setInterval(() => {
       self.$store.dispatch('contract/getSpotPrice')
-    }, 3000)
+      self.$store.dispatch('contract/loadPositionData')
+    }, 15000)
 
     this.homeInit()
 

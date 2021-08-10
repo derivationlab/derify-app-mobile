@@ -21,18 +21,18 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">止盈设置</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="0.00" @input="changeProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="" @input="changeProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
-        <div class="system-popup-input-hint" v-if="position.stopProfitPriceInput">当指数价格达到 <span class="fc-85">{{position.stopProfitPrice | fck(-8)}}</span> USDT时，将会触发市价平仓当前仓位，预计盈利 <span class="fc-green">{{ position.profitAmount  | amountFormt(2, true, '-', -8)}}</span> USDT</div>
+        <div class="system-popup-input-hint">当指数价格达到 <span class="fc-85">{{position.stopProfitPrice | amountFormt(2, false, '--', -8)}}</span> USDT时，将会触发市价平仓当前仓位，预计盈利 <span class="fc-green">{{ position.profitAmount  | amountFormt(2, true, '--', -8)}}</span> USDT</div>
       </div>
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">止损设置</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @input="changeLossPrice" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" @input="changeLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
-        <div class="system-popup-input-hint" v-if="position.stopLossPriceInput">当指数价格达到 {{position.stopLossPrice | fck(-8)}} USDT时，将会触发市价平仓当前仓位，预计亏损 <span class="fc-red">{{ position.lostAmount  | amountFormt(2, true, '-', -8)}}</span> USDT</div>
+        <div class="system-popup-input-hint">当指数价格达到 <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span> USDT时，将会触发市价平仓当前仓位，预计亏损 <span class="fc-red">{{ position.lostAmount  | amountFormt(2, true, '--', -8)}}</span> USDT</div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">取消</div>
@@ -80,8 +80,8 @@ export default {
         }
 
         this.position = Object.assign({}, {
-          stopProfitPriceInput: fck(this.extraData.stopProfitPrice, -8),
-          stopLossPriceInput: fck(this.extraData.stopLossPrice, -8),
+          stopProfitPriceInput: this.extraData.stopProfitPrice > 0 ? fck(this.extraData.stopProfitPrice, -8) : null,
+          stopLossPriceInput: this.extraData.stopLossPrice > 0 ? fck(this.extraData.stopLossPrice, -8) : null,
           lostAmount,
           profitAmount}, this.extraData);
 
@@ -95,109 +95,162 @@ export default {
     },
     changeProfitPrice (price) {
 
+      if(price === '') {
+        return
+      }
+
+      this.position.stopProfitPrice = toContractNum(price)
+
       const {position} = this;
 
       if(price <= 0) {
         this.$toast('输入价格有误，请重新输入')
+        return
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(price) <= position.averagePrice){
+      if(!this.checkProfitPrice(position, price)){
         this.$toast('您设置的价格有误，请重新设置')
+        return
       }
 
-      if(position.side === SideEnum.SHORT && toContractNum(price) >= position.averagePrice){
-        this.$toast('您设置的价格有误，请重新设置')
-      }
 
-      this.position.stopProfitPriceInput = price;
-
-      this.position.stopProfitPrice = toContractNum(price)
       this.calLossAndProfit();
     },
     changeLossPrice (price, oldPrice) {
       const {position} = this;
 
+      this.position.stopLossPriceInput = price;
+
+      if(price === '') {
+        return
+      }
+      this.position.stopLossPrice = toContractNum(price)
+
       if(price <= 0) {
         this.$toast('输入价格有误，请重新输入')
+        return
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(price) > position.averagePrice){
+      if(!this.checkLossPrice(position, price)){
         this.$toast('您设置的价格有误，请重新设置')
+        return
       }
 
-      if(position.side === SideEnum.SHORT && toContractNum(price) < position.averagePrice){
-        this.$toast('您设置的价格有误，请重新设置')
-      }
-      this.position.stopLossPriceInput = price;
-      this.position.stopLossPrice = toContractNum(price)
+
       this.calLossAndProfit();
     },
+
+    checkProfitPrice(position, profitPrice) {
+      if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= position.averagePrice){
+        return false
+      }
+
+      if(position.side === SideEnum.SHORT && toContractNum(profitPrice) >= position.averagePrice){
+        return false
+      }
+
+      return true
+    },
+    checkLossPrice(position, lossPrice) {
+      if(position.side === SideEnum.LONG && toContractNum(lossPrice) > position.averagePrice){
+        return false
+      }
+
+      if(position.side === SideEnum.SHORT && toContractNum(lossPrice) < position.averagePrice){
+        return false
+      }
+
+      return true
+    },
     calLossAndProfit(){
-      this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
-        * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
-      this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
-        * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+      if(this.position.stopProfitPrice > 0) {
+        this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+
+      }
+
+      if(this.position.stopLossPrice > 0) {
+        this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+      }
+
     },
     submitThenClose (){
       const side = this.position.side
       const token = this.position.token
 
-      //set stop profit price
-      let finishCount = 0;
-      if(this.position.stopProfitPriceInput && this.position.stopProfitPrice > 0) {
-        finishCount++
-        this.$store.dispatch('contract/orderStopPosition', {
-          token, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
-        }).then(_ => {
-          finishCount--
-          if(finishCount < 1) {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
-          }
-
-        }).catch(msg => {
-          finishCount--
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
-        })
-      }else{
-        finishCount++
-        this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopProfitOrder, side, timestamp: this.position.timestamp}).then(_ => {
-          finishCount--
-          if(finishCount < 1) {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
-          }
-
-        }).catch(msg => {
-          finishCount--
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
-        })
+      if(this.position.stopProfitPrice <= 0 || this.position.stopLossPrice <= 0) {
+        this.$toast('输入价格有误，请重新输入')
+        return
       }
 
-      //set stop loss price
-      if(this.position.stopLossPriceInput && this.position.stopLossPriceInput > 0){
-        finishCount++
-        this.$store.dispatch('contract/orderStopPosition', {
-          token, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
-        }).then(_ => {
-          finishCount--
-          if(finishCount < 1) {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
-          }
-        }).catch(msg => {
-          finishCount--
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
-        });
-      }else{
-        finishCount++
-        this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopLossOrder, side, timestamp: this.position.timestamp}).then(_ => {
-          finishCount--
-          if(finishCount < 1) {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
-          }
+      if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)
+        || !this.checkLossPrice(this.position, this.position.stopLossPrice)){
+        this.$toast('您设置的价格有误，请重新设置')
+        return
+      }
 
-        }).catch(msg => {
-          finishCount--
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
-        })
+      //set stop profit price
+      let finishCount = 0;
+      if(this.position.stopProfitPriceInput !== '') {
+        if(this.position.stopProfitPriceInput && this.position.stopProfitPrice > 0) {
+          finishCount++
+          this.$store.dispatch('contract/orderStopPosition', {
+            token, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
+          }).then(_ => {
+            finishCount--
+            if(finishCount < 1) {
+              this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
+            }
+
+          }).catch(msg => {
+            finishCount--
+            this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
+          })
+        }else{
+          finishCount++
+          this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopProfitOrder, side, timestamp: this.position.timestamp}).then(_ => {
+            finishCount--
+            if(finishCount < 1) {
+              this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
+            }
+
+          }).catch(msg => {
+            finishCount--
+            this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
+          })
+        }
+      }
+
+
+      //set stop loss price
+      if(this.position.stopLossPriceInput !== '') {
+        if(this.position.stopLossPriceInput && this.position.stopLossPriceInput > 0){
+          finishCount++
+          this.$store.dispatch('contract/orderStopPosition', {
+            token, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
+          }).then(_ => {
+            finishCount--
+            if(finishCount < 1) {
+              this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
+            }
+          }).catch(msg => {
+            finishCount--
+            this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
+          });
+        }else{
+          finishCount++
+          this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopLossOrder, side, timestamp: this.position.timestamp}).then(_ => {
+            finishCount--
+            if(finishCount < 1) {
+              this.$userProcessBox({status: UserProcessStatus.success, msg: '设置成功'})
+            }
+
+          }).catch(msg => {
+            finishCount--
+            this.$userProcessBox({status: UserProcessStatus.failed, msg: '设置失败:' + msg})
+          })
+        }
       }
 
       if(finishCount > 0){

@@ -28,7 +28,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">平仓量</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="0.00" type="number" v-model="value1" />
+          <van-field class="derify-input no-padding-hor" placeholder="" type="number" @input="onPositionSizeChange" v-model="value1" />
           <div class="unit">{{getPairByAddress(position.token).key}}</div>
         </div>
         <div class="unwind-popup-set">
@@ -72,7 +72,7 @@ export default {
     const value1 = Math.ceil(size * defaultPercent / 100)
     return {
       showPopup: this.show,
-      value1: fromContractUnit(this.closeUpperBound),
+      value1: value1 > 0 ? value1 : '',
       position: Object.assign({size : 0}, this.extraData),
       percents: [
         {name: '25%', value: 25},
@@ -116,6 +116,20 @@ export default {
     changePercentage (percent) {
       this.curPercent = percent
       this.value1 = fromContractUnit(Math.ceil(this.closeUpperBound * this.curPercent / 100))
+    },
+    onPositionSizeChange (size) {
+
+      if(size === '') {
+        return
+      }
+
+      if(size <= 0){
+        this.$toast('输入数量有误，请重新输入')
+      }
+
+      if(size > fromContractUnit(this.closeUpperBound)) {
+        this.$toast('超出最大可平量，请重新设置')
+      }
     },
     submitThenClose (){
       const size = this.value1

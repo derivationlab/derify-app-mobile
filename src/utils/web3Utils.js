@@ -61,6 +61,10 @@ function isProxyPropertyKey(key) {
     return false
   }
 
+  if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables,getTraderAllPosition'.indexOf(key) > -1){
+    return false
+  }
+
   return true
 }
 
