@@ -179,16 +179,31 @@ export default {
       const side = this.position.side
       const token = this.position.token
 
-      if(this.position.stopProfitPrice <= 0 || this.position.stopLossPrice <= 0) {
-        this.$toast('输入价格有误，请重新输入')
-        return
+
+      if(this.position.stopProfitPriceInput !== ''){
+        if(this.position.stopProfitPrice <= 0) {
+          this.$toast('输入价格有误，请重新输入')
+          return
+        }
+
+        if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
+          this.$toast('您设置的价格有误，请重新设置')
+          return
+        }
       }
 
-      if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)
-        || !this.checkLossPrice(this.position, this.position.stopLossPrice)){
-        this.$toast('您设置的价格有误，请重新设置')
-        return
+      if(this.position.stopLossPriceInput !== ''){
+        if(this.position.stopLossPrice <= 0) {
+          this.$toast('输入价格有误，请重新输入')
+          return
+        }
+
+        if(!this.checkLossPrice(this.position, this.position.stopLossPrice)){
+          this.$toast('您设置的价格有误，请重新设置')
+          return
+        }
       }
+
 
       //set stop profit price
       let finishCount = 0;
