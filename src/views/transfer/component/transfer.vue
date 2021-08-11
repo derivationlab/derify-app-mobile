@@ -1,7 +1,7 @@
 <template>
   <div class="home-container page-container">
     <van-nav-bar
-      title="资金划转"
+      :title="$t('Trade.Account.Transfers')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -19,7 +19,7 @@
     <van-cell-group>
       <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? 'Derify Account' : 'Metamask Wallet'" />
     </van-cell-group>
-    <div class="num-div">数量</div>
+    <div class="num-div">{{$t('Trade.Account.Size')}}</div>
     <van-cell-group>
       <van-field
         v-model="amount"
@@ -29,11 +29,11 @@
       </van-field>
       <span class="unit">DUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：
+    <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Amount')}}
       <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
-      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">全部划转</span></div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">充值</div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">提现</div>
+      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
   </div>
 </template>
 <script>

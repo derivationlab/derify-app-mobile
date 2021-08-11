@@ -13,7 +13,7 @@ import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import { getWallet } from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
-let locale = 'zh'
+let locale = 'en'
 try {
   const curLngStr = sessionStorage.getItem('locale')
   const lng = JSON.parse(curLngStr || '{}')

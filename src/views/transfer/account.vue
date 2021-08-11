@@ -14,14 +14,14 @@
     </van-nav-bar>
 
     <div class="account-num">
-      <span class="num">账户余额</span>
-      <span class="info" @click="lookFinDetail">资金明细 ></span>
+      <span class="num">{{$t('Trade.Account.AccountBalance')}}</span>
+      <span class="info" @click="lookFinDetail">{{$t('Trade.Account.BalanceHistory')}} ></span>
     </div>
     <div class="account-info">
       <div class="div-unmUnit"><span>{{accountData.balance | fck(-8)}}</span><span class="unit">USDT</span></div>
     </div>
     <div class="title-div">
-      <span>保证金余额</span>
+      <span>{{$t('Trade.Account.MarginBalance')}}</span>
       <span>占用保证金</span>
     </div>
     <div class="unit-tr">
@@ -29,8 +29,8 @@
       <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{accountData.marginRate | fck(-8)}}%)</span></div>
     </div>
     <template v-if="isLogin">
-      <div class="recharge" @click="goTransfer('deposit')">充值</div>
-      <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
+      <div class="recharge" @click="goTransfer('deposit')">{{$t('Trade.Account.Deposit')}}</div>
+      <div class="withdraw" @click="goTransfer('withdraw')">{{$t('Trade.Account.Withdraw')}}</div>
     </template>
     <template v-if="!isLogin">
       <div class="recharge" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>

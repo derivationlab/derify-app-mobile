@@ -1,7 +1,7 @@
 <template>
   <div class=" home-container page-container">
     <van-nav-bar
-      title="资金划转"
+      :title="$t('Trade.Account.BalanceHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -14,14 +14,14 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :finished-text="$t('Trade.Account.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>操作类型</div>
-        <div>金额</div>
-        <div class="center-span">余额</div>
-        <div class="center-span">时间</div>
+        <div>{{$t('Trade.Account.Type')}}</div>
+        <div>{{$t('Trade.Account.Amount')}}</div>
+        <div class="center-span">{{$t('Trade.Account.Balance')}}</div>
+        <div class="center-span">{{$t('Trade.Account.Time')}}</div>
       </div>
       <div class="heard" v-for="(data, i) in list" :key="i">
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
