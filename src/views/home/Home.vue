@@ -982,6 +982,11 @@ export default {
           key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
           key3:  this.$t('Trade.TradeHistory.TradeHistory')
       }
+
+      this.entrustTypeConfig = [
+        {text:  this.$t('Trade.OpenPosition.Market'), value: 0},
+        {text: this.$t('Trade.OpenPosition.Limit'), value: 1}
+      ]
     }
   },
   created () {

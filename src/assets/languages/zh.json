@@ -172,6 +172,8 @@
     },
     "CurrentOrder": {
       "CurrentOrder":"当前委托",
+      "CancelAllOrder":"取消所有委托",
+      "Cancel":"平仓",
       "Long":"多",
       "Short":"空",
       "Price":"委托价格",
