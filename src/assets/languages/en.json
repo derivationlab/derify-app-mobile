@@ -35,7 +35,8 @@
     "Kline": {
       "Market":"Market"
     },
-    "OpenPosition": {"PCFRate":"PCF Rate",
+    "OpenPosition": {
+      "PCFRate":"PCF Rate",
       "PMAPY":"PM APY",
       "Long":"Long",
       "Short":"Short",
@@ -52,7 +53,8 @@
       "BuyLong":"Buy / Long",
       "SellShort":"Sell / Short",
       "TwoWay":"Two Way ",
-      "TwoWayOpenPriceTypeError":"You can only place Two-way positions via market order"
+      "TwoWayOpenPriceTypeError":"You can only place Two-way positions via market order",
+      "NoMoreInfo":"No more info"
     },
     "OpenPositionPopup": {
       "Confirm":"Confirm",
@@ -170,9 +172,9 @@
       "Volume":"Volume",
       "Time":"Time",
       "Cancel":"Cancel",
-      "OpenLimit":"Open / Limit",
-      "CloseStopProfit":"Close / TP",
-      "CloseStopLoss":"Close / SL",
+      "OpenLimit":"<span class=\"fc-green\">Open</span>/<span>Limit</span>",
+      "CloseStopProfit":"<span class=\"fc-red\">Close</span>/<span>TP</span>",
+      "CloseStopLoss":"<span class=\"fc-red\">Close</span>/<span>SL</span>",
       "CancelOneOrder":"Click to CANCEL the order",
       "CancelAllOrder":"Cancel All ",
       "CloseAllOrderPopup":"Click to CANCEL ALL orders",
