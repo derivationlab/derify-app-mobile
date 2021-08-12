@@ -380,7 +380,7 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
-import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
+import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '@/api/trade'
 import {
   fromContractUnit, numConvert,
   OpenType, OrderTypeEnum,
@@ -388,12 +388,12 @@ import {
   SideEnum,
   stringFromContractUnit,
   toContractUnit
-} from '../../utils/contractUtil'
+} from '@/utils/contractUtil'
 import {fck} from "@/utils/utils";
-import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../../store/modules/contract'
-import { UserProcessStatus } from '../../store/modules/user'
+import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/store/modules/contract'
+import { UserProcessStatus } from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
-import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
+import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
@@ -984,6 +984,13 @@ export default {
     },
     '$route.name': function (){
       this.drawKline()
+    },
+    '$i18n.locale' : function () {
+      this.tabs = {
+          key1: this.$t('Trade.MyPosition.MyPosition'),
+          key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
+          key3:  this.$t('Trade.TradeHistory.TradeHistory')
+      }
     }
   },
   created () {

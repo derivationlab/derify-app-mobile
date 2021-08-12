@@ -18,8 +18,8 @@ try {
   const curLngStr = sessionStorage.getItem('locale')
   const lng = JSON.parse(curLngStr || '{}')
 
-  if (lng.lng) {
-    locale = lng.lng
+  if (lng.locale) {
+    locale = lng.locale
     // store.commit('user/SET_CURLNG', lng)
     // this.$i18n.locale = locale
     // console.log(this.$i18n.locale)

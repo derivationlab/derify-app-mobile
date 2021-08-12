@@ -53,7 +53,8 @@
       "BuyLong":"看涨/开多",
       "SellShort":"看跌/开空",
       "TwoWay":"双向对冲",
-      "TwoWayOpenPriceTypeError":"对冲交易只能选择市价委托"
+      "TwoWayOpenPriceTypeError":"对冲交易只能选择市价委托",
+      "NoMoreInfo":"没有更多了"
     },
     "OpenPositionPopup": {"Confirm":"开仓确认",
       "Price":"委托价格",

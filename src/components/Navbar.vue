@@ -251,7 +251,7 @@ export default {
       this.navIndex = index
       const lang = this.lanData.find((item) => item.id === index)
       this.$i18n.locale = lang.locale
-      window.sessionStorage.setItem('locale', lang)
+      window.sessionStorage.setItem('locale', JSON.stringify(lang))
       window.sessionStorage.setItem('navIndex', lang.id)
     },
     changeShowMenu (bool) {
