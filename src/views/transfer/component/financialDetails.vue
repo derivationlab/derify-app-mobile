@@ -49,13 +49,13 @@
     0: "Trade.Account.TradeFee", //-TradingFee,
     1: "Trade.Account.PCF", //-PositionChangeFee
     2: "Trade.Account.Profit", //-ProfitAndLoss
-    3: "盈亏", //-ProfitAndLossAuto
-    4: "gas费", //-GasFee
-    5: "清算费用", //-Liquidation
-    6: "系统补偿", //-SysCompensation
-    7: "系统亏损分摊", //-SysLossApportionment
-    100: "资金转入", //-Deposit
-    101: "资金转出" //-Withdraw
+    3: "Trade.Account.RealizedPnL", //-ProfitAndLossAuto
+    4: "Trade.Account.Gas", //-GasFee
+    5: "Trade.Account.LiqCost", //-Liquidation
+    6: "Trade.Account.Compensation", //-SysCompensation
+    7: "Trade.Account.SysLoss", //-SysLossApportionment
+    100: "Trade.Account.Deposit", //-Deposit
+    101: "Trade.Account.Withdraw" //-Withdraw
   }
 
 export default {
@@ -69,7 +69,7 @@ export default {
   methods: {
     getFeeType (feeType) {
       const feeTypeText = feeTypeMap[feeType];
-      return feeTypeText ? feeTypeText : '-'
+      return feeTypeText ? this.$t(feeTypeText) : '--'
     },
     onClickLeft () {
       this.$router.go(-1)
