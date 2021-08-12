@@ -1,24 +1,24 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">平仓</div>
+      <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
       <div style="margin-top: 2rem">
           <div class="system-popup-price">
-            <div class="fc-45">开仓量</div>
+            <div class="fc-45">{{ $t('Trade.ClosePosition.PositionHeld') }}</div>
             <div>
               <span class="fc-85">{{position.size | fck(-8)}}</span>
               <span class="fc-45">{{getPairByAddress(position.token).key}}</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">开仓价格</div>
+            <div class="fc-45">{{ $t('Trade.ClosePosition.AveragePrice') }}</div>
             <div>
               <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">当前价格</div>
+            <div class="fc-45">{{ $t('Trade.ClosePosition.CurrentPrice') }}</div>
             <div>
               <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
@@ -26,7 +26,7 @@
           </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">平仓量</div>
+        <div class="system-popup-input-title">{{ $t('Trade.ClosePosition.Amount') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="" type="number" @input="onPositionSizeChange" v-model="value1" />
           <div class="unit">{{getPairByAddress(position.token).key}}</div>
@@ -37,8 +37,8 @@
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">确认</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.ClosePosition.Cancel') }}</div>
+        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">{{ $t('Trade.ClosePosition.Confirm') }}</div>
       </div>
     </div>
   </van-popup>
@@ -124,11 +124,11 @@ export default {
       }
 
       if(size <= 0){
-        this.$toast('输入数量有误，请重新输入')
+        this.$toast(this.$t('global.NumberError'))
       }
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast('超出最大可平量，请重新设置')
+        this.$toast(this.$t('global.NumberError'))
       }
     },
     submitThenClose (){
@@ -137,24 +137,24 @@ export default {
       const token = this.position.token
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast('超出最大可平量，请重新设置')
+        this.$toast(this.$t('global.NumberError'))
         return
       }
 
       if(size <= 0) {
-        this.$toast('输入数量有误，请重新输入')
+        this.$toast(this.$t('global.NumberError'))
         return
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$toast(this.$t('Trade.ClosePosition.TradePendingMsg'))})
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
         size: toContractUnit(size)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$toast(this.$t('Trade.ClosePosition.TradeSuccessMsg'))})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败:' + msg})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$toast(this.$t('Trade.ClosePosition.TradeFailedMsg'))})
       })
 
       this.close()

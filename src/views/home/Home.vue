@@ -251,9 +251,9 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.CurrentOrder.Type')}}：</div>
-                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">开仓</span>/<span>限价委托</span></div></template>
-                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">平仓</span>/<span>止盈委托</span></div></template>
-                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">平仓</span>/<span>止损委托</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">{{$t('Trade.CurrentOrder.OpenLimit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.OpenLimit.1')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopProfit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopProfit.1')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopLoss.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopLoss.1')}}</span></div></template>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -290,7 +290,7 @@
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.Type')}}：</div>
                           <div>
-                            <span :class="getTradeType(data.type).showType">{{getTradeType(data.type).opType}}</span>/<span>{{getTradeType(data.type).tradeType}}</span>
+                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).opType)}}</span>/<span>{{$t(getTradeType(data.type).tradeType)}}</span>
                           </div>
                         </div>
                       </div>
@@ -401,24 +401,13 @@ class OpTypeEnum {
     this.opTypeDesc = opTypeDesc
   }
   static get OpenPosition() {
-    return new OpTypeEnum(1, "开仓")
+    return new OpTypeEnum(1, "Open")
   }
 
   static get ClosePosition() {
-    return new OpTypeEnum(2, "平仓")
+    return new OpTypeEnum(2, "Close")
   }
 }
-const TradeTypeMap = {
-  0: {opType: '开仓', showType: 'fc-green', tradeType: '市价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceTrade
-  1: {opType: '开仓', showType: 'fc-green', tradeType: '市价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceTrade
-  2: {opType: '开仓', showType: 'fc-green', tradeType: '限价委托', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceTrade
-  3: {opType: '平仓', showType: 'fc-red', tradeType: '止盈止损', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossTrade
-  4: {opType: '平仓', showType: 'fc-red', tradeType: '自动减仓', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingTrade
-  5: {opType: '平仓', showType: 'fc-red', tradeType: '强制平仓', opTypeEnum: OpTypeEnum.ClosePosition}//-MandatoryLiquidationTrade
-}
-
-
-
 
 const context = {
   myChart: null,
@@ -429,6 +418,16 @@ const context = {
   tokenMiningRateEvent: null,
   tokenPriceChangeEvenet: null
 };
+
+const TradeTypeMap = {
+  0: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceTrade
+  1: {opType: 'Trade.TradeHistory.OpenMarket.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenMarket.1', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceTrade
+  2: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceTrade
+  3: {opType: 'Trade.TradeHistory.CloseStopPrice.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseStopPrice.1', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossTrade
+  4: {opType: 'Trade.TradeHistory.CloseDeleverage.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseDeleverage.1', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingTrade
+  5: {opType: 'Trade.TradeHistory.CloseLiquidate.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseLiquidate.1', opTypeEnum: OpTypeEnum.ClosePosition}//-MandatoryLiquidationTrade
+}
+
 export default {
   name: 'Home',
   components: {
@@ -491,6 +490,8 @@ export default {
   data () {
 
     const position = new Position()
+
+
     return {
       OrderTypeEnum,
       SideEnum,
@@ -909,12 +910,12 @@ export default {
     },
     closeAllPositions () {
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
 
       this.$store.dispatch('contract/closeAllPositions').then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradeSuccessMsg')})
       }).catch((ex) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
       })
     },
     changeKChartTimeGap (gap) {

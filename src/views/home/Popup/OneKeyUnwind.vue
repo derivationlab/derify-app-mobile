@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup">
-      <div class="system-popup-title">平仓</div>
+      <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
       <div class="fz-15" style="margin-top: 1rem">
         <span class="fc-65">点击确定，我们将按</span>
         <span class="fc-yellow">市价</span>

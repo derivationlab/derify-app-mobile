@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup" v-if="openData">
-      <div class="system-popup-title">开仓确认</div>
+      <div class="system-popup-title">{{$t('Trade.OpenPositionPopup.OpenConfirm')}}</div>
       <div class="error-notice" v-if="showError">
         <span>{{errorMsg}}</span>
         <div class="error-right">
@@ -9,54 +9,54 @@
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">委托价格</div>
+        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Price')}}</div>
         <div v-if="openData.entrustType === OpenType.LimitOrder && sideType !== SideEnum.HEDGE">
           <span class="fc-85">{{openData.amount}}</span>
           <span class="fc-45">USDT</span>
         </div>
         <div v-else>
-          <span class="fc-85">市价委托</span>
+          <span class="fc-85">{{$t('Trade.OpenPositionPopup.Market')}}</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">开仓类型</div>
+        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Type')}}</div>
         <div v-if="sideType === SideEnum.SHORT">
-          <span class="fc-red">开空</span>
+          <span class="fc-red">{{$t('Trade.OpenPositionPopup.Short')}}</span>
           <span class="fc-red">{{openData.leverage}}x</span>
         </div>
         <div v-if="sideType === SideEnum.LONG">
-          <span class="fc-green">开多</span>
+          <span class="fc-green">{{$t('Trade.OpenPositionPopup.Long')}}</span>
           <span class="fc-green">{{openData.leverage}}x</span>
         </div>
         <div v-if="sideType === SideEnum.HEDGE">
-          <span class="fc-yellow">双向对冲</span>
+          <span class="fc-yellow">{{$t('Trade.OpenPositionPopup.Two-Way')}}</span>
           <span class="fc-yellow">{{openData.leverage}}x</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">开仓量</div>
+        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Amount')}}</div>
         <div>
           <span class="fc-85">{{size | amountFormt(4, false, 0)}}</span>
           <span class="fc-45">{{unitConfig[openData.unit].text}}</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">动仓费</div>
+        <div class="fc-45">{{$t('Trade.OpenPositionPopup.PCF')}}</div>
         <div>
           <span :class="'fc-85 ' + (-openData.positionChangeFee >= 0 ? 'fc-green' : 'fc-red')">{{-openData.positionChangeFee | amountFormt(4, true, 0)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">手续费</div>
+        <div class="fc-45">{{$t('Trade.OpenPositionPopup.TradeFee')}}</div>
         <div>
           <span class="fc-85">{{-openData.tradingFee | amountFormt(4, true, 0)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div :class="confirmDisabled ? 'system-popup-button disabled-btn' : 'system-popup-button confirm'" @click="submitThenClose">确认</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.OpenPositionPopup.Cancel')}}</div>
+        <div :class="confirmDisabled ? 'system-popup-button disabled-btn' : 'system-popup-button confirm'" @click="submitThenClose">{{$t('Trade.OpenPositionPopup.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -92,10 +92,6 @@ export default {
       showPopup: this.show,
       sideType: this.type, // 0 1
       openData: Object.assign({}, this.extraData),
-      entrustTypeConfig: [
-        { text: '市价委托', value: 0},
-        { text: '限价委托', value: 1 }
-      ],
       unitConfig: [
         {text: 'USDT', value: 0},
         {text: 'BTC', value: 1}
@@ -177,7 +173,7 @@ export default {
 
       this.close()
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.OpenPositionPopup.TradePendingMsg')})
 
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
@@ -186,9 +182,9 @@ export default {
         price: toContractUnit(price),
         leverage: toContractUnit(leverage)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '开仓成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.OpenPositionPopup.TradeSuccessMsg')})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '开仓失败'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.OpenPositionPopup.TradeFailedMsg')})
       })
 
     },
@@ -212,14 +208,14 @@ export default {
         if (size > fromContractUnit(this.sysOpenUpperBound.size)) {
 
           self.showError = true
-          self.errorMsg = `当前流动性处于限仓状态，您最多可以开仓 ${fck(this.sysOpenUpperBound.size, -8)} USDT`
+          self.errorMsg = `${this.$t('Trade.OpenPositionPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)} USDT`
           return fromContractUnit(this.sysOpenUpperBound.size)
         }
       } else {
         if (size > fromContractUnit(this.sysOpenUpperBound.amount)) {
 
           self.showError = true
-          self.errorMsg = `当前流动性处于限仓状态，您最多可以开仓 ${fck(this.sysOpenUpperBound.size, -8)}${self.unitConfig[self.openData.unit].text}`
+          self.errorMsg = `${this.$t('Trade.OpenPositionPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)}${self.unitConfig[self.openData.unit].text}`
 
           return fromContractUnit(this.sysOpenUpperBound.amount)
         }

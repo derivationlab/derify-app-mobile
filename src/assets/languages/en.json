@@ -57,6 +57,7 @@
       "NoMoreInfo":"No more info"
     },
     "OpenPositionPopup": {
+      "OpenConfirm": "Confirm",
       "Confirm":"Confirm",
       "Price":"Price",
       "Market":"Market",
@@ -66,7 +67,7 @@
       "Two-Way":"Two-Way",
       "Amount":"Amount",
       "PCF":"PCF",
-      "Trad. Fee":"Trad. Fee",
+      "TradeFee":"Trad. Fee",
       "Cancel":"Cancel",
       "TradePendingMsg":"Pending ……",
       "TradeSuccessMsg":"Successful",
@@ -137,7 +138,7 @@
       "CurrentPrice":"Current Price",
       "TakeProfit":"Take Profit",
       "StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} USDT.",
-      "stopLoss":"Stop Loss",
+      "StopLoss":"Stop Loss",
       "StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} USDT.",
       "PriceError":"Over price limit, please retry",
       "IllegalPriceError":"Over price limit, please retry",
@@ -163,6 +164,17 @@
       "TradeSuccessMsg":"Successful",
       "TradeFailedMsg":"Error, please retry."
     },
+    "CancelOrderPopup": {
+      "CancelOneOrder":"Cancel",
+      "CancelAllOrder":"Cancel All",
+      "CancelOneOrderInfo":"Click to CANCEL the order",
+      "CloseAllOrderInfo":"Click to CANCEL ALL orders",
+      "TradePendingMsg":"Pending ……",
+      "TradeSuccessMsg":"Successful",
+      "TradeFailedMsg":"Error, please retry.",
+      "Cancel":"Cancel",
+      "Confirm":"Confirm"
+    },
     "CurrentOrder": {
       "CurrentOrder":"Current Order",
       "Long":"L",
@@ -172,11 +184,11 @@
       "Volume":"Volume",
       "Time":"Time",
       "Cancel":"Cancel",
-      "OpenLimit":"<span class=\"fc-green\">Open</span>/<span>Limit</span>",
-      "CloseStopProfit":"<span class=\"fc-red\">Close</span>/<span>TP</span>",
-      "CloseStopLoss":"<span class=\"fc-red\">Close</span>/<span>SL</span>",
+      "OpenLimit": {"0":"Open","1":"Limit"},
+      "CloseStopProfit": {"0":"Close","1":"TP"},
+      "CloseStopLoss":{"0":"Close","1":"SL"},
       "CancelOneOrder":"Click to CANCEL the order",
-      "CancelAllOrder":"Cancel All ",
+      "CancelAllOrder":"Cancel All",
       "CloseAllOrderPopup":"Click to CANCEL ALL orders",
       "TradePendingMsg":"Pending ……",
       "TradeSuccessMsg":"Successful",
@@ -194,12 +206,12 @@
       "TradFee":"Trad. Fee",
       "PCF":"PCF",
       "Compensation":"Compensation",
-      "OpenMarket":"Open / Market",
-      "OpenLimit":"Open/ Limit",
-      "CloseMarket":"Close/ Market",
-      "CloseStopPrice":"Close / TPSL",
-      "CloseDeleverage":"Close / Deleverage",
-      "CloseLiquidate":"Close / Liquidate"
+      "OpenMarket": {"0":"Open","1":"Market"},
+      "OpenLimit": {"0":"Open","1":"Limit"},
+      "CloseMarket":{"0":"Close","1":"Market"},
+      "CloseStopPrice":{"0":"Close","1":"TPSL"},
+      "CloseDeleverage":{"0":"Close","1":"Deleverage"},
+      "CloseLiquidate":{"0":"Close","1":"Liquidate"}
     },
     "Hint": {
       "PCFRate":"PCF Rate",
