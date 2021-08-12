@@ -50,13 +50,14 @@
       "IllegalSizeError":"输入数量有误，请重新输入",
       "MaxSize":"可开",
       "Transfer":"划转",
-      "BuyLong":"看涨/开多",
-      "SellShort":"看跌/开空",
+      "BuyLong":"看涨 开多",
+      "SellShort":"看跌 开空",
       "TwoWay":"双向对冲",
       "TwoWayOpenPriceTypeError":"对冲交易只能选择市价委托",
       "NoMoreInfo":"没有更多了"
     },
-    "OpenPositionPopup": {"Confirm":"开仓确认",
+    "OpenPositionPopup": {
+      "OpenConfirm":"开仓确认",
       "Price":"委托价格",
       "Market":"市价委托",
       "Type":"开仓类型",
