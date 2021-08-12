@@ -1,7 +1,8 @@
 {
   "lng": "en",
   "global" : {
-    "click connect wallet": "点击连接钱包"
+    "click connect wallet": "点击连接钱包",
+    "NumberError":"数值有误，请重新输入"
   },
   "navbar":{
     "Home": "首页",

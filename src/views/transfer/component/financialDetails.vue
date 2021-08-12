@@ -46,9 +46,9 @@
   import { amountFormt } from '../../../utils/utils'
 
   const feeTypeMap = {
-    0: "手续费", //-TradingFee,
-    1: "动仓费", //-PositionChangeFee
-    2: "盈亏", //-ProfitAndLoss
+    0: "Trade.Account.TradeFee", //-TradingFee,
+    1: "Trade.Account.PCF", //-PositionChangeFee
+    2: "Trade.Account.Profit", //-ProfitAndLoss
     3: "盈亏", //-ProfitAndLossAuto
     4: "gas费", //-GasFee
     5: "清算费用", //-Liquidation

@@ -170,7 +170,7 @@
                           <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
                             {{data.unrealizedPnl | amountFormt(2, true, '--', -8)}}
                           </div>
-                          <div>USDT<template v-if="data.returnRate"><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -8)}}%)</span></template></div>
+                          <div>USDT<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -8)}}%)</span></template></div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">持仓量：</div>
@@ -192,28 +192,28 @@
                           <div class="fc-45">止损设置：</div>
                           <div>
                             <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
-                            <template v-else>-</template></div>
+                            <template v-else>--</template></div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">止盈设置：</div>
                           <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
-                            <template v-else>-</template></div>
+                            <template v-else>--</template></div>
                         </div>
                       </div>
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">持仓保证金：</div>
-                          <div>{{data.margin | fck(-8)}} USDT</div>
+                          <div>{{data.margin | amountFormt(2, false, '--', -8)}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">保证金率：</div>
-                          <div>{{data.marginRate | fck(-8)}}%</div>
+                          <div>{{data.marginRate | amountFormt(2, false, '--', -8)}}%</div>
                         </div>
                       </div>
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">强平金额：</div>
-                          <div>{{data.liquidatePrice | fck(-8)}} USDT</div>
+                          <div>{{data.liquidatePrice | amountFormt(2, false, '--', -8)}} USDT</div>
                         </div>
                         <div class="exchange-item-right" @click="changeShowSet(true, data)">
                           <div>设置止盈/止损</div>

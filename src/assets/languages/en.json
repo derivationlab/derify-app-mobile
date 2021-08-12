@@ -1,7 +1,8 @@
 {
   "lng": "en",
   "global" : {
-    "click connect wallet": "click connect wallet"
+    "click connect wallet": "click connect wallet",
+    "NumberError":"Error, please retry"
   },
   "navbar":{
     "Home": "Home",
@@ -65,7 +66,6 @@
       "PCF":"PCF",
       "Trad. Fee":"Trad. Fee",
       "Cancel":"Cancel",
-      "Confirm":"Confirm",
       "TradePendingMsg":"Pending ……",
       "TradeSuccessMsg":"Successful",
       "TradeFailedMsg":"Error, please retry.",
@@ -103,7 +103,10 @@
       "LiqCost":"Liq. Cost",
       "Compensation":"Compensation",
       "SysLoss":"Sys. Loss",
-      "NoMoreInfo":"No more info"
+      "NoMoreInfo":"No more info",
+      "TradePendingMsg":"Pending ……",
+      "TradeSuccessMsg":"Successful",
+      "TradeFailedMsg":"Error, please retry."
     },
     "MyPosition": {
       "MyPosition":"My Position",
@@ -121,7 +124,10 @@
       "SetStopPrice":"Set TP / SL",
       "Close":"Close",
       "NoMoreInfo":"No more info",
-      "OneClickClose":"One-Click Close"
+      "OneClickClose":"One-Click Close",
+      "TradePendingMsg":"Pending ……",
+      "TradeSuccessMsg":"Successful",
+      "TradeFailedMsg":"Error, please retry."
     },
     "SetStopPricePopup": {
       "SetStopPrice":"Set TP / SL",

@@ -83,7 +83,7 @@ export default {
     },
     deposit () {
       if (!this.amount) {
-        this.$toast('请输入正确的数量')
+        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
         return false
       }
 
@@ -92,41 +92,36 @@ export default {
       const amount = toContractUnit(a)
 
       if(toContractNum(this.amount) > this.balanceOfWallet) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
         return  false
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'});
-        setTimeout(() => {
-          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''});
-          this.$router.go(-1)
-        }, 1000)
-
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.Account.TradeSuccessMsg')});
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + e})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg:   this.$t('Trade.Account.TradeFailedMsg')})
       }).finally( _ => {
         this.$router.go(-1)
       })
     },
     withdraw () {
       if (!this.amount) {
-        this.$toast('请输入正确的数量')
+        this.$toast(this.$t('global.NumberError'))
         return false
       }
 
       if(toContractNum(this.amount) > this.account.marginBalance) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('global.NumberError'))
         return  false
       }
 
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
 
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.Account.TradeSuccessMsg')})
 
         setTimeout(() => {
           this.$userProcessBox({status: UserProcessStatus.finished, msg: ''})
@@ -134,7 +129,7 @@ export default {
         }, 1000)
 
       }).catch(err => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg:  this.$t('Trade.Account.TradeFailedMsg')})
         this.$router.go(-1)
       })
     }
