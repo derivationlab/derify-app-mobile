@@ -865,16 +865,6 @@ export default {
 
       context.loadStamp = timestamp
 
-      if(context.tokenMiningRateEvent !== null){
-        context.tokenMiningRateEvent.close()
-      }
-
-      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //update mining fee
-        //{"longPmrRate":0,"shortPmrRate":0}
-        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
-      })
-
       if(!window.ethereum){
         return
       }
@@ -983,7 +973,7 @@ export default {
       deep: true
     },
     '$route.name': function (){
-      this.drawKline()
+      this.updateKLine(this.curPair.key, this.kChartTimeGap.text)
     },
     '$i18n.locale' : function () {
       this.tabs = {
@@ -1007,8 +997,22 @@ export default {
       context.klineTimer = null
     }
 
+    if(context.tokenMiningRateEvent !== null){
+      context.tokenMiningRateEvent.close()
+      context.tokenMiningRateEvent = null
+    }
+
+    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+      //update mining fee
+      //{"longPmrRate":0,"shortPmrRate":0}
+      this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
+    })
+
     context.klineTimer = setInterval(() => {
-      self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+      if(self.$route.name === 'exchange') {
+        self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+      }
+
     }, 15000)
 
     context.timer = setInterval(() => {
