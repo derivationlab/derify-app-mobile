@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="收益" />
+    <navbar :title="$t('Rewards.AccumulatedReward')" />
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">持仓挖矿收益</span>

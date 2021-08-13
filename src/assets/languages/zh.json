@@ -307,6 +307,7 @@
     "more":"多"
   },
   "Rewards":{
+    "title": "收益",
     "PositionMiningReward":"持仓挖矿收益",
     "PositionHeld":"持仓额",
     "AccumulatedReward":"历史累计收益",
