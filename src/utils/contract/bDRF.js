@@ -4,7 +4,12 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "minter_",
+        "name": "minter_0",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "minter_1",
         "type": "address"
       }
     ],
@@ -91,12 +96,11 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
-    "name": "minter",
+    "name": "minter0",
     "outputs": [
       {
         "internalType": "address",
@@ -105,8 +109,20 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minter1",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -119,8 +135,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -133,8 +148,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -147,8 +161,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -161,8 +174,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -181,8 +193,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -206,8 +217,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [

@@ -529,8 +529,8 @@ export default {
         {value: '5m', text: '5m'},
         {value: '15m', text: '15m'},
         {value: '1H', text: '1h'},
-        {value: '4h', text: '4H'},
-        {value: '1d', text: 'D'},
+        {value: '4H', text: '4h'},
+        {value: '1D', text: 'D'},
         {value: '1W', text: 'W'},
         {value: '1M', text: 'M'},
       ],
@@ -877,7 +877,7 @@ export default {
 
       const self = this
 
-      self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+      self.updateKLine(self.curPair.key, self.kChartTimeGap)
 
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
@@ -924,7 +924,7 @@ export default {
       this.kChartTimeGap = gap
       this.toggleTimeGap(false)
 
-      this.updateKLine(this.curPair.key, gap.value)
+      this.updateKLine(this.curPair.key, gap)
     },
     toggleTimeGap (bool) {
       this.showTimeGapDropDown = bool
@@ -932,7 +932,7 @@ export default {
     updateKLine(token, gap) {
       const self = this
       getEchartsOptions({token,
-        bar: gap,
+        bar: gap.value,
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
         self.drawKline(options)
       })
@@ -976,7 +976,7 @@ export default {
       deep: true
     },
     '$route.name': function (){
-      this.updateKLine(this.curPair.key, this.kChartTimeGap.text)
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
     },
     '$i18n.locale' : function () {
       this.tabs = {
@@ -1018,7 +1018,7 @@ export default {
 
     context.klineTimer = setInterval(() => {
       if(self.$route.name === 'exchange') {
-        self.updateKLine(self.curPair.key, self.kChartTimeGap.text)
+        self.updateKLine(self.curPair.key, self.kChartTimeGap)
       }
 
     }, 15000)

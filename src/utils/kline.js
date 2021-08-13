@@ -1,7 +1,21 @@
 import { getKLineData } from '../api/kdata'
 
 export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
-                                       , values = [[0,0,0,0]], curPrice = 0, bar = '15m'}) {
+                                       , values = [[0,0,0,0]], curPrice = 0
+                                       , bar = '15m'}) {
+
+  let min = values[0][3]
+  let max = values[0][2]
+  values.forEach(item => {
+    min = Math.min(item[3], min)
+    max = Math.max(item[2], max)
+  })
+
+  max = Math.max(curPrice, max)
+  min = Math.min(curPrice, min)
+
+  max = max + (max - min)/10
+  min = min - (max - min)/10
 
   return {
     darkMode: true,
@@ -39,6 +53,8 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       scale: true,
       show: true,
       splitNumber: 5,
+      min: min,
+      max: max,
       boundaryGap: ['0%', '0%'],
       axisLabel: {
         inside: true,
@@ -145,6 +161,9 @@ function splitData (rawData, bar) {
   for (let i = 0; i < rawData.length; i++) {
     const date = new Date(parseInt(rawData[i].splice(0, 1)[0]));
     categoryData.push(date.Format(barDateFmtMap[bar]))
+    //[open, highest, lowest, close]
+    //convert to
+    //[open, close, highest, lowest]
     values.push([rawData[i][0],rawData[i][3],rawData[i][1],rawData[i][2]])
   }
   return {

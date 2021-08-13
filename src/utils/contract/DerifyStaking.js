@@ -79,8 +79,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -93,8 +92,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -107,8 +105,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -121,8 +118,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -135,8 +131,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -149,8 +144,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -208,12 +202,16 @@ export default
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "pmrReward",
+        "name": "pmrBalance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pmrAccumulatedBalance",
         "type": "uint256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   }
 ]

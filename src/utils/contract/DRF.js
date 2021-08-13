@@ -4,12 +4,27 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "account",
+        "name": "account1",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "minter_",
+        "name": "account2",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account3",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account4",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account5",
         "type": "address"
       }
     ],
@@ -45,25 +60,6 @@ export default
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "minter",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newMinter",
-        "type": "address"
-      }
-    ],
-    "name": "MinterChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "from",
@@ -93,19 +89,6 @@ export default
         "internalType": "uint8",
         "name": "",
         "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "minter",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -204,37 +187,6 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "minter_",
-        "type": "address"
-      }
-    ],
-    "name": "setMinter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "dst",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "mint",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
