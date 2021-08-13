@@ -44,9 +44,7 @@ export async function getTradeBalanceDetail (trader) {
 }
 
 export async function getTraderBondBalance (trader) {
-  trader = '0xA0F53B952005A57260B19143708Bcd34eB6F78b6'
   const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
-  console.log('getTraderBondBalance', content)
   if(content) {
     return content.data;
   }
@@ -56,7 +54,6 @@ export async function getTraderBondBalance (trader) {
 
 export async function getTraderPMRBalance (trader) {
   const content =  await io.get(TRADER_PMR_BALANCE_URL + trader)
-  console.log('getTraderPMRBalance', content)
   if(content) {
     return content.data;
   }
