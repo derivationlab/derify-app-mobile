@@ -48,17 +48,7 @@ export default {
   props: ['show', 'redeemId'],
   data () {
 
-    let accoutOptions = [
-      { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }
-    ]
-
-    if(this.redeemId === EarningType.EDRF) {
-      accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
-    }else if(this.redeemId === EarningType.BDRF){
-      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
-        { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
-    }
+    let accoutOptions = this.updateAccountOptions()
 
     return {
       showPopup: this.show,
@@ -91,20 +81,11 @@ export default {
       } else if(this.redeemId === EarningType.BDRF){
         this.redeemName = 'bDRF'
       }
+      this.updateAccountOptions()
     },
     "$i18n.locale": {
       handler() {
-        let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
-
-        if(this.redeemId === EarningType.EDRF) {
-          accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-            { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
-        }else if(this.redeemId === EarningType.BDRF){
-          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
-            { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
-        }
-
-        this.accountOptions = accoutOptions
+        this.updateAccountOptions()
       },
       immediate: true,
       deep: true
@@ -150,7 +131,23 @@ export default {
 
     },
     onDropDowOpen () {
-      return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+    },
+    getAccountOptions() {
+      let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+
+      if(this.redeemId === EarningType.EDRF) {
+        accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+      }else if(this.redeemId === EarningType.BDRF){
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+      }
+
+      return accoutOptions
+    },
+    updateAccountOptions() {
+      this.accountOptions = this.getAccountOptions()
     }
   }
 }

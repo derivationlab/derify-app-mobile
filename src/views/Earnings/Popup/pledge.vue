@@ -47,17 +47,7 @@ export default {
   props: ['show', 'pledgeId'],
   data () {
 
-    let accoutOptions = [
-      { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }
-    ]
-
-    if(this.pledgeId === EarningType.EDRF) {
-      accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
-    }else if(this.pledgeId === EarningType.BDRF){
-      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
-        { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
-    }
+    let accoutOptions = this.getAccountOptions()
 
     return {
       showPopup: this.show,
@@ -79,21 +69,12 @@ export default {
       } else if(this.pledgeId === EarningType.BDRF) {
         this.pledgeName = 'bDRF'
       }
+
+      this.updateAccountOptions()
     },
     "$i18n": {
       handler() {
-        let accoutOptions = [
-        ]
-
-        if(this.pledgeId === EarningType.EDRF) {
-          accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-            { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
-        }else if(this.pledgeId === EarningType.BDRF){
-          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
-            { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
-        }
-
-        this.accountOptions = accoutOptions
+        this.updateAccountOptions()
       }
     }
   },
@@ -143,7 +124,7 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     onDropDowOpen () {
-      return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     updateTokenBalance() {
       const earningTokenMap = {}
@@ -154,6 +135,26 @@ export default {
         this.$store.dispatch('earnings/getWalletBalance', {tokenName: earningTokenMap[this.pledgeId]})
       }
 
+    },
+
+    getAccountOptions() {
+      let accoutOptions = [
+        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }
+      ]
+
+      if(this.pledgeId === EarningType.EDRF) {
+        accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+      }else if(this.pledgeId === EarningType.BDRF){
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+      }
+
+      return accoutOptions
+    },
+
+    updateAccountOptions() {
+      this.accountOptions = this.getAccountOptions()
     }
   }
 }

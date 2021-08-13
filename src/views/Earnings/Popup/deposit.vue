@@ -48,20 +48,7 @@ export default {
   props: ['show', 'depositId'],
   data () {
 
-    let accoutOptions = [
-      { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }
-    ]
-
-    if (this.depositId === EarningType.MIN) {
-      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-        { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-    } else if (this.depositId === EarningType.EDRF) {
-      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-        { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-    } else {
-      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-        { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-    }
+    let accoutOptions = this.getAccountOptions()
 
     return {
       showPopup: this.show,
@@ -82,7 +69,7 @@ export default {
       this.showPopup = this.show
       this.updateExchangeBondSizeUpperBound()
     },
-    withdrawId () {
+    depositId () {
       if (this.depositId === EarningType.MIN) {
         this.withdrawName = 'USDT'
       } else if (this.depositId === EarningType.EDRF) {
@@ -90,6 +77,8 @@ export default {
       } else {
         this.withdrawName = 'bDRF'
       }
+
+      this.updateAccountOptions()
     },
     '$store.state.earnings.exchangeBondSizeUpperBound': {
       handler() {
@@ -100,20 +89,7 @@ export default {
     },
     "$i18n.locale": {
       handler () {
-        let accoutOptions = [{ text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-
-        if (this.depositId === EarningType.MIN) {
-          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-            { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-        } else if (this.depositId === EarningType.EDRF) {
-          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-            { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-        } else {
-          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-            { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
-        }
-
-        this.accountOptions = accoutOptions
+        this.updateAccountOptions()
       }
     }
   },
@@ -139,7 +115,7 @@ export default {
       })
     },
     onDropDowOpen () {
-      return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     updateExchangeBondSizeUpperBound() {
       this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
@@ -156,6 +132,27 @@ export default {
       }
 
       return true
+    },
+
+    getAccountOptions() {
+      let accoutOptions = [{ text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+
+      if (this.depositId === EarningType.MIN) {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      } else if (this.depositId === EarningType.EDRF) {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      } else {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      }
+
+      return accoutOptions
+    },
+
+    updateAccountOptions() {
+      this.accountOptions = this.getAccountOptions()
     }
   }
 }
