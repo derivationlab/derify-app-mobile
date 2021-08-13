@@ -3,14 +3,11 @@
     <div class="system-popup">
       <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
       <div class="fz-15" style="margin-top: 1rem">
-        <span class="fc-65">点击确定，我们将按</span>
-        <span class="fc-yellow">市价</span>
-        <span class="fc-65">立即平仓</span>
-        <span class="fc-yellow">全部仓位</span>
+        {{$t('Trade.ClosePosition.ClosePositionPopupInfo')}}
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">确认</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.ClosePosition.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.ClosePosition.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -29,12 +26,7 @@ export default {
   },
   data () {
     return {
-      showPopup: this.show,
-      popupInfo: [
-        {type: 'cancleAllOrderedPositions', title: '取消委托', content: '点击确定，取消该委托单'},
-        {type: 'cancleOrderedStopPosition', title: '取消委托', content: '点击确定，取消该委托单'},
-        {type: 'cancleOrderedLimitPosition', title: '取消委托', content: '点击确定，取消所有委托单'},
-      ]
+      showPopup: this.show
     }
   },
   watch: {
@@ -47,12 +39,12 @@ export default {
       this.$emit('closeOneKeyUnwindPopup', false)
     },
     submitThenClose () {
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
 
       this.$store.dispatch('contract/closeAllPositions').then((r) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradeSuccessMsg')})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
       });
 
       this.close();
