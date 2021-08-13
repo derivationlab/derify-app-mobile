@@ -84,7 +84,8 @@
       "SellShort":"Sell / Short",
       "TwoWay":"Two Way ",
       "TwoWayOpenPriceTypeError":"You can only place Two-way positions via market order",
-      "NoMoreInfo":"No more info"
+      "NoMoreInfo":"No more info",
+      "Loading": "Loading"
     },
     "OpenPositionPopup": {
       "OpenConfirm": "Confirm",

@@ -123,6 +123,8 @@ export default {
         return
       }
 
+      this.curPercent = this.value1 * 100 / fromContractUnit(this.closeUpperBound)
+
       if(size <= 0){
         this.$toast(this.$t('global.NumberError'))
       }

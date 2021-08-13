@@ -21,7 +21,7 @@
       <div class="wallet-select-area">
         <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === mainChain.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
-          <div class="wallet-item-name">Ethereum (xDai)</div>
+          <div class="wallet-item-name">Ethereum ({{mainChain.name}})</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
         <div :class="'wallet-item disabled-item' + (selectedWalletNetwork.chainId === 99 ? 'active' : '')">

@@ -12,7 +12,7 @@ export class ChainEnum {
   }
 
   static get ETH() {
-    return new ChainEnum(1, "Ethereum mainnet", require('@/assets/images/wallet/eth-logo.png'))
+    return new ChainEnum(1, "mainnet", require('@/assets/images/wallet/eth-logo.png'))
   }
 
   static get Kovan() {

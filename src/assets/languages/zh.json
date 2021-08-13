@@ -84,7 +84,8 @@
       "SellShort":"看跌 开空",
       "TwoWay":"双向对冲",
       "TwoWayOpenPriceTypeError":"对冲交易只能选择市价委托",
-      "NoMoreInfo":"没有更多了"
+      "NoMoreInfo":"没有更多了",
+      "Loading": "加载中"
     },
     "OpenPositionPopup": {
       "OpenConfirm":"开仓确认",

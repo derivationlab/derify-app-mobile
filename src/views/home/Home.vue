@@ -39,7 +39,7 @@
         <div class="home-mid">
           <div class="home-mid-one">
             <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-              <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="updateTraderOpenUpperBound">
+              <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="onOpenTypeChange">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{entrustTypeConfig[entrustType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -114,7 +114,7 @@
               >{{gap.text}}</div>
             </template>
           </template>
-          <div class="k-chart-xtype last-xtype" @click="toggleTimeGap(!showTimeGapDropDown)">
+          <div class="k-chart-xtype last-xtype" v-if="kChartTimeMinGaps.length > showTimeGapNum" @click="toggleTimeGap(!showTimeGapDropDown)">
             <svg v-if="!showTimeGapDropDown" t="1628433867256" class="arrow-down-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2971" width="200" height="200"><path d="M482.133333 738.133333L136.533333 392.533333c-17.066667-17.066667-17.066667-42.666667 0-59.733333 8.533333-8.533333 19.2-12.8 29.866667-12.8h689.066667c23.466667 0 42.666667 19.2 42.666666 42.666667 0 10.666667-4.266667 21.333333-12.8 29.866666L541.866667 738.133333c-17.066667 17.066667-42.666667 17.066667-59.733334 0z" p-id="2972" fill="#ADAAB7"></path></svg>
             <svg v-else t="1628434121366" class="arrow-up-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3272" width="200" height="200"><path d="M541.866667 285.866667l345.6 345.6c17.066667 17.066667 17.066667 42.666667 0 59.733333-8.533333 8.533333-19.2 12.8-29.866667 12.8H168.533333c-23.466667 0-42.666667-19.2-42.666666-42.666667 0-10.666667 4.266667-21.333333 12.8-29.866666l343.466666-345.6c17.066667-17.066667 42.666667-17.066667 59.733334 0z" p-id="3273" fill="rgba(255,255,255,0.85)"></path></svg>
           </div>
@@ -137,6 +137,7 @@
             <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
               <van-list
                 v-model="loading"
+                :loading-text="$t('Trade.OpenPosition.Loading')"
                 :finished="finished"
                 :finished-text="$t('Trade.OpenPosition.NoMoreInfo')"
                 @load="loadMore"
@@ -338,9 +339,6 @@
               <div class="home-last-four-btn green-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.BuyLong')}}</div>
               <div class="home-last-four-btn red-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.SellShort')}}</div>
             </template>
-            <template v-if="!isLogin">
-              <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
-            </template>
           </template>
           <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
             <template v-if="isLogin">
@@ -351,9 +349,6 @@
               <template v-if="active === 'key2' && positionOrders.length">
                 <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">{{$t('Trade.CurrentOrder.CancelAllOrder')}}</div>
               </template>
-            </template>
-            <template v-if="!isLogin">
-              <div class="home-last-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
             </template>
           </template>
         </div>
@@ -499,9 +494,9 @@ export default {
       UnitTypeEnum,
       entrustType: 0,
       leverageUnit: 0,
-      amount: 0,
+      amount: fromContractUnit(this.curSpotPrice),
       size: 0,
-      sliderValue: 20,
+      sliderValue: 0,
       unit: 0,
       //curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
@@ -527,18 +522,17 @@ export default {
         key3:  this.$t('Trade.TradeHistory.TradeHistory')
       },
       showTimeGapDropDown: false,
-      showTimeGapNum: 4,
-      kChartTimeGap: {value: 15, text: '15m'},
+      showTimeGapNum: 9,
+      kChartTimeGap: {value: '15m', text: '15m'},
       kChartTimeMinGaps: [
-        {value: 1, text: '1m'},
-        {value: 5, text: '5m'},
-        {value: 15, text: '15m'},
-        {value: 30, text: '30m'},
-        {value: 60, text: '1H'},
-        {value: 60*4, text: '4H'},
-        {value: 60*24, text: '1D'},
-        {value: 60*24 * 7, text: '1W'},
-        {value: 60*24 * 30, text: '1M'},
+        {value: '1m', text: '1m'},
+        {value: '5m', text: '5m'},
+        {value: '15m', text: '15m'},
+        {value: '1H', text: '1h'},
+        {value: '4h', text: '4H'},
+        {value: '1d', text: 'D'},
+        {value: '1W', text: 'W'},
+        {value: '1M', text: 'M'},
       ],
       positions: [],
       positionOrders: [],
@@ -762,7 +756,6 @@ export default {
 
       const self = this;
 
-
       if(key === 'key3'){
         self.loading = true
         this.$store.dispatch('contract/loadTradeRecords').then(r => {
@@ -791,6 +784,13 @@ export default {
             timestamp: data.timestamp}).then(r => {
       })
     },
+    onOpenTypeChange () {
+      if(!this.amount) {
+        this.amount = fromContractUnit(this.curSpotPrice)
+      }
+
+      this.updateTraderOpenUpperBound()
+    },
     onPositionSizeChange (size) {
       const {unit} = this
       const maxSize = this.getMaxSize(unit)
@@ -802,7 +802,9 @@ export default {
     },
     onSliderValueChange() {
       const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
-      this.size = this.calculatePositionSize(unit, sliderValue)
+      this.unit = UnitTypeEnum.Percent
+      this.size = sliderValue
+      //this.size = this.calculatePositionSize(unit, sliderValue)
     },
     calculatePositionSize (unit, sliderValue) {
 
@@ -922,7 +924,7 @@ export default {
       this.kChartTimeGap = gap
       this.toggleTimeGap(false)
 
-      this.updateKLine(this.curPair.key, gap.text)
+      this.updateKLine(this.curPair.key, gap.value)
     },
     toggleTimeGap (bool) {
       this.showTimeGapDropDown = bool

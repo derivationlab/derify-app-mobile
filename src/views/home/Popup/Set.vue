@@ -21,7 +21,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="" @input="changeProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
@@ -38,7 +38,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @input="changeLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
@@ -111,54 +111,59 @@ export default {
     close () {
       this.$emit('closeSetPopup', false)
     },
-    changeProfitPrice (price) {
+    onInputProfitPrice (price) {
+
+      this.position.stopProfitPriceInput = price;
 
       if(price === '') {
         return
+      }
+
+      if(price < 0){
+        price = 0
       }
 
       this.position.stopProfitPrice = toContractNum(price)
-
-      const {position} = this;
-
-      if(price <= 0) {
-        this.$toast(this.$t('global.NumberError'))
-        return
-      }
-
-      if(!this.checkProfitPrice(position, price)){
-        this.$toast(this.$t('global.NumberError'))
-        return
-      }
-
-
       this.calLossAndProfit();
     },
-    changeLossPrice (price, oldPrice) {
+    onInputLossPrice (price) {
       const {position} = this;
-
       this.position.stopLossPriceInput = price;
-
       if(price === '') {
         return
       }
+
+      if(price < 0){
+        price = 0
+      }
+
       this.position.stopLossPrice = toContractNum(price)
-
-      if(price <= 0) {
-        this.$toast(this.$t('global.NumberError'))
-        return
-      }
-
-      if(!this.checkLossPrice(position, price)){
-        this.$toast(this.$t('global.NumberError'))
-        return
-      }
-
 
       this.calLossAndProfit();
     },
 
+    onChangeProfitPrice() {
+      const {position} = this;
+
+      if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
+        this.$toast(this.$t('global.NumberError'))
+      }
+    },
+    onChangeLossPrice() {
+      if(!this.checkLossPrice(position, position.stopLossPriceInput)){
+        this.$toast(this.$t('global.NumberError'))
+      }
+    },
     checkProfitPrice(position, profitPrice) {
+
+      if(profitPrice === '') {
+        return true
+      }
+
+      if(profitPrice <= 0){
+        return false
+      }
+
       if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= position.averagePrice){
         return false
       }
@@ -170,6 +175,15 @@ export default {
       return true
     },
     checkLossPrice(position, lossPrice) {
+
+      if(lossPrice === '') {
+        return true
+      }
+
+      if(lossPrice <= 0){
+        return false
+      }
+
       if(position.side === SideEnum.LONG && toContractNum(lossPrice) > position.averagePrice){
         return false
       }
@@ -197,13 +211,7 @@ export default {
       const side = this.position.side
       const token = this.position.token
 
-
       if(this.position.stopProfitPriceInput !== ''){
-        if(this.position.stopProfitPrice <= 0) {
-          this.$toast(this.$t('global.NumberError'))
-          return
-        }
-
         if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
           this.$toast(this.$t('global.NumberError'))
           return
@@ -211,11 +219,6 @@ export default {
       }
 
       if(this.position.stopLossPriceInput !== ''){
-        if(this.position.stopLossPrice <= 0) {
-          this.$toast(this.$t('global.NumberError'))
-          return
-        }
-
         if(!this.checkLossPrice(this.position, this.position.stopLossPrice)){
           this.$toast(this.$t('global.NumberError'))
           return
