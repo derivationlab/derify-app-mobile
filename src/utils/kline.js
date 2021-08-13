@@ -1,7 +1,7 @@
 import { getKLineData } from '../api/kdata'
 
 export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
-                                       , values = [[0,0,0,0]], curPrice = 0}) {
+                                       , values = [[0,0,0,0]], curPrice = 0, bar = '15m'}) {
 
   return {
     darkMode: true,
@@ -57,7 +57,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     },
     series: [
       {
-        name: '»’K',
+        name: bar,
         type: 'candlestick',
         data: values,
         itemStyle: {
@@ -124,7 +124,7 @@ function getTokenInstIdByToken(token) {
 
 export default async function getEchartsOptions({token, bar, after, before, limit, curPrice}) {
   const data = await getKLineData({instId: getTokenInstIdByToken(token), bar, after, before, limit})
-  return buildEchartsOptions({...splitData(data, bar), curPrice})
+  return buildEchartsOptions({...splitData(data, bar), curPrice, bar})
 }
 
 const barDateFmtMap = {

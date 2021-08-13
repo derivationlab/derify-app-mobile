@@ -312,7 +312,7 @@
     "type":"type",
     "freightSpace":"freight Space",
     "Time":"Time",
-    "open":"开",
-    "more":"多"
+    "open":"open",
+    "more":"long"
   }
 }

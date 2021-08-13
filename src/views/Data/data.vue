@@ -18,10 +18,8 @@
           </div>
         </div>
       </div>
-      <!-- K线图 -->
       <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
-      <!-- K线图 -->
-      <div style="font-weight: 700;color: rgba(255,255,255,0.85);font-size: 1.7rem;margin:2rem 0">交易记录</div>
+      <div style="font-weight: 700;color: rgba(255,255,255,0.85);font-size: 1.7rem;margin:2rem 0">{{ $t('data.dealingSlip') }}</div>
       <record></record>
     </div>
   </div>
@@ -31,9 +29,13 @@
 import Navbar from '@/components/Navbar'
 import record from './record/index.vue'
 import {options,data0} from '@/utils/kExample'
+import getEchartsOptions from "@/utils/kline";
+import {fromContractUnit} from "@/utils/contractUtil";
 
 window.data0 = data0;
-const context = {};
+const context = {
+  myChart: null
+};
 export default {
   name: 'Home',
   components: {
@@ -47,89 +49,37 @@ export default {
     }
   },
   mounted () {
-    this.drawLine()
+    const {curPairKey, pairs} = this.$store.state.contract
+    this.updateKLine(curPairKey, "1D")
   },
   methods: {
-    drawLine () {
+    drawLine (options) {
       if(!this.show){
         return
       }
+
+      if(!options){
+        return
+      }
+
       // Based on the prepared dom, initialize the echarts instance
-      if(!context.myChart) {
-        context.myChart = this.$echarts.init(document.getElementById('myChart'))
+      if(context.myChart !== null) {
+        context.myChart.dispose()
+        context.myChart = null
       }
 
       // Draw a chart
-      context.myChart.setOption({
-        darkMode: true,
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          }
-        },
-        legend: {
-          data: []
-        },
-        grid: {
-          left: '10%',
-          right: '10%',
-          bottom: '15%'
-        },
-        xAxis: {
-          type: 'category',
-          data: data0.categoryData,
-          scale: true,
-          boundaryGap: false,
-          axisLine: { onZero: false },
-          splitLine: { show: false },
-          splitNumber: 20
-          //min: 'dataMin',
-          //max: 'dataMax'
-        },
-        yAxis: {
-          scale: true,
-          splitArea: {
-            show: true
-          }
-        },
-        dataZoom: [
-          // {
-          //   type: 'inside',
-          //   start: 50,
-          //   end: 100
-          // },
-          // {
-          //   show: true,
-          //   type: 'slider',
-          //   top: '90%',
-          //   start: 50,
-          //   end: 100
-          // }
-        ],
-        series: [
-          {
-            name: '日K',
-            type: 'candlestick',
-            data: data0.values,
-            markPoint: {
-              label: {
-                normal: {
-                  formatter: function (param) {
-                    return param != null ? Math.round(param.value) : ''
-                  }
-                }
-              },
-              tooltip: {
-                formatter: function (param) {
-                  return param.name + '<br>' + (param.data.coord || '')
-                }
-              }
-            }
-          }
-        ]
-      })
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
+      context.myChart.setOption(options)
       context.myChart.resize()
+    },
+    updateKLine(token, gap) {
+      const self = this
+      getEchartsOptions({token,
+        bar: gap,
+        curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
+        self.drawLine(options)
+      })
     }
   }
 }
