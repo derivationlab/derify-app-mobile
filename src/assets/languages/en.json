@@ -1,7 +1,7 @@
 {
   "lng": "en",
   "global" : {
-    "click connect wallet": "click connect wallet",
+    "ClickConnectWallet": "click connect wallet",
     "NumberError":"Error, please retry"
   },
   "navbar":{
@@ -317,6 +317,9 @@
   },
   "Rewards":{
     "title": "Rewards",
+    "TradePendingMsg":"Pending ……",
+    "TradeSuccessMsg":"Successful",
+    "TradeFailedMsg":"Error, please retry.",
     "Mining": {
       "PositionMiningReward":"Position Mining ",
       "PositionHeld":"Position Held",
@@ -339,6 +342,7 @@
     "Staking": {
       "StakEquity":"Stak. Equity",
       "TransactionHistory":"Transaction History",
+      "AccumulatedReward":"Accumulated Reward",
       "Withdraw":"Withdraw",
       "WithdrawAmount":"Amount",
       "WithdrawMax":"Max",

@@ -33,8 +33,8 @@
       <div class="withdraw" @click="goTransfer('withdraw')">{{$t('Trade.Account.Withdraw')}}</div>
     </template>
     <template v-if="!isLogin">
-      <div class="recharge" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-      <div class="withdraw" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+      <div class="recharge" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+      <div class="withdraw" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
     </template>
   </div>
 </template>

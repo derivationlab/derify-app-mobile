@@ -2,7 +2,7 @@
 <div>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">赎回{{redeemName}}</div>
+      <div class="system-popup-title">{{$t('Rewards.Staking.Redeem')}}{{redeemName}}</div>
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -14,23 +14,23 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">赎回数量</div>
+        <div class="popup-text">{{$t('Rewards.Staking.RedeemAmount')}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
           <div class="unit">{{redeemName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可赎回：{{maxRedeemAmount | fck(-8,4)}} {{redeemName}}</span>
-          <span class="popup-span2" @click="redeemAll">全部赎回</span>
+          <span class="popup-span1">{{$t('Rewards.Staking.RedeemMax')}}：{{maxRedeemAmount | fck(-8,4)}} {{redeemName}}</span>
+          <span class="popup-span2" @click="redeemAll">{{$t('Rewards.Staking.RedeemAll')}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.RedeemCancel')}}</div>
         <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">赎回</div>
+          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Redeem')}}</div>
         </template>
         <template v-else>
-          <div class="system-popup-button disabled-btn" @click="submitThenClose">赎回</div>
+          <div class="system-popup-button disabled-btn" @click="submitThenClose">{{$t('Rewards.Staking.Redeem')}}</div>
         </template>
       </div>
     </div>
@@ -47,6 +47,19 @@ import { EarningType } from '../../../store/modules/earnings'
 export default {
   props: ['show', 'redeemId'],
   data () {
+
+    let accoutOptions = [
+      { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }
+    ]
+
+    if(this.redeemId === EarningType.EDRF) {
+      accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+    }else if(this.redeemId === EarningType.BDRF){
+      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
+        { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+    }
+
     return {
       showPopup: this.show,
       value1: null,
@@ -54,10 +67,7 @@ export default {
       curPercent: 25,
       redeemName: null,
       accountType: BondAccountType.DerifyAccount,
-      accountOptions: [
-        { text: 'Derify账户', value: 0 },
-        { text: '钱包账户', value: 1 }
-      ]
+      accountOptions: accoutOptions
     }
   },
   computed: {
@@ -81,6 +91,23 @@ export default {
       } else if(this.redeemId === EarningType.BDRF){
         this.redeemName = 'bDRF'
       }
+    },
+    "$i18n.locale": {
+      handler() {
+        let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+
+        if(this.redeemId === EarningType.EDRF) {
+          accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+            { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+        }else if(this.redeemId === EarningType.BDRF){
+          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
+            { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+        }
+
+        this.accountOptions = accoutOptions
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -88,8 +115,8 @@ export default {
       this.$emit('closeRedeem', false)
     },
     onSelect (item) {
-      // 默认情况下点击选项时不会自动收起
-      // 可以通过 close-on-click-action 属性开启自动收起
+      // drop down items will not auto fold by default
+      // please use close-on-click-action open auto fold
       this.show = false
       Toast(item.name)
     },
@@ -103,7 +130,7 @@ export default {
       }
 
       if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('Rewards.Mining.NumberError'))
         return
       }
 
@@ -111,11 +138,11 @@ export default {
 
       } else if(this.redeemId === EarningType.BDRF) {
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
         this.$store.dispatch("earnings/redeemBondFromBank", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
         }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
         }).finally( p => {
           this.$store.dispatch('earnings/loadEarningData')
         })

@@ -27,7 +27,7 @@
               <span class="fz-13" @click="withdraw(true, EarningType.MIN)">{{ $t('Rewards.Mining.Withdraw') }}</span>
             </template>
             <template v-else>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </template>
           </div>
         </div>
@@ -48,7 +48,7 @@
           </div>
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">历史累计收益（eDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.AccumulatedReward') }}（eDRF）</span>
           </div>
         </div>
         <div class="earnings-item">
@@ -69,7 +69,7 @@
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </div>
           </template>
         </div>
@@ -115,7 +115,7 @@
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </div>
           </template>
         </div>
@@ -266,7 +266,7 @@ export default {
       display: flex;
       margin-bottom: 2.8rem;
       .div1{
-        flex: 1;
+        flex: 1 auto;
         display: flex;
         flex-direction: column;
         .span1{

@@ -1,7 +1,7 @@
 {
   "lng": "zh",
   "global" : {
-    "click connect wallet": "点击连接钱包"
+    "ClickConnectWallet": "点击连接钱包"
   },
   "navbar":{
     "Home":"首页",

@@ -1,7 +1,7 @@
 {
   "lng": "en",
   "global" : {
-    "click connect wallet": "点击连接钱包",
+    "ClickConnectWallet": "点击连接钱包",
     "NumberError":"数值有误，请重新输入"
   },
   "navbar":{
@@ -308,6 +308,9 @@
   },
   "Rewards":{
     "title": "收益",
+    "TradePendingMsg":"正在执行，请稍候",
+    "TradeSuccessMsg":"执行成功",
+    "TradeFailedMsg":"执行失败，请重试",
     "Mining": {
       "PositionMiningReward":"持仓挖矿收益",
       "PositionHeld":"持仓额",

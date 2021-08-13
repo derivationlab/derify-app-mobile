@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">质押{{pledgeName}}</div>
+      <div class="system-popup-title">{{$t('Rewards.Staking.Staking')}}{{pledgeName}}</div>
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -13,24 +13,24 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">质押数量</div>
+        <div class="popup-text">{{$t('Rewards.Staking.StakAmount')}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可质押：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
-          <span class="popup-span2" @click="exchangeAll">全部质押</span>
+          <span class="popup-span1">{{$t('Rewards.Staking.StakMax')}}：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Staking.StakAll')}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.StakCancel')}}</div>
 
         <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">质押</div>
+          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
         </template>
         <template v-else>
-          <div class="system-popup-button disabled-btn">质押</div>
+          <div class="system-popup-button disabled-btn">{{$t('Rewards.Staking.Staking')}}</div>
         </template>
       </div>
     </div>
@@ -46,16 +46,26 @@ import { EarningType } from '../../../store/modules/earnings'
 export default {
   props: ['show', 'pledgeId'],
   data () {
+
+    let accoutOptions = [
+      { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }
+    ]
+
+    if(this.pledgeId === EarningType.EDRF) {
+      accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+    }else if(this.pledgeId === EarningType.BDRF){
+      accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
+        { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+    }
+
     return {
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
       curPercent: 25,
       pledgeName: null,
-      accountOptions: [
-        { text: 'Derify账户', value: 0 },
-        { text: '钱包账户', value: 1 }
-      ]
+      accountOptions:  accoutOptions
     }
   },
   watch: {
@@ -68,6 +78,22 @@ export default {
         this.pledgeName = 'eDRF'
       } else if(this.pledgeId === EarningType.BDRF) {
         this.pledgeName = 'bDRF'
+      }
+    },
+    "$i18n": {
+      handler() {
+        let accoutOptions = [
+        ]
+
+        if(this.pledgeId === EarningType.EDRF) {
+          accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+            { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+        }else if(this.pledgeId === EarningType.BDRF){
+          accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
+            { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+        }
+
+        this.accountOptions = accoutOptions
       }
     }
   },
@@ -93,7 +119,7 @@ export default {
     submitThenClose(){
 
       if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('global.NumberError'))
         return
       }
 
@@ -102,12 +128,12 @@ export default {
 
       } else if(this.pledgeId === EarningType.BDRF) {
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: '正在执行交易,请稍后'})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
         this.$store.dispatch("earnings/depositBondToBank", {bondAccountType: this.accountType, amount: toContractUnit(this.amount)})
           .then(() => {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+            this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
           }).catch(() => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
         }).finally(() => {
           this.$store.dispatch('earnings/loadEarningData')
         })

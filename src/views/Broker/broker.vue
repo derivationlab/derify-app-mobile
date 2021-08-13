@@ -46,7 +46,7 @@
         </div>
         <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
         <div v-if="isLogin" class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
-        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
       </div>
   </van-popup>
   <!-- 申请条件 -->

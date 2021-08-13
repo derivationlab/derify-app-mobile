@@ -100,7 +100,7 @@
             <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">{{$t('Trade.OpenPosition.TwoWay')}}</div>
           </div>
           <div class="home-mid-four" v-if="!isLogin">
-            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
           </div>
         </div>
       </template>
@@ -339,7 +339,7 @@
               <div class="home-last-four-btn red-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.SellShort')}}</div>
             </template>
             <template v-if="!isLogin">
-              <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+              <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
             </template>
           </template>
           <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
@@ -353,7 +353,7 @@
               </template>
             </template>
             <template v-if="!isLogin">
-              <div class="home-last-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+              <div class="home-last-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
             </template>
           </template>
         </div>
