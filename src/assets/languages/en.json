@@ -316,7 +316,7 @@
     "more":"long"
   },
   "Rewards":{
-    "title": "收益",
+    "title": "Rewards",
     "Mining": {
       "PositionMiningReward":"Position Mining ",
       "PositionHeld":"Position Held",
@@ -327,7 +327,6 @@
       "WithdrawMax":"Max",
       "WithdrawAll":"All",
       "WithdrawCancel":"Cancel",
-      "Withdraw":"Withdraw",
       "NumberError":"Error, please retry",
       "PositionMining":"Position Mining",
       "Type":"Type",
@@ -335,7 +334,7 @@
       "Balance":"Balance",
       "Time":"Time",
       "Earning":"Earning",
-      "Withdraw":"Withdraw"
+      "NoMoreData":"No more data"
     },
     "Staking": {
       "StakEquity":"Stak. Equity",
@@ -345,11 +344,8 @@
       "WithdrawMax":"Max",
       "WithdrawAll":"All",
       "WithdrawCancel":"Cancel",
-      "Withdraw":"Withdraw",
       "NumberError":"Error, please retry",
-      "RedeemAmount":"Stak. Amount",
       "DailyYield":"Daily Yield",
-      "Redeem":"Redeem",
       "DRFStakingAccount":"DRF Staking Account",
       "StakMyWallet":"My Wallet",
       "StakAmount":"Amount",
@@ -364,17 +360,17 @@
       "RedeemMax":"Max",
       "RedeemAll":"All",
       "RedeemCancel":"Cancel",
-      "Staking":"Staking"
+      "NoMoreData":"No more data"
     },
     "Bond": {
       "Bond":"Bond",
+      "TransactionHistory":"Transaction History",
       "Redeemable":"Redeemable",
       "Withdraw":"Withdraw",
       "WithdrawAmount":"Amount",
       "WithdrawMax":"Max",
       "WithdrawAll":"All",
       "WithdrawCancel":"Cancel",
-      "Withdraw":"Withdraw",
       "NumberError":"Error, please retry",
       "Exchange":"Exchange",
       "bDRFExchangeAccount":"bDRF Account",
@@ -396,7 +392,7 @@
       "StakingMax":"Max",
       "StakingAll":"All",
       "StakingCancel":"Cancel",
-      "Staking":"Staking"
+      "NoMoreData":"No more data"
     }
   }
 }

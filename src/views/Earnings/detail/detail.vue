@@ -1,8 +1,8 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="资金划转" showGoback="true" />
+
     <van-nav-bar
-      title="资金划转"
+      :title="$t('Rewards.Bond.TransactionHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -15,7 +15,7 @@
 
     <div class="home-top">
       <van-tabs v-model="activeName">
-        <van-tab title="持仓挖矿" name="1">
+        <van-tab :title="$t('Rewards.Mining.PositionMining')" name="1">
           <inven></inven>
         </van-tab>
         <van-tab title="eDRF" name="2">

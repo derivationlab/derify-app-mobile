@@ -324,21 +324,20 @@
       "Amount":"金额",
       "Balance":"余额",
       "Time":"时间",
-      "Earning":"收入"
+      "Earning":"收入",
+      "NoMoreData":"没有更多了"
     },
     "Staking": {
       "StakEquity":"质押权益",
       "TransactionHistory":"流水明细",
+      "AccumulatedReward":"历史累计收益",
       "Withdraw":"提现",
       "WithdrawAmount":"提现数量",
       "WithdrawMax":"可提现",
       "WithdrawAll":"全部提现",
       "WithdrawCancel":"取消",
-      "Withdraw":"提现",
       "NumberError":"数值有误，请重新输入",
-      "RedeemAmount":"质押量",
       "DailyYield":"每日产量",
-      "Redeem":"赎回",
       "DRFStakingAccount":"DRF质押账户",
       "StakMyWallet":"我的钱包",
       "StakAmount":"赎回数量",
@@ -346,24 +345,24 @@
       "StakAll":"全部赎回",
       "StakCancel":"取消",
       "Redeem":"赎回",
-      "Staking":"质押",
       "DRFAccount":"DRF账户",
       "RedeemMyWallet":"我的钱包",
       "RedeemAmount":"质押数量",
       "RedeemMax":"可质押",
       "RedeemAll":"全部质押",
       "RedeemCancel":"取消",
-      "Staking":"质押"
+      "Staking":"质押",
+      "NoMoreData":"没有更多了"
     },
     "Bond": {
       "Bond":"债券",
+      "TransactionHistory":"流水明细",
       "Redeemable":"可兑换债券",
       "Withdraw":"提现",
       "WithdrawAmount":"提现数量",
       "WithdrawMax":"可提现",
       "WithdrawAll":"全部提现",
       "WithdrawCancel":"取消",
-      "Withdraw":"提现",
       "NumberError":"数值有误，请重新输入",
       "Exchange":"兑换",
       "bDRFExchangeAccount":"bDRF账户",
@@ -378,14 +377,14 @@
       "RedeemAmount":"赎回数量",
       "RedeemMax":"可赎回",
       "RedeemAll":"全部赎回",
-      "Staking":"质押",
       "bDRFStakingAccount":"bDRF账户",
       "StakingMyWallet":"我的钱包",
       "StakingAmount":"存入数量",
       "StakingMax":"可质押",
       "StakingAll":"全部质押",
       "StakingCancel":"取消",
-      "Staking":"质押"
+      "Staking":"质押",
+      "NoMoreData":"没有更多了"
     }
   }
 }

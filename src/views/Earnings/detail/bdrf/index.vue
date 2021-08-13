@@ -3,18 +3,18 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :finished-text="$t('Rewards.Bond.NoMoreData')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>操作类型</div>
-        <div>金额</div>
-        <div class="center-span">余额</div>
-        <div class="center-span">时间</div>
+        <div>{{$t('Rewards.Mining.Type')}}</div>
+        <div>{{$t('Rewards.Mining.Amount')}}</div>
+        <div class="center-span">{{$t('Rewards.Mining.Balance')}}</div>
+        <div class="center-span">{{$t('Rewards.Mining.Time')}}</div>
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{data.pmr_update_type === 0 ? '收入' : '提取'}}</div>
+          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Mining.Earning') : $t('Rewards.Mining.Withdraw')}}</div>
           <div>
             <div class="color-type">{{data.amount | amountFormt(2, true, '-')}}</div>
             <div class="unit-span mrt-5">bDRF</div>
