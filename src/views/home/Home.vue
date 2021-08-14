@@ -625,6 +625,11 @@ export default {
     changeShowOneKeyUnwind (bool) {
       this.showOneKeyUnwind = bool
     },
+    /**
+     * open position popup
+     * @param bool
+     * @param side
+     */
     changeShowOpen (bool, side) {
       if (bool) {
         let {entrustType, leverage, leverageUnit, amount, size, unit} = this
@@ -785,6 +790,8 @@ export default {
 
           self.loading = false
         })
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }
     },
     onOpenTypeChange () {

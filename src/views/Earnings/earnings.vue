@@ -287,6 +287,8 @@ export default {
       justify-content: center;
       color: rgba(255,255,255,0.85);
       .item-div{
+        display: flex;
+        margin: 0 0.2rem;
        .van-icon{
           vertical-align: text-top;
        }

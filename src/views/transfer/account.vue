@@ -22,7 +22,7 @@
     </div>
     <div class="title-div">
       <span>{{$t('Trade.Account.MarginBalance')}}</span>
-      <span>占用保证金</span>
+      <span>{{$t('Trade.Account.Margin')}}</span>
     </div>
     <div class="unit-tr">
       <div>{{accountData.marginBalance | fck(-8)}}<span>USDT</span></div>
