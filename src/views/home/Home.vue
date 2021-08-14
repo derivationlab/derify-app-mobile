@@ -19,7 +19,6 @@
         <div class="home-top-right">
           <div class="home-top-icons" v-if="$route.name === 'home'">
             <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
-            <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
           </div>
           <div class="home-top-items">
             <span class="fc-65">{{$t('Trade.OpenPosition.PCFRate')}}</span>
@@ -159,11 +158,11 @@
                         </div>
                         <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
                           <div class="fz-12 fc-yellow">{{$t('Trade.MyPosition.Close')}}</div>
-                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                          <van-icon size="1.2rem" color="#FAE247" name="arrow"></van-icon>
                         </div>
                         <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
                           <div class="fz-12 fc-yellow">{{$t('Trade.CurrentOrder.Cancel')}}</div>
-                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                          <van-icon size="1.2rem" color="#FAE247" name="arrow"></van-icon>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -220,7 +219,7 @@
                         </div>
                         <div class="exchange-item-right" @click="changeShowSet(true, data)">
                           <div class="fc-yellow">{{$t('Trade.MyPosition.SetStopPrice')}}</div>
-                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                          <van-icon size="1.2rem" color="#FAE247" name="arrow"></van-icon>
                         </div>
                       </div>
                     </div>
@@ -241,7 +240,7 @@
                         </div>
                         <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
                           <div class="fz-12 fc-yellow">{{$t('Trade.CurrentOrder.Cancel')}}</div>
-                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                          <van-icon size="1.2rem" color="#FAE247" name="arrow"></van-icon>
                         </div>
                       </div>
                       <div class="exchange-item">

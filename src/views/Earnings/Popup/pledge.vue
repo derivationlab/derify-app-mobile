@@ -143,10 +143,12 @@ export default {
       ]
 
       if(this.pledgeId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
+        accoutOptions = [
+          { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
+        accoutOptions = [
+          { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
       }
 

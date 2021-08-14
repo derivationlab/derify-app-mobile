@@ -30,16 +30,15 @@ export default {
   },
   computed:{
     first () {
-      const numStr = (this.value + '')
+      const numStr = this.value + ''
       let first = numStr.substring(0, numStr.indexOf("."))
       if(this.digitSplit) {
-        let num = parseInt(first)
         let nums = []
-        while (num > 1){
-          nums.push(num % 1000)
-          num = Math.ceil(num / 1000)
+        let splits = first.split('')
+        while (splits.length > 0){
+          nums.push(splits.splice(Math.max(splits.length - 3, 0)).join(''))
         }
-        return nums.join(this.digitSplit)
+        return nums.reverse().join(this.digitSplit)
       }
       return first
     },

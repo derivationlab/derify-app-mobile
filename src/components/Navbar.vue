@@ -12,7 +12,7 @@
       </template>
 
       <template #title v-if="logo">
-        <img src="@/assets/images/logo.png" alt="" srcset="" style="width: 100%; height: 100%"/>
+        <img src="@/assets/images/logo.png" alt="" srcset="" style="height: 3rem"/>
       </template>
 
       <template #right v-if="isLogin">

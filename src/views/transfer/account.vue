@@ -33,7 +33,7 @@
       </div>
       <div>
         <DecimalView wrapStyle="color: rgba(255,255,255,1)" digit-split="," :value="accountData.totalMargin | fck(-8)"/>
-        <span> USDT( <span style="color: rgba(255,255,255,1)">{{accountData.marginRate | fck(-8)}}%</span> )</span>
+        <span> USDT</span>
       </div>
     </div>
     <template v-if="isLogin">

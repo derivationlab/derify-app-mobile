@@ -290,6 +290,7 @@ export default {
         margin: 0 0.2rem;
        .van-icon{
           vertical-align: text-top;
+         margin-right: 0.2rem;
        }
         span{
           /*margin-left: .5rem;*/
@@ -297,7 +298,9 @@ export default {
       }
       .flex1{
         flex: 1;
+        align-items: center;
         text-align: center;
+        justify-content: center;
       }
     }
   }

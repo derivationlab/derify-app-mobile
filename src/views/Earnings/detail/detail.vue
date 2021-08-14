@@ -42,16 +42,22 @@ export default {
     berf
   },
   data () {
+    const activeName = this.$route.query.id+""
     return {
-      show: false
-    }
-  },
-  computed: {
-    activeName () {
-      return this.$route.query.id
+      show: false,
+      activeName: activeName
     }
   },
   mounted () {
+    this.activeName = this.$route.query.id+""
+  },
+  watch:{
+    '$route.query.id':{
+      handler(){
+        // this.activeName = this.$route.query.id+""
+      },
+      immediate: true
+    }
   },
   methods: {
     ClickBox () {
