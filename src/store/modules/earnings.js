@@ -3,8 +3,24 @@ import * as web3Util from '@/utils/web3Utils'
 import { getCache } from '../../utils/cache'
 import { getTraderBondBalance, getTraderPMRBalance } from '../../api/trade'
 
+export class EarningType {
+  static get MIN () {
+    return 1
+  }
+
+  static get EDRF () {
+    return 2
+  }
+
+  static get BDRF() {
+    return 3
+  }
+}
+
 const state = {
-  wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
+  get wallet_address () {
+     return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+  },
   account: getCache('account') || null,
   pairs: [
     {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
@@ -14,9 +30,14 @@ const state = {
   ],
   curPairKey: 'ETH',
   accountData: {
-    totalPositionAmount: 0
+    totalPositionAmount: 0,
   },
-  pmrReward: 0,
+  wallet: {
+    bdrfBalance: 0,
+    edrfBalance: 0
+  },
+  pmrBalance: 0,
+  pmrAccumulatedBalance: 0,
   bondInfo: {
     /**
      * Convertible bond bDRF
@@ -39,25 +60,40 @@ const state = {
      * Annualized bond yield£¨accuracy of 8 digits£©
      */
     bondAnnualInterestRate: 0
-  }
+  },
+  exchangeBondSizeUpperBound: 0
 }
 
 const mutations = {
-  updateSate (state, palyload) {
+  updateState (state, palyload) {
     Object.assign(state, {...palyload})
-  }
+  },
+  updateBondInfo(state, palyload) {
+    Object.assign(state.bondInfo, {...palyload})
+  },
+  updateWallet(state, palyload) {
+    Object.assign(state.wallet, {...palyload})
+  },
 }
 
 const actions = {
   loadEarningData ({state, commit, dispatch}) {
     return (async () => {
+
+      if(!state.wallet_address) {
+        return
+      }
+
       const contract = web3Util.contract(state.wallet_address)
       const pmrReward = await contract.getPMReward(state.wallet_address)
       const traderVariable = await contract.getTraderVariables(state.wallet_address)
       const bondInfo = await contract.getBondInfo(state.wallet_address)
+      const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
+      //const edrfBalance = await contract.balanceOf(state.wallet_address, Token.EDRF)
 
-      const earningData = {pmrReward, accountData: {...traderVariable}, bondInfo}
-      commit('updateSate', earningData)
+      const earningData = {...pmrReward, accountData: {...traderVariable}, bondInfo}
+      commit('updateState', earningData)
+      commit('updateWallet', {bdrfBalance, edrfBalance: 0})
 
       return earningData
     })()
@@ -83,12 +119,36 @@ const actions = {
     return contract.redeemBondFromBank({amount, bondAccountType })
   },
   getTraderPMRBalance ({state, commit, dispatch}) {
-    const contract = web3Util.contract(state.wallet_address)
     return getTraderPMRBalance(state.wallet_address)
   },
   getTraderBondBalance ({state, commit, dispatch}) {
-    const contract = web3Util.contract(state.wallet_address)
     return getTraderBondBalance(state.wallet_address)
+  },
+  getExchangeBondSizeUpperBound ({state, commit, dispatch}, {bondAccountType}) {
+    return (async() => {
+
+      if(!state.wallet_address) {
+        return
+      }
+
+      const contract = web3Util.contract(state.wallet_address)
+      const exchangeBondSizeUpperBound = await contract.getExchangeBondSizeUpperBound({trader: state.wallet_address, bondAccountType})
+      commit('updateState', { exchangeBondSizeUpperBound })
+      return exchangeBondSizeUpperBound
+    })();
+  },
+  getWalletBalance ({state, commit, dispatch}, {tokenName}) {
+    return (async () => {
+      const contract = web3Util.contract(state.wallet_address)
+      if(tokenName === 'bDRF'){
+
+        const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
+        commit('updateWallet', {bdrfBalance})
+        return bdrfBalance
+      }
+
+      return 0
+    })()
   }
 }
 

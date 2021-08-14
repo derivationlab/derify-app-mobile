@@ -1,41 +1,41 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="收益" />
+    <navbar :title="$t('Rewards.title')" />
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">持仓挖矿收益</span>
-          <span class="span2 fz-12" @click="goDetail(1)">流水明细 ></span>
+          <span class="span1">{{ $t('Rewards.Mining.PositionMiningReward') }}</span>
+          <span class="span2 fz-12" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.TransactionHistory') }} ></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">{{pmrReward | fck(-8)}}</span>
+          <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
           <span class="span2">USDT</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{accountData.totalPositionAmount | fck(-8)}}</span>
-            <span class="span2 fz-11">持仓额（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.PositionHeld') }}（USDT）</span>
           </div>
           <div class="div1">
-            <span class="span1">24891.34</span>
-            <span class="span2 fz-11">历史累计收益（USDT）</span>
+            <span class="span1">{{pmrAccumulatedBalance | fck(-8, 2)}}</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.AccumulatedReward') }}（USDT）</span>
           </div>
         </div>
         <div class="earnings-item">
           <div class="item-div">
             <van-icon class="van-icon" name="refund-o" size="18"/>
             <template v-if="isLogin">
-              <span class="fz-13" @click="withdraw(true,1)">提现</span>
+              <span class="fz-13" @click="withdraw(true, EarningType.MIN)">{{ $t('Rewards.Mining.Withdraw') }}</span>
             </template>
             <template v-else>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </template>
           </div>
         </div>
       </div>
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">质押权益 eDRF</span>
-          <span class="span2 fz-12" @click="goDetail(2)">流水明细></span>
+          <span class="span1">{{ $t('Rewards.Staking.StakEquity') }}</span>
+          <span class="span2 fz-12" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.TransactionHistory') }}></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -44,40 +44,40 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">持仓额（DRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.StakAmount') }}（EDRF）</span>
           </div>
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">历史累计收益（eDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.AccumulatedReward') }}（eDRF）</span>
           </div>
         </div>
         <div class="earnings-item">
           <template v-if="isLogin">
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="withdraw(true,2)">提现</span>
+              <span class="fz-13" @click="withdraw(true,EarningType.EDRF)">{{$t('Rewards.Staking.Withdraw')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="peer-pay" size="18"/>
-              <span class="fz-13" @click="redeem(true,1)">赎回</span>
+              <span class="fz-13" @click="redeem(true,EarningType.EDRF)">{{$t('Rewards.Staking.Redeem')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-              <span class="fz-13" @click="pledge(true,1)">质押</span>
+              <span class="fz-13" @click="pledge(true,EarningType.EDRF)">{{$t('Rewards.Staking.Staking')}}</span>
             </div>
           </template>
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </div>
           </template>
         </div>
       </div>
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">可兑换债券 bDRF</span>
-          <span class="span2 fz-12" @click="goDetail(3)">流水明细 ></span>
+          <span class="span1">{{$t('Rewards.Bond.Bond')}}</span>
+          <span class="span2 fz-12" @click="goDetail(EarningType.BDRF)">{{$t('Rewards.Bond.TransactionHistory')}} ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">{{bondInfo.bondBalance | fck(-8)}}</span>
@@ -86,10 +86,10 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{bondInfo.bondReturnBalance | fck(-8)}}</span>
-            <span class="span2 fz-11">收益计划存入 ( bDRF )</span>
+            <span class="span2 fz-11">{{$t('Rewards.Bond.DepoAmount')}} ( bDRF )</span>
           </div>
           <div class="div1">
-            <span class="span1">{{bondInfo.bondAnnualInterestRate | fck(-8)}}%</span>
+            <span class="span1">{{bondInfo.bondAnnualInterestRatio | fck(-8,2)}}%</span>
             <span class="span2 fz-11">APY</span>
           </div>
         </div>
@@ -97,25 +97,25 @@
           <template v-if="isLogin">
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="withdraw(true,3)">提现</span>
+              <span class="fz-13" @click="withdraw(true,EarningType.BDRF)">{{$t('Rewards.Bond.Withdraw')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="balance-o" size="18"/>
-              <span class="fz-13" @click="deposit(true)">兑换</span>
+              <span class="fz-13" @click="deposit(true, EarningType.BDRF)">{{$t('Rewards.Bond.Exchange')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="peer-pay" size="18"/>
-              <span class="fz-13" @click="redeem(true,2)">赎回</span>
+              <span class="fz-13" @click="redeem(true,EarningType.BDRF)">{{$t('Rewards.Bond.Redeem')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-              <span class="fz-13" @click="pledge(true,2)">质押</span>
+              <span class="fz-13" @click="pledge(true,EarningType.BDRF)">{{$t('Rewards.Bond.Staking')}}</span>
             </div>
           </template>
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.click connect wallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
             </div>
           </template>
         </div>
@@ -124,7 +124,7 @@
       <withdraw :show='showWithdraw' :withdrawId='withdrawId' @closeWithdraw="closeWithdraw"></withdraw>
       <redeem   :show='showRedeem' :redeemId='redeemId' @closeRedeem="closeRedeem"></redeem>
       <pledge   :show='showPledge' :pledgeId='pledgeId' @closePledge="closePledge"></pledge>
-      <deposit  :show='showDeposit'  @closeDeposit="closeDeposit"></deposit>
+      <deposit  :show='showDeposit' :depositId='depositId'  @closeDeposit="closeDeposit"></deposit>
   </div>
 </template>
 
@@ -134,6 +134,9 @@ import withdraw from './Popup/withdraw.vue'
 import redeem from './Popup/redeem.vue'
 import pledge from './Popup/pledge.vue'
 import deposit from './Popup/deposit.vue'
+import { EarningType } from '../../store/modules/earnings'
+import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
+
 export default {
   name: 'earnings',
   components: {
@@ -145,13 +148,15 @@ export default {
   },
   data () {
     return {
+      EarningType,
       showWithdraw: false,
       showRedeem: false,
       showPledge: false,
       showDeposit: false,
       withdrawId: '',
       redeemId: '',
-      pledgeId: ''
+      pledgeId: '',
+      depositId: ''
     }
   },
   computed: {
@@ -163,8 +168,11 @@ export default {
 
       return {}
     },
-    pmrReward () {
-      return this.$store.state.earnings.pmrReward;
+    pmrBalance () {
+      return this.$store.state.earnings.pmrBalance;
+    },
+    pmrAccumulatedBalance () {
+      return this.$store.state.earnings.pmrAccumulatedBalance;
     },
     bondInfo () {
       const bondInfo = this.$store.state.earnings.bondInfo
@@ -177,60 +185,51 @@ export default {
       return this.$store.state.user.isLogin
     }
   },
-  watch: {
-    '$store.state.user.isLogin': function() {
-      this.loadEarningData()
-    }
-  },
   methods: {
-    // 关闭提现弹框
     closeWithdraw (bool) {
       this.showWithdraw = bool
     },
-    // 关闭赎回弹框
     closeRedeem (bool) {
       this.showRedeem = bool
     },
-    // 关闭质押弹框
     closePledge (bool) {
       this.showPledge = bool
     },
-    // 关闭存入弹框
     closeDeposit (bool) {
       this.showDeposit = bool
     },
-    // 提现弹框
     withdraw (bool, id) {
       this.showWithdraw = bool
       this.withdrawId = id
     },
-    // 赎回弹框
     redeem (bool, id) {
       this.showRedeem = bool
       this.redeemId = id
     },
-    // 质押弹框
     pledge (bool, id) {
       this.showPledge = bool
       this.pledgeId = id
     },
-    // 存入
     deposit (bool, id) {
       this.showDeposit = bool
-      // this.pledgeId = id
+      this.depositId = id
     },
     ClickBox () {
       this.show = true
     },
     goDetail (id) {
-      this.$router.push({ path: '/detail', query: { id } })
+      this.$router.push({ name: 'detail', query: { id } })
     },
     loadEarningData() {
       this.$store.dispatch('earnings/loadEarningData')
     }
   },
-  mounted () {
+  created () {
+    this.loadEarningData()
 
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.loadEarningData()
+    })
   }
 }
 </script>
@@ -270,7 +269,7 @@ export default {
       display: flex;
       margin-bottom: 2.8rem;
       .div1{
-        flex: 1;
+        flex: 1 auto;
         display: flex;
         flex-direction: column;
         .span1{
@@ -288,11 +287,13 @@ export default {
       justify-content: center;
       color: rgba(255,255,255,0.85);
       .item-div{
+        display: flex;
+        margin: 0 0.2rem;
        .van-icon{
           vertical-align: text-top;
        }
         span{
-          margin-left: .5rem;
+          /*margin-left: .5rem;*/
         }
       }
       .flex1{

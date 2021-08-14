@@ -1,17 +1,17 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup">
-      <div class="system-popup-title">设置止盈止损</div>
+      <div class="system-popup-title">{{ $t('Trade.SetStopPricePopup.SetStopPrice') }}</div>
       <div style="margin-top: 2rem">
         <div class="system-popup-price">
-          <div class="fc-45">开仓价格</div>
+          <div class="fc-45">{{ $t('Trade.SetStopPricePopup.AveragePrice') }}</div>
           <div>
             <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
             <span class="fc-45">USDT</span>
           </div>
         </div>
         <div class="system-popup-price">
-          <div class="fc-45">当前价格</div>
+          <div class="fc-45">{{ $t('Trade.SetStopPricePopup.CurrentPrice') }}</div>
           <div>
             <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
             <span class="fc-45">USDT</span>
@@ -19,24 +19,42 @@
         </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">止盈设置</div>
+        <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="0.00" @input="changeProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
-        <div class="system-popup-input-hint">当指数价格达到 <span class="fc-85">{{position.stopProfitPrice | fck(-8)}}</span> USDT时，将会触发市价平仓当前仓位，预计盈利 <span class="fc-green">{{ position.profitAmount  | fck(-8)}}</span> USDT</div>
+        <div class="system-popup-input-hint">
+          <i18n path="Trade.SetStopPricePopup.StopPriceProfitNotice">
+            <template #0>
+              <span class="fc-85">{{position.stopProfitPrice | amountFormt(2, false, '--', -8)}}</span>
+            </template>
+            <template #1>
+              <span class="fc-green">{{ position.profitAmount  | amountFormt(2, true, '--', -8)}}</span>
+            </template>
+          </i18n>
+        </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">止损设置</div>
+        <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @input="changeLossPrice" placeholder="0.00" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
-        <div class="system-popup-input-hint">当指数价格达到 {{position.stopLossPrice | fck(-8)}} USDT时，将会触发市价平仓当前仓位，预计亏损 {{ position.lostAmount  | fck(-8)}} USDT</div>
+        <div class="system-popup-input-hint">
+          <i18n path="Trade.SetStopPricePopup.StopPriceLossNotice">
+            <template #0>
+              <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span>
+            </template>
+            <template #1>
+              <span class="fc-red">{{ position.lostAmount  | amountFormt(2, true, '--', -8)}}</span>
+            </template>
+          </i18n>
+        </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">确认</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.SetStopPricePopup.Cancel') }}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Trade.SetStopPricePopup.Confirm') }}</div>
       </div>
     </div>
   </van-popup>
@@ -44,7 +62,9 @@
 
 <script>
 import {fck} from "@/utils/utils";
-import { fromContractUnit, SideEnum, toContractNum, toHexString } from '../../../utils/contractUtil'
+import { fromContractUnit, OrderTypeEnum, SideEnum, toContractNum, toHexString } from '@/utils/contractUtil'
+import { UserProcessStatus } from '@/store/modules/user'
+import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
 
 export default {
   props: {
@@ -79,8 +99,8 @@ export default {
         }
 
         this.position = Object.assign({}, {
-          stopProfitPriceInput: fck(this.extraData.stopProfitPrice, -8),
-          stopLossPriceInput: fck(this.extraData.stopLossPrice, -8),
+          stopProfitPriceInput: this.extraData.stopProfitPrice > 0 ? fck(this.extraData.stopProfitPrice, -8) : null,
+          stopLossPriceInput: this.extraData.stopLossPrice > 0 ? fck(this.extraData.stopLossPrice, -8) : null,
           lostAmount,
           profitAmount}, this.extraData);
 
@@ -92,55 +112,145 @@ export default {
     close () {
       this.$emit('closeSetPopup', false)
     },
-    changeProfitPrice (price) {
-
-      const {position} = this;
-      //止盈价格：如果是多仓，则止盈价格应大于开仓均价，如果是空仓，止盈价格应小于开仓均价，否则提示错误
-      if(position.side === SideEnum.LONG && toContractNum(price) <= position.averagePrice){
-        this.$toast('多仓止盈价格应大于开仓均价')
-      }
-
-      if(position.side === SideEnum.SHORT && toContractNum(price) >= position.averagePrice){
-        this.$toast('空仓止盈价格应小于开仓均价')
-      }
+    onInputProfitPrice (price) {
 
       this.position.stopProfitPriceInput = price;
+
+      if(price === '') {
+        return
+      }
+
+      if(price < 0){
+        price = 0
+      }
 
       this.position.stopProfitPrice = toContractNum(price)
       this.calLossAndProfit();
     },
-    changeLossPrice (price, oldPrice) {
+    onInputLossPrice (price) {
       const {position} = this;
-
-      //止损价格：如果是多仓，则止损价格应小于开仓均价，如果是空仓，止损价格应大于开仓均价，否则提示错误；
-      if(position.side === SideEnum.LONG && toContractNum(price) > position.averagePrice){
-        this.$toast('多仓止损价格应小于开仓均价')
-      }
-
-      if(position.side === SideEnum.SHORT && toContractNum(price) < position.averagePrice){
-        this.$toast('空仓止损价格应大于开仓均价')
-      }
       this.position.stopLossPriceInput = price;
+      if(price === '') {
+        return
+      }
+
+      if(price < 0){
+        price = 0
+      }
+
       this.position.stopLossPrice = toContractNum(price)
+
       this.calLossAndProfit();
     },
+
+    onChangeProfitPrice() {
+      const {position} = this;
+
+      if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
+        this.$toast(this.$t('global.NumberError'))
+      }
+    },
+    onChangeLossPrice() {
+      const {position} = this;
+      if(!this.checkLossPrice(position, position.stopLossPriceInput)){
+        this.$toast(this.$t('global.NumberError'))
+      }
+    },
+    checkProfitPrice(position, profitPrice) {
+
+      if(profitPrice === '') {
+        return true
+      }
+
+      if(profitPrice <= 0){
+        return false
+      }
+
+      if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= position.averagePrice){
+        return false
+      }
+
+      if(position.side === SideEnum.SHORT && toContractNum(profitPrice) >= position.averagePrice){
+        return false
+      }
+
+      return true
+    },
+    checkLossPrice(position, lossPrice) {
+
+      if(lossPrice === '') {
+        return true
+      }
+
+      if(lossPrice <= 0){
+        return false
+      }
+
+      if(position.side === SideEnum.LONG && toContractNum(lossPrice) > position.averagePrice){
+        return false
+      }
+
+      if(position.side === SideEnum.SHORT && toContractNum(lossPrice) < position.averagePrice){
+        return false
+      }
+
+      return true
+    },
     calLossAndProfit(){
-      this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice)) * this.position.size
-      this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice)) * this.position.size
+      if(this.position.stopProfitPrice > 0) {
+        this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+
+      }
+
+      if(this.position.stopLossPrice > 0) {
+        this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+      }
+
     },
     submitThenClose (){
       const side = this.position.side
       const token = this.position.token
 
-      //设置止盈
-      this.$store.dispatch('contract/orderStopPosition', {
-        token, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
-      });
+      let profitPrice = null
+      let lossPrice = null
+      if(this.position.stopProfitPriceInput !== ''){
+        if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
+          this.$toast(this.$t('global.NumberError'))
+          return
+        }
+        profitPrice = this.position.stopProfitPrice
+      }
 
-      //设置止损
-      this.$store.dispatch('contract/orderStopPosition', {
-        token, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
-      });
+      if(this.position.stopLossPriceInput !== ''){
+        if(!this.checkLossPrice(this.position, this.position.stopLossPrice)){
+          this.$toast(this.$t('global.NumberError'))
+          return
+        }
+
+        lossPrice = this.position.stopLossPrice
+      }
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.SetStopPricePopup.TradePendingMsg')})
+      if(lossPrice === null && profitPrice === null) {
+        this.$store.dispatch('contract/cancleOrderedPosition', {
+          token, side, closeType: CancelOrderedPositionTypeEnum.StopProfitAndLossOrder
+        }).then(_ => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+        }).catch(msg => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+        })
+      } else {
+        this.$store.dispatch('contract/orderStopPosition', {
+          token, side, takeProfitPrice: profitPrice, stopLossPrice: lossPrice
+        }).then(_ => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+        }).catch(msg => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+        })
+      }
+
       this.close()
     }
   }

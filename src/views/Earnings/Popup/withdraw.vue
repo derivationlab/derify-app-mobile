@@ -1,49 +1,73 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">提现</div>
+      <div class="system-popup-title">{{$t('Rewards.Mining.Withdraw')}}</div>
       <div>
-        <div class="popup-text">提现数量</div>
+        <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0" type="number" v-model="amount" />
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可提现：1234567.00000000 {{withdrawName}}</span>
-          <span class="popup-span2">全部提现</span>
+          <span class="popup-span1">{{$t('Rewards.Mining.WithdrawMax')}}：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Mining.WithdrawAll')}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">提现</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Mining.WithdrawCancel')}}</div>
+        <template v-if="amount > 0">
+          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
+        </template>
+        <template v-else>
+          <div class="system-popup-button disabled-btn">{{$t('Rewards.Mining.Withdraw')}}</div>
+        </template>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
+import {fck} from '@/utils/utils'
+import {UserProcessStatus} from "@/store/modules/user";
+import { EarningType } from '../../../store/modules/earnings'
 
 export default {
   props: ['show', 'withdrawId'],
   data () {
     return {
       showPopup: this.show,
-      amount: null,
+      amount: 0,
+      //maxAmout: 10*1e8,
       curPercent: 25,
       withdrawName: null
+    }
+  },
+  computed: {
+    maxAmout () {
+      if (this.withdrawId === EarningType.MIN) {
+        return this.$store.state.earnings.pmrReward
+      } else if (this.withdrawId === EarningType.EDRF) {
+        return 0
+      } else if(this.withdrawId === EarningType.BDRF){
+        return this.$store.state.earnings.bondInfo.bondBalance
+      }
+      return 0
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
+      if(this.show) {
+        this.amount = 0
+      }
     },
     withdrawId () {
-      if (this.withdrawId === 1) {
+      if (this.withdrawId === EarningType.MIN) {
         this.withdrawName = 'USDT'
-      } else if (this.withdrawId === 2) {
+      } else if (this.withdrawId === EarningType.EDRF) {
         this.withdrawName = 'eDRF'
-      } else {
+      } else if(this.withdrawId === EarningType.BDRF){
         this.withdrawName = 'bDRF'
       }
     }
@@ -52,45 +76,57 @@ export default {
     close () {
       this.$emit('closeWithdraw', false)
     },
+    exchangeAll () {
+      this.amount = fck(this.maxAmout, -8, 4)
+    },
     submitThenClose () {
+      if(this.amount > fromContractUnit(this.maxAmout)) {
+        this.$toast(this.$t('Rewards.Mining.NumberError'))
+        return
+      }
 
-      if(this.withdrawId === 1) {
-        //挖矿持仓
+      if(this.withdrawId === EarningType.MIN) {
+
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        //position mining
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
         }).catch(e => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
         }).finally( p => {
-          this.close()
+          this.$store.dispatch('earnings/loadEarningData')
         })
 
         return
       }
 
-      if(this.withdrawId === 2) {
+      if(this.withdrawId === EarningType.EDRF) {
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
         }).catch(e => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
         }).finally( p => {
-          this.close()
+          this.$store.dispatch('earnings/loadEarningData')
         })
 
         return
       }
 
-      if(this.withdrawId === 3) {
+      if(this.withdrawId === EarningType.BDRF) {
+        this.close()
         //bDRF
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
         this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
         }).catch(e => {
-          this.close()
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
         }).finally( p => {
-          this.close()
+          this.$store.dispatch('earnings/loadEarningData')
         })
-
-        return
       }
 
     }

@@ -1,4 +1,8 @@
-import Contract, { contractDebug } from './contractUtil'
+import Contract from './contractUtil'
+import * as CfgUtil from '../config'
+
+const contractDebug = CfgUtil.isDebug()
+export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {
 
@@ -13,27 +17,27 @@ export function contract (account) {
       get(target, propKey, receiver) {
         const ret = Reflect.get(...arguments)
 
-        if(ret instanceof Function && !propKey.startsWith("__")){
+        if(ret instanceof Function && isProxyPropertyKey(propKey)){
           return new Proxy(ret, {
             apply (target, ctx, args) {
               try{
                 const ret = Reflect.apply(...arguments)
 
                 if(ret instanceof Promise){
-                  console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args))
+                  console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from)
 
                   return (async () => {
                     let data = await ret;
-                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", data)
+                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", data)
                     return data
                   })();
 
                 }else{
-                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", ret)
+                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
                 }
                 return ret;
               }catch (e) {
-                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",error=", e)
+                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
               }
 
             }
@@ -48,39 +52,20 @@ export function contract (account) {
   }
 }
 
-
-
-
-class Aop {
-  constructor(obj, beforeFork, afterFork) {
-    return new Proxy(obj, {
-      get: function (target, propKey, receiver) {
-        for (let key in beforeFork) {
-          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
-            beforeFork[key]?.(target[propKey]);
-          }
-        }
-        beforeFork[propKey]?.(target[propKey]);
-        //before
-
-        var re = Reflect.get(target, propKey, receiver)();
-
-        for (let key in afterFork) {
-          if (Object.prototype.toString.call(target[propKey]) == "[object " + key + "]") {
-            afterFork[key]?.(target[propKey]);
-          }
-        }
-        afterFork[propKey]?.(target[propKey]);
-        //after
-
-        return ()=>{return re};
-      },
-      set: function (target, propKey, value, receiver) {
-        return Reflect.set(target, propKey, value, receiver);
-      },
-
-    });
+function isProxyPropertyKey(key) {
+  if(key.startsWith('__')) {
+    return false
   }
+
+  if(key === 'getSpotPrice'){
+    return false
+  }
+
+  // if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables,getTraderAllPosition'.indexOf(key) > -1){
+  //   return false
+  // }
+
+  return true
 }
 
 export function enable () {

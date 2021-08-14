@@ -1,6 +1,6 @@
 <template>
   <div class="navbar-container">
-    <van-nav-bar :title="title" :border="false" :fixed="true">
+    <van-nav-bar :title="title" :border="false" :fixed="true" v-if="!showGoback">
 
       <template #left>
         <img
@@ -22,7 +22,7 @@
         </div>
       </template>
       <template #right v-else>
-        <div class="first-letter-wrap-inline" @click="$loginWallet()"></div>
+        <div class="first-letter-wrap-inline" @click="$loginWallet()">C</div>
       </template>
 
     </van-nav-bar>
@@ -36,7 +36,7 @@
           </div>
           <div class="info-div">
             <div class="info-name">
-              {{$t('navbar.Wallet Address')}}
+              {{$t('navbar.WalletAddress')}}
             </div>
             <div>{{ walletAddress }}</div>
           </div>
@@ -44,8 +44,8 @@
         <div class="head-info-left" v-else>
           <div class="first-letter-wrap">C</div>
           <div class="info-div">
-            <div class="info-name">{{$t('navbar.Click To Log In')}}</div>
-            <div>{{$t('navbar.Click to connect your wallet')}}</div>
+            <div class="info-name">{{$t('navbar.ClickToLogin')}}</div>
+            <div>{{$t('navbar.ConnectWallet')}}</div>
           </div>
         </div>
         <van-icon
@@ -162,20 +162,18 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Partners") }}</div>
+          <div class="menu-list-item-name">{{ $t("navbar.Broker") }}</div>
         </div>
       </div>
       <div class="language-wrap">
         <div
         v-for="(item,index) in lanData" :key="index"
           class="language-item"
-          :class="navIndex === index ? 'active' : ''"
-          @click="changeLan(index)"
+          :class="navIndex === item.id ? 'active' : ''"
+          @click="changeLan(item.id)"
         >
           {{item.lan}}
         </div>
-        <!-- <div class="language-item" @click="En">en</div> -->
-        <!-- <div class="language-item">繁 zh en</div> -->
       </div>
     </van-popup>
     <wallet :show="showWallet" @closeWalletPopup="changeShowWallet" />
@@ -186,22 +184,31 @@
 import Wallet from './Wallet'
 
 export default {
-  props: ['logo', 'title'],
+  props: ['logo', 'title', 'showGoback'],
   components: {
     Wallet
   },
   data () {
+    let navIndex = window.sessionStorage.getItem('navIndex')
+    if(!navIndex) {
+      navIndex = 1
+    }else{
+      navIndex = parseInt(navIndex)
+    }
+
     return {
       showMenu: false,
       loginError: null,
-      navIndex: 0,
+      navIndex: navIndex,
       lanData: [
         {
-          lan: '中',
+          lan: 'En',
+          locale: 'en',
           id: 1
         },
         {
-          lan: 'En',
+          lan: '中',
+          locale: 'zh',
           id: 2
         }
       ]
@@ -209,7 +216,7 @@ export default {
   },
   computed: {
     walletAddress () {
-      const address = this.$store.state.contract.wallet_address
+      const address = this.$store.state.user.selectedAddress
       if(!address){
         return ''
       }
@@ -242,15 +249,10 @@ export default {
   methods: {
     changeLan (index) {
       this.navIndex = index
-      if (!index) {
-        this.$i18n.locale = 'zh'
-        window.sessionStorage.setItem('locale', 'zh')
-        window.sessionStorage.setItem('navIndex', index)
-      } else {
-        this.$i18n.locale = 'en'
-        window.sessionStorage.setItem('locale', 'en')
-        window.sessionStorage.setItem('navIndex', index)
-      }
+      const lang = this.lanData.find((item) => item.id === index)
+      this.$i18n.locale = lang.locale
+      window.sessionStorage.setItem('locale', JSON.stringify(lang))
+      window.sessionStorage.setItem('navIndex', lang.id)
     },
     changeShowMenu (bool) {
       this.showMenu = bool

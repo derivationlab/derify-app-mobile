@@ -1,64 +1,95 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">兑换bDRF</div>
+      <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ withdrawName }}</div>
       <div>
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="value1" :options="option1" class="derify-dropmenu-item" @open="onDropDowOpen">
+            <van-dropdown-item v-model="accountType" :options="accountOptions"
+                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{option1[value1].text}}</span>
+                  <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">兑换数量</div>
+        <div class="popup-text">{{ $t('Rewards.Bond.ExchangeAmount') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="value1" />
-          <div class="unit">bDRF</div>
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" @input="checkAmount"/>
+          <div class="unit">{{ withdrawName }}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">可兑换：1234567.00000000 bDRF</span>
-          <span class="popup-span2">全部兑换</span>
+          <span class="popup-span1">{{ $t('Rewards.Bond.ExchangeMax') }}：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
+          <span class="popup-span2" @click="exchangeAll">{{ $t('Rewards.Bond.ExchangeAll') }}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">取消</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">兑换</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Rewards.Bond.StakingCancel') }}</div>
+        <template v-if="amount > 0">
+          <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
+        </template>
+        <template v-else>
+          <div class="system-popup-button disabled-btn" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
+        </template>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
+import { toContractUnit,fromContractUnit } from '@/utils/contractUtil'
+import {UserProcessStatus} from "@/store/modules/user"
+import {fck} from '@/utils/utils';
+import { BondAccountType } from '../../../utils/contractUtil'
+import {EarningType} from "@/store/modules/earnings";
 
 export default {
-  props: ['show', 'withdrawId'],
+  props: ['show', 'depositId'],
   data () {
+
+    let accoutOptions = this.getAccountOptions()
+
     return {
       showPopup: this.show,
-      value1: 0,
+      accountType: BondAccountType.DerifyAccount,
+      amount: 0,
       curPercent: 25,
       withdrawName: null,
-      option1: [
-        { text: 'Derify账户', value: 0 },
-        { text: '钱包账户', value: 1 }
-      ]
+      accountOptions: accoutOptions
+    }
+  },
+  computed: {
+    exchangeBondSizeUpperBound () {
+      return this.$store.state.earnings.exchangeBondSizeUpperBound
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
+      this.updateExchangeBondSizeUpperBound()
     },
-    withdrawId () {
-      if (this.withdrawId === 1) {
+    depositId () {
+      if (this.depositId === EarningType.MIN) {
         this.withdrawName = 'USDT'
-      } else if (this.withdrawId === 2) {
+      } else if (this.depositId === EarningType.EDRF) {
         this.withdrawName = 'eDRF'
       } else {
         this.withdrawName = 'bDRF'
+      }
+
+      this.updateAccountOptions()
+    },
+    '$store.state.earnings.exchangeBondSizeUpperBound': {
+      handler() {
+        this.resetAmount()
+      },
+      immediate: true,
+      deep: true
+    },
+    "$i18n.locale": {
+      handler () {
+        this.updateAccountOptions()
       }
     }
   },
@@ -67,16 +98,61 @@ export default {
       this.$emit('closeDeposit', false)
     },
     submitThenClose () {
-      this.$store.dispatch("earnings/exchangeBond", {amount: toContractUnit(this.amount)}).then( r => {
-        this.close()
+
+      if(!this.checkAmount()) {
+        this.$toast(this.$t('global.NumberError'))
+        return
+      }
+
+      this.close()
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+      this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
       }).catch(e => {
-        this.close()
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
       }).finally( p => {
-        this.close()
+        this.$store.dispatch('earnings/loadEarningData')
       })
     },
     onDropDowOpen () {
-      return document.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
+    },
+    updateExchangeBondSizeUpperBound() {
+      this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
+    },
+    resetAmount () {
+      this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
+    },
+    exchangeAll () {
+      this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
+    },
+    checkAmount () {
+      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        return false
+      }
+
+      return true
+    },
+
+    getAccountOptions() {
+      let accoutOptions = [{ text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+
+      if (this.depositId === EarningType.MIN) {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      } else if (this.depositId === EarningType.EDRF) {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      } else {
+        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      }
+
+      return accoutOptions
+    },
+
+    updateAccountOptions() {
+      this.accountOptions = this.getAccountOptions()
     }
   }
 }

@@ -1,9 +1,21 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="收益-明细" />
+
+    <van-nav-bar
+      :title="$t('Rewards.Bond.TransactionHistory')"
+      left-arrow
+      :border="false"
+      :fixed="true"
+      @click-left="onClickLeft"
+    >
+      <template #left>
+        <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
+      </template>
+    </van-nav-bar>
+
     <div class="home-top">
       <van-tabs v-model="activeName">
-        <van-tab title="持仓挖矿" name="1">
+        <van-tab :title="$t('Rewards.Mining.PositionMining')" name="1">
           <inven></inven>
         </van-tab>
         <van-tab title="eDRF" name="2">
@@ -25,7 +37,6 @@ import berf from './bdrf/index.vue'
 export default {
   name: 'detail',
   components: {
-    Navbar,
     inven,
     edrf,
     berf
@@ -42,6 +53,9 @@ export default {
   methods: {
     ClickBox () {
       this.show = true
+    },
+    onClickLeft() {
+      this.$router.go(-1)
     }
   }
 }

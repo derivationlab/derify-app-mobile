@@ -1,7 +1,7 @@
 <template>
   <div class=" home-container page-container">
     <van-nav-bar
-      title="资金划转"
+      :title="$t('Trade.Account.BalanceHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -14,14 +14,15 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :loading-text="$t('Trade.OpenPosition.Loading')"
+        :finished-text="$t('Trade.Account.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>操作类型</div>
-        <div>金额</div>
-        <div class="center-span">余额</div>
-        <div class="center-span">时间</div>
+        <div>{{$t('Trade.Account.Type')}}</div>
+        <div>{{$t('Trade.Account.Amount')}}</div>
+        <div class="center-span">{{$t('Trade.Account.Balance')}}</div>
+        <div class="center-span">{{$t('Trade.Account.Time')}}</div>
       </div>
       <div class="heard" v-for="(data, i) in list" :key="i">
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
@@ -46,16 +47,16 @@
   import { amountFormt } from '../../../utils/utils'
 
   const feeTypeMap = {
-    0: "手续费", //-TradingFee,
-    1: "动仓费", //-PositionChangeFee
-    2: "盈亏", //-ProfitAndLoss
-    3: "盈亏", //-ProfitAndLossAuto
-    4: "gas费", //-GasFee
-    5: "清算费用", //-Liquidation
-    6: "系统补偿", //-SysCompensation
-    7: "系统亏损分摊", //-SysLossApportionment
-    100: "资金转入", //-Deposit
-    101: "资金转出" //-Withdraw
+    0: "Trade.Account.TradeFee", //-TradingFee,
+    1: "Trade.Account.PCF", //-PositionChangeFee
+    2: "Trade.Account.Profit", //-ProfitAndLoss
+    3: "Trade.Account.RealizedPnL", //-ProfitAndLossAuto
+    4: "Trade.Account.Gas", //-GasFee
+    5: "Trade.Account.LiqCost", //-Liquidation
+    6: "Trade.Account.Compensation", //-SysCompensation
+    7: "Trade.Account.SysLoss", //-SysLossApportionment
+    100: "Trade.Account.Deposit", //-Deposit
+    101: "Trade.Account.Withdraw" //-Withdraw
   }
 
 export default {
@@ -69,7 +70,7 @@ export default {
   methods: {
     getFeeType (feeType) {
       const feeTypeText = feeTypeMap[feeType];
-      return feeTypeText ? feeTypeText : '-'
+      return feeTypeText ? this.$t(feeTypeText) : '--'
     },
     onClickLeft () {
       this.$router.go(-1)

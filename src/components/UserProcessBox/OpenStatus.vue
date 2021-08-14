@@ -3,25 +3,28 @@
     <div class="open-status-popup">
       <template v-if="status === UserProcessStatus.waiting">
         <img src="@/assets/images/home/open-pending.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
+        <div class="open-status-text">{{msg}}</div>
       </template>
       <template v-if="status === UserProcessStatus.success">
         <img src="@/assets/images/home/open-success.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
+        <div class="open-status-text">{{msg}}</div>
+        <div class="system-popup-buttons padding">
+          <div class="system-popup-button confirm" @click="close">{{$t('Trade.ClosePosition.Confirm')}}</div>
+        </div>
       </template>
       <template v-if="status === UserProcessStatus.failed">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{msg| dfv('正在执行交易，请稍侯')}}</div>
+        <div class="open-status-text">{{msg}}</div>
+        <div class="system-popup-buttons padding">
+          <div class="system-popup-button confirm" @click="close">{{$t('Trade.ClosePosition.Confirm')}}</div>
+        </div>
       </template>
-      <div class="system-popup-buttons padding">
-        <div class="system-popup-button confirm" @click="close">确认</div>
-      </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-import { UserProcessStatus } from '../../store/modules/user'
+import { UserProcessStatus } from '@/store/modules/user'
 
 export default {
   data () {
@@ -38,9 +41,12 @@ export default {
       this.$emit('closeOpenStatusPopup', false, this.status)
     },
     updateData(data) {
+      console.log(this.$i18n)
       this.show = data.show
       this.msg = data.msg
       this.status = data.status
+
+      this.$forceUpdate()
     }
   }
 }

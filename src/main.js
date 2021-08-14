@@ -12,13 +12,14 @@ import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import { getWallet } from './store/modules/user'
-let locale = 'zh'
+import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
+let locale = 'en'
 try {
   const curLngStr = sessionStorage.getItem('locale')
   const lng = JSON.parse(curLngStr || '{}')
 
-  if (lng.lng) {
-    locale = lng.lng
+  if (lng.locale) {
+    locale = lng.locale
     // store.commit('user/SET_CURLNG', lng)
     // this.$i18n.locale = locale
     // console.log(this.$i18n.locale)
@@ -62,11 +63,20 @@ const vueApp = new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-Vue.prototype.$userProcessBox = UserProcessBox.install;
+Vue.prototype.$userProcessBox = function (param) {
+  UserProcessBox.install(i18n, param)
+}
 
+Vue.prototype.$eventBus = vueApp
 
 Vue.prototype.$loginWallet = function () {
   const walletInfo = getWallet()
+
+  if(!walletInfo.isLogin){
+    walletInfo.showWallet = true
+  }else{
+    walletInfo.showWallet = false
+  }
 
   this.$store.commit("user/updateState", walletInfo)
 }
@@ -74,24 +84,25 @@ Vue.prototype.$loginWallet = function () {
 window.onload = function (){
   if(window.ethereum){
     window.ethereum.on('accountsChanged', function () {
-      updateWallet()
+      updateWallet(1)
     })
 
     window.ethereum.on('chainChanged', function () {
-      updateWallet()
+      updateWallet(2)
     })
-  }
 
-  updateWallet()
+    updateWallet()
+  }
 }
 
 window.vexstore = store
 window.vuexApp = vueApp
 
-function updateWallet () {
+function updateWallet (eventType = 0) {
   const walletInfo = getWallet()
-  walletInfo.showWallet = store.state.user.showWallet
   store.commit("user/updateState", walletInfo)
+  if(eventType > 0){
+    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
+  }
 
-  store.commit("contract/SET_WALLET_ADDRESS", walletInfo.selectedAddress)
 }

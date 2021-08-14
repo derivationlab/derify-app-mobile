@@ -1,338 +1,360 @@
 <template>
   <div class="home-container page-container">
-    <navbar :logo="true" title="首页" />
-    <div class="home-top">
-      <div class="home-top-left">
-        <div class="home-top-coin" @click="changeShowMarket(true)">
-          <span class="home-top-coin-name">{{curPair.name}}</span>
-          <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
-        </div>
-        <div class="home-top-num">
-          {{curSpotPrice | fck(-8)}}
-        </div>
-        <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
+    <navbar :logo="true" :title="$t('navbar.Home')" />
+
+    <div class="home-content">
+      <div class="home-top">
+        <div class="home-top-left">
+          <div class="home-top-coin" @click="changeShowMarket(true)">
+            <span class="home-top-coin-name">{{curPair.name}}</span>
+            <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
+          </div>
+          <div class="home-top-num">
+            <DecimalView :value="curSpotPrice | fck(-8,2)" :last-style="{fontSize:'1.5rem'}"/>
+          </div>
+          <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
           {{curContractData.tokenPriceRate}}%</span>
-        </div>
-      </div>
-      <div class="home-top-right">
-        <div class="home-top-icons">
-          <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
-          <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
-        </div>
-        <div class="home-top-items">
-          <span class="fc-65">动仓费率：</span>
-          <span :class="curPositionChangeFeeRatio > 0 ? 'fc-red' : 'fc-green'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
-        </div>
-        <div class="home-top-items">
-          <span class="fc-65">持仓挖矿奖励：</span>
-          <span class="fc-green">多</span>
-          <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
-          <span class="fc-65 margin">/</span>
-          <span class="fc-red">空</span>
-          <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
-        </div>
-      </div>
-    </div>
-    <template v-if="$route.name === 'home'">
-    <div class="home-mid">
-      <div class="home-mid-one">
-        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="updateTraderOpenUpperBound">
-              <div class="derify-dropmenu-title" slot="title">
-                <span>{{entrustTypeConfig[entrustType].text}}</span>
-                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-              </div>
-          </van-dropdown-item>
-        </van-dropdown-menu>
-        <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-          <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
-              <div class="derify-dropmenu-title" slot="title">
-                <span>{{leverageConfig[leverageUnit].text}}</span>
-                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-              </div>
-          </van-dropdown-item>
-        </van-dropdown-menu>
-      </div>
-      <div class="home-mid-two">
-        <div class="fc-65 fz-12">开仓价</div>
-        <div class="home-mid-input" v-if="entrustType === 0">
-          <van-field class="derify-input" type="text" input-align="center" disabled value="以市价成交" />
-        </div>
-        <div class="home-mid-input" v-else>
-          <van-field class="derify-input" type="text" v-model.number="amount" @input="updateTraderOpenUpperBound"/>
-          <div class="fc-30">USDT</div>
-        </div>
-      </div>
-      <div class="home-mid-two">
-        <div class="home-mid-two-title">
-          <div class="fc-65 fz-12">开仓量</div>
-          <div class="fz-12">
-            <span class="fc-65">可开：
-              <!-- USDT -->
-              <template v-if="unit === 0">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
-              <!-- curToken -->
-              <template v-if="unit === 1">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
-              <!-- percent -->
-              <template v-if="unit === 2">100%</template></span>
-            <span class="fc-yellow" @click="transfer">划转</span>
           </div>
         </div>
-        <div class="home-mid-input">
-          <van-field class="derify-input" type="number" v-model.number="size" @input="calculateSliderValue"/>
-          <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
-            <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
-                <div class="derify-dropmenu-title" slot="title">
-                  <span>{{unitConfig[unit].text}}</span>
-                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-                </div>
-            </van-dropdown-item>
-          </van-dropdown-menu>
+        <div class="home-top-right">
+          <div class="home-top-icons">
+            <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
+            <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
+          </div>
+          <div class="home-top-items">
+            <span class="fc-65">{{$t('Trade.OpenPosition.PCFRate')}}: </span>
+            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
+          </div>
+          <div class="home-top-items">
+            <span class="fc-65">{{$t('Trade.OpenPosition.PMAPY')}}：</span>
+            <span class="fc-green">{{$t('Trade.OpenPosition.Long')}}</span>
+            <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
+            <span class="fc-65 margin">/</span>
+            <span class="fc-red">{{$t('Trade.OpenPosition.Short')}}</span>
+            <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
+          </div>
         </div>
       </div>
-      <div class="home-mid-three">
-        <van-slider bar-height=".4rem" button-size="1.8rem" v-model="value5" @input="calculatePositionSize"/>
-      </div>
-      <div class="home-mid-four" v-if="isLogin">
-        <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-        <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
-        <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">双向对冲</div>
-      </div>
-      <div class="home-mid-four" v-if="!isLogin">
-        <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-      </div>
-    </div>
-    </template>
-    <div id="myChart" :style="{width: '100%', height: '36.5rem', display: $route.name === 'home' ? 'none':'block'}"></div>
-    <div class="home-last">
       <template v-if="$route.name === 'home'">
-        <van-tabs v-model="active" @click="tabChange">
-          <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
-            <van-list
-              v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="loadMore"
-            >
-
-              <template v-if="active === 'key1'">
-                <div class="exchange-block" v-for="(data,i) in positions" :key="i">
-                  <div class="exchange-block-title">
-                    <div class="left">
-
-                      <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                      <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">{{curPair.name}}</div>
-                      <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                      <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                    </div>
-                    <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                      <div class="fz-12">平仓</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
-                      <div class="fz-12">取消委托</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key3'">
-                      <div class="fz-12 fc-45">2021-01-20 19:39:29</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">浮动盈亏：</div>
-                      <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">{{data.unrealizedPnl | fck(-8)}}</div>
-                      <div>USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">持仓量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">当前价格：</div>
-                      <div>{{data.spotPrice | fck(-8)}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">开仓均价：</div>
-                      <div>{{data.averagePrice | fck(-8)}} {{curPair.key}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">止损设置：</div>
-                      <div>
-                        <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
-                        <template v-else>-</template></div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">止盈设置：</div>
-                      <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
-                        <template v-else>-</template></div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">持仓保证金：</div>
-                      <div>{{data.margin | fck(-8)}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">保证金率：</div>
-                      <div>{{data.marginRate | fck(-8)}}%</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">强平金额：</div>
-                      <div>{{data.liquidatePrice | fck(-8)}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right" @click="changeShowSet(true, data)">
-                      <div>设置止盈/止损</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                  </div>
+        <div class="home-mid">
+          <div class="home-mid-one">
+            <van-dropdown-menu :overlay="false" class="derify-dropmenu">
+              <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="onOpenTypeChange">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{entrustTypeConfig[entrustType].text}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
-              </template>
-              <template v-if="active ==='key2'">
-                <div class="exchange-block" v-for="(data,i) in positionOrders" :key="i">
-                  <div class="exchange-block-title">
-                    <div class="left">
+              </van-dropdown-item>
+            </van-dropdown-menu>
+            <van-dropdown-menu :overlay="false" class="derify-dropmenu">
+              <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
+                <div class="derify-dropmenu-title" slot="title">
+                  <span>{{leverageConfig[leverageUnit].text}}</span>
+                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                </div>
+              </van-dropdown-item>
+            </van-dropdown-menu>
+          </div>
+          <div class="home-mid-two">
+            <div class="fc-65 fz-12">{{$t('Trade.OpenPosition.Price')}}</div>
+            <div class="home-mid-input" v-if="entrustType === 0">
+              <van-field class="derify-input" type="text" input-align="center" disabled :value="$t('Trade.OpenPosition.MarketPrice')" />
+            </div>
+            <div class="home-mid-input" v-else>
+              <van-field class="derify-input" type="text" v-model.number="amount" @change="updateTraderOpenUpperBound"/>
+              <div class="fc-30">USDT</div>
+            </div>
+          </div>
+          <div class="home-mid-two">
+            <div class="home-mid-two-title">
+              <div class="fc-65 fz-12">{{$t('Trade.OpenPosition.Amount ')}}</div>
+              <div class="fz-12">
+            <span class="fc-65">{{$t('Trade.OpenPosition.MaxSize')}}：
+              <!-- USDT -->
+              <template v-if="unit === UnitTypeEnum.USDT">{{maxSize}} USDT</template>
+              <!-- curToken -->
+              <template v-if="unit === UnitTypeEnum.CurPair">{{maxSize}} {{curPair.key}}</template>
+              <!-- percent -->
+              <template v-if="unit === UnitTypeEnum.Percent">{{maxSize}} {{curPair.key}}</template></span>
+                <span class="fc-yellow" @click="transfer">{{$t('Trade.OpenPosition.Transfer')}}</span>
+              </div>
+            </div>
+            <div class="home-mid-input">
+              <van-field class="derify-input" type="number" v-model.number="size" @input="onPositionSizeChange"/>
+              <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
+                <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
+                  <div class="derify-dropmenu-title" slot="title">
+                    <span>{{unitConfig[unit].text}}</span>
+                    <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                  </div>
+                </van-dropdown-item>
+              </van-dropdown-menu>
+            </div>
+          </div>
+          <div class="home-mid-three">
+            <van-slider bar-height=".4rem" button-size="1.8rem" v-model="sliderValue" @input="onSliderValueChange"/>
+          </div>
+          <div class="home-mid-four" v-if="isLogin">
+            <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">{{$t('Trade.OpenPosition.BuyLong')}}</div>
+            <div class="home-mid-four-btn red-gra" @click="changeShowOpen(true, 1)">{{$t('Trade.OpenPosition.SellShort')}}</div>
+            <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">{{$t('Trade.OpenPosition.TwoWay')}}</div>
+          </div>
+          <div class="home-mid-four" v-if="!isLogin">
+            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+          </div>
+        </div>
+      </template>
+      <div class="k-chart-wrap" :style="{display: $route.name === 'exchange' ? 'block' : 'none'}">
+        <div class="k-chart-xtype-list">
+          <template v-for="(gap,key) in kChartTimeMinGaps">
+            <template v-if="key <= showTimeGapNum">
+              <div :key="key"
+                   :class="gap.value === kChartTimeGap.value ? 'k-chart-xtype xtype-active' : 'k-chart-xtype'"
+                   @click="changeKChartTimeGap(gap)"
+              >{{gap.text}}</div>
+            </template>
+          </template>
+          <div class="k-chart-xtype last-xtype" v-if="kChartTimeMinGaps.length > showTimeGapNum" @click="toggleTimeGap(!showTimeGapDropDown)">
+            <svg v-if="!showTimeGapDropDown" t="1628433867256" class="arrow-down-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2971" width="200" height="200"><path d="M482.133333 738.133333L136.533333 392.533333c-17.066667-17.066667-17.066667-42.666667 0-59.733333 8.533333-8.533333 19.2-12.8 29.866667-12.8h689.066667c23.466667 0 42.666667 19.2 42.666666 42.666667 0 10.666667-4.266667 21.333333-12.8 29.866666L541.866667 738.133333c-17.066667 17.066667-42.666667 17.066667-59.733334 0z" p-id="2972" fill="#ADAAB7"></path></svg>
+            <svg v-else t="1628434121366" class="arrow-up-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3272" width="200" height="200"><path d="M541.866667 285.866667l345.6 345.6c17.066667 17.066667 17.066667 42.666667 0 59.733333-8.533333 8.533333-19.2 12.8-29.866667 12.8H168.533333c-23.466667 0-42.666667-19.2-42.666666-42.666667 0-10.666667 4.266667-21.333333 12.8-29.866666l343.466666-345.6c17.066667-17.066667 42.666667-17.066667 59.733334 0z" p-id="3273" fill="rgba(255,255,255,0.85)"></path></svg>
+          </div>
+        </div>
+        <div v-if="showTimeGapDropDown" class="k-chart-dropdown">
+          <template v-for="(gap,key) in kChartTimeMinGaps">
+            <template v-if="key > showTimeGapNum">
+              <div :key="key"
+                   :class="gap.value === kChartTimeGap.value ? 'k-chart-dropdown-item xtype-active' : 'k-chart-dropdown-item'"
+                   @click="changeKChartTimeGap(gap)"
+              >{{gap.text}}</div>
+            </template>
+          </template>
+        </div>
+        <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
+      </div>
+      <div class="home-last">
+        <template v-if="$route.name === 'home'">
+          <van-tabs v-model="active" @click="tabChange">
+            <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
+              <van-list
+                v-model="loading"
+                :loading-text="$t('Trade.OpenPosition.Loading')"
+                :finished="finished"
+                :finished-text="$t('Trade.OpenPosition.NoMoreInfo')"
+                @load="loadMore"
+              >
 
-                      <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                      <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">
+                <template v-if="active === 'key1'">
+                  <template  v-for="(data,i) in positions">
+                    <div class="exchange-block" v-if="data.isUsed" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
 
-                        /USDT</div>
-                      <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
-                      <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                    </div>
-                    <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                      <div class="fz-12">平仓</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
-                      <div class="fz-12">取消委托</div>
-                      <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
-                    </div>
-                    <div class="right" v-if="active === 'key3'">
-                      <div class="fz-12 fc-45">{{new Date(data.timestamp).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">委托价格：</div>
-                      <div>{{data.price | fck(-8)}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">委托类型：</div>
-                      <div :class="i % 2 === 0 ? 'fc-green' : 'fc-red'">限价委托</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">委托数量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.name}}</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">委托时间：</div>
-                      <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">止损设置：</div>
-                      <div>
-                        <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
-                        <template v-else>-</template>
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-green">{{$t('Trade.MyPosition.Long')}}</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-red">{{$t('Trade.MyPosition.Short')}}</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
+                          <div class="fz-12">{{$t('Trade.MyPosition.Close')}}</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                        <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
+                          <div class="fz-12">{{$t('Trade.CurrentOrder.Cancel')}}</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
                       </div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">止盈设置：</div>
-                      <div>
-                        <div>
-                          <template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
-                          <template v-else>-</template>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.MyPosition.UnrealizedPnL')}}：</div>
+
+                          <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
+                            {{data.unrealizedPnl | amountFormt(2, true, '--', -8)}}
+                          </div>
+                          <div>USDT<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -8)}}%)</span></template></div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.MyPosition.PositionHeld')}}：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.MyPosition.CurrentPrice')}}：</div>
+                          <div>{{data.spotPrice | fck(-8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.MyPosition.AveragePrice')}}：</div>
+                          <div>{{data.averagePrice | fck(-8)}} USDT</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.MyPosition.stopLoss')}}：</div>
+                          <div>
+                            <template v-if="data.stopLossPrice > 0">{{data.stopLossPrice | fck(-8)}}</template>
+                            <template v-else>--</template></div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.MyPosition.stopProfit')}}：</div>
+                          <div><template v-if="data.stopProfitPrice > 0">{{data.stopProfitPrice | fck(-8)}}</template>
+                            <template v-else>--</template></div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.MyPosition.Margin')}}：</div>
+                          <div>{{data.margin | amountFormt(2, false, '--', -8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.MyPosition.Risk')}}：</div>
+                          <div>{{data.marginRate | amountFormt(2, false, '--', -8)}}%</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.MyPosition.LiqPrice')}}：</div>
+                          <div>{{data.liquidatePrice | amountFormt(2, false, '--', -8)}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right" @click="changeShowSet(true, data)">
+                          <div>{{$t('Trade.MyPosition.SetStopPrice')}}</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </template>
-              <template v-if="active ==='key3'">
-                <div class="exchange-block" v-for="(data,i) in tradeRecords" :key="i">
-                  <div class="exchange-block-title">
-                    <div class="left">
+                  </template>
 
-                      <div v-if="data.side === 0" class="mr-4 text-icon-red">多</div>
-                      <div v-if="data.side === 1" class="mr-4 text-icon-green">空</div>
-                      <div class="fz-16 mr-4">{{curPair.name}}</div>
-                      <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
-                    </div>
-                    <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">盈亏：</div>
-                      <div :class="data.pnl_usdt > 0 ? 'fc-red' : 'fc-green'">{{data.pnl_usdt | amountFormt(2, true, '-')}}</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">委托类型：</div>
-                      <div>
-                        <span :class="getTradeType(data.type).showType">{{getTradeType(data.type).opType}}</span>/<span>{{getTradeType(data.type).tradeType}}</span>
+                </template>
+                <template v-if="active ==='key2'">
+                  <template  v-for="(data,i) in positionOrders">
+                    <div class="exchange-block" v-if="data.isUsed" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
+
+                          <div v-if="data.side === 0" class="mr-4 text-icon-green">{{$t('Trade.CurrentOrder.Long')}}</div>
+                          <div v-if="data.side === 1" class="mr-4 text-icon-red">{{$t('Trade.CurrentOrder.Short')}}</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <div class="number-icon-green mr-4">{{data.leverage | fck(-8, 0)}}x</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
+                          <div class="fz-12">{{$t('Trade.CurrentOrder.Cancel')}}</div>
+                          <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.CurrentOrder.Price')}}：</div>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} USDT</div></template>
+                          <template v-else><div>{{data.stopPrice | fck(-8)}} USDT</div></template>
+
+
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.CurrentOrder.Type')}}：</div>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">{{$t('Trade.CurrentOrder.OpenLimit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.OpenLimit.1')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopProfit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopProfit.1')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopLoss.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopLoss.1')}}</span></div></template>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.CurrentOrder.Volume')}}：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.CurrentOrder.Time')}}：</div>
+                          <div>{{new Date(data.timestamp * 1000).Format("yyyy-MM-dd hh:mm:ss")}}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">成交价格：</div>
-                      <div>{{data.price | amountFormt(2, false, '-')}} USDT</div>
+                  </template>
+                </template>
+                <template v-if="active ==='key3'">
+                  <template  v-for="(data,i) in tradeRecords">
+                    <div class="exchange-block" :key="i">
+                      <div class="exchange-block-title">
+                        <div class="left">
+
+                          <div v-if="data.side === SideEnum.LONG" class="mr-4 text-icon-green">{{$t('Trade.TradeHistory.Long')}}</div>
+                          <div v-if="data.side === SideEnum.SHORT" class="mr-4 text-icon-red">{{$t('Trade.TradeHistory.Short')}}</div>
+                          <div class="fz-16 mr-4">{{getPairByAddress(data.token).name}}</div>
+                          <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
+                        </div>
+                        <div class="fz-12 fc-45">{{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}</div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.RealizedPnL')}}：</div>
+                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}}</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.Type')}}：</div>
+                          <div>
+                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).opType)}}</span>/<span>{{$t(getTradeType(data.type).tradeType)}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.Price')}}：</div>
+                          <div>{{data.price | amountFormt(2, false, '--')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.Volume')}}：</div>
+                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.Amount')}}：</div>
+                          <div>{{data.amount | amountFormt(2, false, '--')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.TradFee')}}：</div>
+                          <div>{{data.trading_fee | amountFormt(2, false, '--')}} USDT</div>
+                        </div>
+                      </div>
+                      <div class="exchange-item">
+                        <div class="exchange-item-left">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.PCF')}}：</div>
+                          <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
+                        </div>
+                        <div class="exchange-item-right">
+                          <div class="fc-45">{{$t('Trade.TradeHistory.Compensation')}}：</div>
+                          <div>{{data.pnl_bond  | amountFormt(2, false, '--')}} bDRf</div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">成交数量：</div>
-                      <div>{{data.size | fck(-8)}} {{curPair.key}}</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">成交金额：</div>
-                      <div>{{data.amount | amountFormt(2, false, '-')}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">手续费：</div>
-                      <div>{{data.trading_fee | amountFormt(2, false, '-')}} USDT</div>
-                    </div>
-                  </div>
-                  <div class="exchange-item">
-                    <div class="exchange-item-left">
-                      <div class="fc-45">动仓费：</div>
-                      <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
-                    </div>
-                    <div class="exchange-item-right">
-                      <div class="fc-45">分摊补偿：</div>
-                      <div>{{data.pnl_bond  | amountFormt(2, false, '-')}} bDRf</div>
-                    </div>
-                  </div>
-                </div>
+                  </template>
+                </template>
+
+              </van-list>
+            </van-tab>
+          </van-tabs>
+        </template>
+        <div class="home-last-btn-wrap">
+          <template v-if="$route.name === 'exchange'">
+            <template v-if="isLogin">
+              <div class="home-last-four-btn green-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.BuyLong')}}</div>
+              <div class="home-last-four-btn red-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.SellShort')}}</div>
+            </template>
+          </template>
+          <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
+            <template v-if="isLogin">
+              <template v-if="active === 'key1' && positions.length > 0">
+                <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">{{$t('Trade.MyPosition.OneClickClose')}}</div>
               </template>
 
-            </van-list>
-          </van-tab>
-        </van-tabs>
-      </template>
-      <div v-else class="home-last-btn-wrap">
-        <template v-if="$route.name === 'exchange'">
-          <template v-if="isLogin">
-            <div class="home-last-four-btn green-gra" @click="changeShowOpen(true, 0)">看涨 开多</div>
-            <div class="home-last-four-btn red-gra" @click="changeShowOpen(true, 1)">看跌 开空</div>
+              <template v-if="active === 'key2' && positionOrders.length > 0">
+                <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">{{$t('Trade.CurrentOrder.CancelAllOrder')}}</div>
+              </template>
+            </template>
           </template>
-          <template v-if="!isLogin">
-            <div class="home-last-four-btn green-gra" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-          </template>
-        </template>
-
-
+        </div>
       </div>
     </div>
+
     <market :show="showMarket" @closeMarketPopup="changeShowMarket" />
     <hint :show="showHint" :type="hintType" @closeHintPopup="changeShowHint" />
     <set-popup :extraData="setExtraData" :show="showSet" @closeSetPopup="changeShowSet" />
@@ -340,6 +362,7 @@
     <one-key-unwind :show="showOneKeyUnwind" @closeOneKeyUnwindPopup="changeShowOneKeyUnwind" />
     <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
+    <close-position :show="showClosePositionWind" :extraData="extClosePositionData" :closePositionOrderType="closePositionOrderType" @onClosePosition="changeClosePosistionStatus"/>
   </div>
 </template>
 
@@ -352,38 +375,61 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
-import options from '@/utils/kExample'
-import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '../../api/trade'
+import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '@/api/trade'
 import {
-  fromContractUnit,
-  OpenType,
+  fromContractUnit, numConvert,
+  OpenType, OrderTypeEnum,
   Position,
   SideEnum,
   stringFromContractUnit,
   toContractUnit
-} from '../../utils/contractUtil'
+} from '@/utils/contractUtil'
 import {fck} from "@/utils/utils";
-import { UnitTypeEnum } from '../../store/modules/contract'
+import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/store/modules/contract'
+import { UserProcessStatus } from '@/store/modules/user'
+import ClosePosition from './Popup/ClosePosition'
+import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
+import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
+import DecimalView from '../../components/DecimalView/DecimalView'
+import { convertAmount2TokenSize, toContractNum } from '../../utils/contractUtil'
+class OpTypeEnum {
+  constructor(opType, opTypeDesc) {
+    this.opType = opType
+    this.opTypeDesc = opTypeDesc
+  }
+  static get OpenPosition() {
+    return new OpTypeEnum(1, "Open")
+  }
 
-const TradeTypeMap = {
-  0:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-MarketPriceTrade, 市价委托 & 开仓
-  1:{opType: '开仓', showType: 'fc-green', tradeType: '市价委托'},//-HedgeMarketPriceTrade, 市价委托(通过对冲开仓) & 开仓
-  2:{opType: '开仓', showType: 'fc-green', tradeType: '限价委托'},//-LimitPriceTrade, 限价委托 & 开仓
-  3:{opType: '平仓', showType: 'fc-red', tradeType: '止盈止损'},//-StopProfitStopLossTrade, 止盈止损 & 平仓
-  4:{opType: '平仓', showType: 'fc-red', tradeType: '自动减仓'},//-AutoDeleveragingTrade, 自动减仓 & 平仓
-  5:{opType: '平仓', showType: 'fc-red', tradeType: '自动平仓'}//-MandatoryLiquidationTrade, 自动平仓 & 平仓
+  static get ClosePosition() {
+    return new OpTypeEnum(2, "Close")
+  }
 }
-
 
 const context = {
   myChart: null,
   loaded: false,
+  timer: null,
+  klineTimer: null,
+  loadStamp: 0,
   tokenMiningRateEvent: null,
   tokenPriceChangeEvenet: null
 };
+
+const TradeTypeMap = {
+  0: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceTrade
+  1: {opType: 'Trade.TradeHistory.OpenMarket.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenMarket.1', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceTrade
+  2: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceTrade
+  3: {opType: 'Trade.TradeHistory.CloseStopPrice.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseStopPrice.1', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossTrade
+  4: {opType: 'Trade.TradeHistory.CloseDeleverage.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseDeleverage.1', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingTrade
+  5: {opType: 'Trade.TradeHistory.CloseLiquidate.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseLiquidate.1', opTypeEnum: OpTypeEnum.ClosePosition}//-MandatoryLiquidationTrade
+}
+
 export default {
   name: 'Home',
   components: {
+    DecimalView,
+    ClosePosition,
     Navbar,
     Market,
     Hint,
@@ -421,23 +467,52 @@ export default {
     },
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    finished () {
+      if(this.active === 'key1') {
+        return this.positionFinished
+      }
+
+      if(this.active === 'key2') {
+        return this.positionOrdersFinished
+      }
+
+      if(this.active === 'key3') {
+        return this.tradeRecordsFinished
+      }
+
+      return true
+    },
+    maxSize () {
+      const {unit} = this
+      if (unit ===  UnitTypeEnum.USDT) {
+        return fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
+      }else{
+        return fromContractUnit(this.curTraderOpenUpperBound.size, 2)
+      }
     }
   },
 
   data () {
 
     const position = new Position()
+
+
     return {
+      OrderTypeEnum,
+      SideEnum,
+      OpTypeEnum,
+      UnitTypeEnum,
       entrustType: 0,
       leverageUnit: 0,
-      amount: 0,
+      amount: fromContractUnit(this.curSpotPrice),
       size: 0,
-      value5: 20,
+      sliderValue: 0,
       unit: 0,
       //curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
-        {text: '市价委托', value: 0},
-        {text: '限价委托', value: 1}
+        {text:  this.$t('Trade.OpenPosition.Market'), value: 0},
+        {text: this.$t('Trade.OpenPosition.Limit'), value: 1}
       ],
       leverageConfig: [
         {text: '10x', value: 0, val: 10},
@@ -448,30 +523,48 @@ export default {
       ],
       unitConfig: [
         {text: 'USDT', value: 0},
-        {text: 'ETH', value: 1},
+        {text: this.$store.state.contract.curPairKey, value: 1},
         {text: '%', value: 2}
       ],
       active: 'key1',
       tabs: {
-        key1: '我的持仓',
-        key2: '当前委托',
-        key3: '成交记录'
+        key1: this.$t('Trade.MyPosition.MyPosition'),
+        key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
+        key3:  this.$t('Trade.TradeHistory.TradeHistory')
       },
+      showTimeGapDropDown: false,
+      showTimeGapNum: 9,
+      kChartTimeGap: {value: '15m', text: '15m'},
+      kChartTimeMinGaps: [
+        {value: '1m', text: '1m'},
+        {value: '5m', text: '5m'},
+        {value: '15m', text: '15m'},
+        {value: '1H', text: '1h'},
+        {value: '4H', text: '4h'},
+        {value: '1D', text: 'D'},
+        {value: '1W', text: 'W'},
+        {value: '1M', text: 'M'},
+      ],
       positions: [],
       positionOrders: [],
       tradeRecords: [],
       loading: false,
-      finished: false,
-      showMarket: false, // 市场弹窗，选择币种
-      showHint: false, // 概念提示弹窗
-      hintType: 'key1', // 概念提示的种类
-      showSet: false, // 止盈止损弹窗
-      showUwind: false, // 平仓弹窗
-      showOneKeyUnwind: false, // 一键平仓弹窗
-      showOpen: false, // 开仓确认弹窗
-      openType: null, // 开仓类型
-      showOpenStatus: false, // 开仓状态弹窗
-      openStatus: 'fail', // 开仓状态
+      positionFinished: false,
+      positionOrdersFinished: false,
+      tradeRecordsFinished: false,
+      showMarket: false, // market popup，change token pair
+      showHint: false, // show hit popup
+      hintType: 'key1', // show hit type
+      showSet: false, // show stopPrift/stopLoss set popup
+      showUwind: false, // show cancelPosition popup
+      showOneKeyUnwind: false, // show one key cancelAllPosition popup
+      showOpen: false, // show open position confirm popup
+      openType: null, // open position type {@see OpenType}
+      showOpenStatus: false, // smart contract processing popup type
+      showClosePositionWind: false,
+      closePositionOrderType: 0,
+      extClosePositionData: {...position},
+      openStatus: 'fail', // smart contract processing satus
       openExtraData: {
         entrustType: OpenType.MarketOrder,
         leverage: 10,
@@ -483,7 +576,7 @@ export default {
         positionChangeFee: 0,
         tradingFee: 0
       },
-      positionChangeFeeRatio: 0, //动仓费率
+      positionChangeFeeRatio: 0,
       setExtraData: {...position},
       unwindExtraData: {...position}
     }
@@ -532,32 +625,37 @@ export default {
     changeShowOneKeyUnwind (bool) {
       this.showOneKeyUnwind = bool
     },
+    /**
+     * open position popup
+     * @param bool
+     * @param side
+     */
     changeShowOpen (bool, side) {
       if (bool) {
         let {entrustType, leverage, leverageUnit, amount, size, unit} = this
 
         if (entrustType === 1 && !amount) {
-          this.$toast('please input amount first')
+          this.$toast(this.$t('global.NumberError'))
           return
         }
 
         if(entrustType === 0){
-          amount = stringFromContractUnit(this.curSpotPrice)
+          amount = fromContractUnit(this.curSpotPrice)
         }
 
         if (!size || size <= 0) {
-          this.$toast('输入数量有误，请重新输入')
+          this.$toast(this.$t('global.NumberError'))
           return
         }
 
         if(unit !== UnitTypeEnum.USDT){
           if (size > fromContractUnit(this.curTraderOpenUpperBound.size)) {
-            this.$toast('超出限额，请重新输入')
+            this.$toast(this.$t('global.NumberError'))
             return
           }
         } else {
           if (size > fromContractUnit(this.curTraderOpenUpperBound.amount)) {
-            this.$toast('超出限额，请重新输入')
+            this.$toast(this.$t('global.NumberError'))
             return
           }
         }
@@ -566,8 +664,26 @@ export default {
         let positionChangeFee = 0;
 
         if(side === SideEnum.HEDGE && entrustType === OpenType.LimitOrder){
-          this.$toast('对冲交易只能选择市价委托')
+          this.$toast(this.$t('Trade.OpenPosition.TwoWayOpenPriceTypeError'))
           return
+        }
+
+        if(entrustType === OpenType.LimitOrder) {
+          if(side === SideEnum.LONG && amount >= fromContractUnit(this.curSpotPrice)){
+            entrustType = OpenType.MarketOrder
+            amount = fromContractUnit(this.curSpotPrice)
+          }
+
+          if(side === SideEnum.SHORT && amount <= fromContractUnit(this.curSpotPrice)){
+            entrustType = OpenType.MarketOrder
+            amount = fromContractUnit(this.curSpotPrice)
+          }
+
+        }
+
+        if(UnitTypeEnum.Percent === unit) {
+          unit = UnitTypeEnum.CurPair
+          size = this.calculatePositionSize(unit, this.sliderValue)
         }
 
         this.openExtraData = Object.assign(this.openExtraData, {
@@ -582,15 +698,17 @@ export default {
           tradingFee
         })
 
+        let tokenSize = convertAmount2TokenSize(unit, toContractUnit(size), toContractUnit(amount))
+
         const self = this;
-        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
+        this.$store.dispatch("contract/getTradingFee", {size: toContractNum(tokenSize), price: toContractNum(amount)}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
           Object.assign(this.openExtraData, {tradingFee: fromContractUnit(tradingFee)});
         });
 
-        this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractUnit(size), price:toContractUnit(amount)})
+        this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractNum(tokenSize), price:toContractNum(amount)})
           .then((positionChangeFee) => {
             if(!positionChangeFee) {
               return
@@ -606,6 +724,23 @@ export default {
       this.openStatus = status
       this.showOpenStatus = bool
     },
+    changeClosePosistionStatus (bool, data) {
+      this.showClosePositionWind = bool
+
+      const cancelOrderTypeMap = {}
+      cancelOrderTypeMap[OrderTypeEnum.LimitOrder] = CancelOrderedPositionTypeEnum.LimitedOrder
+      cancelOrderTypeMap[OrderTypeEnum.StopLossOrder] = CancelOrderedPositionTypeEnum.StopLossOrder
+      cancelOrderTypeMap[OrderTypeEnum.StopProfitOrder] = CancelOrderedPositionTypeEnum.StopProfitOrder
+
+      if(data && cancelOrderTypeMap.hasOwnProperty(data.orderType)){
+        this.closePositionOrderType = cancelOrderTypeMap[data.orderType]
+      }else{
+        this.closePositionOrderType = CancelOrderedPositionTypeEnum.AllOrder
+      }
+
+      this.extClosePositionData = data
+
+    },
     transfer () {
       this.$router.push({path: '/account'})
     },
@@ -615,23 +750,29 @@ export default {
       }
       this.$router.push({name})
     },
-    drawKline () {
-
-      if(!context.loaded){
+    drawKline (options) {
+      if(this.$route.name !== 'exchange') {
         return
       }
 
-      if(!context.myChart){
-        context.myChart = this.$echarts.init(document.getElementById('myChart'))
+      if(context.myChart !== null){
+        context.myChart.dispose()
+        context.myChart = null
       }
 
+      if(!options) {
+        options = {}
+      }
+
+      window.context = context
+
+      context.myChart = this.$echarts.init(document.getElementById('myChart'))
       context.myChart.setOption(options)
       context.myChart.resize()
     },
     tabChange (key) {
 
       const self = this;
-
 
       if(key === 'key3'){
         self.loading = true
@@ -649,123 +790,154 @@ export default {
 
           self.loading = false
         })
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }
     },
-    cancleOrderedPosition (data) {
-      this.$store.dispatch('contract/cancleOrderedPosition',
-          {
-            token: data.token,
-            orderType: data.orderType,
-            side: data.side,
-            timestamp: data.timestamp}).then(r => {
-      })
+    onOpenTypeChange () {
+      if(!this.amount) {
+        this.amount = fromContractUnit(this.curSpotPrice)
+      }
+      this.updateTraderOpenUpperBound()
     },
-    calculatePositionSize (sliderValue) {
-      const {unit} = this// 0 ETH，1 USDT 2 %
-      this.size = Math.round(sliderValue / 100 * this.getMaxSize(unit))
+    onPositionSizeChange (size) {
+      const {unit} = this
+      const maxSize = this.getMaxSize(unit)
+      if(size > maxSize) {
+        this.size = maxSize
+      }
+
+      this.calculateSliderValue()
+    },
+    onSliderValueChange() {
+      const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
+      this.unit = UnitTypeEnum.Percent
+      this.size = sliderValue
+      //this.size = this.calculatePositionSize(unit, sliderValue)
+    },
+    calculatePositionSize (unit, sliderValue) {
+
+      const maxSize = this.getMaxSize(unit)
+      if(maxSize > 0){
+        return numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
+      }
+
+      return 0
     },
     getMaxSize(unit) {
       let maxSize = 100;
-      if (unit ===  UnitTypeEnum.USDT) {
-        maxSize = fck(Math.round(this.curTraderOpenUpperBound.size), -8, 2)
-      }else if (unit === UnitTypeEnum.CurPair) {
-        maxSize = fck(Math.round(this.curTraderOpenUpperBound.amount), -8, 2)
-      }else{
-        maxSize = 100
+      if (unit !==  UnitTypeEnum.Percent) {
+        maxSize = this.maxSize
       }
 
       return maxSize
     },
     calculateSliderValue () {
-      this.value5 = Math.min(Math.round(this.size * 100 / this.getMaxSize(this.unit)), 100)
+      const maxSize = this.getMaxSize(this.unit)
+      if(maxSize > 0) {
+        this.sliderValue = Math.min(Math.round(this.size * 100 / maxSize), 100)
+      }
     },
     unitSelectChange (unit) {
       this.unit = unit;
-      this.calculatePositionSize(this.value5)
+      this.size = this.calculatePositionSize(unit, this.sliderValue)
     },
-    updateTraderOpenUpperBound (amount) {
+    updateTraderOpenUpperBound () {
       //leverage change, recalculate bound
 
       const openType = this.entrustType
-
-      if(amount > 0){
-        this.amount = amount
-      }else{
-        if(this.amount === 0 && openType === 1) {
-          this.amount = fck(this.curSpotPrice, -8, 2)
-        }
+      let amount = this.amount
+      if(openType === OpenType.MarketOrder) {
+        amount = fromContractUnit(this.curSpotPrice)
       }
 
+      if(amount <= 0) {
+        return
+      }
 
-      const price = toContractUnit(this.amount);
+      const price = toContractUnit(amount);
 
       const leverage = toContractUnit(this.leverage)
 
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
         .then(traderOpenUpperBound => {
-          this.calculatePositionSize(this.value5)
+          this.calculatePositionSize(this.sliderValue)
       });
     },
     homeInit(){
-      if(context.tokenMiningRateEvent !== null){
-        context.tokenMiningRateEvent.close()
+      var timestamp = (new Date()).getTime()
+      if((timestamp - context.loadStamp) < 3000){
+        return
       }
 
-      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //update mining fee
-        //{"longPmrRate":0,"shortPmrRate":0}
-        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
-      })
-
-      this.drawKline()
+      context.loadStamp = timestamp
 
       if(!window.ethereum){
         return
       }
 
-      this.$store.commit("contract/SET_WALLET_ADDRESS", window.ethereum.selectedAddress)
-
       const self = this
+
+      self.updateKLine(self.curPair.key, self.kChartTimeGap)
+
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-        this.size = fck(Math.round(this.value5 /100 * this.curTraderOpenUpperBound.amount), -8, 2);
+        if(self.curTraderOpenUpperBound.amount > 0) {
+          self.size = fromContractUnit(self.sliderValue / 100 * self.curTraderOpenUpperBound.amount, 2);
+        }
+
       })
 
-      const {positions, positionOrders} = this
-
-      positions.splice(0)
-      positionOrders.splice(0)
       self.loading = true
+      self.positionFinished = false
+      self.positionOrdersFinished = false
+      self.tradeRecordsFinished = false
 
       this.$store.dispatch('contract/loadPositionData').then(r => {
-        // Array<Position>
-        if (!r.positions && !r.orderPositions) {
-          return
-        }
-
-        if(r.positions){
-          r.positions.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              positions.push(item)
-            }
-          })
-        }
-
-
-        if(r.orderPositions){
-          r.orderPositions.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              positionOrders.push(item)
-            }
-          })
-        }
-
         self.loading = false
+        self.positionFinished = true
+        self.positionOrdersFinished = true
+        self.tradeRecordsFinished = true
       })
 
       this.updateTraderOpenUpperBound()
+    },
+    getPairByAddress (token) {
+      const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)
+      if(!pair){
+        return {name: 'unknown', key: 'unknown'}
+      }
+
+      return pair
+    },
+    closeAllPositions () {
+
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
+
+      this.$store.dispatch('contract/closeAllPositions').then(() => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradeSuccessMsg')})
+      }).catch((ex) => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
+      })
+    },
+    changeKChartTimeGap (gap) {
+      this.kChartTimeGap = gap
+      this.toggleTimeGap(false)
+
+      this.updateKLine(this.curPair.key, gap)
+    },
+    toggleTimeGap (bool) {
+      this.showTimeGapDropDown = bool
+    },
+    updateKLine(token, gap) {
+      const self = this
+      getEchartsOptions({token,
+        bar: gap.value,
+        curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
+        self.drawKline(options)
+      })
     }
   },
   watch: {
@@ -776,48 +948,116 @@ export default {
       immediate: true,
       deep: true
     },
-    '$store.state.user.isLogin': {
+    '$store.state.contract.curPairKey' : {
       handler (val) {
+        this.unitConfig[1].text = this.curPair.key
         this.homeInit()
+      },
+      immediate: false,
+      deep: true
+    },
+    '$store.state.contract.positionData.positions': {
+      handler (val) {
+        this.positions.splice(0)
+        this.$store.state.contract.positionData.positions.forEach((item) => {
+          this.positions.push(item)
+        })
       },
       immediate: true,
       deep: true
     },
-    '$store.state.contract.curPairKey' : {
+    '$store.state.contract.positionData.orderPositions': {
       handler (val) {
-        console.log('$store.state.contract.curPairKey', this.curPair.key)
-        this.unitConfig[1].text = this.curPair.key
-        this.homeInit()
+        this.positionOrders.splice(0)
+
+        this.$store.state.contract.positionData.orderPositions.forEach((item) => {
+          this.positionOrders.push(item)
+        })
       },
       immediate: true,
       deep: true
+    },
+    '$route.name': function (){
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
+    },
+    '$i18n.locale' : function () {
+      this.tabs = {
+          key1: this.$t('Trade.MyPosition.MyPosition'),
+          key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
+          key3:  this.$t('Trade.TradeHistory.TradeHistory')
+      }
+
+      this.entrustTypeConfig = [
+        {text:  this.$t('Trade.OpenPosition.Market'), value: 0},
+        {text: this.$t('Trade.OpenPosition.Limit'), value: 1}
+      ]
     }
   },
   created () {
+
     context.loaded = true
-
-    this.$nextTick(() => {
-
-    })
-  },
-  destroyed () {
-    if(context.myChart){
-      context.myChart.dispose()
+    const self = this;
+    if(context.timer !== null) {
+      clearInterval(context.timer)
+      context.timer = null
     }
+
+    if(context.klineTimer !== null){
+      clearInterval(context.klineTimer)
+      context.klineTimer = null
+    }
+
+    if(context.tokenMiningRateEvent !== null){
+      context.tokenMiningRateEvent.close()
+      context.tokenMiningRateEvent = null
+    }
+
+    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+      //update mining fee
+      //{"longPmrRate":0,"shortPmrRate":0}
+      this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
+    })
+
+    context.klineTimer = setInterval(() => {
+      if(self.$route.name === 'exchange') {
+        self.updateKLine(self.curPair.key, self.kChartTimeGap)
+      }
+
+    }, 15000)
+
+    context.timer = setInterval(() => {
+      self.$store.dispatch('contract/getSpotPrice')
+      self.$store.dispatch('contract/loadPositionData')
+    }, 15000)
+
+    this.homeInit()
+
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.homeInit()
+    })
   },
   updated () {
     this.$nextTick(() => {
-      this.drawKline()
+      if(context.myChart){
+        context.myChart.resize()
+      }
     })
   }
 }
 </script>
 
 <style lang="less" scoped>
+.home-container{
+  background-color: #0C071E;
+  padding-top: 6.6rem;
+  padding-left: 0;
+  padding-right: 0;
+}
 .home-top {
-  padding: 2rem 0.4rem;
+  padding: 2rem 1.4rem;
   display: flex;
   justify-content: space-between;
+  background-color: #140B32;
   &-left, &-right {
     display: flex;
     flex-direction: column;
@@ -826,6 +1066,7 @@ export default {
   }
   &-right {
     align-items: flex-end;
+    font-size: 1rem;
   }
   &-coin {
     display: flex;
@@ -878,9 +1119,6 @@ export default {
       margin: 0 .4rem;
     }
   }
-  .home-top-items {
-    font-size: 0.1rem;
-  }
   .home-top-items + .home-top-items {
     margin-top: .1rem;
   }
@@ -889,6 +1127,7 @@ export default {
   background: #272354;
   border-radius: 1.6rem;
   padding: 2.5rem 1.6rem;
+  margin: 0 1.6rem;
   &-one {
     display: flex;
     justify-content: space-between;
@@ -952,6 +1191,8 @@ export default {
 }
 .home-last {
   margin-top: 4rem;
+  padding: 0 2rem 2rem;
+
   .home-last-btn-wrap{
     display: flex;
     justify-content: space-around;
@@ -970,6 +1211,16 @@ export default {
           color: #140B32;
         }
       }
+    }
+    .home-last-batch-btn {
+      width: 100%;
+      height: 4.8rem;
+      border-radius: 2.4rem;
+      line-height: 4.8rem;
+      text-align: center;
+      font-size: 1.8rem;
+      border: 0.1rem solid @orange;
+      color: @orange;
     }
   }
 
@@ -1016,5 +1267,61 @@ export default {
       justify-content: flex-end;
     }
   }
+}
+
+.k-chart-wrap {
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+  .k-chart-xtype-list{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    background-color: #140B32;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 2rem;
+   .k-chart-xtype{
+     width: 3.6rem;
+     height: 3.6rem;
+     line-height: 3.6rem;
+     text-align: center;
+     color: rgba(255,255,255,0.45);
+     font-size: 1.3rem;
+     &.xtype-active{
+       color: rgba(255,255,255,0.85);
+       border-bottom: 0.1rem solid rgba(255,255,255,0.85);
+     }
+     &.last-xtype {
+       .arrow-down-icon,.arrow-up-icon{
+         width: 1.3rem;
+         height: 1.3rem;
+       }
+     }
+   }
+  }
+  .k-chart-ctn{
+    background-color: #140B32;
+  }
+  .k-chart-dropdown {
+    position: absolute;
+    right: 0.5rem;
+    top: 3.6rem;
+    width: 6rem;
+    background-color: #343166;
+    z-index: 2010;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    .k-chart-dropdown-item{
+      height: 4.8rem;
+      line-height: 4.8rem;
+      text-align: center;
+      color: rgba(255,255,255,0.65);
+      &.xtype-active{
+        background-color: #4E4D7A;
+      }
+    }
+  }
+
 }
 </style>

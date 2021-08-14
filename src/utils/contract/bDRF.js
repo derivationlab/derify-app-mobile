@@ -4,12 +4,12 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "account",
+        "name": "minter_0",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "minter_",
+        "name": "minter_1",
         "type": "address"
       }
     ],
@@ -100,7 +100,20 @@ export default
   },
   {
     "inputs": [],
-    "name": "minter",
+    "name": "minter0",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minter1",
     "outputs": [
       {
         "internalType": "address",
@@ -233,6 +246,24 @@ export default
       }
     ],
     "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

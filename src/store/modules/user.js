@@ -2,18 +2,21 @@ import * as web3Utils from '@/utils/web3Utils'
 import {toContractNum, Token} from "@/utils/contractUtil";
 
 export class ChainEnum {
-  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png')){
+  static values = []
+  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true){
     this.chainId = chainId
     this.name = name
     this.logo = logo
+    this.disabled = disabled
+    ChainEnum.values.push(this)
   }
 
   static get ETH() {
-    return new ChainEnum(1, "Ethereum mainnet", require('@/assets/images/wallet/eth-logo.png'))
+    return new ChainEnum(1, "mainnet", require('@/assets/images/wallet/eth-logo.png'))
   }
 
   static get Kovan() {
-    return new ChainEnum(42, "Kovan")
+    return new ChainEnum(42, "Kovan", true)
   }
 
   static get Goerli() {
@@ -30,6 +33,10 @@ export class ChainEnum {
 
   static get Morden() {
     return new ChainEnum(2, "Morden")
+  }
+
+  static get values() {
+    return ChainEnum.values
   }
 }
 
@@ -96,11 +103,16 @@ export function getWallet(){
 
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+
+  const chainId = parseInt(wethereum.chainId)
+
+  const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
+
   return {
     selectedAddress: wethereum.selectedAddress,
     isLogin: wethereum.selectedAddress && isEthum,
-    showWallet: !wethereum.selectedAddress || !isEthum,
-    chainEnum: networkMap[parseInt(wethereum.chainId)],
+    showWallet: false,
+    chainEnum: chainEnum,
     isEthum,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
@@ -123,6 +135,11 @@ const mutations = {
 const actions = {
   getBalanceOfDUSD ({state, commit, dispatch}) {
     return (async () => {
+
+      if(!state.selectedAddress) {
+        return
+      }
+
       const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
       console.log(balanceOf)
       commit('updateState', {balanceOfDUSD : balanceOf})

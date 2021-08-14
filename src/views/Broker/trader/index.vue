@@ -3,7 +3,8 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :loading-text="$t('Trade.OpenPosition.Loading')"
+        :finished-text="$t('Trade.Account.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">

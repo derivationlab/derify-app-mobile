@@ -4,7 +4,27 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "minter_",
+        "name": "account1",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account2",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account3",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account4",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "account5",
         "type": "address"
       }
     ],
@@ -34,25 +54,6 @@ export default
       }
     ],
     "name": "Approval",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "minter",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newMinter",
-        "type": "address"
-      }
-    ],
-    "name": "MinterChanged",
     "type": "event"
   },
   {
@@ -91,22 +92,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [],
-    "name": "minter",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -119,8 +105,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -133,8 +118,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -147,8 +131,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -161,8 +144,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -181,8 +163,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -206,56 +187,6 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "minter_",
-        "type": "address"
-      }
-    ],
-    "name": "setMinter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "dst",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "mint",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "name": "burn",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

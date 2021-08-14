@@ -1,7 +1,7 @@
 <template>
   <div class="home-container page-container">
     <van-nav-bar
-      title="资金划转"
+      :title="$t('Trade.Account.Transfers')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -19,7 +19,7 @@
     <van-cell-group>
       <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? 'Derify Account' : 'Metamask Wallet'" />
     </van-cell-group>
-    <div class="num-div">数量</div>
+    <div class="num-div">{{$t('Trade.Account.Size')}}</div>
     <van-cell-group>
       <van-field
         v-model="amount"
@@ -29,11 +29,11 @@
       </van-field>
       <span class="unit">DUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：
+    <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Amount')}}
       <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
-      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">全部划转</span></div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">充值</div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">提现</div>
+      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
+    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
   </div>
 </template>
 <script>
@@ -57,15 +57,20 @@ export default {
       return this.$store.state.user.balanceOfDUSD
     },
     balanceOfDerify () {
-      return this.$store.state.contract.accountData.marginBalance
+      return this.$store.state.contract.accountData.availableMargin
     },
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
   },
-  watch:{
-    '$store.state.user.isLogin': function (){
-      this.$store.dispatch('user/getBalanceOfDUSD')
+  watch: {
+    '$store.state.user.selectedAddress':{
+      handler () {
+        if(this.$store.state.user.selectedAddress) {
+          this.$store.dispatch('user/getBalanceOfDUSD')
+        }
+      },
+      immediate: true
     }
   },
   methods: {
@@ -87,7 +92,7 @@ export default {
     },
     deposit () {
       if (!this.amount) {
-        this.$toast('请输入正确的数量')
+        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
         return false
       }
 
@@ -96,50 +101,42 @@ export default {
       const amount = toContractUnit(a)
 
       if(toContractNum(this.amount) > this.balanceOfWallet) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
         return  false
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
+      const self = this
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: self.$t('Trade.Account.TradePendingMsg')});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'});
-        setTimeout(() => {
-          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''});
-          this.$router.go(-1)
-        }, 1000)
-
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')});
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + e})
-      }).finally( _ => {
-        this.$router.go(-1)
+        self.$userProcessBox({status: UserProcessStatus.failed, msg: self.$t('Trade.Account.TradeFailedMsg')})
+      }).finally(_ => {
+        self.$router.go(-1)
       })
     },
     withdraw () {
       if (!this.amount) {
-        this.$toast('请输入正确的数量')
+        this.$toast(this.$t('global.NumberError'))
         return false
       }
 
       if(toContractNum(this.amount) > this.account.marginBalance) {
-        this.$toast('超出限额，请重新输入')
+        this.$toast(this.$t('global.NumberError'))
         return  false
       }
 
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'});
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
 
+      const self = this
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功!'})
-
-        setTimeout(() => {
-          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''})
-          this.$router.go(-1)
-        }, 1000)
-
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')})
       }).catch(err => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行异常: ' + err})
-        this.$router.go(-1)
+        self.$userProcessBox({status: UserProcessStatus.failed, msg:  self.$t('Trade.Account.TradeFailedMsg')})
+      }).finally(() => {
+        self.$router.go(-1)
       })
     }
   }

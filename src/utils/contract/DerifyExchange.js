@@ -1,4 +1,4 @@
-export default [
+export default  [
   {
     "inputs": [
       {
@@ -140,8 +140,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -154,8 +153,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -168,8 +166,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -182,8 +179,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -196,8 +192,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -210,8 +205,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -224,8 +218,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -238,8 +231,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -304,8 +296,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -458,8 +449,33 @@ export default [
         "type": "address"
       },
       {
+        "internalType": "int256",
+        "name": "sysNetPnl",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "sysTotalUnrealizedProfit",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "allHeldPositionsTradersMarginBalance",
+        "type": "int256"
+      },
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
+        "type": "uint8"
+      },
+      {
         "internalType": "uint256",
-        "name": "sysLoss",
+        "name": "size",
         "type": "uint256"
       }
     ],
@@ -472,8 +488,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -486,8 +501,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -500,8 +514,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -521,11 +534,15 @@ export default [
         "internalType": "int256",
         "name": "sysTotalUnrealizedLoss",
         "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "allHeldPositionsTradersMarginBalance",
+        "type": "int256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -538,8 +555,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -583,8 +599,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -605,16 +620,10 @@ export default [
         "internalType": "uint256",
         "name": "size",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -640,16 +649,34 @@ export default [
         "internalType": "uint256",
         "name": "size",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
       },
       {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
+        "type": "uint8"
+      }
+    ],
+    "name": "getSysCloseUpperBound",
+    "outputs": [
+      {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "size",
         "type": "uint256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -675,11 +702,15 @@ export default [
         "internalType": "uint256",
         "name": "totalMargin",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "availableMargin",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -708,8 +739,7 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -758,70 +788,14 @@ export default [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "enum IDerifyDerivative.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "spotPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "marginBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalPositionAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTraderPositionLiquidatePrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "liquidatePrice",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "openTrader",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "openToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "closeTrader",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "closeToken",
-        "type": "address"
+        "internalType": "address[]",
+        "name": "traders",
+        "type": "address[]"
       },
       {
         "internalType": "uint256",

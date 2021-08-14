@@ -3,6 +3,7 @@
     <van-list
         v-model="loading"
         :finished="finished"
+        :loading-text="$t('Trade.OpenPosition.Loading')"
         :finished-text="$t('Brokers.NoMoreData')"
         @load="onLoad"
       >

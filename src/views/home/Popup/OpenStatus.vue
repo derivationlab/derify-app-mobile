@@ -3,17 +3,17 @@
     <div class="open-status-popup">
       <template v-if="status === 'pending'">
         <img src="@/assets/images/home/open-pending.png" alt="" class="open-status-icon">
-        <div class="open-status-text">正在执行交易，请稍侯</div>
+        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradePendingMsg')}}</div>
       </template>
       <template v-if="status === 'success'">
         <img src="@/assets/images/home/open-success.png" alt="" class="open-status-icon">
-        <div class="open-status-text">开仓成功</div>
+        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradeSuccessMsg')}}</div>
       </template>
       <template v-if="status === 'fail'">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
-        <div class="open-status-text">开仓失败，请重试</div>
+        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradeFailedMsg')}}</div>
         <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm">确认</div>
+          <div class="system-popup-button confirm">{{$t('Trade.OpenPositionPopup.Confirm')}}</div>
         </div>
       </template>
     </div>

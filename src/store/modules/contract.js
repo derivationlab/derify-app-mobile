@@ -1,9 +1,9 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
-import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit } from '../../utils/contractUtil'
-import { amountFormt, fck } from '../../utils/utils'
-import { createTokenPriceChangeEvenet } from '../../api/trade'
+import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit } from '@/utils/contractUtil'
+import { amountFormt, fck } from '@/utils/utils'
+import { createTokenPriceChangeEvenet } from '@/api/trade'
 
 const tokenPriceRateEnventMap = {};
 
@@ -21,8 +21,32 @@ export class UnitTypeEnum {
   }
 }
 
+export class CancelOrderedPositionTypeEnum {
+  static get LimitedOrder() {
+    return 0
+  }
+
+  static get StopProfitOrder() {
+    return 1
+  }
+
+  static get StopLossOrder() {
+    return 2
+  }
+
+  static get AllOrder() {
+    return 3
+  }
+
+  static get StopProfitAndLossOrder() {
+    return 4
+  }
+}
+
 const state = {
-  wallet_address: window.ethereum !== undefined ? ethereum.selectedAddress :  undefined,
+  get wallet_address () {
+    return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+  },
   account: getCache('account') || null,
   pairs: [
     {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC},
@@ -35,6 +59,7 @@ const state = {
     positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
     sysOpenUpperBound: {size: 0, amount: 0},
+    closeUpperBound: {size: 0, amount: 0},
     longPmrRate: '-',
     shortPmrRate: '-',
     tokenPriceRate: '-',
@@ -44,18 +69,15 @@ const state = {
     balance: 0,
     marginBalance: 0,
     totalMargin: 0,
-    marginRate: 0
+    marginRate: 0,
+    availableMargin: 0
   },
-  positionData: [],
+  positionData: {positions: [], orderPositions: []},
   limitPositionData: [],
   curSpotPrice: 0
 }
 
 const mutations = {
-  SET_WALLET_ADDRESS (state, address) {
-    state.wallet_address = address
-    setCache('wallet_address', address)
-  },
   UPDATE_PAIRS (state, pairs) {
     const pairMap = {};
     state.pairs.forEach((item, index) => {
@@ -87,8 +109,57 @@ const mutations = {
   SET_ACCOUNT_DATA (state, accountData) {
     state.accountData = Object.assign(state.accountData, accountData)
   },
-  SET_POSITION_DATA (state, positionData) {
-    state.positionData = positionData
+  RESET_POSITION_DATA (state) {
+    state.positionData.positions.splice(0, state.positionData.positions.length)
+    state.positionData.orderPositions.splice(0, state.positionData.orderPositions.length)
+  },
+  ADD_POSITION_DATA (state, {positionData, pair}) {
+    if(!positionData) {
+      return
+    }
+
+    if(positionData.positions) {
+      const positionsMap = {};
+
+      state.positionData.positions.forEach((position, index) => {
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
+      })
+
+
+      positionData.positions.forEach((position) => {
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
+      })
+
+      state.positionData.positions.splice(0)
+
+      for(var key in positionsMap) {
+        state.positionData.positions.push(positionsMap[key])
+      }
+
+
+    }
+
+    if(positionData.orderPositions) {
+      const positionsMap = {};
+
+      state.positionData.orderPositions.forEach((position, index) => {
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
+      })
+
+      positionData.orderPositions.forEach((position, index) => {
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
+      })
+
+      state.positionData.orderPositions.splice(0)
+
+      for(key in positionsMap) {
+        state.positionData.orderPositions.push(positionsMap[key])
+      }
+    }
   },
   SET_LIMIT_POSITION_DATA (state, positionData) {
     state.limitPositionData = positionData
@@ -110,7 +181,6 @@ const actions = {
         reject(new Error('log in wallet first'))
       } else {
         web3Utils.contract(state.wallet_address).deposit(amount).then(r => resolve(r)).catch(err => reject(err))
-        // web3Utils.deposit(state.wallet_address, amount).then(r => resolve(r)).catch(err => reject(err))
       }
     })
   },
@@ -127,7 +197,7 @@ const actions = {
   getSpotPrice ({state, commit}) {
     return new Promise((resolve, reject) => {
 
-      if(state.wallet_address){
+      if(!state.wallet_address){
         resolve({})
         return
       }
@@ -146,6 +216,22 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
+  getCloseUpperBound ({state, commit, dispatch}, {token, side}) {
+
+    return (async () => {
+
+      if(!state.wallet_address || token === undefined || side === undefined){
+        return
+      }
+      let closeUpperBound = { size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        closeUpperBound = await web3Utils.contract(state.wallet_address).getCloseUpperBound({token, trader: state.wallet_address, side})
+      }
+
+      commit('SET_CONTRACT_DATA', {closeUpperBound})
+      return closeUpperBound
+    })()
+  },
   openPosition ({state}, {side, size, openType, price, leverage}) {
     return new Promise((resolve, reject) => {
 
@@ -154,16 +240,14 @@ const actions = {
         return
       }
 
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+      let token = state.pairs.find(pair => pair.key === state.curPairKey)
 
-      if (idx === undefined) {
-        idx = 0
+      if (token === undefined) {
+        return
       }
 
-      const coin = state.pairs[idx]
-
       const params = {
-        token: coin.address, side, openType, size, price, leverage
+        token: token.address, side, openType, size, price, leverage
       }
 
       web3Utils.contract(state.wallet_address)
@@ -185,20 +269,19 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  orderStopPosition ({state}, {token, side, stopType, stopPrice}) {
+  orderStopPosition ({state}, {token, side, takeProfitPrice, stopLossPrice}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
         return resolve({})
       }
 
-
       const params = {
         token: token,
         trader: state.wallet_address,
         side,
-        stopType,
-        stopPrice
+        takeProfitPrice,
+        stopLossPrice
       }
 
       web3Utils.contract(state.wallet_address)
@@ -221,7 +304,16 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleOrderedPosition ({state}, {token, orderType, side, timestamp}) {
+  /**
+   *
+   * @param state
+   * @param token
+   * @param closeType {CancelOrderedPositionTypeEnum}
+   * @param side {SideEnum}
+   * @param timestamp
+   * @returns {Promise<void>}
+   */
+  cancleOrderedPosition ({state}, {token, closeType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -231,7 +323,7 @@ const actions = {
       const params = {
         token:token,
         trader: state.wallet_address,
-        orderType: orderType,
+        closeType: closeType,
         side: side,
         timestamp: timestamp
       }
@@ -259,6 +351,7 @@ const actions = {
   loadHomeData ({state, commit, dispatch}, entrustType = 0) {
     // load home page data
     const self = this
+    const side = entrustType
     return (async function () {
       const data = {curSpotPrice: 0, positionChangeFeeRatio: 0}
       if(!state.wallet_address){
@@ -290,9 +383,8 @@ const actions = {
       dispatch('updateAllPairPrice')
 
       // 4.get sysOpenUpperBound
-      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: entrustType})
+      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
       commit('SET_CONTRACT_DATA', data)
-
       return data
     }())
   },
@@ -309,11 +401,35 @@ const actions = {
       }
 
       const contract = web3Utils.contract(state.wallet_address)
+      let sysOpenUpperBound = {size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side})
+      }
 
-      const sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side})
       commit('SET_CONTRACT_DATA', {sysOpenUpperBound})
       return sysOpenUpperBound
     })()
+  },
+  getSysCloseUpperBound ({state, commit, dispatch}, {side}) {
+    return (async () => {
+      if(!state.wallet_address){
+        return 0
+      }
+
+      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      if(!curPair){
+        return 0
+      }
+
+      const contract = web3Utils.contract(state.wallet_address)
+      let sysCloseUpperBound = {size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        sysCloseUpperBound = await contract.getSysCloseUpperBound({token: curPair.address, side})
+      }
+
+      commit('SET_CONTRACT_DATA', {sysCloseUpperBound})
+      return sysCloseUpperBound
+  })
   },
   updateAllPairPrice ({state, commit}) {
     const contract = web3Utils.contract(state.wallet_address)
@@ -321,7 +437,6 @@ const actions = {
     if(!state.wallet_address){
       return {}
     }
-
 
     state.pairs.forEach((pair) => {
 
@@ -379,25 +494,29 @@ const actions = {
     }())
   },
   loadPositionData ({state, commit}) {
-    return (async function () {
+    return new Promise((resolve, reject) => {
       if(!state.wallet_address){
         return {}
       }
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+      state.pairs.forEach((pair) => {
 
-      if (idx === undefined) {
-        idx = 0
-      }
+        const pairItem = pair
+        if(!pairItem.enable){
+          return
+        }
 
-      const coin = state.pairs[idx]
+        contract.getTraderAllPosition(state.wallet_address, pairItem.address).then((positionData) => {
+          commit('ADD_POSITION_DATA', {positionData, pair: pairItem})
 
-      const positionData = await contract.getTraderAllPosition(state.wallet_address, coin.address)
-      commit('SET_POSITION_DATA', positionData)
-      return positionData
-    })()
+          resolve(state.positionData)
+        }).catch(() => {
+          reject()
+        })
+      })
+    })
   },
   loadTradeRecords ({state, commit}) {
     return getTradeList(state.wallet_address)
@@ -439,15 +558,13 @@ const actions = {
       return {}
     }
 
-    let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+    let token = state.pairs.find(pair => pair.key === state.curPairKey)
 
-    if (idx === undefined) {
-      idx = 0
+    if (!token) {
+      return
     }
 
-    const coin = state.pairs[idx]
-
-    return web3Utils.contract(state.wallet_address).getTradingFee(coin.address, side, actionType, size, price)
+    return web3Utils.contract(state.wallet_address).getPositionChangeFee(token.address, side, actionType, size, price)
   },
   getTradingFee ({state, commit, dispatch}, {size, price}) {
     let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)

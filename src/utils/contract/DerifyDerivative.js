@@ -388,6 +388,11 @@ export default [
       },
       {
         "internalType": "uint256",
+        "name": "openPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "leverage",
         "type": "uint256"
       }
@@ -449,7 +454,12 @@ export default [
       },
       {
         "internalType": "uint256",
-        "name": "stopPrice",
+        "name": "takeProfitPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stopLossPrice",
         "type": "uint256"
       }
     ],
@@ -494,8 +504,8 @@ export default [
         "type": "address"
       },
       {
-        "internalType": "enum IDerifyDerivative.OrderType",
-        "name": "orderType",
+        "internalType": "enum IDerifyDerivative.StopType",
+        "name": "stopType",
         "type": "uint8"
       },
       {
@@ -938,6 +948,11 @@ export default [
         "internalType": "uint256",
         "name": "price",
         "type": "uint256"
+      },
+      {
+        "internalType": "int256",
+        "name": "ratioSum",
+        "type": "int256"
       }
     ],
     "name": "getPositionChangeFee",
@@ -957,25 +972,16 @@ export default [
         "internalType": "address",
         "name": "trader",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "spotPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "sysMaxOpenLongSize",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "sysMaxOpenShortSize",
-        "type": "uint256"
       }
     ],
     "name": "operateOrderedLimitPositions",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operatedSize",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }

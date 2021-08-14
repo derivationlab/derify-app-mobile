@@ -1,33 +1,46 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="Derity Account" />
+    <navbar title="Derity Account" showGoback="true" />
+    <van-nav-bar
+      title="Derity Account"
+      left-arrow
+      :border="false"
+      :fixed="true"
+      @click-left="onClickLeft"
+    >
+      <template #left>
+        <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
+      </template>
+    </van-nav-bar>
+
     <div class="account-num">
-      <span class="num">账户余额</span>
-      <span class="info" @click="lookFinDetail">资金明细 ></span>
+      <span class="num">{{$t('Trade.Account.AccountBalance')}}</span>
+      <span class="info" @click="lookFinDetail">{{$t('Trade.Account.BalanceHistory')}} ></span>
     </div>
     <div class="account-info">
       <div class="div-unmUnit"><span>{{accountData.balance | fck(-8)}}</span><span class="unit">USDT</span></div>
     </div>
     <div class="title-div">
-      <span>保证金余额</span>
-      <span>占用保证金</span>
+      <span>{{$t('Trade.Account.MarginBalance')}}</span>
+      <span>{{$t('Trade.Account.Margin')}}</span>
     </div>
     <div class="unit-tr">
       <div>{{accountData.marginBalance | fck(-8)}}<span>USDT</span></div>
       <div>{{accountData.totalMargin | fck(-8)}}<span>USDT({{accountData.marginRate | fck(-8)}}%)</span></div>
     </div>
     <template v-if="isLogin">
-      <div class="recharge" @click="goTransfer('deposit')">充值</div>
-      <div class="withdraw" @click="goTransfer('withdraw')">提现</div>
+      <div class="recharge" @click="goTransfer('deposit')">{{$t('Trade.Account.Deposit')}}</div>
+      <div class="withdraw" @click="goTransfer('withdraw')">{{$t('Trade.Account.Withdraw')}}</div>
     </template>
     <template v-if="!isLogin">
-      <div class="recharge" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
-      <div class="withdraw" @click="$loginWallet()">{{$t('global.click connect wallet')}}</div>
+      <div class="recharge" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+      <div class="withdraw" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
     </template>
   </div>
 </template>
 <script>
 import Navbar from '@/components/Navbar'
+import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
 
 const state = {
   marginBalance: 0,
@@ -56,9 +69,14 @@ export default {
       this.loadAccountData()
     }
   },
-  mounted () {
+  created () {
     this.$store.dispatch('contract/onDeposit');
     this.$store.dispatch('contract/onWithDraw');
+
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      console.log('account wallet change')
+      this.loadAccountData()
+    })
   },
   beforeMount () {
     this.loadAccountData()
@@ -74,6 +92,9 @@ export default {
       this.$store.dispatch('contract/loadAccountData').then(r => {
         Object.assign(state, r)
       })
+    },
+    onClickLeft() {
+      this.$router.go(-1)
     }
   }
 }
