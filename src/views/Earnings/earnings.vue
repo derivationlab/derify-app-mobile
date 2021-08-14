@@ -7,7 +7,7 @@
           <span class="span2 fz-12" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.TransactionHistory') }} ></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">{{pmrReward | fck(-8, 2)}}</span>
+          <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
           <span class="span2">USDT</span>
         </div>
         <div class="earnings-info">
@@ -16,7 +16,7 @@
             <span class="span2 fz-11">{{ $t('Rewards.Mining.PositionHeld') }}（USDT）</span>
           </div>
           <div class="div1">
-            <span class="span1">24891.34</span>
+            <span class="span1">{{pmrAccumulatedBalance | fck(-8, 2)}}</span>
             <span class="span2 fz-11">{{ $t('Rewards.Mining.AccumulatedReward') }}（USDT）</span>
           </div>
         </div>
@@ -89,7 +89,7 @@
             <span class="span2 fz-11">{{$t('Rewards.Bond.DepoAmount')}} ( bDRF )</span>
           </div>
           <div class="div1">
-            <span class="span1">{{bondInfo.bondAnnualInterestRate | fck(-8,2)}}%</span>
+            <span class="span1">{{bondInfo.bondAnnualInterestRatio | fck(-8,2)}}%</span>
             <span class="span2 fz-11">APY</span>
           </div>
         </div>
@@ -168,8 +168,11 @@ export default {
 
       return {}
     },
-    pmrReward () {
-      return this.$store.state.earnings.pmrReward;
+    pmrBalance () {
+      return this.$store.state.earnings.pmrBalance;
+    },
+    pmrAccumulatedBalance () {
+      return this.$store.state.earnings.pmrAccumulatedBalance;
     },
     bondInfo () {
       const bondInfo = this.$store.state.earnings.bondInfo

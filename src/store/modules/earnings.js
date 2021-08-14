@@ -36,7 +36,8 @@ const state = {
     bdrfBalance: 0,
     edrfBalance: 0
   },
-  pmrReward: 0,
+  pmrBalance: 0,
+  pmrAccumulatedBalance: 0,
   bondInfo: {
     /**
      * Convertible bond bDRF
@@ -90,7 +91,7 @@ const actions = {
       const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
       //const edrfBalance = await contract.balanceOf(state.wallet_address, Token.EDRF)
 
-      const earningData = {pmrReward, accountData: {...traderVariable}, bondInfo}
+      const earningData = {...pmrReward, accountData: {...traderVariable}, bondInfo}
       commit('updateState', earningData)
       commit('updateWallet', {bdrfBalance, edrfBalance: 0})
 

@@ -6,7 +6,7 @@
           <div class="system-popup-price">
             <div class="fc-45">{{ $t('Trade.ClosePosition.PositionHeld') }}</div>
             <div>
-              <span class="fc-85">{{position.size | fck(-8)}}</span>
+              <span class="fc-85">{{position.size | fck(-8, 8)}}</span>
               <span class="fc-45">{{getPairByAddress(position.token).key}}</span>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default {
     const defaultPercent = 100
     const size = this.extraData == null ? 0 : this.extraData.size
 
-    const value1 = Math.ceil(size * defaultPercent / 100)
+    const value1 = size * defaultPercent / 100
     return {
       showPopup: this.show,
       value1: value1 > 0 ? value1 : '',
@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     closeUpperBound () {
-      return this.$store.state.contract.contractData.closeUpperBound.size
+      return this.$store.state.contract.contractData.closeUpperBound
     }
   },
   watch: {
@@ -97,7 +97,7 @@ export default {
           return
         }
 
-        this.value1 = fromContractUnit(closeUpperBound.size)
+        this.value1 = fromContractUnit(closeUpperBound)
       })
     },
     extraData: {
@@ -105,7 +105,7 @@ export default {
       immediate: true,
       handler () {
         this.position = this.extraData
-        this.value1 = fromContractUnit(Math.ceil(this.closeUpperBound * this.curPercent / 100))
+        this.value1 = fromContractUnit(this.closeUpperBound * this.curPercent / 100)
       }
     }
   },
@@ -115,7 +115,7 @@ export default {
     },
     changePercentage (percent) {
       this.curPercent = percent
-      this.value1 = fromContractUnit(Math.ceil(this.closeUpperBound * this.curPercent / 100))
+      this.value1 = fromContractUnit(this.closeUpperBound * this.curPercent / 100)
     },
     onPositionSizeChange (size) {
 
@@ -123,7 +123,8 @@ export default {
         return
       }
 
-      this.curPercent = this.value1 * 100 / fromContractUnit(this.closeUpperBound)
+      this.curPercent = Math.round(this.value1 * 100 / fromContractUnit(this.closeUpperBound))
+
 
       if(size <= 0){
         this.$toast(this.$t('global.NumberError'))
@@ -149,6 +150,7 @@ export default {
       }
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$toast(this.$t('Trade.ClosePosition.TradePendingMsg'))})
+
       this.$store.dispatch('contract/closePosition', {
         token,
         side,

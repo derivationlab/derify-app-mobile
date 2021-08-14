@@ -42,7 +42,7 @@
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
-          <i18n path="Trade.SetStopPricePopup.StopPriceProfitNotice">
+          <i18n path="Trade.SetStopPricePopup.StopPriceLossNotice">
             <template #0>
               <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span>
             </template>
@@ -64,6 +64,7 @@
 import {fck} from "@/utils/utils";
 import { fromContractUnit, OrderTypeEnum, SideEnum, toContractNum, toHexString } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
+import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
 
 export default {
   props: {
@@ -150,6 +151,7 @@ export default {
       }
     },
     onChangeLossPrice() {
+      const {position} = this;
       if(!this.checkLossPrice(position, position.stopLossPriceInput)){
         this.$toast(this.$t('global.NumberError'))
       }
@@ -211,11 +213,14 @@ export default {
       const side = this.position.side
       const token = this.position.token
 
+      let profitPrice = null
+      let lossPrice = null
       if(this.position.stopProfitPriceInput !== ''){
         if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
           this.$toast(this.$t('global.NumberError'))
           return
         }
+        profitPrice = this.position.stopProfitPrice
       }
 
       if(this.position.stopLossPriceInput !== ''){
@@ -223,74 +228,27 @@ export default {
           this.$toast(this.$t('global.NumberError'))
           return
         }
+
+        lossPrice = this.position.stopLossPrice
       }
 
-
-      //set stop profit price
-      let finishCount = 0;
-      if(this.position.stopProfitPriceInput !== '') {
-        if(this.position.stopProfitPriceInput && this.position.stopProfitPrice > 0) {
-          finishCount++
-          this.$store.dispatch('contract/orderStopPosition', {
-            token, side, stopType: 0, stopPrice: toHexString(this.position.stopProfitPrice)
-          }).then(_ => {
-            finishCount--
-            if(finishCount < 1) {
-              this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
-            }
-
-          }).catch(msg => {
-            finishCount--
-            this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
-          })
-        }else{
-          finishCount++
-          this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopProfitOrder, side, timestamp: this.position.timestamp}).then(_ => {
-            finishCount--
-            if(finishCount < 1) {
-              this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
-            }
-
-          }).catch(msg => {
-            finishCount--
-            this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
-          })
-        }
-      }
-
-
-      //set stop loss price
-      if(this.position.stopLossPriceInput !== '') {
-        if(this.position.stopLossPriceInput && this.position.stopLossPriceInput > 0){
-          finishCount++
-          this.$store.dispatch('contract/orderStopPosition', {
-            token, side, stopType: 1, stopPrice: toHexString(this.position.stopLossPrice)
-          }).then(_ => {
-            finishCount--
-            if(finishCount < 1) {
-              this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
-            }
-          }).catch(msg => {
-            finishCount--
-            this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
-          });
-        }else{
-          finishCount++
-          this.$store.dispatch('contract/cancleOrderedPosition', {token, orderType: OrderTypeEnum.StopLossOrder, side, timestamp: this.position.timestamp}).then(_ => {
-            finishCount--
-            if(finishCount < 1) {
-              this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
-            }
-
-          }).catch(msg => {
-            finishCount--
-            this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
-          })
-        }
-      }
-
-      if(finishCount > 0){
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.SetStopPricePopup.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.SetStopPricePopup.TradePendingMsg')})
+      if(lossPrice === null && profitPrice === null) {
+        this.$store.dispatch('contract/cancleOrderedPosition', {
+          token, side, closeType: CancelOrderedPositionTypeEnum.StopProfitAndLossOrder
+        }).then(_ => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+        }).catch(msg => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+        })
+      } else {
+        this.$store.dispatch('contract/orderStopPosition', {
+          token, side, takeProfitPrice: profitPrice, stopLossPrice: lossPrice
+        }).then(_ => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+        }).catch(msg => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+        })
       }
 
       this.close()

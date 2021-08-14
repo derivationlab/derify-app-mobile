@@ -24,20 +24,20 @@ export function contract (account) {
                 const ret = Reflect.apply(...arguments)
 
                 if(ret instanceof Promise){
-                  console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args))
+                  console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from)
 
                   return (async () => {
                     let data = await ret;
-                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", data)
+                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", data)
                     return data
                   })();
 
                 }else{
-                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",ret=", ret)
+                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
                 }
                 return ret;
               }catch (e) {
-                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args) + ",error=", e)
+                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
               }
 
             }
@@ -61,9 +61,9 @@ function isProxyPropertyKey(key) {
     return false
   }
 
-  if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables,getTraderAllPosition'.indexOf(key) > -1){
-    return false
-  }
+  // if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables,getTraderAllPosition'.indexOf(key) > -1){
+  //   return false
+  // }
 
   return true
 }

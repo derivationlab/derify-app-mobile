@@ -63,7 +63,14 @@
 </template>
 
 <script>
-  import { fromContractUnit, toContractUnit, toHexString,SideEnum,OpenType } from '../../../utils/contractUtil'
+import {
+  fromContractUnit,
+  toContractUnit,
+  toHexString,
+  SideEnum,
+  OpenType,
+  convertAmount2TokenSize, toContractNum
+} from '../../../utils/contractUtil'
   import { fck } from '../../../utils/utils'
   import { UnitTypeEnum } from '../../../store/modules/contract'
   import { UserProcessStatus } from '../../../store/modules/user'
@@ -172,15 +179,18 @@ export default {
       }
 
       this.close()
+      const {unit} = this.extraData
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.OpenPositionPopup.TradePendingMsg')})
 
+      let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price))
+
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
-        size: toContractUnit(size),
+        size: toContractNum(tokenSize),
         openType: this.openData.entrustType,
-        price: toContractUnit(price),
-        leverage: toContractUnit(leverage)
+        price: toContractNum(price),
+        leverage: toContractNum(leverage)
       }).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.OpenPositionPopup.TradeSuccessMsg')})
       }).catch((msg) => {

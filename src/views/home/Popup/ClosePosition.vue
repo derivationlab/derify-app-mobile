@@ -75,10 +75,11 @@ export default {
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.LimitedOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopLossOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopProfitOrder] = 'cancleOrderedPosition'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopProfitAndLossOrder] = 'cancleOrderedPosition'
 
       const action = closePositionOrderTypeMap[closePositionOrderType]
 
-      const param = {...this.extraData}
+      const param = {...this.extraData, closeType: closePositionOrderType}
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
 

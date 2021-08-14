@@ -135,6 +135,11 @@ const mutations = {
 const actions = {
   getBalanceOfDUSD ({state, commit, dispatch}) {
     return (async () => {
+
+      if(!state.selectedAddress) {
+        return
+      }
+
       const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
       console.log(balanceOf)
       commit('updateState', {balanceOfDUSD : balanceOf})

@@ -63,7 +63,10 @@ const vueApp = new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-Vue.prototype.$userProcessBox = UserProcessBox.install;
+Vue.prototype.$userProcessBox = function (param) {
+  UserProcessBox.install(i18n, param)
+}
+
 Vue.prototype.$eventBus = vueApp
 
 Vue.prototype.$loginWallet = function () {

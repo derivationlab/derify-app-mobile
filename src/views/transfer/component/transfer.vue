@@ -57,12 +57,21 @@ export default {
       return this.$store.state.user.balanceOfDUSD
     },
     balanceOfDerify () {
-      return this.$store.state.contract.accountData.marginBalance
+      return this.$store.state.contract.accountData.availableMargin
     },
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
-    this.$store.dispatch('user/getBalanceOfDUSD')
+  },
+  watch: {
+    '$store.state.user.selectedAddress':{
+      handler () {
+        if(this.$store.state.user.selectedAddress) {
+          this.$store.dispatch('user/getBalanceOfDUSD')
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     onClickLeft () {
@@ -96,13 +105,14 @@ export default {
         return  false
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
+      const self = this
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: self.$t('Trade.Account.TradePendingMsg')});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.Account.TradeSuccessMsg')});
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')});
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg:   this.$t('Trade.Account.TradeFailedMsg')})
-      }).finally( _ => {
-        this.$router.go(-1)
+        self.$userProcessBox({status: UserProcessStatus.failed, msg: self.$t('Trade.Account.TradeFailedMsg')})
+      }).finally(_ => {
+        self.$router.go(-1)
       })
     },
     withdraw () {
@@ -120,17 +130,13 @@ export default {
       const amount = toContractUnit(a)
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
 
+      const self = this
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.Account.TradeSuccessMsg')})
-
-        setTimeout(() => {
-          this.$userProcessBox({status: UserProcessStatus.finished, msg: ''})
-          this.$router.go(-1)
-        }, 1000)
-
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')})
       }).catch(err => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg:  this.$t('Trade.Account.TradeFailedMsg')})
-        this.$router.go(-1)
+        self.$userProcessBox({status: UserProcessStatus.failed, msg:  self.$t('Trade.Account.TradeFailedMsg')})
+      }).finally(() => {
+        self.$router.go(-1)
       })
     }
   }

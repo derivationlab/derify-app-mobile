@@ -10,7 +10,7 @@
             <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
           </div>
           <div class="home-top-num">
-            {{curSpotPrice | fck(-8)}}
+            <DecimalView :value="curSpotPrice | fck(-8,2)" :last-style="{fontSize:'1.5rem'}"/>
           </div>
           <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
           {{curContractData.tokenPriceRate}}%</span>
@@ -71,11 +71,11 @@
               <div class="fz-12">
             <span class="fc-65">{{$t('Trade.OpenPosition.MaxSize')}}：
               <!-- USDT -->
-              <template v-if="unit === UnitTypeEnum.USDT">{{curTraderOpenUpperBound.size | fck(-8, 2)}} USDT</template>
+              <template v-if="unit === UnitTypeEnum.USDT">{{maxSize}} USDT</template>
               <!-- curToken -->
-              <template v-if="unit === UnitTypeEnum.CurPair">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template>
+              <template v-if="unit === UnitTypeEnum.CurPair">{{maxSize}} {{curPair.key}}</template>
               <!-- percent -->
-              <template v-if="unit === UnitTypeEnum.Percent">{{curTraderOpenUpperBound.amount | fck(-8, 2)}} {{curPair.key}}</template></span>
+              <template v-if="unit === UnitTypeEnum.Percent">{{maxSize}} {{curPair.key}}</template></span>
                 <span class="fc-yellow" @click="transfer">{{$t('Trade.OpenPosition.Transfer')}}</span>
               </div>
             </div>
@@ -159,7 +159,7 @@
                           <div class="fz-12">{{$t('Trade.MyPosition.Close')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
-                        <div class="right" v-if="active === 'key2'" @click="cancleOrderedPosition(data)">
+                        <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
                           <div class="fz-12">{{$t('Trade.CurrentOrder.Cancel')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
@@ -346,7 +346,7 @@
                 <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">{{$t('Trade.MyPosition.OneClickClose')}}</div>
               </template>
 
-              <template v-if="active === 'key2' && positionOrders.length">
+              <template v-if="active === 'key2' && positionOrders.length > 0">
                 <div class="home-last-batch-btn base-bg-color" @click="changeClosePosistionStatus(true)">{{$t('Trade.CurrentOrder.CancelAllOrder')}}</div>
               </template>
             </template>
@@ -390,6 +390,8 @@ import { UserProcessStatus } from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
+import DecimalView from '../../components/DecimalView/DecimalView'
+import { convertAmount2TokenSize, toContractNum } from '../../utils/contractUtil'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -426,6 +428,7 @@ const TradeTypeMap = {
 export default {
   name: 'Home',
   components: {
+    DecimalView,
     ClosePosition,
     Navbar,
     Market,
@@ -479,6 +482,14 @@ export default {
       }
 
       return true
+    },
+    maxSize () {
+      const {unit} = this
+      if (unit ===  UnitTypeEnum.USDT) {
+        return fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
+      }else{
+        return fromContractUnit(this.curTraderOpenUpperBound.size, 2)
+      }
     }
   },
 
@@ -619,7 +630,7 @@ export default {
         let {entrustType, leverage, leverageUnit, amount, size, unit} = this
 
         if (entrustType === 1 && !amount) {
-          this.$toast('please input amount first')
+          this.$toast(this.$t('global.NumberError'))
           return
         }
 
@@ -682,15 +693,17 @@ export default {
           tradingFee
         })
 
+        let tokenSize = convertAmount2TokenSize(unit, toContractUnit(size), toContractUnit(amount))
+
         const self = this;
-        this.$store.dispatch("contract/getTradingFee", {size: toContractUnit(size), price: toContractUnit(amount)}).then((tradingFee) => {
+        this.$store.dispatch("contract/getTradingFee", {size: toContractNum(tokenSize), price: toContractNum(amount)}).then((tradingFee) => {
           if(!tradingFee) {
             return
           }
           Object.assign(this.openExtraData, {tradingFee: fromContractUnit(tradingFee)});
         });
 
-        this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractUnit(size), price:toContractUnit(amount)})
+        this.$store.dispatch("contract/getPositionChangeFee", {side: side, actionType: 0, size: toContractNum(tokenSize), price:toContractNum(amount)})
           .then((positionChangeFee) => {
             if(!positionChangeFee) {
               return
@@ -774,21 +787,10 @@ export default {
         })
       }
     },
-    cancleOrderedPosition (data) {
-
-      this.$store.dispatch('contract/cancleOrderedPosition',
-          {
-            token: data.token,
-            orderType: data.orderType,
-            side: data.side,
-            timestamp: data.timestamp}).then(r => {
-      })
-    },
     onOpenTypeChange () {
       if(!this.amount) {
         this.amount = fromContractUnit(this.curSpotPrice)
       }
-
       this.updateTraderOpenUpperBound()
     },
     onPositionSizeChange (size) {
@@ -817,12 +819,8 @@ export default {
     },
     getMaxSize(unit) {
       let maxSize = 100;
-      if (unit ===  UnitTypeEnum.USDT) {
-        maxSize = fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
-      }else if (unit === UnitTypeEnum.CurPair) {
-        maxSize = fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
-      }else{
-        maxSize = 100
+      if (unit !==  UnitTypeEnum.Percent) {
+        maxSize = this.maxSize
       }
 
       return maxSize
@@ -871,9 +869,6 @@ export default {
       if(!window.ethereum){
         return
       }
-
-
-
 
       const self = this
 
@@ -1064,6 +1059,7 @@ export default {
   }
   &-right {
     align-items: flex-end;
+    font-size: 1rem;
   }
   &-coin {
     display: flex;

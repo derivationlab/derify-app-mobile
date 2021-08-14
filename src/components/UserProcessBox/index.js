@@ -2,12 +2,15 @@ import OpenStatus from './OpenStatus'
 import Vue from 'vue'
 
 const UserProcessBox = Vue.extend(OpenStatus);
+
 const context = {
   instance: null
 }
-UserProcessBox.install = function ({status, msg}) {
+
+UserProcessBox.install = function (i18n, {status, msg}) {
 
   if(!context.instance){
+    UserProcessBox.prototype._i18n = i18n
     context.instance = new UserProcessBox({
       data: {
         show: status > 0,
@@ -22,7 +25,6 @@ UserProcessBox.install = function ({status, msg}) {
       context.instance.visible = false
     })
   }else{
-    console.log(context.instance)
     context.instance.updateData({
       show: status > 0,
       status,

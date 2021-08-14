@@ -11,11 +11,16 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     max = Math.max(item[2], max)
   })
 
-  max = Math.max(curPrice, max)
-  min = Math.min(curPrice, min)
+  if(curPrice > 0) {
+    max = Math.max(curPrice, max)
+    min = Math.min(curPrice, min)
+  }
+
 
   max = max + (max - min)/10
   min = min - (max - min)/10
+
+  const distance = -((curPrice+"").length) * 7
 
   return {
     darkMode: true,
@@ -96,7 +101,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
                   color: '#fff',
                   backgroundColor:'#EA446B',
                   position: 'end',
-                  distance: -(String.valueOf(curPrice).length)*40
+                  distance: distance
                 },
                 emphasis: {
                   label: {

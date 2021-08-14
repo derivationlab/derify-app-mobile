@@ -14,6 +14,7 @@
     <van-list
         v-model="loading"
         :finished="finished"
+        :loading-text="$t('Trade.OpenPosition.Loading')"
         :finished-text="$t('Trade.Account.NoMoreInfo')"
         @load="onLoad"
       >

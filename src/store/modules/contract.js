@@ -37,6 +37,10 @@ export class CancelOrderedPositionTypeEnum {
   static get AllOrder() {
     return 3
   }
+
+  static get StopProfitAndLossOrder() {
+    return 4
+  }
 }
 
 const state = {
@@ -65,7 +69,8 @@ const state = {
     balance: 0,
     marginBalance: 0,
     totalMargin: 0,
-    marginRate: 0
+    marginRate: 0,
+    availableMargin: 0
   },
   positionData: {positions: [], orderPositions: []},
   limitPositionData: [],
@@ -176,7 +181,6 @@ const actions = {
         reject(new Error('log in wallet first'))
       } else {
         web3Utils.contract(state.wallet_address).deposit(amount).then(r => resolve(r)).catch(err => reject(err))
-        // web3Utils.deposit(state.wallet_address, amount).then(r => resolve(r)).catch(err => reject(err))
       }
     })
   },
@@ -219,8 +223,10 @@ const actions = {
       if(!state.wallet_address || token === undefined || side === undefined){
         return
       }
-
-      const closeUpperBound = await web3Utils.contract(state.wallet_address).getCloseUpperBound({token, trader: state.wallet_address, side})
+      let closeUpperBound = { size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        closeUpperBound = await web3Utils.contract(state.wallet_address).getCloseUpperBound({token, trader: state.wallet_address, side})
+      }
 
       commit('SET_CONTRACT_DATA', {closeUpperBound})
       return closeUpperBound
@@ -234,16 +240,14 @@ const actions = {
         return
       }
 
-      let idx = state.pairs.findIndex(pair => pair.key === state.curPairKey)
+      let token = state.pairs.find(pair => pair.key === state.curPairKey)
 
-      if (idx === undefined) {
-        idx = 0
+      if (token === undefined) {
+        return
       }
 
-      const coin = state.pairs[idx]
-
       const params = {
-        token: coin.address, side, openType, size, price, leverage
+        token: token.address, side, openType, size, price, leverage
       }
 
       web3Utils.contract(state.wallet_address)
@@ -265,20 +269,19 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  orderStopPosition ({state}, {token, side, stopType, stopPrice}) {
+  orderStopPosition ({state}, {token, side, takeProfitPrice, stopLossPrice}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
         return resolve({})
       }
 
-
       const params = {
         token: token,
         trader: state.wallet_address,
         side,
-        stopType,
-        stopPrice
+        takeProfitPrice,
+        stopLossPrice
       }
 
       web3Utils.contract(state.wallet_address)
@@ -301,7 +304,16 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  cancleOrderedPosition ({state}, {token, orderType, side, timestamp}) {
+  /**
+   *
+   * @param state
+   * @param token
+   * @param closeType {CancelOrderedPositionTypeEnum}
+   * @param side {SideEnum}
+   * @param timestamp
+   * @returns {Promise<void>}
+   */
+  cancleOrderedPosition ({state}, {token, closeType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -311,7 +323,7 @@ const actions = {
       const params = {
         token:token,
         trader: state.wallet_address,
-        orderType: orderType,
+        closeType: closeType,
         side: side,
         timestamp: timestamp
       }
@@ -339,6 +351,7 @@ const actions = {
   loadHomeData ({state, commit, dispatch}, entrustType = 0) {
     // load home page data
     const self = this
+    const side = entrustType
     return (async function () {
       const data = {curSpotPrice: 0, positionChangeFeeRatio: 0}
       if(!state.wallet_address){
@@ -370,9 +383,8 @@ const actions = {
       dispatch('updateAllPairPrice')
 
       // 4.get sysOpenUpperBound
-      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: entrustType})
+      data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
       commit('SET_CONTRACT_DATA', data)
-
       return data
     }())
   },
@@ -389,11 +401,35 @@ const actions = {
       }
 
       const contract = web3Utils.contract(state.wallet_address)
+      let sysOpenUpperBound = {size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side})
+      }
 
-      const sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side})
       commit('SET_CONTRACT_DATA', {sysOpenUpperBound})
       return sysOpenUpperBound
     })()
+  },
+  getSysCloseUpperBound ({state, commit, dispatch}, {side}) {
+    return (async () => {
+      if(!state.wallet_address){
+        return 0
+      }
+
+      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      if(!curPair){
+        return 0
+      }
+
+      const contract = web3Utils.contract(state.wallet_address)
+      let sysCloseUpperBound = {size: Infinity}
+      if(side !== SideEnum.HEDGE) {
+        sysCloseUpperBound = await contract.getSysCloseUpperBound({token: curPair.address, side})
+      }
+
+      commit('SET_CONTRACT_DATA', {sysCloseUpperBound})
+      return sysCloseUpperBound
+  })
   },
   updateAllPairPrice ({state, commit}) {
     const contract = web3Utils.contract(state.wallet_address)

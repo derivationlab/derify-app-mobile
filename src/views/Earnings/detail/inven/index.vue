@@ -4,6 +4,7 @@
         v-model="loading"
         :finished="finished"
         :finished-text="$t('Rewards.Mining.NoMoreData')"
+        :loading-text="$t('Trade.OpenPosition.Loading')"
         @load="onLoad"
       >
       <div class="heard">

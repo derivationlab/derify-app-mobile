@@ -138,7 +138,10 @@
       "SysLoss":"系统亏损分摊",
       "Withdraw":"转出",
       "Deposit":"转入",
-      "NoMoreInfo":"没有更多了"
+      "NoMoreInfo":"没有更多了",
+      "TradePendingMsg":"正在执行，请稍候",
+      "TradeSuccessMsg":"执行成功",
+      "TradeFailedMsg":"执行失败，请重试"
     },
     "MyPosition": {
       "MyPosition":"我的持仓",
