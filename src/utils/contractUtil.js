@@ -649,7 +649,7 @@ export default class Contract {
   }
 
   /**
-   * 提取持仓挖矿收益
+   * withdrawPMReward
    * @param amount
    * @return {*}
    */
@@ -659,8 +659,8 @@ export default class Contract {
 
   /**
    * Obtain user's holding mining income
-   * @param trader 用户账户地址
-   * @return {Promise<int>} 持仓挖矿收益（精度为8位）
+   * @param trader wallet address
+   * @return {Promise<int>} （The precision is 8 bits）
    */
   getPMReward (trader) {
     return this.DerifyStaking.methods.getPMReward(trader).call();
