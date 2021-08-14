@@ -57,7 +57,6 @@
       <template v-if="hintType === 'key3'">
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.Hint.PnL') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PnLDetail1') }}</div>
           <div class="hint-item-info">{{ $t('Trade.Hint.PnLDetail2') }}</div>
           <div class="hint-item-info">{{ $t('Trade.Hint.PnLDetail3') }}</div>
         </div>
