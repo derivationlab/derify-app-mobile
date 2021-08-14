@@ -38,7 +38,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <!-- 提示申请弹框 -->
+    <!-- apply requirements -->
     <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="closeshowPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
@@ -49,7 +49,7 @@
         <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
       </div>
   </van-popup>
-  <!-- 申请条件 -->
+  <!-- requirements -->
   <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="closetermPopup">
       <div class="unwind-popup system-popup">
         <div class="hint-div">{{$t('Brokers.BurnEDRF')}}</div>
@@ -78,7 +78,7 @@
       </div>
       </div>
   </van-popup>
-  <!-- 申请成功弹框 -->
+  <!-- apply popup -->
   <van-popup class="derify-popup" v-model="succPopup" round :closeable="false" @close="closesuccPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
@@ -123,17 +123,17 @@ export default {
     }
   },
   methods: {
-    // 关闭申请弹框
+    // close popup
     closeshowPopup () {
       this.termPopup = true
       this.showPopup = false
     },
-    // 申请条件弹框
+    // close apply popup
     closetermPopup () {
       this.succPopup = true
       this.termPopup = false
     },
-    // 关闭申请成功后弹框
+    // close apply success popup
     closesuccPopup () {
       this.succPopup = false
     }
