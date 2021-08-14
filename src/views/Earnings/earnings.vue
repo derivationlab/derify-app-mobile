@@ -4,7 +4,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">{{ $t('Rewards.Mining.PositionMiningReward') }}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.TransactionHistory') }} ></span>
+          <span class="span2 fz-12 fc-yellow" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.TransactionHistory') }} ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
@@ -35,7 +35,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">{{ $t('Rewards.Staking.StakEquity') }}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.TransactionHistory') }}></span>
+          <span class="span2 fz-12  fc-yellow" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.TransactionHistory') }}></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -44,11 +44,11 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Staking.StakAmount') }}（EDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.StakAmount') }}（DRF）</span>
           </div>
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Staking.AccumulatedReward') }}（eDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.DailyYield') }}（DRF）</span>
           </div>
         </div>
         <div class="earnings-item">
@@ -77,7 +77,7 @@
       <div class="mining-earnings">
         <div class="earnings-title">
           <span class="span1">{{$t('Rewards.Bond.Bond')}}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.BDRF)">{{$t('Rewards.Bond.TransactionHistory')}} ></span>
+          <span class="span2 fz-12  fc-yellow" @click="goDetail(EarningType.BDRF)">{{$t('Rewards.Bond.TransactionHistory')}} ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">{{bondInfo.bondBalance | fck(-8)}}</span>
@@ -248,7 +248,6 @@ export default {
         font-weight: 400;
       }
       .span2{
-        color: rgba(255,255,255,0.65);
         font-weight: 400;
       }
     }

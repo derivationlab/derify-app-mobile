@@ -11,13 +11,17 @@
         <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
       </template>
     </van-nav-bar>
-    <div class="from-div">From</div>
+    <div class="from-div">{{ $t('Trade.Account.From') }}</div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? 'Metamask Wallet' : 'Derify Account'" :border='false' />
+      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.MyWallet') : $t('Trade.Account.MarginAccount')" :border='false' />
     </van-cell-group>
-    <div class="to-div" @click="changeType"><span class="span1">to</span><van-icon class="span2" name="exchange" size="2rem"/></div>
+    <div class="to-div" @click="changeType"><span class="span1">{{ $t('Trade.Account.To') }}</span>
+      <span class="switch-updown-arrow">
+        <DerifyIcon icon-name="switch-updown-arrow" color="#140B32" width="1.5rem" height="1.5rem"/>
+      </span>
+    </div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? 'Derify Account' : 'Metamask Wallet'" />
+      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.MarginAccount') : $t('Trade.Account.MyWallet')" />
     </van-cell-group>
     <div class="num-div">{{$t('Trade.Account.Size')}}</div>
     <van-cell-group>
@@ -40,9 +44,11 @@
   import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import { UserProcessStatus } from '../../../store/modules/user'
 import {toContractNum} from "@/utils/contractUtil";
+  import DerifyIcon from '../../../components/DerifyIcon/DerifyIcon'
 
 export default {
   name: 'transfer',
+  components: { DerifyIcon },
   data () {
     return {
       amount: '',
@@ -163,6 +169,14 @@ export default {
   .span2{
     color: #FAE55E;
     margin-right: 1rem;
+  }
+  .switch-updown-arrow{
+    border-radius: 1rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: #FAE247;
+    align-items: center;
+    display: flex;
   }
 }
 .num-div{

@@ -12,7 +12,7 @@
       </template>
 
       <template #title v-if="logo">
-        <img src="@/assets/images/logo.png" alt="" srcset="" />
+        <img src="@/assets/images/logo.png" alt="" srcset="" style="width: 100%; height: 100%"/>
       </template>
 
       <template #right v-if="isLogin">
@@ -101,27 +101,6 @@
         </div>
         <div
           class="menu-list-item"
-          @click="changeRouter('data')"
-          :class="$route.name === 'data' ? 'active' : ''"
-        >
-          <img
-            class="menu-list-item-icon"
-            src="@/assets/icons/icon-menu-active.png"
-            alt=""
-          />
-          <van-icon
-            class="menu-list-item-van-icon"
-            name="bar-chart-o"
-            :color="
-              $route.name === 'data' ? '#FAE247' : 'rgba(255, 255, 255, .85)'
-            "
-            size="2.0rem"
-          >
-          </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Data") }}</div>
-        </div>
-        <div
-          class="menu-list-item"
           @click="changeRouter('earnings')"
           :class="$route.name === 'earnings' ? 'active' : ''"
         >
@@ -163,6 +142,27 @@
           >
           </van-icon>
           <div class="menu-list-item-name">{{ $t("navbar.Broker") }}</div>
+        </div>
+        <div
+          class="menu-list-item"
+          @click="changeRouter('data')"
+          :class="$route.name === 'data' ? 'active' : ''"
+        >
+          <img
+            class="menu-list-item-icon"
+            src="@/assets/icons/icon-menu-active.png"
+            alt=""
+          />
+          <van-icon
+            class="menu-list-item-van-icon"
+            name="bar-chart-o"
+            :color="
+              $route.name === 'data' ? '#FAE247' : 'rgba(255, 255, 255, .85)'
+            "
+            size="2.0rem"
+          >
+          </van-icon>
+          <div class="menu-list-item-name">{{ $t("navbar.Data") }}</div>
         </div>
       </div>
       <div class="language-wrap">

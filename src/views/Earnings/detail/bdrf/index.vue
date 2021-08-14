@@ -51,12 +51,13 @@ export default {
     const self = this;
     self.loading = true
     this.$store.dispatch("earnings/getTraderBondBalance").then((data) => {
-
       if(data instanceof Array){
         self.list.splice(0)
         data.forEach((item) => self.list.push(item))
-        self.loading = false
       }
+    }).finally(() => {
+      self.loading = false
+      self.finished = true
     });
   }
 }

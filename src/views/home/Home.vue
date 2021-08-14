@@ -10,23 +10,25 @@
             <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
           </div>
           <div class="home-top-num">
-            <DecimalView :value="curSpotPrice | fck(-8,2)" :last-style="{fontSize:'1.5rem'}"/>
+            <DecimalView :value="curSpotPrice | fck(-8,2)" last-style="font-size: 1.5rem"/>
           </div>
           <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
           {{curContractData.tokenPriceRate}}%</span>
           </div>
         </div>
         <div class="home-top-right">
-          <div class="home-top-icons">
+          <div class="home-top-icons" v-if="$route.name === 'home'">
             <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
             <img src="@/assets/icons/icon-hu.png" alt="" class="home-top-icon" @click="changeRouter('account')">
           </div>
           <div class="home-top-items">
-            <span class="fc-65">{{$t('Trade.OpenPosition.PCFRate')}}: </span>
+            <span class="fc-65">{{$t('Trade.OpenPosition.PCFRate')}}</span>
+            <img @click="changeShowHint(true, 'key4')" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">:
             <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
           </div>
           <div class="home-top-items">
-            <span class="fc-65">{{$t('Trade.OpenPosition.PMAPY')}}：</span>
+            <span class="fc-65">{{$t('Trade.OpenPosition.PMAPY')}}</span>
+            <img @click="changeShowHint(true, 'key4')" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">:
             <span class="fc-green">{{$t('Trade.OpenPosition.Long')}}</span>
             <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
             <span class="fc-65 margin">/</span>
@@ -156,11 +158,11 @@
                           <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                         </div>
                         <div class="right" v-if="active === 'key1'" @click="changeShowUnwind(true, data)">
-                          <div class="fz-12">{{$t('Trade.MyPosition.Close')}}</div>
+                          <div class="fz-12 fc-yellow">{{$t('Trade.MyPosition.Close')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
                         <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
-                          <div class="fz-12">{{$t('Trade.CurrentOrder.Cancel')}}</div>
+                          <div class="fz-12 fc-yellow">{{$t('Trade.CurrentOrder.Cancel')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
                       </div>
@@ -217,7 +219,7 @@
                           <div>{{data.liquidatePrice | amountFormt(2, false, '--', -8)}} USDT</div>
                         </div>
                         <div class="exchange-item-right" @click="changeShowSet(true, data)">
-                          <div>{{$t('Trade.MyPosition.SetStopPrice')}}</div>
+                          <div class="fc-yellow">{{$t('Trade.MyPosition.SetStopPrice')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
                       </div>
@@ -238,7 +240,7 @@
                           <img @click="changeShowHint(true, active)" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">
                         </div>
                         <div class="right" v-if="active === 'key2'" @click="changeClosePosistionStatus(true, data)">
-                          <div class="fz-12">{{$t('Trade.CurrentOrder.Cancel')}}</div>
+                          <div class="fz-12 fc-yellow">{{$t('Trade.CurrentOrder.Cancel')}}</div>
                           <van-icon size="1.2rem" color="rgba(255, 255, 255, .85)" name="arrow"></van-icon>
                         </div>
                       </div>
@@ -549,9 +551,9 @@ export default {
       positionOrders: [],
       tradeRecords: [],
       loading: false,
-      positionFinished: false,
-      positionOrdersFinished: false,
-      tradeRecordsFinished: false,
+      positionFinished: true,
+      positionOrdersFinished: true,
+      tradeRecordsFinished: true,
       showMarket: false, // market popup，change token pair
       showHint: false, // show hit popup
       hintType: 'key1', // show hit type
@@ -866,14 +868,8 @@ export default {
       });
     },
     homeInit(){
-      var timestamp = (new Date()).getTime()
-      if((timestamp - context.loadStamp) < 3000){
-        return
-      }
 
-      context.loadStamp = timestamp
-
-      if(!window.ethereum){
+      if(!this.isLogin){
         return
       }
 
@@ -1062,7 +1058,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: flex-end;
+    .left-help-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
   }
   &-right {
     align-items: flex-end;
@@ -1109,6 +1109,8 @@ export default {
   }
   &-items {
     margin-top: .8rem;
+    display: flex;
+    align-items: center;
     .fc-green,.fc-red {
       margin-right: .4rem;
       &:last-child {

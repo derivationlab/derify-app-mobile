@@ -86,6 +86,16 @@
           <div class="hint-item-info">{{ $t('Trade.Hint.CompensationDetail') }}</div>
         </div>
       </template>
+      <template v-if="hintType === 'key4'">
+        <div class="hint-item">
+          <div class="hint-item-title">{{ $t('Trade.Hint.PCFRate') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.Hint.PCFRateDetail') }}</div>
+        </div>
+        <div class="hint-item">
+          <div class="hint-item-title">{{ $t('Trade.Hint.PositionMiningAPY') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.Hint.PositionMiningAPYDetail') }}</div>
+        </div>
+      </template>
     </div>
   </van-popup>
 </template>

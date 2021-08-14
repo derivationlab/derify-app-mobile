@@ -358,6 +358,7 @@
       "StakAll":"All",
       "StakCancel":"Cancel",
       "Redeem":"Redeem",
+      "StakingRedeemPopupTile":"Redeem",
       "Staking":"Staking",
       "DRFAccount":"DRF Account",
       "RedeemMyWallet":"My Wallet",

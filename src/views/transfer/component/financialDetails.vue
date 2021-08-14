@@ -1,7 +1,7 @@
 <template>
   <div class=" home-container page-container">
     <van-nav-bar
-      :title="$t('Trade.Account.BalanceHistory')"
+      :title="$t('Trade.Account.DetailBalancHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -45,6 +45,7 @@
 <script>
 
   import { amountFormt } from '../../../utils/utils'
+  import { EVENT_WALLET_CHANGE } from '../../../utils/web3Utils'
 
   const feeTypeMap = {
     0: "Trade.Account.TradeFee", //-TradingFee,
@@ -67,6 +68,11 @@ export default {
       finished: false
     }
   },
+  computed: {
+    isLogin () {
+      return this.$store.state.user.isLogin
+    }
+  },
   methods: {
     getFeeType (feeType) {
       const feeTypeText = feeTypeMap[feeType];
@@ -76,6 +82,11 @@ export default {
       this.$router.go(-1)
     },
     onLoad () {
+
+      if(!this.isLogin) {
+        return
+      }
+
       const self = this;
       self.loading = true
       self.finished = false
@@ -95,10 +106,13 @@ export default {
 
         self.loading = false
         self.finished = true
-
-        console.log(list)
       })
     }
+  },
+  mounted() {
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.onLoad()
+    })
   }
 }
 </script>

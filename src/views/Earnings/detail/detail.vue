@@ -43,12 +43,15 @@ export default {
   },
   data () {
     return {
-      show: false,
-      activeName: ''
+      show: false
+    }
+  },
+  computed: {
+    activeName () {
+      return this.$route.query.id
     }
   },
   mounted () {
-    this.activeName = this.$route.query.id
   },
   methods: {
     ClickBox () {

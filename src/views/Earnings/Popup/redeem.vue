@@ -77,7 +77,7 @@ export default {
     },
     redeemId () {
       if (this.redeemId === EarningType.EDRF) {
-        this.redeemName = 'eDRF'
+        this.redeemName = 'DRF'
       } else if(this.redeemId === EarningType.BDRF){
         this.redeemName = 'bDRF'
       }

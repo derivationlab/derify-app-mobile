@@ -39,7 +39,7 @@ export default {
     return {
       list: [],
       loading: false,
-      finished: false
+      finished: true
     }
   },
   methods: {
@@ -57,6 +57,9 @@ export default {
         data.forEach((item) => self.list.push(item))
         self.loading = false
       }
+    }).finally(() => {
+      self.loading = false
+      self.finished = true
     });
   }
 }

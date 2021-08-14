@@ -65,7 +65,7 @@ export default {
     },
     pledgeId () {
       if (this.pledgeId === EarningType.EDRF) {
-        this.pledgeName = 'eDRF'
+        this.pledgeName = 'DRF'
       } else if(this.pledgeId === EarningType.BDRF) {
         this.pledgeName = 'bDRF'
       }

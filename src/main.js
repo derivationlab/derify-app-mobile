@@ -100,6 +100,9 @@ window.vuexApp = vueApp
 
 function updateWallet (eventType = 0) {
   const walletInfo = getWallet()
+  if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
+    eventType = 1
+  }
   store.commit("user/updateState", walletInfo)
   if(eventType > 0){
     vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
