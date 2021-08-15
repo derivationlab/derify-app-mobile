@@ -171,22 +171,23 @@ export default class Contract {
     const web3 = new Web3(window.ethereum)
 
     const gasPrice = 1e9;
-    //const gas = 9000;
+    const gas = 9000000;
+    const contractOption = Object.assign({},{ gasPrice, gas }, option)
 
     this.web3 = web3
     this.from = from
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, Object.assign({ gasPrice }, option))
+    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, contractOption)
 
     this.DerifyDerivative = {
-      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, Object.assign({ gasPrice }, option)),
-      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, Object.assign({ gasPrice }, option))
+      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, contractOption),
+      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, contractOption)
     }
 
-    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
-    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, Object.assign({ gasPrice }, option))
-    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, Object.assign({ gasPrice }, option))
+    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, contractOption)
+    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, contractOption)
+    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, contractOption)
+    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, contractOption)
   }
 
   /**
