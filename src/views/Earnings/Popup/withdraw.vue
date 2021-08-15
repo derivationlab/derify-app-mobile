@@ -53,7 +53,7 @@ export default {
   computed: {
     maxAmout () {
       if (this.withdrawId === EarningType.MIN) {
-        return this.$store.state.earnings.pmrReward
+        return this.$store.state.earnings.pmrBalance
       } else if (this.withdrawId === EarningType.EDRF) {
         return 0
       } else if(this.withdrawId === EarningType.BDRF){
