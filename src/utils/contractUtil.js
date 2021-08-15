@@ -116,10 +116,10 @@ export function toShiftedString (number, decimals = 0, bit = 2) {
 export function convertAmount2TokenSize(unit, amount, price) {
 
   if(unit === UnitTypeEnum.USDT) {
-    return amount / price
+    return fromContractUnit(amount) / fromContractUnit(price)
   }
 
-  return amount
+  return fromContractUnit(amount)
 }
 
 
@@ -134,7 +134,7 @@ export function toHexString (number) {
 
 export function toContractNum (number) {
   const num = (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
-  return Math.ceil(num)
+  return Math.ceil(num) + ""
 }
 
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {

@@ -19,7 +19,9 @@
         </div>
         <div class="popup-text">{{$t('Rewards.Staking.RedeemAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"  :formatter="(value) => value.replace(/-/g, '')" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+                     :formatter="(value) => value.replace(/-/g, '')"
+                     type="number" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{redeemName}}</div>
         </div>
         <div class="system-popup-num">
@@ -112,15 +114,16 @@ export default {
     redeemAll(){
       this.amount = fck(this.maxRedeemAmount, -8, 4)
     },
+    checkAmount () {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxRedeemAmount)) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+      return true
+    },
     submitThenClose () {
 
-      if(this.amount <= 0) {
-        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
-        return
-      }
-
-      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
+      if(!this.checkAmount()) {
         return
       }
 

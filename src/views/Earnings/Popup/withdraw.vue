@@ -8,7 +8,8 @@
       <div>
         <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')" placeholder="0" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
+                     placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -89,8 +90,15 @@ export default {
         this.showError = false
       }
     },
-    submitThenClose () {
+    checkAmount () {
       if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
+        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
+        return false
+      }
+      return true
+    },
+    submitThenClose () {
+      if(!this.checkAmount()) {
         this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }

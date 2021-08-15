@@ -19,7 +19,9 @@
         </div>
         <div class="popup-text">{{ $t('Rewards.Bond.ExchangeAmount') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" :formatter="(value) => value.replace(/-/g, '')" type="number" v-model="amount" @input="checkAmount"/>
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+                     :formatter="(value) => value.replace(/-/g, '')"
+                     type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{ withdrawName }}</div>
         </div>
         <div class="system-popup-num">
@@ -102,7 +104,6 @@ export default {
     submitThenClose () {
 
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
@@ -130,6 +131,7 @@ export default {
     checkAmount () {
 
       if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
 

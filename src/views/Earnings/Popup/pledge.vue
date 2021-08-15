@@ -18,7 +18,8 @@
         </div>
         <div class="popup-text">{{$t('Rewards.Staking.StakAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number"  :formatter="(value) => value.replace(/-/g, '')" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number"
+                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
@@ -107,12 +108,15 @@ export default {
       }
     },
     checkAmount () {
-
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+      return true
     },
     submitThenClose(){
 
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
-        this.errorNotice(this.$t('global.NumberError'))
+      if(!this.checkAmount()) {
         return
       }
 
