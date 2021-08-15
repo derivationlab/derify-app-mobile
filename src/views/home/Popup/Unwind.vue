@@ -2,6 +2,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div style="margin-top: 2rem">
           <div class="system-popup-price">
             <div class="fc-45">{{ $t('Trade.ClosePosition.PositionHeld') }}</div>
@@ -47,8 +50,10 @@
 <script>
   import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
   import { UserProcessStatus } from '../../../store/modules/user'
+  import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: {
     show: {
       type: Boolean,
@@ -64,14 +69,14 @@ export default {
     }
   },
   data () {
-    console.log('unwind popup', this.extraData)
-
     const defaultPercent = 100
     const size = this.extraData == null ? 0 : this.extraData.size
 
     const value1 = size * defaultPercent / 100
     return {
       showPopup: this.show,
+      errorMsg: '',
+      showError: false,
       value1: value1 > 0 ? value1 : '',
       position: Object.assign({size : 0}, this.extraData),
       percents: [
@@ -127,12 +132,15 @@ export default {
 
 
       if(size <= 0){
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
+        return
       }
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
+        return
       }
+      this.errorNotice(null)
     },
     submitThenClose (){
       const size = this.value1
@@ -140,25 +148,25 @@ export default {
       const token = this.position.token
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
       if(size <= 0) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$toast(this.$t('Trade.ClosePosition.TradePendingMsg'))})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
 
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
         size: toContractUnit(size)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$toast(this.$t('Trade.ClosePosition.TradeSuccessMsg'))})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$toast(this.$t('Trade.ClosePosition.TradeFailedMsg'))})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
       })
 
       this.close()
@@ -171,7 +179,14 @@ export default {
 
       return pair
     },
-
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
   }
 }
 </script>
