@@ -2,6 +2,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup">
       <div class="system-popup-title">{{ $t('Trade.SetStopPricePopup.SetStopPrice') }}</div>
+      <DerifyErrorNotice :show="showError" @close="errorNotice">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div style="margin-top: 2rem">
         <div class="system-popup-price">
           <div class="fc-45">{{ $t('Trade.SetStopPricePopup.AveragePrice') }}</div>
@@ -65,8 +68,10 @@ import {fck} from "@/utils/utils";
 import { fromContractUnit, OrderTypeEnum, SideEnum, toContractNum, toHexString } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: {
     show: {
       type: Boolean,
@@ -80,6 +85,8 @@ export default {
   data () {
     return {
       showPopup: this.show,
+      errorMsg: '',
+      showError: false,
       position: {}
     }
   },
@@ -147,13 +154,13 @@ export default {
       const {position} = this;
 
       if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
       }
     },
     onChangeLossPrice() {
       const {position} = this;
       if(!this.checkLossPrice(position, position.stopLossPriceInput)){
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
       }
     },
     checkProfitPrice(position, profitPrice) {
@@ -217,7 +224,7 @@ export default {
       let lossPrice = null
       if(this.position.stopProfitPriceInput !== ''){
         if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
-          this.$toast(this.$t('global.NumberError'))
+          this.errorNotice(this.$t('global.NumberError'))
           return
         }
         profitPrice = this.position.stopProfitPrice
@@ -225,7 +232,7 @@ export default {
 
       if(this.position.stopLossPriceInput !== ''){
         if(!this.checkLossPrice(this.position, this.position.stopLossPrice)){
-          this.$toast(this.$t('global.NumberError'))
+          this.errorNotice(this.$t('global.NumberError'))
           return
         }
 
@@ -252,7 +259,15 @@ export default {
       }
 
       this.close()
-    }
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
   }
 }
 </script>

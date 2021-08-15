@@ -2,12 +2,7 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup" v-if="openData">
       <div class="system-popup-title">{{$t('Trade.OpenPositionPopup.OpenConfirm')}}</div>
-      <div class="error-notice" v-if="showError">
-        <span>{{errorMsg}}</span>
-        <div class="error-right">
-          <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showError=false}"></van-icon>
-        </div>
-      </div>
+      <ErrorNotice :show="showError" @close="() => {this.showError = false}">{{errorMsg}}</ErrorNotice>
       <div class="system-popup-price">
         <div class="fc-45">{{$t('Trade.OpenPositionPopup.Price')}}</div>
         <div v-if="openData.entrustType === OpenType.LimitOrder && sideType !== SideEnum.HEDGE">
@@ -74,8 +69,10 @@ import {
   import { fck } from '../../../utils/utils'
   import { UnitTypeEnum } from '../../../store/modules/contract'
   import { UserProcessStatus } from '../../../store/modules/user'
+import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { ErrorNotice },
   props: {
     show: {
       type: Boolean,
