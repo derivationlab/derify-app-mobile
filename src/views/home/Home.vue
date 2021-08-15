@@ -1060,22 +1060,24 @@ export default {
   }
 }
 </script>
-
+<style lang="less">
+.home-error {
+  position: fixed;
+  top: 8rem;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  .derify-error-notice{
+    background: #291138;
+  }
+}
+</style>
 <style lang="less" scoped>
 .home-container{
   background-color: #0C071E;
   padding-top: 6.6rem;
   padding-left: 0;
   padding-right: 0;
-
-  .home-error {
-    position: fixed;
-    top: 8rem;
-    background-color: #291138;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-  }
 }
 .home-top {
   padding: 2rem 1.4rem;
