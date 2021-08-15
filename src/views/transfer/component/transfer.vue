@@ -1,5 +1,9 @@
 <template>
   <div class="home-container page-container">
+
+    <DerifyErrorNotice @close="errorNotice" :show="showError">
+      {{errorMsg}}
+    </DerifyErrorNotice>
     <van-nav-bar
       :title="$t('Trade.Account.Transfers')"
       left-arrow
@@ -45,12 +49,15 @@
 import { UserProcessStatus } from '../../../store/modules/user'
 import {toContractNum} from "@/utils/contractUtil";
   import DerifyIcon from '../../../components/DerifyIcon/DerifyIcon'
+  import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
   name: 'transfer',
-  components: { DerifyIcon },
+  components: { DerifyErrorNotice, DerifyIcon },
   data () {
     return {
+      errorMsg: '',
+      showError: false,
       amount: '',
       type: 'deposit'
     }
@@ -83,6 +90,14 @@ export default {
     onClickLeft () {
       this.$router.go(-1)
     },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
     changeType () {
       this.type = this.type === 'deposit' ? 'withdraw' : 'deposit'
     },
@@ -98,7 +113,7 @@ export default {
     },
     deposit () {
       if (!this.amount) {
-        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
+        this.errorNotice(this.$t('Trade.Account.AmountExceedsError'))
         return false
       }
 
@@ -107,7 +122,7 @@ export default {
       const amount = toContractUnit(a)
 
       if(toContractNum(this.amount) > this.balanceOfWallet) {
-        this.$toast(this.$t('Trade.Account.AmountExceedsError'))
+        this.errorNotice(this.$t('Trade.Account.AmountExceedsError'))
         return  false
       }
 
@@ -123,12 +138,12 @@ export default {
     },
     withdraw () {
       if (!this.amount) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
 
       if(toContractNum(this.amount) > this.account.marginBalance) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return  false
       }
 

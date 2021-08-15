@@ -3,6 +3,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{$t('Rewards.Staking.Redeem')}}{{redeemName}}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -39,18 +42,21 @@
 </template>
 
 <script>
-import { Toast } from 'vant'
 import { BondAccountType, fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import { UserProcessStatus } from '../../../store/modules/user'
 import { fck } from '../../../utils/utils'
 import { EarningType } from '../../../store/modules/earnings'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'redeemId'],
   data () {
 
     let accoutOptions = this.updateAccountOptions()
 
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       value1: null,
       amount: 0,
@@ -95,11 +101,18 @@ export default {
     close () {
       this.$emit('closeRedeem', false)
     },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
     onSelect (item) {
       // drop down items will not auto fold by default
       // please use close-on-click-action open auto fold
       this.show = false
-      Toast(item.name)
     },
     redeemAll(){
       this.amount = fck(this.maxRedeemAmount, -8, 4)
@@ -111,7 +124,7 @@ export default {
       }
 
       if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.$toast(this.$t('Rewards.Mining.NumberError'))
+        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }
 

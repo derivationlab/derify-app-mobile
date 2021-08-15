@@ -2,6 +2,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{$t('Rewards.Mining.Withdraw')}}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
         <div class="system-popup-input">
@@ -31,11 +34,15 @@ import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
 import { EarningType } from '../../../store/modules/earnings'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'withdrawId'],
   data () {
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       amount: 0,
       //maxAmout: 10*1e8,
@@ -79,9 +86,17 @@ export default {
     exchangeAll () {
       this.amount = fck(this.maxAmout, -8, 4)
     },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
     submitThenClose () {
       if(this.amount > fromContractUnit(this.maxAmout)) {
-        this.$toast(this.$t('Rewards.Mining.NumberError'))
+        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }
 

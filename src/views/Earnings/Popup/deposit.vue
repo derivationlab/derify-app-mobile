@@ -2,6 +2,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ withdrawName }}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -43,14 +46,18 @@ import {UserProcessStatus} from "@/store/modules/user"
 import {fck} from '@/utils/utils';
 import { BondAccountType } from '../../../utils/contractUtil'
 import {EarningType} from "@/store/modules/earnings";
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'depositId'],
   data () {
 
     let accoutOptions = this.getAccountOptions()
 
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
@@ -100,7 +107,7 @@ export default {
     submitThenClose () {
 
       if(!this.checkAmount()) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
@@ -152,6 +159,14 @@ export default {
 
     updateAccountOptions() {
       this.accountOptions = this.getAccountOptions()
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
     }
   }
 }

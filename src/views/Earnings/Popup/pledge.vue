@@ -2,6 +2,9 @@
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{$t('Rewards.Staking.Staking')}}{{pledgeName}}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -42,14 +45,18 @@ import { BondAccountType, fromContractUnit, toContractUnit } from '../../../util
 import { UserProcessStatus } from '../../../store/modules/user'
 import { fck } from '../../../utils/utils'
 import { EarningType } from '../../../store/modules/earnings'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'pledgeId'],
   data () {
 
     let accoutOptions = this.getAccountOptions()
 
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
@@ -97,10 +104,18 @@ export default {
     close () {
       this.$emit('closePledge', false)
     },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
     submitThenClose(){
 
       if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
