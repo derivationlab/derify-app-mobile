@@ -24,7 +24,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
@@ -41,7 +41,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">

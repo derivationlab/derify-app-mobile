@@ -8,7 +8,7 @@
       <div>
         <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')" placeholder="0" type="number" v-model="amount" />
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">

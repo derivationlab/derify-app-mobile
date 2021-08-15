@@ -32,6 +32,7 @@
       <van-field
         v-model="amount"
         class="derify-input no-padding-hor"
+        :formatter="formatter"
         type="number"
       >
       </van-field>
@@ -40,8 +41,8 @@
     <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Amount')}}
       <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
       <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
-    <div :class="amount > 0 ? 'pay-div' : 'pay-div disabled'" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
+    <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
+    <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
   </div>
 </template>
 <script>
@@ -159,6 +160,9 @@ export default {
       }).finally(() => {
         self.$router.go(-1)
       })
+    },
+    formatter(value) {
+      return value.replace(/-/g, '');
     }
   }
 }
