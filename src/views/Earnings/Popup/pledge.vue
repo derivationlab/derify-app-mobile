@@ -111,7 +111,7 @@ export default {
     },
     submitThenClose(){
 
-      if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
         this.errorNotice(this.$t('global.NumberError'))
         return
       }

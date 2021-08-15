@@ -115,6 +115,7 @@ export default {
     submitThenClose () {
 
       if(this.amount <= 0) {
+        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }
 

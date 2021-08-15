@@ -90,7 +90,7 @@ export default {
       }
     },
     submitThenClose () {
-      if(this.amount > fromContractUnit(this.maxAmout)) {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
         this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }

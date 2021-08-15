@@ -128,7 +128,8 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
-      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
         return false
       }
 
