@@ -170,7 +170,8 @@ export default class Contract {
     const option = {from}
     const web3 = new Web3(window.ethereum)
 
-    const gasPrice = null;
+    const gasPrice = 1e9;
+    //const gas = 9000;
 
     this.web3 = web3
     this.from = from
