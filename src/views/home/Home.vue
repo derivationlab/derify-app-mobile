@@ -40,7 +40,7 @@
         <div class="home-mid">
           <div class="home-mid-one">
             <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-              <van-dropdown-item v-model="entrustType" :options="entrustTypeConfig" @input="onOpenTypeChange">
+              <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="entrustType" :options="entrustTypeConfig" @input="onOpenTypeChange">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{entrustTypeConfig[entrustType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -48,7 +48,7 @@
               </van-dropdown-item>
             </van-dropdown-menu>
             <van-dropdown-menu :overlay="false" class="derify-dropmenu">
-              <van-dropdown-item v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
+              <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="leverageUnit" :options="leverageConfig" @input="updateTraderOpenUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{leverageConfig[leverageUnit].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -83,7 +83,7 @@
             <div class="home-mid-input">
               <van-field class="derify-input" type="number" v-model.number="size" @input="onPositionSizeChange"/>
               <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
-                <van-dropdown-item v-model="unit" :options="unitConfig"  @change="unitSelectChange">
+                <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                   <div class="derify-dropmenu-title" slot="title">
                     <span>{{unitConfig[unit].text}}</span>
                     <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -93,7 +93,7 @@
             </div>
           </div>
           <div class="home-mid-three">
-            <van-slider bar-height=".4rem" button-size="1.8rem" v-model="sliderValue" @input="onSliderValueChange"/>
+            <van-slider bar-height=".8rem" button-size="1.8rem" v-model="sliderValue" @input="onSliderValueChange"/>
           </div>
           <div class="home-mid-four" v-if="isLogin">
             <div class="home-mid-four-btn green-gra" @click="changeShowOpen(true, 0)">{{$t('Trade.OpenPosition.BuyLong')}}</div>
@@ -1021,8 +1021,15 @@ export default {
     }, 15000)
 
     context.timer = setInterval(() => {
-      self.$store.dispatch('contract/getSpotPrice')
-      self.$store.dispatch('contract/loadPositionData')
+
+      if(self.$route.name === 'home' || self.$route.name === 'exchange'){
+        self.$store.dispatch('contract/getSpotPrice')
+      }
+
+      if(self.$route.name === 'home') {
+        self.$store.dispatch('contract/loadPositionData')
+      }
+
     }, 15000)
 
     this.homeInit()

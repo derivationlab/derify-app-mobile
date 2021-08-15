@@ -6,7 +6,7 @@
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions"
-                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
+                               class="derify-dropmenu-item derify-dropmenu-item-wrap" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -115,7 +115,6 @@ export default {
       })
     },
     onDropDowOpen () {
-      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     updateExchangeBondSizeUpperBound() {
       this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})

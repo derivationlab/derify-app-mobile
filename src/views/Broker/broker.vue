@@ -60,7 +60,7 @@
         <!-- <div class="hint-title">{{$t('Brokers.YouPrivilege')}}</div> -->
           <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="value1" :options="option1">
+            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="value1" :options="option1">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{option1[value1]}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />

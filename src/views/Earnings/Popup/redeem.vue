@@ -6,7 +6,7 @@
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="accountType" :options="accountOptions" @open="onDropDowOpen()" class="derify-dropmenu-item">
+            <van-dropdown-item v-model="accountType" :options="accountOptions" @open="onDropDowOpen()" class="derify-dropmenu-item derify-dropmenu-item-wrap">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{accountOptions[accountType].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -131,7 +131,6 @@ export default {
 
     },
     onDropDowOpen () {
-      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     getAccountOptions() {
       let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
