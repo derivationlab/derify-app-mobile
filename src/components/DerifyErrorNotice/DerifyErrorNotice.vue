@@ -1,17 +1,19 @@
 <template>
-  <div class="derify-error-notice" v-if="showError">
-    <div class="derify-error-notice-info">
-      <span><slot></slot></span>
-    </div>
-    <div class="error-right">
-      <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="closeError"></van-icon>
+  <div :class="className">
+    <div class="derify-error-notice" v-if="showError">
+      <div class="derify-error-notice-info">
+        <span><slot></slot></span>
+      </div>
+      <div class="error-right">
+        <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="closeError"></van-icon>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props:['show'],
+  props:['show','className'],
   data() {
     return {
       showError: false
@@ -32,8 +34,7 @@ export default {
 <style lang="less" scoped>
 .derify-error-notice {
   line-height: 2rem;
-  border-radius: 1rem;
-  margin: 0 0 2rem 0;
+  border-radius: 0.6rem;
   border: 0.1rem solid #EA446B;
   position: relative;
   color: #EA446B;

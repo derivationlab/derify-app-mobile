@@ -364,6 +364,9 @@
     <open :extraData="openExtraData" :show="showOpen" :type="openType" @closeOpenPopup="changeShowOpen" />
     <open-status :show="showOpenStatus" :type="openStatus" @closeOpenStatusPopup="changeShowOpenStatus" />
     <close-position :show="showClosePositionWind" :extraData="extClosePositionData" :closePositionOrderType="closePositionOrderType" @onClosePosition="changeClosePosistionStatus"/>
+    <DerifyErrorNotice class="home-error" :show="showError" @close="() => this.showError=false">
+      {{errorMsg}}
+    </DerifyErrorNotice>
   </div>
 </template>
 
@@ -393,6 +396,7 @@ import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
 import DecimalView from '../../components/DecimalView/DecimalView'
 import { convertAmount2TokenSize, toContractNum } from '../../utils/contractUtil'
+import DerifyErrorNotice from '../../components/DerifyErrorNotice/DerifyErrorNotice'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -429,6 +433,7 @@ const TradeTypeMap = {
 export default {
   name: 'Home',
   components: {
+    DerifyErrorNotice,
     DecimalView,
     ClosePosition,
     Navbar,
@@ -504,6 +509,8 @@ export default {
       SideEnum,
       OpTypeEnum,
       UnitTypeEnum,
+      errorMsg: '',
+      showError: false,
       entrustType: 0,
       leverageUnit: 0,
       amount: fromContractUnit(this.curSpotPrice),
@@ -636,7 +643,7 @@ export default {
         let {entrustType, leverage, leverageUnit, amount, size, unit} = this
 
         if (entrustType === 1 && !amount) {
-          this.$toast(this.$t('global.NumberError'))
+          this.errorNotice(this.$t('global.NumberError'))
           return
         }
 
@@ -645,18 +652,18 @@ export default {
         }
 
         if (!size || size <= 0) {
-          this.$toast(this.$t('global.NumberError'))
+          this.errorNotice(this.$t('global.NumberError'))
           return
         }
 
         if(unit !== UnitTypeEnum.USDT){
           if (size > fromContractUnit(this.curTraderOpenUpperBound.size)) {
-            this.$toast(this.$t('global.NumberError'))
+            this.errorNotice(this.$t('global.NumberError'))
             return
           }
         } else {
           if (size > fromContractUnit(this.curTraderOpenUpperBound.amount)) {
-            this.$toast(this.$t('global.NumberError'))
+            this.errorNotice(this.$t('global.NumberError'))
             return
           }
         }
@@ -665,7 +672,7 @@ export default {
         let positionChangeFee = 0;
 
         if(side === SideEnum.HEDGE && entrustType === OpenType.LimitOrder){
-          this.$toast(this.$t('Trade.OpenPosition.TwoWayOpenPriceTypeError'))
+          this.errorNotice(this.$t('Trade.OpenPosition.TwoWayOpenPriceTypeError'))
           return
         }
 
@@ -933,6 +940,12 @@ export default {
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
         self.drawKline(options)
       })
+    },
+    errorNotice (msg) {
+      if(msg){
+        this.showError = true
+        this.errorMsg = msg
+      }
     }
   },
   watch: {
@@ -1054,6 +1067,15 @@ export default {
   padding-top: 6.6rem;
   padding-left: 0;
   padding-right: 0;
+
+  .home-error {
+    position: fixed;
+    top: 8rem;
+    background-color: #291138;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 }
 .home-top {
   padding: 2rem 1.4rem;
@@ -1104,7 +1126,6 @@ export default {
     }
   }
   &-icons {
-    margin-top: 2.5rem;
     .home-top-icon {
       width: 1.6rem;
       height: 1.6rem;
