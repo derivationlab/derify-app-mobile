@@ -97,7 +97,7 @@ export const Token = {
   USDT: ABIData.DUSD.address
 }
 
-const cache = {}
+const cache = {gasPrice: 1e9}
 
 export const contractDecimals = 8
 
@@ -170,24 +170,28 @@ export default class Contract {
     const option = {from}
     const web3 = new Web3(window.ethereum)
 
-    const gasPrice = 1e9;
-    const gas = 9000000;
-    const contractOption = Object.assign({},{ gasPrice, gas }, option)
-
     this.web3 = web3
     this.from = from
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, contractOption)
+    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, option)
 
     this.DerifyDerivative = {
-      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, contractOption),
-      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, contractOption)
+      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, option),
+      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, option)
     }
 
-    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, contractOption)
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, contractOption)
-    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, contractOption)
-    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, contractOption)
+    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
+    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, option)
+    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
+    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
+  }
+
+  updateGasPrice (web3) {
+    web3.eth.getGasPrice().then((gasPrice) => {
+      if(gasPrice) {
+        cache.gasPrice = gasPrice
+      }
+    })
   }
 
   /**
