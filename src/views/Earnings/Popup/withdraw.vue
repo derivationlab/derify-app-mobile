@@ -18,12 +18,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Mining.WithdrawCancel')}}</div>
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn">{{$t('Rewards.Mining.Withdraw')}}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
       </div>
     </div>
   </van-popup>

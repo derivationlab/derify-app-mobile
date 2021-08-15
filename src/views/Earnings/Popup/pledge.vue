@@ -28,13 +28,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.StakCancel')}}</div>
-
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
       </div>
     </div>
   </van-popup>
@@ -111,6 +105,9 @@ export default {
       }else{
         this.showError = false
       }
+    },
+    checkAmount () {
+
     },
     submitThenClose(){
 

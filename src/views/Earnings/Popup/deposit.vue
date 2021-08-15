@@ -29,12 +29,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{ $t('Rewards.Bond.StakingCancel') }}</div>
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
       </div>
     </div>
   </van-popup>
