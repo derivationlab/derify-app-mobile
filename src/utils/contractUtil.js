@@ -97,7 +97,7 @@ export const Token = {
   USDT: ABIData.DUSD.address
 }
 
-const cache = {}
+const cache = {gasPrice: 1e9}
 
 export const contractDecimals = 8
 
@@ -116,10 +116,10 @@ export function toShiftedString (number, decimals = 0, bit = 2) {
 export function convertAmount2TokenSize(unit, amount, price) {
 
   if(unit === UnitTypeEnum.USDT) {
-    return amount / price
+    return fromContractUnit(amount) / fromContractUnit(price)
   }
 
-  return amount
+  return fromContractUnit(amount)
 }
 
 
@@ -134,7 +134,7 @@ export function toHexString (number) {
 
 export function toContractNum (number) {
   const num = (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
-  return Math.ceil(num)
+  return Math.ceil(num) + ""
 }
 
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
@@ -169,23 +169,30 @@ export default class Contract {
   constructor (from) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-
-    const gasPrice = null;
+    option.gasPrice = 1e9
 
     this.web3 = web3
     this.from = from
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, Object.assign({ gasPrice }, option))
+    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, option)
 
     this.DerifyDerivative = {
-      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, Object.assign({ gasPrice }, option)),
-      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, Object.assign({ gasPrice }, option))
+      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, option),
+      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, option)
     }
 
-    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
-    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, Object.assign({ gasPrice }, option))
-    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, Object.assign({ gasPrice }, option))
+    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
+    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, option)
+    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
+    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
+  }
+
+  updateGasPrice (web3) {
+    web3.eth.getGasPrice().then((gasPrice) => {
+      if(gasPrice) {
+        cache.gasPrice = gasPrice
+      }
+    })
   }
 
   /**

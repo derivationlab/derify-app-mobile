@@ -19,7 +19,9 @@
         </div>
         <div class="popup-text">{{ $t('Rewards.Bond.ExchangeAmount') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" @input="checkAmount"/>
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+                     :formatter="(value) => value.replace(/-/g, '')"
+                     type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{ withdrawName }}</div>
         </div>
         <div class="system-popup-num">
@@ -29,12 +31,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{ $t('Rewards.Bond.StakingCancel') }}</div>
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
       </div>
     </div>
   </van-popup>
@@ -107,7 +104,6 @@ export default {
     submitThenClose () {
 
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
@@ -133,7 +129,9 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
-      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
 

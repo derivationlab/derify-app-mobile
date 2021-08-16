@@ -81,7 +81,7 @@
               </div>
             </div>
             <div class="home-mid-input">
-              <van-field class="derify-input" type="number" v-model.number="size" @input="onPositionSizeChange"/>
+              <van-field class="derify-input" type="number" :formatter="(value) => value.replace(/-/g, '')" v-model.number="size" @input="onPositionSizeChange"/>
               <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
                 <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                   <div class="derify-dropmenu-title" slot="title">

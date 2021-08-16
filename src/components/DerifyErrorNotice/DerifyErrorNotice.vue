@@ -39,7 +39,6 @@ export default {
   position: relative;
   color: #EA446B;
   padding: 4px 2.5rem 4px 0.5rem;
-  font-size: 0.1rem;
   .error-right{
     position: absolute;
     right: 0;

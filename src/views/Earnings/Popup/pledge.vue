@@ -18,7 +18,8 @@
         </div>
         <div class="popup-text">{{$t('Rewards.Staking.StakAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number"
+                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
@@ -28,13 +29,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.StakCancel')}}</div>
-
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
       </div>
     </div>
   </van-popup>
@@ -112,10 +107,16 @@ export default {
         this.showError = false
       }
     },
+    checkAmount () {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+      return true
+    },
     submitThenClose(){
 
-      if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
-        this.errorNotice(this.$t('global.NumberError'))
+      if(!this.checkAmount()) {
         return
       }
 

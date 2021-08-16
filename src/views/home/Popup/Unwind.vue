@@ -31,7 +31,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.ClosePosition.Amount') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="" type="number" @input="onPositionSizeChange" v-model="value1" />
+          <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" type="number" @input="onPositionSizeChange" v-model="value1" />
           <div class="unit">{{getPairByAddress(position.token).key}}</div>
         </div>
         <div class="unwind-popup-set">

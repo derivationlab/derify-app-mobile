@@ -8,7 +8,8 @@
       <div>
         <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
+                     placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -18,12 +19,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Mining.WithdrawCancel')}}</div>
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn">{{$t('Rewards.Mining.Withdraw')}}</div>
-        </template>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
       </div>
     </div>
   </van-popup>
@@ -94,8 +90,15 @@ export default {
         this.showError = false
       }
     },
+    checkAmount () {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
+        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
+        return false
+      }
+      return true
+    },
     submitThenClose () {
-      if(this.amount > fromContractUnit(this.maxAmout)) {
+      if(!this.checkAmount()) {
         this.errorNotice(this.$t('Rewards.Mining.NumberError'))
         return
       }
