@@ -837,6 +837,7 @@ export default class Contract {
     }
 
     const variables = await this.getTraderPositionVariables(params)
+    const marginMaintenanceRatio = await this.DerifyExchange.methods.marginMaintenanceRatio().call();
 
     position.margin = variables.margin
     position.unrealizedPnl = variables.unrealizedPnl
@@ -852,7 +853,7 @@ export default class Contract {
       side: position.side,
       spotPrice: position.spotPrice,
       size: position.size,
-      marginMaintenanceRatio:  position.marginRate,
+      marginMaintenanceRatio:  marginMaintenanceRatio,
       marginBalance: position.marginBalance,
       totalPositionAmount: position.totalPositionAmount
     }
