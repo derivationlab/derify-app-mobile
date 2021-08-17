@@ -1,5 +1,5 @@
 import * as web3Utils from '@/utils/web3Utils'
-import {toContractNum, Token} from "@/utils/contractUtil";
+import {Token} from "@/utils/contractUtil";
 
 export class ChainEnum {
   static values = []
@@ -94,6 +94,22 @@ const state = {
   processStatusMsg: '',
   balanceOfDUSD: 0
 };
+
+export async function asyncInitWallet() {
+  if(!window.ethereum || !!window.ethereum.chainId){
+    return {}
+  }
+
+  window.ethereum.chainId = await window.ethereum.request({method: 'eth_chainId'})
+  window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
+  if(window.ethereum.ethAccounts.length > 0){
+    window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
+  }
+
+  window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
+
+  return window.ethereum
+}
 
 export function getWallet(){
 

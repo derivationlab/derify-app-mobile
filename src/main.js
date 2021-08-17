@@ -11,7 +11,7 @@ import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
-import { getWallet } from './store/modules/user'
+import {asyncInitWallet, getWallet} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
 let locale = 'en'
 try {
@@ -70,15 +70,19 @@ Vue.prototype.$userProcessBox = function (param) {
 Vue.prototype.$eventBus = vueApp
 
 Vue.prototype.$loginWallet = function () {
-  const walletInfo = getWallet()
+  asyncInitWallet().then(() => {
+    const walletInfo = getWallet()
 
-  if(!walletInfo.isLogin){
-    walletInfo.showWallet = true
-  }else{
-    walletInfo.showWallet = false
-  }
+    if(!walletInfo.isLogin){
+      walletInfo.showWallet = true
+    }else{
+      walletInfo.showWallet = false
+    }
 
-  this.$store.commit("user/updateState", walletInfo)
+    this.$store.commit("user/updateState", walletInfo)
+  }).catch(() => {
+    console.log('init wallet failed')
+  })
 }
 
 window.onload = function (){
@@ -99,13 +103,17 @@ window.vexstore = store
 window.vuexApp = vueApp
 
 function updateWallet (eventType = 0) {
-  const walletInfo = getWallet()
-  if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
-    eventType = 1
-  }
-  store.commit("user/updateState", walletInfo)
-  if(eventType > 0){
-    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
-  }
 
+  asyncInitWallet().then(() => {
+    const walletInfo = getWallet()
+    if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
+      eventType = 1
+    }
+    store.commit("user/updateState", walletInfo)
+    if(eventType > 0){
+      vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
+    }
+  }).catch(() => {
+    console.log('init wallet failed')
+  })
 }
