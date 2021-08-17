@@ -29,6 +29,7 @@ setTimeout(() => {
   throw new Error('test error')
 }, 3000)
 function handleError(){
+  console.log('debug console handleError')
   console.log.apply(this, arguments)
 }
 
