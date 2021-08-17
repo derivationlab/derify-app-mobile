@@ -118,7 +118,7 @@ class DebugConsole{
     }
 
     if(this._console) {
-      this._console.log.apply(this, arguments)
+      this._console.log.apply(this._console, arguments)
     }
 
   }
