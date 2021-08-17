@@ -13,7 +13,7 @@ export class DebugConsole{
   constructor(wconsole = window.console) {
 
     for(const key in wconsole) {
-      if(key !== 'log'){
+      if(key !== 'log' && key !== 'error'){
         this[key] = wconsole[key]
       }
     }
@@ -35,6 +35,28 @@ export class DebugConsole{
     window.console = this
   }
 
+  error() {
+    if(this.logToConsole){
+      this._console.error.call(this, arguments)
+    }else{
+      if(this.logs.length > 1000) {
+        this.logs.shift()
+      }
+
+      const args = [];
+
+      for(let i = 0; i < arguments.length; i++){
+        if(typeof arguments[i] === 'object'){
+          args.push(JSON.stringify(arguments[i]))
+        }else{
+          args.push(arguments[i])
+        }
+      }
+
+      this.logs.push(args.join(','))
+    }
+  }
+
   log() {
     if(this.logToConsole){
       this._console.log.call(this, arguments)
@@ -46,11 +68,14 @@ export class DebugConsole{
       const args = [];
 
       for(let i = 0; i < arguments.length; i++){
-        args.push(arguments[i])
+        if(typeof arguments[i] === 'object'){
+          args.push(JSON.stringify(arguments[i]))
+        }else{
+          args.push(arguments[i])
+        }
       }
 
-      const line = JSON.stringify(args)
-      this.logs.push(line.substring(1, line.length - 1))
+      this.logs.push(args.join(','))
     }
   }
 
