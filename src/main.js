@@ -57,7 +57,7 @@ Date.prototype.Format = function (fmt) {
 }
 
 Vue.config.errorHandler = (err, vm, info) => {
-  console.log.apply(this, arguments);
+  console.log.apply(console, arguments);
 }
 
 const vueApp = new Vue({

@@ -29,8 +29,7 @@ setTimeout(() => {
   throw new Error('test error')
 }, 3000)
 function handleError(){
-  console.log('debug console handleError')
-  console.log.apply(this, arguments)
+  console.log.apply(console, arguments)
 }
 
 class DebugConsole{
@@ -88,7 +87,7 @@ class DebugConsole{
         if(typeof arguments[i] === 'object'){
           if(arguments[i] instanceof Error) {
             const e = arguments[i]
-            args.push(e.message + "," + e.stack)
+            args.push(e.message + ":" + e.stack)
           }else{
             args.push(JSON.stringify(arguments[i]))
           }
