@@ -86,7 +86,13 @@ class DebugConsole{
 
       for(let i = 0; i < arguments.length; i++){
         if(typeof arguments[i] === 'object'){
-          args.push(JSON.stringify(arguments[i]))
+          if(arguments[i] instanceof Error) {
+            const e = arguments[i]
+            args.push(e.message + "," + e.stack)
+          }else{
+            args.push(JSON.stringify(arguments[i]))
+          }
+
         }else{
           args.push(arguments[i])
         }
