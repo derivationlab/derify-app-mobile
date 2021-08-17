@@ -11,8 +11,9 @@
         show-word-limit
       />
       <div class="console-btns">
+        <van-button type="primary" size="small" @click="clearCommond">clear commonds</van-button>&nbsp;
         <van-button type="primary" size="small" @click="execute">execute</van-button>&nbsp;
-        <van-button type="primary" size="small" @click="clear">clear</van-button>&nbsp;
+        <van-button type="primary" size="small" @click="clear">clear logs</van-button>&nbsp;
         <van-button type="primary" size="small" @click="close">close</van-button>&nbsp;
       </div>
       <div class="derify-console-logs">
@@ -139,6 +140,9 @@ export default {
     execute() {
       const result = context.debugConsole.execute(this.commands)
       context.debugConsole.log(result)
+    },
+    clearCommond () {
+      this.commands = ''
     },
     clear() {
       context.debugConsole.clearLogs()

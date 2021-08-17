@@ -11,7 +11,7 @@ import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
-import {asyncInitWallet, getWallet} from './store/modules/user'
+import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
 let locale = 'en'
 try {
@@ -96,6 +96,14 @@ window.onload = function (){
     })
 
     updateWallet()
+  }else{
+    window.addEventListener('ethereum#initialized', updateWallet, {
+      once: true,
+    });
+
+    // If the event is not dispatched by the end of the timeout,
+    // the user probably doesn't have MetaMask installed.
+    setTimeout(updateWallet, 3000); // 3 seconds
   }
 }
 
@@ -117,3 +125,5 @@ function updateWallet (eventType = 0) {
     console.log('init wallet failed')
   })
 }
+
+
