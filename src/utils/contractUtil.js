@@ -858,11 +858,11 @@ export default class Contract {
 
     const liquidPriceParam = {
       side: position.side,
-      spotPrice: position.spotPrice,
-      size: position.size,
-      marginMaintenanceRatio:  marginMaintenanceRatio,
-      marginBalance: position.marginBalance,
-      totalPositionAmount: position.totalPositionAmount
+      spotPrice: fromContractUnit(position.spotPrice),
+      size: fromContractUnit(position.size),
+      marginMaintenanceRatio:  fromContractUnit(marginMaintenanceRatio),
+      marginBalance: fromContractUnit(position.marginBalance),
+      totalPositionAmount: fromContractUnit(position.totalPositionAmount)
     }
     position.liquidatePrice = await this.getTraderPositionLiquidatePrice(liquidPriceParam);
 
