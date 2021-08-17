@@ -1,7 +1,66 @@
 import Contract from './contractUtil'
 import * as CfgUtil from '../config'
 
-const contractDebug = CfgUtil.isDebug()
+export const contractDebug = CfgUtil.isDebug()
+
+
+export class DebugConsole{
+  logs = [];
+
+  logToConsole = true;
+
+
+  constructor(wconsole = window.console) {
+
+    for(const key in wconsole) {
+      if(key !== 'log'){
+        this[key] = wconsole[key]
+      }
+    }
+
+    this._console = wconsole
+  }
+
+  unmockConsole() {
+    window.console = this._console
+    this.logToConsole = false
+    this.logs.splice(0)
+  }
+
+  clearLogs() {
+   this.logs.splice(0)
+  }
+
+  mockConsole() {
+    this.logToConsole = false
+    window.console = this
+  }
+
+  log() {
+    if(this.logToConsole){
+      this._console.log.call(this, arguments)
+    }else{
+      if(this.logs.length > 1000) {
+        this.logs.shift()
+      }
+
+      const args = [];
+
+      for(let i = 0; i < arguments.length; i++){
+        args.push(arguments[i])
+      }
+
+      const line = JSON.stringify(args)
+      this.logs.push(line.substring(1, line.length - 1))
+    }
+  }
+
+  execute (codes) {
+    return eval(codes)
+  }
+
+}
+
 export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {
