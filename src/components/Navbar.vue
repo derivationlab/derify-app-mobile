@@ -177,17 +177,14 @@
       </div>
     </van-popup>
     <wallet :show="showWallet" @closeWalletPopup="changeShowWallet" />
-    <debug-console-view :show-debug="showDebug" @close="() => {this.showDebug = false}"/>
   </div>
 </template>
 
 <script>
 import Wallet from './Wallet'
-import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
 export default {
   props: ['logo', 'title', 'showGoback'],
   components: {
-    DebugConsoleView,
     Wallet
   },
   data () {
@@ -199,7 +196,6 @@ export default {
     }
 
     return {
-      showDebug: false,
       showMenu: false,
       loginError: null,
       navIndex: navIndex,

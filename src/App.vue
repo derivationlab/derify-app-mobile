@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view>
+    </router-view>
+    <debug-console-view/>
   </div>
 </template>
 
@@ -10,3 +12,12 @@
   height: 100vh;
 }
 </style>
+<script>
+import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
+export default {
+  components: {DebugConsoleView},
+  data() {
+    return {}
+  }
+}
+</script>

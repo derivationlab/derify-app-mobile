@@ -1,4 +1,4 @@
-<template>
+<template v-if="CfgUtil.isDebug()">
   <div class="derify-debug-console">
     <div class="show-debug-icon" @click="toggle" v-if="showIcon">D</div>
     <van-popup v-model="showPopup" class="derify-debug-console-ctn">
@@ -22,19 +22,101 @@
   </div>
 </template>
 <script>
-import {DebugConsole} from "@/utils/web3Utils";
 import * as CfgUtil from "@/config";
 
+function handleError(){
+  console.log.call(this, arguments)
+}
+
+class DebugConsole{
+  logs = []
+  isLogToLogs = true
+
+  constructor(wconsole = window.console, mockConsole = false) {
+
+    for(const key in wconsole) {
+      if(key !== 'log' && key !== 'error'){
+        this[key] = wconsole[key]
+      }
+    }
+
+    this._console = wconsole
+
+    if(mockConsole) {
+      this.mockConsole()
+    }
+  }
+
+  unmockConsole() {
+    window.console = this._console
+    window.onerror = this._onerror
+    window.removeEventListener('error', handleError)
+    window.removeEventListener('unhandledrejection', handleError)
+  }
+
+  clearLogs() {
+    this.logs.splice(0)
+  }
+
+  mockConsole() {
+    this._onerror = window.onerror
+    window.console = this
+    // js erro
+    window.onerror = handleError;
+
+    // net error
+    window.addEventListener('error', handleError, true);
+
+    //promise error
+    window.addEventListener("unhandledrejection", handleError);
+  }
+
+  __log4Logs(){
+    if(this.isLogToLogs){
+      if(this.logs.length > 1000) {
+        this.logs.shift()
+      }
+
+      const args = [];
+
+      for(let i = 0; i < arguments.length; i++){
+        if(typeof arguments[i] === 'object'){
+          args.push(JSON.stringify(arguments[i]))
+        }else{
+          args.push(arguments[i])
+        }
+      }
+
+      this.logs.push(args.join(','))
+    }
+  }
+
+  error() {
+    this.__log4Logs.apply(this, arguments)
+    this._console.error.apply(this, arguments)
+  }
+
+  log() {
+    this.__log4Logs.apply(this,arguments)
+    this._console.log.apply(this, arguments)
+  }
+
+  execute (codes) {
+    return eval(codes)
+  }
+}
+const isDebug = location.search.indexOf("debug") > -1
 const context = {
   console: window.console,
-  debugConsole: new DebugConsole(),
+  debugConsole: CfgUtil.isDebug() ? new DebugConsole(window.console, isDebug) : new DebugConsole(window.console, isDebug),
 }
+
 
 export default {
   data() {
     return {
       CfgUtil,
-      showIcon: !!this.$route.query.debug,
+      showIcon: isDebug,
       commands: '',
       logArr: context.debugConsole.logs,
       logLines: [],
@@ -63,16 +145,11 @@ export default {
     },
     close() {
       this.showPopup = false
-      if(context.debugConsole){
-        context.debugConsole.unmockConsole()
-      }
       this.$emit('close')
     },
     toggle() {
       if(!this.showPopup){
         this.showPopup = true
-        context.debugConsole.mockConsole()
-
       }else{
         this.close()
       }
