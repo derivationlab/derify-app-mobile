@@ -14,8 +14,8 @@
       <van-button type="primary" @click="execute">execute</van-button>
       <van-button type="primary" @click="clear">clear</van-button>
       <van-button type="primary" @click="close">close</van-button>
-      <div>
-        <p v-for="(line, key) in logs" :key="key">{{line}}</p>
+      <div class="derify-console-logs">
+        <p class="log-lines" v-for="(line, key) in logLines" :key="key">{{line}}</p>
       </div>
     </van-popup>
   </div>
@@ -35,18 +35,18 @@ export default {
       CfgUtil,
       showIcon: !!this.$route.query.debug,
       commands: '',
+      logArr: context.debugConsole.logs,
+      logLines: [],
       showPopup: false
-    }
-  },
-  computed:{
-    logs (){
-      return context.debugConsole.logs
     }
   },
   watch:{
     logArr:{
       handler(){
-
+        this.logLines.splice(0)
+        context.debugConsole.logs.forEach((line) => {
+          this.logLines.push(line)
+        })
       },
       deep:true,
       immediate: true
@@ -65,7 +65,6 @@ export default {
       this.showPopup = false
       if(context.debugConsole){
         context.debugConsole.unmockConsole()
-        context.debugConsole = null
       }
       this.$emit('close')
     },
@@ -104,6 +103,11 @@ export default {
   .derify-debug-console-ctn{
     width: 90%;
     height: 90%;
+  }
+  .derify-console-logs{
+    .log-lines{
+      border-bottom: #576b95 1px solid;
+    }
   }
 }
 </style>

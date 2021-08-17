@@ -24,7 +24,6 @@ export class DebugConsole{
   unmockConsole() {
     window.console = this._console
     this.logToConsole = false
-    this.logs.splice(0)
   }
 
   clearLogs() {
