@@ -84,10 +84,10 @@ class DebugConsole{
         if(typeof arguments[i] === 'object'){
           if(arguments[i] instanceof Error) {
             const e = arguments[i]
-            args.push(e.message + ":" + e.stack)
+            args.push(e.stack)
           }else if(arguments[i] instanceof PromiseRejectionEvent){
             const promiseReject = arguments[i]
-            args.push(promiseReject.reason)
+            args.push('promise rejected:'+promiseReject.reason)
           }else{
             args.push(JSON.stringify(arguments[i]))
           }
