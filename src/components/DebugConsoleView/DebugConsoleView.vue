@@ -25,8 +25,11 @@
 <script>
 import * as CfgUtil from "@/config";
 
+setTimeout(() => {
+  throw new Error('test error')
+}, 3000)
 function handleError(){
-  console.log.call(this, arguments)
+  console.log.apply(this, arguments)
 }
 
 class DebugConsole{
@@ -97,7 +100,9 @@ class DebugConsole{
       this.__log4Logs.apply(this, arguments)
     }
 
-    this._console.error.apply(this, arguments)
+    if(this._console) {
+      this._console.error.apply(this, arguments)
+    }
   }
 
   log() {
@@ -106,11 +111,20 @@ class DebugConsole{
       this.__log4Logs.apply(this, arguments)
     }
 
-    this._console.log.apply(this, arguments)
+    if(this._console) {
+      this._console.log.apply(this, arguments)
+    }
+
   }
 
   execute (codes) {
-    return eval(codes)
+    try{
+      return eval(codes)
+    }catch (e) {
+      console.log(e)
+      throw e
+    }
+
   }
 }
 const isDebug = location.search.indexOf("debug") > -1
