@@ -52,7 +52,7 @@ class DebugConsole{
     window.console = this._console
     window.onerror = this._onerror
     window.removeEventListener('error', handleError)
-    window.removeEventListener('unhandledrejection', handleError)
+    window.removeEventListener('unhandledRejection', handleError)
   }
 
   clearLogs() {
@@ -85,6 +85,9 @@ class DebugConsole{
           if(arguments[i] instanceof Error) {
             const e = arguments[i]
             args.push(e.message + ":" + e.stack)
+          }else if(arguments[i] instanceof PromiseRejectionEvent){
+            const promiseReject = arguments[i]
+            args.push(promiseReject.reason)
           }else{
             args.push(JSON.stringify(arguments[i]))
           }

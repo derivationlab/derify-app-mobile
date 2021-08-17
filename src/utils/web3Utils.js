@@ -34,11 +34,11 @@ export function contract (account) {
                   })();
 
                 }else{
-                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
+                  console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
                 }
                 return ret;
               }catch (e) {
-                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
+                console.log('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
               }
 
             }
