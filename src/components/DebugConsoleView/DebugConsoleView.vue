@@ -93,12 +93,19 @@ class DebugConsole{
   }
 
   error() {
-    this.__log4Logs.apply(this, arguments)
+    if(this.__log4Logs){
+      this.__log4Logs.apply(this, arguments)
+    }
+
     this._console.error.apply(this, arguments)
   }
 
   log() {
-    this.__log4Logs.apply(this,arguments)
+
+    if(this.__log4Logs){
+      this.__log4Logs.apply(this, arguments)
+    }
+
     this._console.log.apply(this, arguments)
   }
 
