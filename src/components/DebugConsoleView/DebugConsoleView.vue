@@ -6,14 +6,15 @@
         v-model="commands"
         rows="10"
         autosize
-        label="execute command"
         type="textarea"
-        placeholder="input codes here"
+        placeholder="execute command"
         show-word-limit
       />
-      <van-button type="primary" @click="execute">execute</van-button>
-      <van-button type="primary" @click="clear">clear</van-button>
-      <van-button type="primary" @click="close">close</van-button>
+      <div class="console-btns">
+        <van-button type="primary" size="small" @click="execute">execute</van-button>&nbsp;
+        <van-button type="primary" size="small" @click="clear">clear</van-button>&nbsp;
+        <van-button type="primary" size="small" @click="close">close</van-button>&nbsp;
+      </div>
       <div class="derify-console-logs">
         <p class="log-lines" v-for="(line, key) in logLines" :key="key">{{line}}</p>
       </div>
@@ -55,7 +56,6 @@ export default {
   methods: {
     execute() {
       const result = context.debugConsole.execute(this.commands)
-      this.commands = ''
       context.debugConsole.log(result)
     },
     clear() {
@@ -106,8 +106,14 @@ export default {
   }
   .derify-console-logs{
     .log-lines{
-      border-bottom: #576b95 1px solid;
+      border-bottom: silver 1px solid;
     }
+  }
+  .console-btns{
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem;
+    border-bottom: 1px silver solid;
   }
 }
 </style>
