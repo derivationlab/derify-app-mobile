@@ -25,9 +25,6 @@
 <script>
 import * as CfgUtil from "@/config";
 
-setTimeout(() => {
-  throw new Error('test error')
-}, 3000)
 function handleError(){
   console.log.apply(console, arguments)
 }
