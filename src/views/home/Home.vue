@@ -879,6 +879,17 @@ export default {
         return
       }
 
+      if(context.tokenMiningRateEvent !== null){
+        context.tokenMiningRateEvent.close()
+        context.tokenMiningRateEvent = null
+      }
+
+      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
+        //update mining fee
+        //{"longPmrRate":0,"shortPmrRate":0}
+        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.shortPmrRate * 100})
+      })
+
       const self = this
 
       self.updateKLine(self.curPair.key, self.kChartTimeGap)
@@ -1015,17 +1026,6 @@ export default {
       context.klineTimer = null
     }
 
-    if(context.tokenMiningRateEvent !== null){
-      context.tokenMiningRateEvent.close()
-      context.tokenMiningRateEvent = null
-    }
-
-    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-      //update mining fee
-      //{"longPmrRate":0,"shortPmrRate":0}
-      this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.longPmrRate * 100})
-    })
-
     context.klineTimer = setInterval(() => {
       if(self.$route.name === 'exchange') {
         self.updateKLine(self.curPair.key, self.kChartTimeGap)
@@ -1042,7 +1042,6 @@ export default {
       if(self.$route.name === 'home') {
         self.$store.dispatch('contract/loadPositionData')
       }
-
     }, 15000)
 
     this.homeInit()

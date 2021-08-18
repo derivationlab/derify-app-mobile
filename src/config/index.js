@@ -13,14 +13,14 @@ const config = {
   currentEnv: currentEnv,
   debug: true,
   server: {
-    development: "http://13.125.43.43:8081",
-    debug: "http://13.125.43.43:8081",
-    production: "http://13.125.43.43:8081"
+    development: "//app-test.haoping.video",
+    debug: "//app-test.haoping.video",
+    production: "//app-test.haoping.video"
   },
   kdata:{
-    development: 'http://app-test.haoping.video',
-    debug: 'http://app-test.haoping.video',
-    production: 'http://app-test.haoping.video',
+    development: '//app-test.haoping.video',
+    debug: '//app-test.haoping.video',
+    production: '//app-test.haoping.video',
   },
   contract: {
     development: {
