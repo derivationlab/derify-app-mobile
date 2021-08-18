@@ -54,7 +54,12 @@ const routes = [
     path: '/financialDetails',
     name: 'financialDetails',
     component: () => import('@/views/transfer/component/financialDetails')
-  }
+  },
+  {
+    path: '/broker/apply',
+    name: 'brokerApply',
+    component: () => import('@/views/Broker/apply/apply.vue')
+  },
 ]
 
 const router = new VueRouter({
