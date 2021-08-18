@@ -1,4 +1,9 @@
 {
+  "global": {
+    "ClickConnectWallet": "ClickConnectWallet",
+    "Loading": "Loading",
+    "NoMoreInfo": "NoMoreInfo"
+  },
   "lng": "en",
   "Broker": {
     "Apply": {
@@ -338,7 +343,7 @@
         "CloseAllOrderInfo": "Click to CANCEL ALL orders",
         "Confirm": "Confirm",
         "NumberError": "Error, please retry.",
-        "TradePendingMsg": "Pending ????",
+        "TradePendingMsg": "Pending......",
         "TradeSuccessMsg": "TradeSuccessMsg"
       },
       "Hint": {
@@ -374,7 +379,8 @@
         "NumberError": "Error, please retry.",
         "OneClickClose": "One-Click Close",
         "PositionHeld": "Position Held",
-        "TradePendingMsg": "Pending ????",
+        "TradePendingMsg": "Pending......",
+        "TradeSuccessMsg": "TradeSuccessMsg",
         "TradeSuccessMsg": "TradeSuccessMsg"
       },
       "Hint": {
@@ -509,6 +515,7 @@
       "ClickToConnectYourWallet": "Click to connect your wallet",
       "ClickToLogin": "Click To Login",
       "Data": "Data",
+      "Home": "Home",
       "Rewards": "Rewards",
       "Trade": "Trade"
     }

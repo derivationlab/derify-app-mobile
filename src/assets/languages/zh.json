@@ -1,4 +1,9 @@
 {
+  "global": {
+    "ClickConnectWallet": "global.ClickConnectWallet",
+    "Loading": "global.Loading",
+    "NoMoreInfo": "global.NoMoreInfo"
+  },
   "lng": "zh",
   "Broker": {
     "Apply": {
@@ -509,6 +514,7 @@
       "ClickToConnectYourWallet": "点击连接钱包",
       "ClickToLogin": "点击登录",
       "Data": "数据",
+      "Home": "首页",
       "Rewards": "收益",
       "Trade": "交易"
     }
