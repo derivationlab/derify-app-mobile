@@ -519,8 +519,8 @@ export default {
       unit: 0,
       //curTraderOpenUpperBound: {size: 0, amount: 0},
       entrustTypeConfig: [
-        {text:  this.$t('Trade.OpenPosition.Market'), value: 0},
-        {text: this.$t('Trade.OpenPosition.Limit'), value: 1}
+        {text:  this.$t('Trade.OpenPosition.OpenPage.Market'), value: 0},
+        {text: this.$t('Trade.OpenPosition.OpenPage.Limit'), value: 1}
       ],
       leverageConfig: [
         {text: '10x', value: 0, val: 10},
@@ -536,7 +536,7 @@ export default {
       ],
       active: 'key1',
       tabs: {
-        key1: this.$t('Trade.MyPosition.MyPosition'),
+        key1: this.$t('Trade.MyPosition'),
         key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
         key3:  this.$t('Trade.TradeHistory.TradeHistory')
       },
