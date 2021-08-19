@@ -1,20 +1,20 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup">
-      <div class="system-popup-title">{{ $t('Trade.SetStopPricePopup.SetStopPrice') }}</div>
+      <div class="system-popup-title">{{ $t('Trade.MyPosition.SetStopPricePopup.SetTPSL') }}</div>
       <DerifyErrorNotice :show="showError" @close="errorNotice">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div style="margin-top: 2rem">
         <div class="system-popup-price">
-          <div class="fc-45">{{ $t('Trade.SetStopPricePopup.AveragePrice') }}</div>
+          <div class="fc-45">{{ $t('Trade.MyPosition.SetStopPricePopup.AveragePrice') }}</div>
           <div>
             <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
             <span class="fc-45">USDT</span>
           </div>
         </div>
         <div class="system-popup-price">
-          <div class="fc-45">{{ $t('Trade.SetStopPricePopup.CurrentPrice') }}</div>
+          <div class="fc-45">{{ $t('Trade.MyPosition.SetStopPricePopup.CurrentPrice') }}</div>
           <div>
             <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
             <span class="fc-45">USDT</span>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.TakeProfit') }}</div>
+        <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">{{ $t('Trade.SetStopPricePopup.StopLoss') }}</div>
+        <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
@@ -56,8 +56,8 @@
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.SetStopPricePopup.Cancel') }}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Trade.SetStopPricePopup.Confirm') }}</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.MyPosition.SetStopPricePopup.Cancel') }}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Trade.MyPosition.SetStopPricePopup.Confirm') }}</div>
       </div>
     </div>
   </van-popup>
@@ -239,22 +239,22 @@ export default {
         lossPrice = this.position.stopLossPrice
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.SetStopPricePopup.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       if(lossPrice === null && profitPrice === null) {
         this.$store.dispatch('contract/cancleOrderedPosition', {
           token, side, closeType: CancelOrderedPositionTypeEnum.StopProfitAndLossOrder
         }).then(_ => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(msg => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         })
       } else {
         this.$store.dispatch('contract/orderStopPosition', {
           token, side, takeProfitPrice: profitPrice, stopLossPrice: lossPrice
         }).then(_ => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.SetStopPricePopup.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(msg => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.SetStopPricePopup.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         })
       }
 

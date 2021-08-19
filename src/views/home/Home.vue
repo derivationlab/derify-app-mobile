@@ -253,9 +253,15 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.CurrentOrder.List.Type')}}：</div>
-                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div><span class="fc-green">{{$t('Trade.CurrentOrder.OpenLimit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.OpenLimit.1')}}</span></div></template>
-                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopProfit.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopProfit.1')}}</span></div></template>
-                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder"><div><span class="fc-red">{{$t('Trade.CurrentOrder.CloseStopLoss.0')}}</span>/ <span>{{$t('Trade.CurrentOrder.CloseStopLoss.1')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder">
+                            <div>
+                              <span>{{$t('Trade.CurrentOrder.List.OpenLimit')}}</span>
+                            </div>
+                          </template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopProfitOrder">
+                            <div><span>{{$t('Trade.CurrentOrder.List.CloseTP')}}</span></div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.StopLossOrder">
+                            <div><span>{{$t('Trade.CurrentOrder.List.CloseSL')}}</span></div></template>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -536,7 +542,7 @@ export default {
       ],
       active: 'key1',
       tabs: {
-        key1: this.$t('Trade.MyPosition'),
+        key1: this.$t('Trade.MyPosition.MyPosition'),
         key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
         key3:  this.$t('Trade.TradeHistory.TradeHistory')
       },
@@ -672,7 +678,7 @@ export default {
         let positionChangeFee = 0;
 
         if(side === SideEnum.HEDGE && entrustType === OpenType.LimitOrder){
-          this.errorNotice(this.$t('Trade.OpenPosition.TwoWayOpenPriceTypeError'))
+          this.errorNotice(this.$t('Trade.OpenPosition.OpenPage.TwoWayOpenPriceTypeError'))
           return
         }
 
@@ -927,12 +933,12 @@ export default {
     },
     closeAllPositions () {
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.MyPosition.ClosePositionPopup.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/closeAllPositions').then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.MyPosition.ClosePositionPopup.TradeSuccessMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
       }).catch((ex) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.MyPosition.ClosePositionPopup.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       })
     },
     changeKChartTimeGap (gap) {
@@ -1007,8 +1013,8 @@ export default {
       }
 
       this.entrustTypeConfig = [
-        {text:  this.$t('Trade.OpenPosition.Market'), value: 0},
-        {text: this.$t('Trade.OpenPosition.Limit'), value: 1}
+        {text:  this.$t('Trade.OpenPosition.OpenPage.Market'), value: 0},
+        {text: this.$t('Trade.OpenPosition.OpenPage.Limit'), value: 1}
       ]
     }
   },

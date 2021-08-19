@@ -3,86 +3,86 @@
     <div class="hint-popup system-popup">
       <template v-if="hintType === 'key1'">
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.UnrealizedPnL') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.UnrealizedPnLOfLong') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.UnrealizedPnLOfShort') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.UnrealizedPnL') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.UnrealizedPnLOfLong') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.UnrealizedPnLOfShort') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.PositionHeld') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PositionHeldDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.PositionHeld') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.PositionHeldDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.CurrentPrice') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.CurrentPriceDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.CurrentPrice') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.CurrentPriceDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.AveragePrice') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.AveragePriceDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.AveragePrice') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.AveragePriceDetail') }}</div>-->
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.PositionMargin') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PositionMarginDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.PositionMargin') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.PositionMarginDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.Risk') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.RiskDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.Risk') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.RiskDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.LiquidationPrice') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.LiquidationPrice') }}</div>
           <div class="hint-item-info">{{ $t('Trade.Hint.LiquidationPriceDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.StopLossSetting') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.StopLossSetting') }}</div>
           <div class="hint-item-info">{{ $t('Trade.Hint.StopLossSettingDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.TakeProfitSetting') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.TakeProfitSetting') }}</div>
           <div class="hint-item-info">{{ $t('Trade.Hint.TakeProfitSettingDetail') }}</div>
         </div>
       </template>
       <template v-if="hintType === 'key2'">
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.OrderPrice') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.OrderPriceDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.CurrentOrder.Hint.OrderPrice') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.CurrentOrder.Hint.OrderPriceDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.OrderVolume') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.OrderVolumeDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.CurrentOrder.Hint.OrderVolume') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.Hint.OrderVolumeDetail') }}</div>-->
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.OrderTime') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.OrderTimeDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.CurrentOrder.Hint.OrderTime') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.Hint.OrderTimeDetail') }}</div>-->
         </div>
       </template>
       <template v-if="hintType === 'key3'">
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.PnL') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PnLDetail2') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PnLDetail3') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.PnL') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.PnLDetail2') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.PnLDetail3') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.ClosePrice') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.ClosePriceDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.ClosePrice') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.ClosePriceDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.CloseVolume') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.CloseVolumeDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.CloseVolume') }}</div>
+          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.CloseVolumeDetail') }}</div>
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.CloseAmount') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.CloseAmountDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.CloseAmount') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.CloseAmountDetail') }}</div>-->
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.TradingFee') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.TradingFeeDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.TradingFee') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.TradingFeeDetail') }}</div>-->
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.PCF') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.PCFDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.PCF') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.PCFDetail') }}</div>-->
         </div>
         <div class="hint-item">
-          <div class="hint-item-title">{{ $t('Trade.Hint.Compensation') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.Hint.CompensationDetail') }}</div>
+          <div class="hint-item-title">{{ $t('Trade.TradeHistory.Hint.Compensation') }}</div>
+<!--          <div class="hint-item-info">{{ $t('Trade.TradeHistory.Hint.CompensationDetail') }}</div>-->
         </div>
       </template>
       <template v-if="hintType === 'key4'">

@@ -6,8 +6,8 @@
         <span class="fc-65">{{$t(popupInfos[popupInfoIndex].content)}}</span>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Trade.ClosePosition.Cancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.ClosePosition.Confirm')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.CurrentOrder.CancelOrderPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.CurrentOrder.CancelOrderPopup.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -40,11 +40,11 @@ export default {
       showPopup: this.show,
       popupInfoIndex: 0,
       popupInfos: [
-        {type: CancelOrderedPositionTypeEnum.StopLossOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
-        {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
-        {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.StopLossOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
 
-        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CancelOrderPopup.CancelAllOrder', content: 'Trade.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
+        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
       ]
     }
   },

@@ -1,27 +1,27 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
+      <div class="system-popup-title">{{ $t('Trade.MyPosition.ClosePositionPopup.Close') }}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div style="margin-top: 2rem">
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.PositionHeld') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.PositionHeld') }}</div>
             <div>
               <span class="fc-85">{{position.size | fck(-8, 8)}}</span>
               <span class="fc-45">{{getPairByAddress(position.token).key}}</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.AveragePrice') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.AveragePrice') }}</div>
             <div>
               <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.CurrentPrice') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.CurrentPrice') }}</div>
             <div>
               <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
@@ -29,7 +29,7 @@
           </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">{{ $t('Trade.ClosePosition.Amount') }}</div>
+        <div class="system-popup-input-title">{{ $t('Trade.MyPosition.ClosePositionPopup.Amount') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" type="number" @input="onPositionSizeChange" v-model="value1" />
           <div class="unit">{{getPairByAddress(position.token).key}}</div>
@@ -40,16 +40,16 @@
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.ClosePosition.Cancel') }}</div>
-        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">{{ $t('Trade.ClosePosition.Confirm') }}</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.MyPosition.ClosePositionPopup.Cancel') }}</div>
+        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">{{ $t('Trade.MyPosition.ClosePositionPopup.Confirm') }}</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-  import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
-  import { UserProcessStatus } from '../../../store/modules/user'
+  import { fromContractUnit, toContractUnit } from '@/utils/contractUtil'
+  import { UserProcessStatus } from '@/store/modules/user'
   import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
@@ -157,16 +157,16 @@ export default {
         return
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
         size: toContractUnit(size)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradePendingMsg')})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       })
 
       this.close()

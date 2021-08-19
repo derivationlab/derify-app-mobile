@@ -1,8 +1,13 @@
 {
   "global": {
-    "ClickConnectWallet": "global.ClickConnectWallet",
-    "Loading": "global.Loading",
-    "NoMoreInfo": "global.NoMoreInfo"
+    "ClickConnectWallet": "连接钱包",
+    "Confirm": "确认",
+    "Loading": "加载中",
+    "NoMoreInfo": "没有更多了",
+    "NumberError": "数值有误，请重新输入",
+    "TradePendingMsg":"正在执行，请稍候",
+    "TradeSuccessMsg":"执行成功",
+    "TradeFailedMsg":"执行失败，请重试"
   },
   "lng": "zh",
   "Broker": {
@@ -346,6 +351,7 @@
         "TradePendingMsg": "正在执行，请稍候",
         "TradeSuccessMsg": "执行成功"
       },
+      "CurrentOrder": "当前委托",
       "Hint": {
         "OrderPrice": "委托价格： 此委托的目标成交价格",
         "OrderTime": "委托时间： 委托的下单时间",
@@ -379,6 +385,7 @@
         "NumberError": "执行失败，请重试",
         "OneClickClose": "一键平仓",
         "PositionHeld": "持仓量",
+        "TradeFailedMsg": "Trade.MyPosition.ClosePositionPopup.TradeFailedMsg",
         "TradePendingMsg": "正在执行，请稍候",
         "TradeSuccessMsg": "执行成功"
       },
@@ -424,7 +431,8 @@
         "TakeProfit": "止盈设置",
         "TradePendingMsg": "正在执行，请稍候",
         "TradeSuccessMsg": "执行成功"
-      }
+      },
+      "MyPosition": "我的持仓"
     },
     "OpenPosition": {
       "Hint": {
@@ -500,7 +508,8 @@
         "TradeHistory": "成交记录",
         "Type": "交易类型",
         "Volume": "成交数量"
-      }
+      },
+      "TradeHistory": "成交记录"
     },
     "Wallet": {
       "ChooseNetwork": "选择主网",

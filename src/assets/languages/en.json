@@ -140,7 +140,7 @@
         "StakingbDRF":"Staking bDRF",
         "TradeFailedMsg":"Error, please retry.",
         "TradePendingMsg":"Pending бнбн",
-        "TradeSuccessMsg":"TradeSuccessMsg",
+        "TradeSuccessMsg":"Successful",
         "bDRFAccount":"bDRF Account"
       },
       "RedeemPopup":{
@@ -340,6 +340,7 @@
         "TradePendingMsg":"Pending бнбн",
         "TradeSuccessMsg":"TradeSuccessMsg"
       },
+      "CurrentOrder": "Current Order",
       "Hint":{
         "OrderPrice":"Order Price Target execution price of this order.",
         "OrderTime":"Order Time The moment this order is placed.",
@@ -372,9 +373,7 @@
         "CurrentPrice":"Current Price",
         "NumberError":"Error, please retry.",
         "OneClickClose":"One-Click Close",
-        "PositionHeld":"Position Held",
-        "TradePendingMsg":"Pending бнбн",
-        "TradeSuccessMsg":"TradeSuccessMsg"
+        "PositionHeld":"Position Held"
       },
       "Hint":{
         "AveragePrice":"Average Price Average Opening Price for this Position",
@@ -418,7 +417,8 @@
         "TakeProfit":"Take Profit",
         "TradePendingMsg":"Pending бнбн",
         "TradeSuccessMsg":"TradeSuccessMsg"
-      }
+      },
+      "MyPosition": "My Position"
     },
     "OpenPosition":{
       "Hint":{
@@ -494,7 +494,8 @@
         "TradeHistory":"Trade History",
         "Type":"Type",
         "Volume":"Volume"
-      }
+      },
+      "TradeHistory": "Trade.TradeHistory.TradeHistory"
     },
     "Wallet":{
       "ChooseNetwork":"Choose Network",
@@ -513,9 +514,14 @@
     }
   },
   "global":{
-    "ClickConnectWallet":"Click connect wallet",
-    "Loading":"Loading",
-    "NoMoreInfo":"No more info"
+    "ClickConnectWallet": "click connect wallet",
+    "Confirm": "Confirm",
+    "Loading": "Loading",
+    "NoMoreInfo": "No more info",
+    "NumberError": "Error, please retry",
+    "TradeSuccessMsg":"Successful",
+    "TradeFailedMsg":"Error, please retry.",
+    "TradePendingMsg":"Pending бнбн"
   },
   "lng":"en"
 }

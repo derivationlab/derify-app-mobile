@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="market-popup system-popup">
-      <div class="system-popup-title">{{$t('Trade.Kline.Market')}}</div>
+      <div class="system-popup-title">{{$t('Trade.OpenPosition.Market.Market')}}</div>
       <div class="market-item"
            @click="changePair(pair)"
            :class="pair.enable ? curKey === pair.key ? 'active' : '' : 'disabled'"
