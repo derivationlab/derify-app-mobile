@@ -39,8 +39,7 @@
       <span class="unit">DUSD</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Amount')}}
-      <template v-if="type === 'deposit'">{{balanceOfWallet | fck(-8)}}</template>
-      <template v-if="type === 'withdraw'">{{balanceOfDerify | fck(-8)}}</template>DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
+      {{maxAmount}} DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
     <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
     <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
   </div>
@@ -73,6 +72,15 @@ export default {
     balanceOfDerify () {
       return this.$store.state.contract.accountData.availableMargin
     },
+    maxAmount () {
+      const {type} = this;
+
+      if(type === 'deposit'){
+        return fromContractUnit(this.balanceOfWallet)
+      }else{
+        return fromContractUnit(this.balanceOfDerify)
+      }
+    }
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
@@ -113,7 +121,7 @@ export default {
       }
     },
     deposit () {
-      if (!this.amount) {
+      if (!this.amount || this.amount <= 0) {
         this.errorNotice(this.$t('Trade.Account.AmountExceedsError'))
         return false
       }
@@ -138,7 +146,7 @@ export default {
       })
     },
     withdraw () {
-      if (!this.amount) {
+      if (!this.amount || this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
@@ -162,6 +170,11 @@ export default {
       })
     },
     formatter(value) {
+      value = value.replace(/-/g, '');
+      const maxAmount = this.maxAmount
+      if(parseInt(value) >= maxAmount) {
+        return maxAmount
+      }
       return value.replace(/-/g, '');
     }
   }

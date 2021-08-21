@@ -33,7 +33,7 @@
               <span class="fc-85">{{position.stopProfitPrice | amountFormt(2, false, '--', -8)}}</span>
             </template>
             <template #1>
-              <span class="fc-green">{{ position.profitAmount  | amountFormt(2, true, '--', -8)}}</span>
+              <span :class="position.profitAmount > 0 ? 'fc-green' : 'fc-red'">{{ position.profitAmount  | amountFormt(2, true, '--', -8)}}</span>
             </template>
           </i18n>
         </div>
@@ -50,7 +50,7 @@
               <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span>
             </template>
             <template #1>
-              <span class="fc-red">{{ position.lostAmount  | amountFormt(2, true, '--', -8)}}</span>
+              <span :class="position.lostAmount > 0 ? 'fc-green' : 'fc-red'">{{ position.lostAmount  | amountFormt(2, true, '--', -8)}}</span>
             </template>
           </i18n>
         </div>
@@ -155,12 +155,16 @@ export default {
 
       if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
         this.errorNotice(this.$t('global.NumberError'))
+      }else{
+        this.errorNotice(null)
       }
     },
     onChangeLossPrice() {
       const {position} = this;
       if(!this.checkLossPrice(position, position.stopLossPriceInput)){
         this.errorNotice(this.$t('global.NumberError'))
+      }else{
+        this.errorNotice(null)
       }
     },
     checkProfitPrice(position, profitPrice) {
@@ -173,11 +177,11 @@ export default {
         return false
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= position.averagePrice){
+      if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= parseInt(position.averagePrice)){
         return false
       }
 
-      if(position.side === SideEnum.SHORT && toContractNum(profitPrice) >= position.averagePrice){
+      if(position.side === SideEnum.SHORT && toContractNum(profitPrice) >= parseInt(position.averagePrice)){
         return false
       }
 
@@ -193,11 +197,11 @@ export default {
         return false
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(lossPrice) > position.averagePrice){
+      if(position.side === SideEnum.LONG && toContractNum(lossPrice) > parseInt(position.averagePrice)){
         return false
       }
 
-      if(position.side === SideEnum.SHORT && toContractNum(lossPrice) < position.averagePrice){
+      if(position.side === SideEnum.SHORT && toContractNum(lossPrice) < parseInt(position.averagePrice)){
         return false
       }
 
