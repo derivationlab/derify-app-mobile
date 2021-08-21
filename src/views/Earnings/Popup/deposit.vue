@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ withdrawName }}</div>
+      <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ tokenName }}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
@@ -59,13 +59,37 @@ export default {
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
       curPercent: 25,
-      withdrawName: null,
+      tokenName: null,
       accountOptions: accoutOptions
     }
   },
   computed: {
     exchangeBondSizeUpperBound () {
       return this.$store.state.earnings.exchangeBondSizeUpperBound
+    },
+    langKey () {
+      if (this.depositId === EarningType.MIN) {
+        return {}
+      } else if (this.depositId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          max: 'Rewards.Staking.PledgePopup.Max',
+          amount: 'Rewards.Staking.PledgePopup.Amount',
+          all: 'Rewards.Staking.PledgePopup.All',
+          cancel: 'Rewards.Staking.PledgePopup.Cancel',
+          confirm: 'Rewards.Staking.PledgePopup.Staking'
+        }
+      } else {
+        //BDRF
+        return {
+          title: 'Rewards.Bond.ExchangePopup.ExchangebDRF',
+          max: 'Rewards.Bond.ExchangePopup.Max',
+          amount: 'Rewards.Bond.ExchangePopup.Amount',
+          all: 'Rewards.Bond.ExchangePopup.All',
+          cancel: 'Rewards.Bond.ExchangePopup.Cancel',
+          confirm: 'Rewards.Bond.ExchangePopup.Exchange'
+        }
+      }
     }
   },
   watch: {
@@ -75,11 +99,11 @@ export default {
     },
     depositId () {
       if (this.depositId === EarningType.MIN) {
-        this.withdrawName = 'USDT'
+        this.tokenName = 'USDT'
       } else if (this.depositId === EarningType.EDRF) {
-        this.withdrawName = 'DRF'
+        this.tokenName = 'DRF'
       } else {
-        this.withdrawName = 'bDRF'
+        this.tokenName = 'bDRF'
       }
 
       this.updateAccountOptions()

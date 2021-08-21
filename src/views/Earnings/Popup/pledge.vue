@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t('Rewards.Staking.Staking')}}{{pledgeName}}</div>
+      <div class="system-popup-title">{{$t(langKey.title)}}{{pledgeName}}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
@@ -16,20 +16,20 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">{{$t('Rewards.Staking.StakAmount')}}</div>
+        <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number"
                      :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{$t('Rewards.Staking.StakMax')}}：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
-          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Staking.StakAll')}}</span>
+          <span class="popup-span1">{{$t(langKey.max)}}：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t(langKey.all)}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.StakCancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t(langKey.cancel)}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t(langKey.confirm)}}</div>
       </div>
     </div>
   </van-popup>
@@ -93,6 +93,29 @@ export default {
 
       }
       return 0
+    },
+    langKey () {
+      if(this.pledgeId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          max: 'Rewards.Staking.PledgePopup.Max',
+          amount: 'Rewards.Staking.PledgePopup.Amount',
+          all: 'Rewards.Staking.PledgePopup.All',
+          cancel: 'Rewards.Staking.PledgePopup.Cancel',
+          confirm: 'Rewards.Staking.PledgePopup.Staking'
+        }
+      }else if(this.pledgeId === EarningType.BDRF) {
+        return {
+          title: 'Rewards.Bond.PledgePopup.StakingbDRF',
+          max: 'Rewards.Bond.PledgePopup.Max',
+          amount: 'Rewards.Bond.PledgePopup.Amount',
+          all: 'Rewards.Bond.PledgePopup.All',
+          cancel: 'Rewards.Bond.PledgePopup.Cancel',
+          confirm: 'Rewards.Bond.PledgePopup.Staking'
+        }
+      }
+
+      return {title: '', max: '', amount: '', all: '', cancel: '', confirm: ''}
     }
   },
   methods: {
