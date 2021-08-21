@@ -18,7 +18,7 @@
         </div>
       </div>
         <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
-      </van-list>
+    </van-list>
   </div>
 </template>
 <script>

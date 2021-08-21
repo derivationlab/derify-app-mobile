@@ -134,7 +134,7 @@ export function toHexString (number) {
 
 export function toContractNum (number) {
   const num = (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
-  return Math.ceil(num) + ""
+  return Math.ceil(num)
 }
 
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {

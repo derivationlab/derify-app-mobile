@@ -81,7 +81,10 @@
               </div>
             </div>
             <div class="home-mid-input">
-              <van-field class="derify-input" type="number" :formatter="(value) => value.replace(/-/g, '')" v-model.number="size" @input="onPositionSizeChange"/>
+              <van-field class="derify-input" type="number" :formatter="(value) => {
+                value = value.replace(/-/g, '')
+                return value
+              }" v-model.number="size" @input="onPositionSizeChange"/>
               <van-dropdown-menu :overlay="false" class="derify-dropmenu no-border">
                 <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="unit" :options="unitConfig"  @change="unitSelectChange">
                   <div class="derify-dropmenu-title" slot="title">
@@ -209,7 +212,7 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.Risk')}}：</div>
-                          <div>{{data.marginRate | amountFormt(2, false, '--', -8)}}%</div>
+                          <div>{{data.marginRate | amountFormt(2, false, '--', -6)}}%</div>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -319,13 +322,13 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.TradFee')}}：</div>
-                          <div>{{data.trading_fee | amountFormt(2, false, '--')}} USDT</div>
+                          <div>{{-data.trading_fee | amountFormt(2, false, '--')}} USDT</div>
                         </div>
                       </div>
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.PCF')}}：</div>
-                          <div>{{data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
+                          <div>{{-data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Compensation')}}：</div>
@@ -520,7 +523,7 @@ export default {
       entrustType: 0,
       leverageUnit: 0,
       amount: fromContractUnit(this.curSpotPrice),
-      size: 0,
+      size: null,
       sliderValue: 0,
       unit: 0,
       //curTraderOpenUpperBound: {size: 0, amount: 0},
@@ -827,16 +830,16 @@ export default {
       const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
       this.unit = UnitTypeEnum.Percent
       this.size = sliderValue
-      //this.size = this.calculatePositionSize(unit, sliderValue)
     },
     calculatePositionSize (unit, sliderValue) {
 
+      let {size} = this
       const maxSize = this.getMaxSize(unit)
       if(maxSize > 0){
-        return numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
+        size =  numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
       }
 
-      return 0
+      return size
     },
     getMaxSize(unit) {
       let maxSize = 100;
@@ -876,7 +879,7 @@ export default {
       this.$store.dispatch("contract/getTraderOpenUpperBound",
         {openType, price, leverage})
         .then(traderOpenUpperBound => {
-          this.calculatePositionSize(this.sliderValue)
+          //this.calculatePositionSize(this.sliderValue)
       });
     },
     homeInit(){
@@ -903,7 +906,7 @@ export default {
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
         self.positionChangeFeeRatio = r.positionChangeFeeRatio;
-        if(self.curTraderOpenUpperBound.amount > 0) {
+        if(self.curTraderOpenUpperBound.amount > 0 && self.sliderValue > 0) {
           self.size = fromContractUnit(self.sliderValue / 100 * self.curTraderOpenUpperBound.amount, 2);
         }
 
