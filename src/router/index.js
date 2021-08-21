@@ -60,6 +60,16 @@ const routes = [
     name: 'brokerApply',
     component: () => import('@/views/Broker/apply/apply.vue')
   },
+  {
+    path: '/broker/add',
+    name: 'brokerAdd',
+    component: () => import('@/views/Broker/apply/add.vue')
+  },
+  {
+    path: '/broker/info',
+    name: 'brokerInfo',
+    component: () => import('@/views/Broker/apply/info.vue')
+  },
 ]
 
 const router = new VueRouter({
