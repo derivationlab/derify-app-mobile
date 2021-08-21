@@ -1,25 +1,33 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="ѡ�񾭼���" />
+    <navbar title="选择经济商" />
     <div class="home-mid">
       <van-list class="brokers-wrap">
         <template v-for="(broker,key) in brokers">
-          <div class="broker-info" :key="key">
-            <i class="selected-icon"></i>
+          <div :class="broker.selected ? 'broker-info active' : 'broker-info'" :key="key">
+            <i class="selected-icon" v-if="broker.selected">
+              <img src="@/assets/images/wallet/select.png" alt="" style="width: 100%;height: 100%;"/>
+            </i>
+
             <div class="broker-avatar">
-              <img :src="broker.avatar" style="width: 5rem;height: 5rem"/>
+              <img :src="broker.avatar" style="width: 5rem;height: 5rem" alt=""/>
             </div>
             <div class="broker-contact">
               <div class="broker-name">{{broker.userName}}</div>
-              <div>
+              <div class="broker-addr">
                 <p>{{broker.account}}</p>
-                <p>{{broker.address}}</p>
+                <p>{{broker.address | textwrap(36)}}</p>
               </div>
             </div>
           </div>
         </template>
       </van-list>
     </div>
+    <div class="home-last">
+      <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">I have a code ...</span></p>
+      <div class="derify-big-btn btn-yellow">提交</div>
+    </div>
+
   </div>
 </template>
 
@@ -40,7 +48,7 @@ export default {
           userName: 'Coinbaby\'s Playground',
           account: 'Coinbaby',
           accountAddress: 'http://app.derify.finance/@Coinbaby',
-          selected: false
+          selected: true
         },
         {
           id: 2,
@@ -77,22 +85,27 @@ export default {
 
 <style lang="less" scoped>
 .selected-icon{
-  background-image: url('~@/assets/images/wallet/select.png');
   width: 2rem;
   height: 2rem;
 }
+
+.page-container{
+  background: #140B32;
+}
+
 .home-mid{
-  brokers-wrap{
-    background-color: #272354;
-  }
   .broker-info{
-    margin: 0.5rem 1rem;
+    margin: 1.5rem 0;
     position: relative;
     box-sizing: content-box;
     display: flex;
-    justify-content: stretch;
-    border-radius: 1rem;
+    justify-content: space-between;
     align-items: center;
+    padding: 1.1rem;
+    border-radius: 1.8rem;
+    background-color: #272354;
+
+
     &.active{
       border: 0.1rem solid #fae247;
     }
@@ -101,29 +114,46 @@ export default {
       right: 1rem;
       top: 1rem;
     }
-    .broker-avatar img{
-      width: 5rem;
-      height: 5rem;
-      border-radius: 2.5rem;
-      margin: 2rem;
+    .broker-avatar {
+      padding: 1.1rem;
+      img{
+        width: 5.5rem;
+        height: 5.5rem;
+        border-radius: 2.5rem;
+      }
     }
-    .broker-info{
-      margin:1rem;
+
+    .broker-contact {
+      overflow: hidden;
+      overflow-wrap: break-word;
+      text-overflow: ellipsis;
+      color: rgba(255,255,255,0.45);
+      font-size: 1.3rem;
+      line-height: 1.8rem;
       .broker-name{
-        opacity: 1;
-        background: #ffffff;
-        font-size: 1rem;
-        font-weight: 700;
+        font-size: 1.7rem;
+        font-weight: Bold;
         text-align: LEFT;
         color: #ffffff;
-        line-height: 14rem;
-      }
-
-      .broker-contact{
-        color: rgba(255,255,255,0.45);
-
       }
     }
   }
 }
+
+.home-last {
+  position: fixed;
+  bottom: 1rem;
+  left: 0;
+  width: 100%;
+  align-items: center;
+  padding: 2rem;
+  p {
+    text-align: center;
+    margin: 1rem;
+    .fc-yellow{
+      border-bottom: 0.1rem solid @orange;
+    }
+  }
+}
+
 </style>

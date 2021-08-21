@@ -34,11 +34,13 @@ export default {
 <style lang="less" scoped>
 .derify-error-notice {
   line-height: 2rem;
-  border-radius: 0.6rem;
+  font-size: 1.3rem;
+  border-radius: 0.9rem;
   border: 0.1rem solid #EA446B;
   position: relative;
   color: #EA446B;
-  padding: 4px 2.5rem 4px 0.5rem;
+  background: rgba(234,68,107,0.10);
+  padding: 0.8rem;
   .error-right{
     position: absolute;
     right: 0;
