@@ -11,7 +11,7 @@
           <div class="broker-name">{{broker.userName}}</div>
           <div class="broker-addr">
             <p>{{broker.account}}</p>
-            <p>{{broker.address | textwrap(36)}}</p>
+            <p>{{broker.address | textwrap(32)}}</p>
           </div>
         </div>
         <div class="go-right-wrap"  @click="go('brokerInfo')">
@@ -119,8 +119,10 @@
           <div class="hintImg">
             <img src="@/assets/images/succFrame.png" alt="" srcset="">
           </div>
-          <div class="hintTitle">{{$t('Broker.Apply.ApplySuccessMsg')}}</div>
-          <div class="btnDiv succPopup" @click="closesuccPopup">{{$t('Broker.Apply.AddInfo')}}</div>
+          <div class="hintTitle" v-if="brokerApplied">{{$t('global.TradeSuccessMsg')}}</div>
+          <div class="hintTitle" v-else>{{$t('Broker.Apply.ApplySuccessMsg')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup" v-if="brokerApplied">{{$t('Broker.Apply.Confirm')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup" v-else>{{$t('Broker.Apply.AddInfo')}}</div>
         </div>
     </van-popup>
     <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
@@ -169,20 +171,35 @@ export default {
       showDepositPopup: false,
       showWithdrawPopup: false,
       depositErrorMsg: '',
-      accountOptions: [
-        { text: 'Derify账户', value: 0 },
-        { text: '我的钱包', value: 1 }
-      ],
+      accountOptions: this.getAccountOptions(),
     }
   },
   created () {
   },
+  watch: {
+    '$i18n.locale': {
+      handler(){
+        this.accountOptions = this.getAccountOptions()
+      }
+    }
+  },
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    brokerApplied(){
+      return !!sessionStorage.getItem('brokerApplied');
     }
   },
   methods: {
+    getAccountOptions() {
+      const accountOptions = [
+        {text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0},
+        {text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1}
+      ]
+
+      return accountOptions
+    },
     // close popup
     closeApplyPopup () {
       this.setTermPopup(true)
@@ -198,7 +215,11 @@ export default {
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
-      this.go('brokerInfo', {editAccount: false})
+
+      if(!sessionStorage.getItem('brokerApplied')) {
+        this.go('brokerInfo', {editAccount: false})
+      }
+
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool

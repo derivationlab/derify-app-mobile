@@ -177,11 +177,7 @@ export default {
         return false
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(profitPrice) <= parseInt(position.averagePrice)){
-        return false
-      }
-
-      if(position.side === SideEnum.SHORT && toContractNum(profitPrice) >= parseInt(position.averagePrice)){
+      if(position.profitAmount  <= 0 ){
         return false
       }
 
@@ -197,11 +193,7 @@ export default {
         return false
       }
 
-      if(position.side === SideEnum.LONG && toContractNum(lossPrice) > parseInt(position.averagePrice)){
-        return false
-      }
-
-      if(position.side === SideEnum.SHORT && toContractNum(lossPrice) < parseInt(position.averagePrice)){
+      if(position.lostAmount  >0 ){
         return false
       }
 
