@@ -122,7 +122,7 @@ export default {
     },
     deposit () {
       if (!this.amount || this.amount <= 0) {
-        this.errorNotice(this.$t('Trade.Account.AmountExceedsError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
 
@@ -131,16 +131,16 @@ export default {
       const amount = toContractUnit(a)
 
       if(toContractNum(this.amount) > this.balanceOfWallet) {
-        this.errorNotice(this.$t('Trade.Account.AmountExceedsError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return  false
       }
 
       const self = this
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: self.$t('Trade.Account.TradePendingMsg')});
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: self.$t('global.TradePendingMsg')});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
-        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')});
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('global.TradeSuccessMsg')});
       }).catch(e => {
-        self.$userProcessBox({status: UserProcessStatus.failed, msg: self.$t('Trade.Account.TradeFailedMsg')})
+        self.$userProcessBox({status: UserProcessStatus.failed, msg: self.$t('global.TradeFailedMsg')})
       }).finally(_ => {
         self.$router.go(-1)
       })
@@ -158,13 +158,13 @@ export default {
 
       const a = parseFloat(this.amount)
       const amount = toContractUnit(a)
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.Account.TradePendingMsg')});
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')});
 
       const self = this
       this.$store.dispatch('contract/withdrawAccount', amount).then(_ => {
-        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('Trade.Account.TradeSuccessMsg')})
+        self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('global.TradeSuccessMsg')})
       }).catch(err => {
-        self.$userProcessBox({status: UserProcessStatus.failed, msg:  self.$t('Trade.Account.TradeFailedMsg')})
+        self.$userProcessBox({status: UserProcessStatus.failed, msg:  self.$t('global.TradeFailedMsg')})
       }).finally(() => {
         self.$router.go(-1)
       })

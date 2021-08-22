@@ -1013,9 +1013,9 @@ export default {
     },
     '$i18n.locale' : function () {
       this.tabs = {
-          key1: this.$t('Trade.MyPosition.MyPosition'),
-          key2:  this.$t('Trade.CurrentOrder.CurrentOrder'),
-          key3:  this.$t('Trade.TradeHistory.TradeHistory')
+          key1: this.$t('Trade.MyPosition.List.MyPosition'),
+          key2:  this.$t('Trade.CurrentOrder.List.CurrentOrder'),
+          key3:  this.$t('Trade.TradeHistory.List.TradeHistory')
       }
 
       this.entrustTypeConfig = [
