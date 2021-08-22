@@ -2,22 +2,22 @@
   <van-popup class="wallet-popup" v-model="showPopup" @close="close">
     <div class="wallet-nav">
       <van-icon @click="close" class="wallet-nav-icon" size="2.4rem" name="arrow-left" color="rgba(255, 255, 255, .85)"></van-icon>
-      <div>{{$t('Wallet.ConnectWallet')}}</div>
+      <div>{{$t('Trade.Wallet.ConnectWallet')}}</div>
     </div>
     <div class="error-notice" v-if="showMetaMaskInstallError">
-      <span>{{$t('Wallet.NoWalletErrorMsg', [WalletEnum.MetaMask])}}</span>
+      <span>{{$t('Trade.Wallet.NoWalletErrorMsg', [WalletEnum.MetaMask])}}</span>
       <div class="error-right">
         <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showMetaMaskInstallError=false}"></van-icon>
       </div>
     </div>
     <div class="error-notice" v-if="showNetworkError">
-      <span>{{$t('Wallet.MainChainUnmatch', [mainChain.name])}}</span>
+      <span>{{$t('Trade.Wallet.MainChainUnmatch', [mainChain.name])}}</span>
       <div class="error-right">
         <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showNetworkError=false}"></van-icon>
       </div>
     </div>
     <div class="wallet-wrap">
-      <div class="wallet-wrap-title">{{$t('Wallet.ChooseNetwork')}}</div>
+      <div class="wallet-wrap-title">{{$t('Trade.Wallet.ChooseNetwork')}}</div>
       <div class="wallet-select-area">
         <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === mainChain.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="wallet-wrap">
-      <div class="wallet-wrap-title">{{$t('Wallet.ChooseWallet')}}</div>
+      <div class="wallet-wrap-title">{{$t('Trade.Wallet.ChooseWallet')}}</div>
       <div class="wallet-select-area">
         <div :class="'wallet-item ' + (selectedWallet === WalletEnum.MetaMask ? 'active' : '')"  @click="changeWallet(WalletEnum.MetaMask)">
           <img class="wallet-item-image" src="@/assets/images/wallet/mask-logo.png" alt="">

@@ -1,10 +1,10 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Trade.Account.MarginAccount')" :showGoback="true" :logo="false"/>
+    <navbar :title="$t('Trade.Account.MarginAccount.MarginAccount')" :showGoback="true" :logo="false"/>
 
     <div class="account-num">
-      <span class="num">{{$t('Trade.Account.AccountBalance')}}</span>
-      <span class="info fc-yellow" @click="lookFinDetail">{{$t('Trade.Account.BalanceHistory')}} ></span>
+      <span class="num">{{$t('Trade.Account.MarginAccount.AccountBalance')}}</span>
+      <span class="info fc-yellow" @click="lookFinDetail">{{$t('Trade.Account.MarginAccount.BalanceHistory')}} ></span>
     </div>
     <div class="account-info">
       <div class="div-unmUnit">
@@ -12,8 +12,8 @@
       </div>
     </div>
     <div class="title-div">
-      <span>{{$t('Trade.Account.MarginBalance')}}</span>
-      <span>{{$t('Trade.Account.Margin')}}</span>
+      <span>{{$t('Trade.Account.MarginAccount.MarginBalance')}}</span>
+      <span>{{$t('Trade.Account.MarginAccount.Margin')}}</span>
     </div>
     <div class="unit-tr">
       <div>
@@ -26,12 +26,11 @@
       </div>
     </div>
     <template v-if="isLogin">
-      <div class="recharge" @click="goTransfer('deposit')">{{$t('Trade.Account.Deposit')}}</div>
-      <div class="withdraw" @click="goTransfer('withdraw')">{{$t('Trade.Account.Withdraw')}}</div>
+      <div class="recharge" @click="goTransfer('deposit')">{{$t('Trade.Account.MarginAccount.Deposit')}}</div>
+      <div class="withdraw" @click="goTransfer('withdraw')">{{$t('Trade.Account.MarginAccount.Withdraw')}}</div>
     </template>
     <template v-if="!isLogin">
-      <div class="recharge" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
-      <div class="withdraw" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+      <div class="recharge" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
     </template>
   </div>
 </template>

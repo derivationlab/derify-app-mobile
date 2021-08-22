@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ tokenName }}</div>
+      <div class="system-popup-title">{{ $t(langKey.title) }}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
@@ -17,21 +17,21 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">{{ $t('Rewards.Bond.ExchangeAmount') }}</div>
+        <div class="popup-text">{{ $t(langKey.amount) }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="number" v-model="amount" @change="checkAmount"/>
-          <div class="unit">{{ withdrawName }}</div>
+          <div class="unit">{{ tokenName }}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{ $t('Rewards.Bond.ExchangeMax') }}：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
-          <span class="popup-span2" @click="exchangeAll">{{ $t('Rewards.Bond.ExchangeAll') }}</span>
+          <span class="popup-span1">{{ $t(langKey.max) }}：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
+          <span class="popup-span2" @click="exchangeAll">{{ $t(langKey.all) }}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{ $t('Rewards.Bond.StakingCancel') }}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t(langKey.cancel) }}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t(langKey.confirm) }}</div>
       </div>
     </div>
   </van-popup>
@@ -132,11 +132,11 @@ export default {
       }
 
       this.close()
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       }).finally( p => {
         this.$store.dispatch('earnings/loadEarningData')
       })
@@ -163,17 +163,16 @@ export default {
     },
 
     getAccountOptions() {
-      let accoutOptions = [{ text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      let accoutOptions = [{ text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
+        { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
 
       if (this.depositId === EarningType.MIN) {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = []
       } else if (this.depositId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = []
       } else {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = [      { text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
       }
 
       return accoutOptions

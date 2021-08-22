@@ -1,7 +1,7 @@
 <template>
   <div class=" home-container page-container">
     <van-nav-bar
-      :title="$t('Trade.Account.DetailBalancHistory')"
+      :title="$t('Trade.Account.FinanceDetail.BalanceHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -14,15 +14,15 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        :loading-text="$t('Trade.OpenPosition.Loading')"
-        :finished-text="$t('Trade.Account.NoMoreInfo')"
+        :loading-text="$t('global.Loading')"
+        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>{{$t('Trade.Account.Type')}}</div>
-        <div>{{$t('Trade.Account.Amount')}}</div>
-        <div class="center-span">{{$t('Trade.Account.Balance')}}</div>
-        <div class="center-span">{{$t('Trade.Account.Time')}}</div>
+        <div>{{$t('Trade.Account.FinanceDetail.Type')}}</div>
+        <div>{{$t('Trade.Account.FinanceDetail.Amount')}}</div>
+        <div class="center-span">{{$t('Trade.Account.FinanceDetail.Balance')}}</div>
+        <div class="center-span">{{$t('Trade.Account.FinanceDetail.Time')}}</div>
       </div>
       <div class="heard" v-for="(data, i) in list" :key="i">
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
@@ -48,16 +48,16 @@
   import { EVENT_WALLET_CHANGE } from '../../../utils/web3Utils'
 
   const feeTypeMap = {
-    0: "Trade.Account.TradeFee", //-TradingFee,
-    1: "Trade.Account.PCF", //-PositionChangeFee
-    2: "Trade.Account.Profit", //-ProfitAndLoss
-    3: "Trade.Account.RealizedPnL", //-ProfitAndLossAuto
-    4: "Trade.Account.Gas", //-GasFee
-    5: "Trade.Account.LiqCost", //-Liquidation
-    6: "Trade.Account.Compensation", //-SysCompensation
-    7: "Trade.Account.SysLoss", //-SysLossApportionment
-    100: "Trade.Account.Deposit", //-Deposit
-    101: "Trade.Account.Withdraw" //-Withdraw
+    0: "Trade.Account.FinanceDetail.TradFee", //-TradingFee,
+    1: "Trade.Account.FinanceDetail.PCF", //-PositionChangeFee
+    2: "Trade.Account.FinanceDetail.Profit", //-ProfitAndLoss
+    3: "Trade.Account.FinanceDetail.RealizedPnL", //-ProfitAndLossAuto
+    4: "Trade.Account.FinanceDetail.Gas", //-GasFee
+    5: "Trade.Account.FinanceDetail.LiqCost", //-Liquidation
+    6: "Trade.Account.FinanceDetail.Compensation", //-SysCompensation
+    7: "Trade.Account.FinanceDetail.SysLoss", //-SysLossApportionment
+    100: "Trade.Account.FinanceDetail.Deposit", //-Deposit
+    101: "Trade.Account.FinanceDetail.Withdraw" //-Withdraw
   }
 
 export default {

@@ -28,7 +28,7 @@
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
-          <i18n path="Trade.SetStopPricePopup.StopPriceProfitNotice">
+          <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceProfitNotice">
             <template #0>
               <span class="fc-85">{{position.stopProfitPrice | amountFormt(2, false, '--', -8)}}</span>
             </template>
@@ -45,7 +45,7 @@
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
-          <i18n path="Trade.SetStopPricePopup.StopPriceLossNotice">
+          <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceLossNotice">
             <template #0>
               <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span>
             </template>

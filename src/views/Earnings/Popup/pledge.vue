@@ -1,7 +1,7 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t(langKey.title)}}{{pledgeName}}</div>
+      <div class="system-popup-title">{{$t(langKey.title)}}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
@@ -177,17 +177,17 @@ export default {
 
     getAccountOptions() {
       let accoutOptions = [
-        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }
+        { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }
       ]
 
       if(this.pledgeId === EarningType.EDRF) {
         accoutOptions = [
-          { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+          { text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
         accoutOptions = [
-          { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+          { text: this.$t('Rewards.Bond.PledgePopup.StakingbDRF'), value: 0 },
+          { text: this.$t('Rewards.Bond.PledgePopup.MyWallet'), value: 1 }]
       }
 
       return accoutOptions

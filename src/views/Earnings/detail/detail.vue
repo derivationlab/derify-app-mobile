@@ -2,7 +2,7 @@
   <div class="home-container page-container">
 
     <van-nav-bar
-      :title="$t('Rewards.Bond.TransactionHistory')"
+      :title="$t('Rewards.Bond.Card.TransactionHistory')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -15,13 +15,13 @@
 
     <div class="home-top">
       <van-tabs v-model="activeName">
-        <van-tab :title="$t('Rewards.Mining.PositionMining')" name="1">
+        <van-tab :title="$t('Rewards.Mining.History.PositionMining')" name="1">
           <inven></inven>
         </van-tab>
-        <van-tab title="eDRF" name="2">
+        <van-tab :title="$t('Rewards.Staking.History.eDRF')" name="2">
           <edrf></edrf>
         </van-tab>
-         <van-tab title="bDRF" name="3">
+         <van-tab :title="$t('Rewards.Bond.History.bDRF')" name="3">
            <berf></berf>
         </van-tab>
       </van-tabs>

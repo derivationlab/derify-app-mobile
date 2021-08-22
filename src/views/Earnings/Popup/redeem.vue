@@ -2,7 +2,7 @@
 <div>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t('Rewards.Staking.Redeem')}}{{redeemName}}</div>
+      <div class="system-popup-title">{{$t(langKey.title)}}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
@@ -17,21 +17,21 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">{{$t('Rewards.Staking.RedeemAmount')}}</div>
+        <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+          <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="number" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{redeemName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{$t('Rewards.Staking.RedeemMax')}}：{{maxRedeemAmount | fck(-8,4)}} {{redeemName}}</span>
-          <span class="popup-span2" @click="redeemAll">{{$t('Rewards.Staking.RedeemAll')}}</span>
+          <span class="popup-span1">{{$t(langKey.max)}}：{{maxRedeemAmount | fck(-8,4)}} {{redeemName}}</span>
+          <span class="popup-span2" @click="redeemAll">{{$t(langKey.max)}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.RedeemCancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Redeem')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t(langKey.cancel)}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t(langKey.confirm)}}</div>
       </div>
     </div>
   </van-popup>
@@ -72,6 +72,30 @@ export default {
       }
 
       return 0
+    },
+    langKey () {
+      if (this.redeemId === EarningType.MIN) {
+        return {}
+      } else if (this.redeemId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.RedeemPopup.RedeemDRF',
+          max: 'Rewards.Staking.RedeemPopup.Max',
+          amount: 'Rewards.Staking.RedeemPopup.Amount',
+          all: 'Rewards.Staking.RedeemPopup.All',
+          cancel: 'Rewards.Staking.RedeemPopup.Cancel',
+          confirm: 'Rewards.Staking.RedeemPopup.Redeem'
+        }
+      } else {
+        //BDRF
+        return {
+          title: 'Rewards.Bond.RedeemPopup.RedeembDRF',
+          max: 'Rewards.Bond.RedeemPopup.Max',
+          amount: 'Rewards.Bond.RedeemPopup.Amount',
+          all: 'Rewards.Bond.RedeemPopup.All',
+          cancel: 'Rewards.Bond.RedeemPopup.Cancel',
+          confirm: 'Rewards.Bond.RedeemPopup.Redeem'
+        }
+      }
     }
   },
   watch: {
@@ -131,11 +155,11 @@ export default {
 
       } else if(this.redeemId === EarningType.BDRF) {
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         this.$store.dispatch("earnings/redeemBondFromBank", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         }).finally( p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
@@ -145,14 +169,14 @@ export default {
     onDropDowOpen () {
     },
     getAccountOptions() {
-      let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+      let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 1 }]
 
       if(this.redeemId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+        accoutOptions = [      { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.RedeemPopup.MyWallet'), value: 1 }]
       }else if(this.redeemId === EarningType.BDRF){
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFRedeemAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+        accoutOptions = [      { text: this.$t('Rewards.Bond.RedeemPopup.bDRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.RedeemPopup.MyWallet'), value: 1 }]
       }
 
       return accoutOptions

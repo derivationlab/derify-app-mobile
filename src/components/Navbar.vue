@@ -42,7 +42,7 @@
           </div>
           <div class="info-div">
             <div class="info-name">
-              {{$t('navbar.WalletAddress')}}
+              {{$t('Trade.navbar.WalletAddress')}}
             </div>
             <div>{{ walletAddress }}</div>
           </div>
@@ -50,8 +50,8 @@
         <div class="head-info-left" v-else>
           <div class="first-letter-wrap">C</div>
           <div class="info-div">
-            <div class="info-name">{{$t('navbar.ClickToLogin')}}</div>
-            <div>{{$t('navbar.ConnectWallet')}}</div>
+            <div class="info-name">{{$t('Trade.navbar.ClickToLogin')}}</div>
+            <div>{{$t('Trade.navbar.ConnectWallet')}}</div>
           </div>
         </div>
         <van-icon
@@ -80,7 +80,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Home") }}</div>
+          <div class="menu-list-item-name">{{ $t("Trade.navbar.Home") }}</div>
         </div>
         <div
           class="menu-list-item"
@@ -103,7 +103,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Trade") }}</div>
+          <div class="menu-list-item-name">{{ $t("Trade.navbar.Trade") }}</div>
         </div>
         <div
           class="menu-list-item"
@@ -126,7 +126,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Rewards") }}</div>
+          <div class="menu-list-item-name">{{ $t("Trade.navbar.Rewards") }}</div>
         </div>
         <div
           class="menu-list-item"
@@ -147,7 +147,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Broker") }}</div>
+          <div class="menu-list-item-name">{{ $t("Trade.navbar.Broker") }}</div>
         </div>
         <div
           class="menu-list-item"
@@ -168,7 +168,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name">{{ $t("navbar.Data") }}</div>
+          <div class="menu-list-item-name">{{ $t("Trade.navbar.Data") }}</div>
         </div>
       </div>
       <div class="language-wrap">

@@ -5,7 +5,7 @@
       {{errorMsg}}
     </DerifyErrorNotice>
     <van-nav-bar
-      :title="$t('Trade.Account.Transfers')"
+      :title="$t('Trade.Account.Transfer.Transfers')"
       left-arrow
       :border="false"
       :fixed="true"
@@ -15,19 +15,19 @@
         <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
       </template>
     </van-nav-bar>
-    <div class="from-div">{{ $t('Trade.Account.From') }}</div>
+    <div class="from-div">{{ $t('Trade.Account.Transfer.From') }}</div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.MyWallet') : $t('Trade.Account.MarginAccount')" :border='false' />
+      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.Transfer.MyWallet') : $t('Trade.Account.Transfer.MarginAccount')" :border='false' />
     </van-cell-group>
-    <div class="to-div" @click="changeType"><span class="span1">{{ $t('Trade.Account.To') }}</span>
+    <div class="to-div" @click="changeType"><span class="span1">{{ $t('Trade.Account.Transfer.To') }}</span>
       <span class="switch-updown-arrow">
         <DerifyIcon icon-name="switch-updown-arrow" color="#140B32" width="1.5rem" height="1.5rem"/>
       </span>
     </div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.MarginAccount') : $t('Trade.Account.MyWallet')" />
+      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.Transfer.MarginAccount') : $t('Trade.Account.Transfer.MyWallet')" />
     </van-cell-group>
-    <div class="num-div">{{$t('Trade.Account.Size')}}</div>
+    <div class="num-div">{{$t('Trade.Account.Transfer.Size')}}</div>
     <van-cell-group>
       <van-field
         v-model="amount"
@@ -38,10 +38,10 @@
       </van-field>
       <span class="unit">DUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Amount')}}
-      {{maxAmount}} DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.All')}}</span></div>
-    <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Deposit')}}</div>
-    <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Withdraw')}}</div>
+    <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Transfer.Size')}}
+      {{maxAmount}} DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
+    <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Transfer.Deposit')}}</div>
+    <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Transfer.Withdraw')}}</div>
   </div>
 </template>
 <script>

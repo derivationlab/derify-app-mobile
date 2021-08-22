@@ -1,25 +1,25 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t('Rewards.Mining.Withdraw')}}</div>
+      <div class="system-popup-title">{{$t(langKey.title)}}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div>
-        <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
+        <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
                      placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{$t('Rewards.Mining.WithdrawMax')}}：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
-          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Mining.WithdrawAll')}}</span>
+          <span class="popup-span1">{{$t(langKey.max)}}：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t(langKey.all)}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Mining.WithdrawCancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t(langKey.cancel)}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t(langKey.confirm)}}</div>
       </div>
     </div>
   </van-popup>
@@ -56,6 +56,37 @@ export default {
         return this.$store.state.earnings.bondInfo.bondBalance
       }
       return 0
+    },
+    langKey () {
+      if (this.withdrawId === EarningType.MIN) {
+        return {
+          title: 'Rewards.Mining.WithdrawPopup.Withdraw',
+          max: 'Rewards.Mining.WithdrawPopup.Max',
+          amount: 'Rewards.Mining.WithdrawPopup.Amount',
+          all: 'Rewards.Mining.WithdrawPopup.All',
+          cancel: 'Rewards.Mining.WithdrawPopup.Cancel',
+          confirm: 'Rewards.Mining.WithdrawPopup.Withdraw'
+        }
+      } else if (this.withdrawId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.WithdrawPopup.WithdraweDRF',
+          max: 'Rewards.Staking.WithdrawPopup.Max',
+          amount: 'Rewards.Staking.WithdrawPopup.Amount',
+          all: 'Rewards.Staking.WithdrawPopup.All',
+          cancel: 'Rewards.Staking.WithdrawPopup.Cancel',
+          confirm: 'Rewards.Staking.WithdrawPopup.Withdraw'
+        }
+      } else {
+        //BDRF
+        return {
+          title: 'Rewards.Bond.WithdrawPopup.WithdrawbDRF',
+          max: 'Rewards.Bond.WithdrawPopup.Max',
+          amount: 'Rewards.Bond.WithdrawPopup.Amount',
+          all: 'Rewards.Bond.WithdrawPopup.All',
+          cancel: 'Rewards.Bond.WithdrawPopup.Cancel',
+          confirm: 'Rewards.Bond.WithdrawPopup.Withdraw'
+        }
+      }
     }
   },
   watch: {
@@ -69,7 +100,7 @@ export default {
       if (this.withdrawId === EarningType.MIN) {
         this.withdrawName = 'USDT'
       } else if (this.withdrawId === EarningType.EDRF) {
-        this.withdrawName = 'DRF'
+        this.withdrawName = 'eDRF'
       } else if(this.withdrawId === EarningType.BDRF){
         this.withdrawName = 'bDRF'
       }

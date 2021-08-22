@@ -9,14 +9,14 @@
         <img src="@/assets/images/home/open-success.png" alt="" class="open-status-icon">
         <div class="open-status-text">{{msg}}</div>
         <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm" @click="close">{{$t('Trade.ClosePosition.Confirm')}}</div>
+          <div class="system-popup-button confirm" @click="close">{{$t('global.Confirm')}}</div>
         </div>
       </template>
       <template v-if="status === UserProcessStatus.failed">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
         <div class="open-status-text">{{msg}}</div>
         <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm" @click="close">{{$t('Trade.ClosePosition.Confirm')}}</div>
+          <div class="system-popup-button confirm" @click="close">{{$t('global.Confirm')}}</div>
         </div>
       </template>
     </div>
