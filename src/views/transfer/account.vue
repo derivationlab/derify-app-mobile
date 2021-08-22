@@ -1,17 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Trade.Account.MarginAccount')" showGoback="true" />
-    <van-nav-bar
-      :title="$t('Trade.Account.MarginAccount')"
-      left-arrow
-      :border="false"
-      :fixed="true"
-      @click-left="onClickLeft"
-    >
-      <template #left>
-        <van-icon name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
-      </template>
-    </van-nav-bar>
+    <navbar :title="$t('Trade.Account.MarginAccount')" :showGoback="true" :logo="false"/>
 
     <div class="account-num">
       <span class="num">{{$t('Trade.Account.AccountBalance')}}</span>

@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="选择经济商" />
+    <navbar title="选择经济商" :logo="false" :showGoback="true"/>
     <div class="home-mid">
       <van-list class="brokers-wrap">
         <template v-for="(broker,key) in brokers">

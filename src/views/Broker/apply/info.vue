@@ -1,6 +1,7 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="经济商信息" />
+    <navbar :title="$t('Brokers.Brokers')" :showGoback="true" :logo="false"/>
+
     <div class="home-mid">
       <div class="market-popup system-popup">
         <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
@@ -29,7 +30,7 @@
           </div>
         </div>
 
-        <div class="account-wrap">
+        <div class="account-wrap" v-if="editAccount">
 
           <div class="account-label">
             <span class="fz-15"><span class="fc-85">账户地址</span></span>
@@ -82,13 +83,16 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    editAccount () {
+      return this.$route.query.editAccount !== false
     }
   },
   methods: {
     submitThenClose () {
-      this.errorNotice("错误提示")
+      sessionStorage.setItem('brokerApplied', 'true')
+      this.$router.push({name: 'broker'})
     },
-
     errorNotice (msg) {
       if(msg){
         this.showError = true

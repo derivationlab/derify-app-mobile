@@ -1,14 +1,19 @@
 <template>
   <div class="navbar-container">
-    <van-nav-bar :title="title" :border="false" :fixed="true" v-if="!showGoback">
+    <van-nav-bar :title="title" :border="false" :fixed="true">
 
       <template #left>
-        <img
-          @click="changeShowMenu(true)"
-          src="@/assets/images/uil_bars.png"
-          alt=""
-          srcset=""
-        />
+        <template v-if="showGoback">
+          <van-icon @click="$router.go(-1)" name="arrow-left" color="rgba(255, 255, 255, .85)" size="2.4rem"></van-icon>
+        </template>
+        <template v-else>
+          <img
+            @click="changeShowMenu(true)"
+            src="@/assets/images/uil_bars.png"
+            alt=""
+            srcset=""
+          />
+        </template>
       </template>
 
       <template #title v-if="logo">
@@ -26,6 +31,7 @@
       </template>
 
     </van-nav-bar>
+
     <van-popup class="menu-popup" v-model="showMenu" position="left">
       <div class="interactive-error" v-if="loginError">{{ loginError }}</div>
       <div class="head-info" @click="$loginWallet()">

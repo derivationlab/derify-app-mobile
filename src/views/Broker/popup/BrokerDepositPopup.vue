@@ -50,7 +50,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Brokers.cancel')}}</div>
-        <div class="system-popup-button confirm" @click="close">{{$t('Brokers.affirm')}}</div>
+        <div class="system-popup-button confirm" @click="close">{{$t('Brokers.Burns')}}</div>
       </div>
     </div>
   </van-popup>
