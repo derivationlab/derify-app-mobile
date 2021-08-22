@@ -1,17 +1,17 @@
 <template v-if="show">
   <div class="home-container page-container">
-    <navbar :title="$t('data.Data')" />
+    <navbar :title="$t('Trade.navbar.Data')" />
     <div class="home-top">
       <div class="classify-div">
         <div class="div1">
-          <span class="ify-span"><span class="colory"></span> {{$t('data.TradingVolume')}}（24h）</span>
+          <span class="ify-span"><span class="colory"></span> {{$t('Data.Data.Trade.TradingVolume')}}（24h）</span>
           <div class="ify-div">
             <span class="num">123456780.12</span>
             <span class="unit">USDT</span>
           </div>
         </div>
         <div class="div1">
-          <span class="ify-span"><span class="colorb"></span>{{$t('data.TradFeeEarning')}}（24h）</span>
+          <span class="ify-span"><span class="colorb"></span>{{$t('Data.Data.Trade.TradFeeEarning')}}（24h）</span>
           <div class="ify-div">
             <span>123456780.12</span>
             <span>USDT</span>
@@ -19,7 +19,7 @@
         </div>
       </div>
       <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
-      <div style="font-weight: 700;color: rgba(255,255,255,0.85);font-size: 1.7rem;margin:2rem 0">{{ $t('data.dealingSlip') }}</div>
+      <div style="font-weight: 700;color: rgba(255,255,255,0.85);font-size: 1.7rem;margin:2rem 0">{{ $t('Data.TradeHitory.title') }}</div>
       <record></record>
     </div>
   </div>

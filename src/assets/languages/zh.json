@@ -521,6 +521,15 @@
 		"ClickConnectWallet":"连接钱包"
 	},
 	"Data":{
+		"TradeHitory":{
+			"List":{
+				"Size":"仓位",
+				"Time":"时间",
+				"TradeType":"交易类型",
+				"Contract":"合约"
+			},
+			"title":"交易记录"
+		},
 		"Data":{
 			"Trade":{
 				"All":"全部",

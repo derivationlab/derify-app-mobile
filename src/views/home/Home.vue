@@ -901,7 +901,10 @@ export default {
 
       const self = this
 
-      self.updateKLine(self.curPair.key, self.kChartTimeGap)
+      self.$store.dispatch('contract/getSpotPrice').then(() => {
+        self.updateKLine(self.curPair.key, self.kChartTimeGap)
+      });
+
 
       this.$store.dispatch('contract/loadHomeData', this.entrustType).then(r => {
 
