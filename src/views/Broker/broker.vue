@@ -80,7 +80,7 @@
 
     </div>
     <!-- apply requirements -->
-    <van-popup class="derify-popup" v-model="showApply" round :closeable="false" @close="closeApplyPopup">
+    <van-popup class="derify-popup" v-model="showApplyPopup" round :closeable="false" @close="closeApplyPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
@@ -148,8 +148,11 @@ export default {
     account
   },
   data () {
+
+    const showApply = !sessionStorage.getItem('brokerApplied')
+
     return {
-      showApplyPopup: this.$route.query.apply !== false,
+      showApplyPopup: showApply,
       termPopup: false,
       succPopup: false,
       active: '1',
@@ -177,13 +180,6 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
-    },
-    showApply () {
-      if(this.$route.query.apply === false) {
-        return false
-      }
-
-      return this.showApplyPopup
     }
   },
   methods: {

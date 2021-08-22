@@ -90,7 +90,8 @@ export default {
   },
   methods: {
     submitThenClose () {
-      this.$router.push({name: 'broker', query: {apply: false}})
+      sessionStorage.setItem('brokerApplied', 'true')
+      this.$router.push({name: 'broker'})
     },
     errorNotice (msg) {
       if(msg){
