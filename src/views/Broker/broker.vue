@@ -93,9 +93,18 @@
     <!-- requirements -->
     <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="setTermPopup(false)">
         <div class="unwind-popup system-popup">
-          <div class="system-popup-title">{{$t('Broker.Apply.ApplyBroker')}}</div>
+          <div class="system-popup-title">
+            <div class="fz-15 fc-65">
+              <i18n path="Broker.Apply.GetBrokersPrivilege">
+                <DecimalView value="60000" digit-split="," :firstStyle="{color: '#FAE247',fontSize: '3.3rem'}">
+                  <template #first="{first}"><br/><span class="fz-33 fc-yellow">{{first}}</span><br/></template>
+                  <template #last></template>
+                </DecimalView>
+              </i18n>
+            </div>
+          </div>
           <DerifyErrorNotice :show="depositErrorMsg.length > 0">{{depositErrorMsg}}</DerifyErrorNotice>
-          <div class="hint-div">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
+
           <div>
             <van-dropdown-menu :overlay="false" class="derify-dropmenus">
               <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
@@ -138,10 +147,12 @@ import DerifyPageNation from '@/components/DerifyPageNation/DerifyPageNation'
 import DerifyErrorNotice from '@/components/DerifyErrorNotice/DerifyErrorNotice'
 import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
 import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
+import DecimalView from "@/components/DecimalView/DecimalView";
 
 export default {
   name: 'Home',
   components: {
+    DecimalView,
     BrokerWithdrawPopup,
     BrokerDepositPopup,
     DerifyErrorNotice,
@@ -408,6 +419,7 @@ export default {
   font-weight: 400;
   text-align: LEFT;
   color: rgba(255,255,255,0.65);
+  margin: 1rem 0;
 }
 .hint-num{
   text-align: center;
@@ -438,8 +450,13 @@ export default {
 .succPopup{
   width: 12rem;
 }
+</style>
 
-.go-right-wrap{
-
+<style>
+.derify-dropmenus .van-dropdown-menu__bar {
+  margin-bottom: 0;
+}
+.derify-dropmenus .van-dropdown-item__content{
+  margin-top: 0;
 }
 </style>
