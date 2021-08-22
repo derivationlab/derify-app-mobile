@@ -1,6 +1,7 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="经济商信息" />
+    <navbar :title="$t('Brokers.Brokers')" :showGoback="true" :logo="false"/>
+
     <div class="home-mid">
       <div class="market-popup system-popup">
         <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
@@ -29,7 +30,7 @@
           </div>
         </div>
 
-        <div class="account-wrap">
+        <div class="account-wrap" v-if="editAccount">
 
           <div class="account-label">
             <span class="fz-15"><span class="fc-85">账户地址</span></span>
@@ -66,6 +67,7 @@ export default {
     return {
       showError: false,
       errorMsg: '',
+      editAccount: true,
       broker:{
         id: 1,
         avatar: require('@/assets/images/broker-default-avatar.png'),

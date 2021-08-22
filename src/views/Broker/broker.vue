@@ -14,7 +14,7 @@
             <p>{{broker.address | textwrap(36)}}</p>
           </div>
         </div>
-        <div class="go-right-wrap">
+        <div class="go-right-wrap"  @click="go('brokerInfo')">
           <i class="go-right-icon">
             <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
           </i>
@@ -28,7 +28,7 @@
           <span class="unit">USDT</span>
         </div>
 
-        <div class="tbtm-div fz-17" @click="setTermPopup(true)">{{$t('Brokers.Withdraw')}}</div>
+        <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Brokers.Withdraw')}}</div>
 
         <div class="income-div">
           <div class="taday-div">
@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <div class="cbtn-div fz-17 mrb-17" @click="setShowWidthdrawPopup(true)">{{$t('Brokers.Burn')}}</div>
+        <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Brokers.Burn')}}</div>
 
         <div class="explain-div">
           <div>{{$t('Brokers.Note')}}：</div>
@@ -80,13 +80,13 @@
 
     </div>
     <!-- apply requirements -->
-    <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="closeshowPopup">
+    <van-popup class="derify-popup" v-model="showApplyPopup" round :closeable="false" @close="closeApplyPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
         </div>
         <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
-        <div v-if="isLogin" class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
+        <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Brokers.ApplyPartner')}}</div>
         <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
       </div>
     </van-popup>
@@ -120,10 +120,11 @@
             <img src="@/assets/images/succFrame.png" alt="" srcset="">
           </div>
           <div class="hintTitle">{{$t('Brokers.YouPrivilege')}}</div>
-          <div class="btnDiv succPopup" @click="closesuccPopup">{{$t('Brokers.Close')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup">完善信息</div>
         </div>
     </van-popup>
-    <BrokerDepositPopup :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
+    <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
+    <BrokerWithdrawPopup :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
   </div>
 </template>
 
@@ -134,9 +135,11 @@ import account from './account/index.vue'
 import DerifyPageNation from "@/components/DerifyPageNation/DerifyPageNation";
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import BrokerDepositPopup from "@/views/Broker/popup/BrokerDepositPopup";
+import BrokerWithdrawPopup from "@/views/Broker/popup/BrokerWithdrawPopup";
 export default {
   name: 'Home',
   components: {
+    BrokerWithdrawPopup,
     BrokerDepositPopup,
     DerifyErrorNotice,
     DerifyPageNation,
@@ -146,7 +149,7 @@ export default {
   },
   data () {
     return {
-      showPopup: true,
+      showApplyPopup: true,
       termPopup: false,
       succPopup: false,
       active: '1',
@@ -160,6 +163,7 @@ export default {
         accountAddress: 'http://app.derify.finance/@Coinbaby',
         selected: true
       },
+      showDepositPopup: false,
       showWithdrawPopup: false,
       depositErrorMsg: '',
       accountOptions: [
@@ -177,23 +181,36 @@ export default {
   },
   methods: {
     // close popup
-    closeshowPopup () {
-      this.setShowWidthdrawPopup(true)
-      this.showPopup = false
+    closeApplyPopup () {
+      this.setTermPopup(true)
+      this.showApplyPopup = false
     },
     // close apply popup
     setTermPopup (bool) {
       this.termPopup = bool
+      if(!bool) {
+        this.succPopup = true
+      }
     },
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
+      this.go('brokerInfo')
+    },
+    setShowDepositPopup(bool) {
+      this.showDepositPopup = bool
+      if(!bool){
+        this.succPopup = true
+      }
     },
     setShowWidthdrawPopup(bool) {
       this.showWithdrawPopup = bool
       if(!bool){
         this.succPopup = true
       }
+    },
+    go(name){
+      this.$router.push({name})
     }
   }
 }
