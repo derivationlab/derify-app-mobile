@@ -79,12 +79,13 @@
 		},
 		"CurrentOrder":{
 			"CancelOrderPopup":{
+				"CancelOneOrder":"取消委托",
 				"CancelOneOrderInfo":"点击确定，取消该委托单",
+				"CancelAllOrder":"取消所有委托",
 				"Cancel":"取消",
 				"Confirm":"确定",
 				"TradePendingMsg":"正在执行，请稍候",
 				"TradeSuccessMsg":"执行成功",
-				"CancelAll":"取消所有委托",
 				"CloseAllOrderInfo":"点击确定，取消所有委托单",
 				"TradeFailedMsg":"执行失败，请重试"
 			},

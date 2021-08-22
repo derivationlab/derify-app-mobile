@@ -44,7 +44,7 @@ export default {
         {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
         {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
 
-        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelAll', content: 'Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
+        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
       ]
     }
   },

@@ -134,10 +134,11 @@
 import Navbar from '@/components/Navbar'
 import trader from './trader/index.vue'
 import account from './account/index.vue'
-import DerifyPageNation from "@/components/DerifyPageNation/DerifyPageNation";
-import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
-import BrokerDepositPopup from "@/views/Broker/popup/BrokerDepositPopup";
-import BrokerWithdrawPopup from "@/views/Broker/popup/BrokerWithdrawPopup";
+import DerifyPageNation from '@/components/DerifyPageNation/DerifyPageNation'
+import DerifyErrorNotice from '@/components/DerifyErrorNotice/DerifyErrorNotice'
+import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
+import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
+
 export default {
   name: 'Home',
   components: {
@@ -193,12 +194,16 @@ export default {
   },
   methods: {
     getAccountOptions() {
-      const accountOptions = [
-        {text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0},
-        {text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1}
+      return [
+        {
+          text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'),
+          value: 0
+        },
+        {
+          text: this.$t('Broker.Broker.DepositPopup.MyWallet'),
+          value: 1
+        }
       ]
-
-      return accountOptions
     },
     // close popup
     closeApplyPopup () {
