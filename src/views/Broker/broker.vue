@@ -96,7 +96,7 @@
           <div class="system-popup-title">
             <div class="fz-15 fc-65">
               <i18n path="Broker.Apply.GetBrokersPrivilege">
-                <DecimalView value="60000" digit-split="," :firstStyle="{color: '#FAE247',fontSize: '3.3rem'}">
+                <DecimalView value="60000" digit-split=",">
                   <template #first="{first}"><br/><span class="fz-33 fc-yellow">{{first}}</span><br/></template>
                   <template #last></template>
                 </DecimalView>
