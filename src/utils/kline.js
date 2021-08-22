@@ -37,7 +37,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     grid: {
       top: '0%',
       left: '0%',
-      right: '0%',
+      right: '15%',
       bottom: '10%'
     },
     dataZoom: [],
@@ -63,7 +63,8 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       max: max,
       boundaryGap: ['0%', '0%'],
       axisLabel: {
-        inside: true,
+        inside: false,
+        margin: '10',
         color: 'rgba(255,255,255,0.3)',
         showMinLabel: false,
         showMaxLabel: false,

@@ -10,7 +10,9 @@
             <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
           </div>
           <div class="home-top-num">
-            <DecimalView :value="curSpotPrice | fck(-8,2)" last-style="font-size: 1.5rem"/>
+            <span :class="curContractData.tokenPriceRate >= 0 ? 'fc-green' : 'fc-red'">
+              <DecimalView :value="curSpotPrice | fck(-8,2)" last-style="font-size: 1.5rem"/>
+            </span>
           </div>
           <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
           {{curContractData.tokenPriceRate}}%</span>
@@ -23,7 +25,7 @@
           <div class="home-top-items">
             <span class="fc-65">{{$t('Trade.OpenPosition.Kline.PCFRate')}}</span>
             <img @click="changeShowHint(true, 'key4')" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">:
-            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(2, true, 0, -8)}}%</span>
+            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(4, true, 0, -8)}}%</span>
           </div>
           <div class="home-top-items">
             <span class="fc-65">{{$t('Trade.OpenPosition.Kline.PMAPY')}}</span>
@@ -143,7 +145,6 @@
                 v-model="loading"
                 :loading-text="$t('global.Loading')"
                 :finished="finished"
-                :finished-text="$t('global.NoMoreInfo')"
                 @load="loadMore"
               >
 
@@ -179,7 +180,7 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.PositionHeld')}}：</div>
-                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                          <div>{{data.size | fck(-8, 4)}} {{getPairByAddress(data.token).key}}</div>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -270,7 +271,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.CurrentOrder.List.Volume')}}：</div>
-                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                          <div>{{data.size | fck(-8,4)}} {{getPairByAddress(data.token).key}}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.CurrentOrder.List.Time')}}：</div>
@@ -296,12 +297,13 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.RealizedPnL')}}：</div>
-                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}}</div>
+                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Type')}}：</div>
                           <div>
-                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).opType)}}</span>/<span>{{$t(getTradeType(data.type).tradeType)}}</span>
+                            <span>{{$t(getTradeType(data.type).tradeType)}}</span>
+<!--                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).opType)}}</span>/<span>{{$t(getTradeType(data.type).tradeType)}}</span>-->
                           </div>
                         </div>
                       </div>
@@ -312,7 +314,7 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Volume')}}：</div>
-                          <div>{{data.size | fck(-8)}} {{getPairByAddress(data.token).key}}</div>
+                          <div>{{data.size | fck(-8, 4)}} {{getPairByAddress(data.token).key}}</div>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -328,11 +330,11 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.PCF')}}：</div>
-                          <div>{{-data.position_change_fee  | amountFormt(2, false, '-')}} USDT</div>
+                          <div>{{-data.position_change_fee  | amountFormt(2, false, '--')}} USDT</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Compensation')}}：</div>
-                          <div>{{data.pnl_bond  | amountFormt(2, false, '--')}} bDRf</div>
+                          <div>{{data.pnl_bond  | amountFormt(2, false, '--')}} bDRF</div>
                         </div>
                       </div>
                     </div>
@@ -431,12 +433,16 @@ const context = {
 };
 
 const TradeTypeMap = {
-  0: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceTrade
-  1: {opType: 'Trade.TradeHistory.OpenMarket.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenMarket.1', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceTrade
-  2: {opType: 'Trade.TradeHistory.OpenLimit.0', showType: 'fc-green', tradeType: 'Trade.TradeHistory.OpenLimit.1', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceTrade
-  3: {opType: 'Trade.TradeHistory.CloseStopPrice.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseStopPrice.1', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossTrade
-  4: {opType: 'Trade.TradeHistory.CloseDeleverage.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseDeleverage.1', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingTrade
-  5: {opType: 'Trade.TradeHistory.CloseLiquidate.0', showType: 'fc-red', tradeType: 'Trade.TradeHistory.CloseLiquidate.1', opTypeEnum: OpTypeEnum.ClosePosition}//-MandatoryLiquidationTrade
+  0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceOpen
+  1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceOpen
+  2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceOpen
+  3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossClose
+  4: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingClose
+  5: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition},//-MandatoryLiquidationClose
+  6: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition},//-SingleClose
+  7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition},//-AllCloseHedgePart
+  8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition}//-AllCloseLeftPart
+
 }
 
 export default {
@@ -665,12 +671,12 @@ export default {
           return
         }
 
-        if(unit !== UnitTypeEnum.USDT){
+        if(unit === UnitTypeEnum.CurPair){
           if (size > fromContractUnit(this.curTraderOpenUpperBound.size)) {
             this.errorNotice(this.$t('global.NumberError'))
             return
           }
-        } else {
+        } else if(unit === UnitTypeEnum.USDT){
           if (size > fromContractUnit(this.curTraderOpenUpperBound.amount)) {
             this.errorNotice(this.$t('global.NumberError'))
             return
@@ -1240,6 +1246,7 @@ export default {
     justify-content: space-around;
     align-content: center;
     flex-wrap: nowrap;
+    margin-top: 2rem;
     .home-last-four {
       &-btn {
         width: 45%;
