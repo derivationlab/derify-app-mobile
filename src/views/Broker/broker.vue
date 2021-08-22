@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Brokers.Brokers')" />
+    <navbar :title="$t('Trade.navbar.Broker')" />
     <div class="home-top">
 
       <div class="broker-info">
@@ -22,55 +22,55 @@
       </div>
 
       <div class="market-popup">
-        <div class="account-div">{{$t('Brokers.AccBalance')}}</div>
+        <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
         <div class="num-div">
           <span class="num"> 23,456.78</span>
           <span class="unit">USDT</span>
         </div>
 
-        <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Brokers.Withdraw')}}</div>
+        <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Broker.Broker.Account.Withdraw')}}</div>
 
         <div class="income-div">
           <div class="taday-div">
             <span class="span1">24,691.34</span>
-            <span class="span2 fz-11">{{$t('Brokers.DailyEarning')}} ( USDT )</span>
+            <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
           </div>
           <div class="taday-div">
             <span class="span1">24,691.34</span>
-            <span class="span2 fz-11">{{$t('Brokers.AccumulatedEarning')}} ( USDT )</span>
+            <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
           </div>
         </div>
 
         <div class="dealer-div">
           <div class="dealer-label">
-            <span class="fz-15">{{$t('Brokers.PrivilegeValiduntil')}}</span>
-            <span class="fc-yellow fz-12">我的推荐页></span>
+            <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
+            <span class="fc-yellow fz-12">{{$t('Broker.Broker.Account.Myreferralpage')}}></span>
           </div>
           <div class="dealer-ctn">
             <span class="dealer-day-num fc-yellow">365</span>
-            <span class="fz-12 fc-45">{{$t('Brokers.Days')}}</span>
-            <span class="fz-11 fc-45">{{$t('Brokers.Until')}} 2048.12.31</span>
+            <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
+            <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [2048,12, 31])}}</span>
           </div>
         </div>
 
-        <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Brokers.Burn')}}</div>
+        <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Broker.Broker.Account.Burn')}}</div>
 
         <div class="explain-div">
-          <div>{{$t('Brokers.Note')}}：</div>
+          <div>{{$t('Broker.Broker.Account.BrokerHint')}}</div>
           <ul>
-            <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify1')}}</li>
-            <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify2')}}</li>
-            <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify3')}}</li>
-            <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify4')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail1')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail2')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail3')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail4')}}</li>
           </ul>
         </div>
       </div>
       <div class="broker-tab-wrap">
         <van-tabs v-model="active">
-          <van-tab :title="$t('Brokers.AccountHistory')">
+          <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
             <trader></trader>
           </van-tab>
-          <van-tab :title="$t('Brokers.TraderInfo')">
+          <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
             <account></account>
           </van-tab>
         </van-tabs>
@@ -85,17 +85,17 @@
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
         </div>
-        <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
-        <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Brokers.ApplyPartner')}}</div>
+        <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
+        <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
         <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
       </div>
     </van-popup>
     <!-- requirements -->
     <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="setTermPopup(false)">
         <div class="unwind-popup system-popup">
-          <div class="system-popup-title">燃烧</div>
+          <div class="system-popup-title">{{$t('Broker.Apply.ApplyBroker')}}</div>
           <DerifyErrorNotice :show="depositErrorMsg.length > 0">{{depositErrorMsg}}</DerifyErrorNotice>
-          <div class="hint-div">{{$t('Brokers.BurnEDRF')}}</div>
+          <div class="hint-div">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
           <div>
             <van-dropdown-menu :overlay="false" class="derify-dropmenus">
               <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
@@ -106,10 +106,10 @@
               </van-dropdown-item>
             </van-dropdown-menu>
           </div>
-          <div class="balance-div">{{$t('Brokers.Balances')}}：1234567.00000000 eDRF</div>
+          <div class="balance-div">{{$t('Broker.Apply.AccountBalance')}}：1234567.00000000 eDRF</div>
           <div class="system-popup-buttons">
-            <div class="system-popup-button cancel" @click="setTermPopup(false)">{{$t('Brokers.cancel')}}</div>
-            <div class="system-popup-button confirm" @click="setTermPopup(false)">{{$t('Brokers.affirm')}}</div>
+            <div class="system-popup-button cancel" @click="setTermPopup(false)">{{$t('Broker.Apply.Cancel')}}</div>
+            <div class="system-popup-button confirm" @click="setTermPopup(false)">{{$t('Broker.Apply.Confirm')}}</div>
           </div>
         </div>
     </van-popup>
@@ -119,8 +119,8 @@
           <div class="hintImg">
             <img src="@/assets/images/succFrame.png" alt="" srcset="">
           </div>
-          <div class="hintTitle">{{$t('Brokers.YouPrivilege')}}</div>
-          <div class="btnDiv succPopup" @click="closesuccPopup">完善信息</div>
+          <div class="hintTitle">{{$t('Broker.Apply.ApplySuccessMsg')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup">{{$t('Broker.Apply.AddInfo')}}</div>
         </div>
     </van-popup>
     <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>

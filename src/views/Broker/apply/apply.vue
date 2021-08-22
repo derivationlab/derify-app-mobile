@@ -25,7 +25,7 @@
     </div>
     <div class="home-last">
       <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">I have a code ...</span></p>
-      <div class="derify-big-btn btn-yellow">提交</div>
+      <div class="derify-big-btn btn-yellow">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
     </div>
 
   </div>

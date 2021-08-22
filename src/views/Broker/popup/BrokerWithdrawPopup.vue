@@ -1,25 +1,25 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t('Rewards.Mining.Withdraw')}}</div>
+      <div class="system-popup-title">{{$t('Broker.Broker.WithdrawPopup.Title')}}</div>
       <DerifyErrorNotice @close="errorNotice" :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div>
-        <div class="popup-text">{{$t('Rewards.Mining.WithdrawAmount')}}</div>
+        <div class="popup-text">{{$t('Broker.Broker.WithdrawPopup.Amount')}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
                      placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{$t('Rewards.Mining.WithdrawMax')}}：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
-          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Mining.WithdrawAll')}}</span>
+          <span class="popup-span1">{{$t('Broker.Broker.WithdrawPopup.Max')}}：{{maxAmout|fck(-8)}} {{withdrawName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t('Broker.Broker.WithdrawPopup.All')}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Mining.WithdrawCancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Mining.Withdraw')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Broker.Broker.WithdrawPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Broker.Broker.WithdrawPopup.Withdraw')}}</div>
       </div>
     </div>
   </van-popup>
@@ -92,26 +92,26 @@ export default {
     },
     checkAmount () {
       if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
-        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
       return true
     },
     submitThenClose () {
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('Rewards.Mining.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
       if(this.withdrawId === EarningType.MIN) {
 
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //position mining
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         }).finally( p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
@@ -121,12 +121,12 @@ export default {
 
       if(this.withdrawId === EarningType.EDRF) {
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         }).finally( p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
@@ -137,11 +137,11 @@ export default {
       if(this.withdrawId === EarningType.BDRF) {
         this.close()
         //bDRF
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         }).finally( p => {
           this.$store.dispatch('earnings/loadEarningData')
         })

@@ -25,6 +25,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
   return {
     darkMode: true,
     tooltip: {
+      show: false,
       trigger: 'axis',
       axisPointer: {
         type: 'cross'

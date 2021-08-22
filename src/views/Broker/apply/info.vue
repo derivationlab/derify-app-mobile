@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Brokers.Brokers')" :showGoback="true" :logo="false"/>
+    <navbar :title="$t('Broker.Broker.InfoEdit.Title')" :showGoback="true" :logo="false"/>
 
     <div class="home-mid">
       <div class="market-popup system-popup">
@@ -9,21 +9,21 @@
         </DerifyErrorNotice>
 
         <div class="system-popup-line system-popup-input">
-          <span class="fz-15"><span class="fc-85">地址</span></span>
+          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.WalletAddress') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="text" value="0x8503ea9b"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
-          <span class="fz-15"><span class="fc-85">姓名</span></span>
+          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="text" value="Coinbaby's Playground"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
-          <span class="fz-15"><span class="fc-85">头像</span></span>
+          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
             <input type="file" class="broker-avatar-file"/>
             <img :src="broker.avatar" style="width: 5.5rem;height: 5.5rem" alt=""/>
@@ -33,7 +33,7 @@
         <div class="account-wrap" v-if="editAccount">
 
           <div class="account-label">
-            <span class="fz-15"><span class="fc-85">账户地址</span></span>
+            <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
             <span class="fz-15 fc-85">coinbaby</span>
           </div>
 
@@ -46,7 +46,7 @@
         </div>
 
         <div class="btn-wrap">
-          <div class="derify-big-btn btn-yellow" @click="submitThenClose">提交</div>
+          <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
         </div>
       </div>
     </div>

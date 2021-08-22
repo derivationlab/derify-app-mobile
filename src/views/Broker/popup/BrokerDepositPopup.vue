@@ -1,14 +1,14 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">燃烧</div>
+      <div class="system-popup-title">{{ $t('Broker.Broker.DepositPopup.Burn') }}</div>
       <DerifyErrorNotice :show="showError">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div class="system-popup-info">
         <div class="system-popup-line">
           <div class="system-popup-label fz-15">
-            <div class="fc-45">当前余额</div>
+            <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.Balance') }}</div>
             <div>
               <span class="fc-85">1.234567890</span>
               <span class="fc-45">eDRF</span>
@@ -17,7 +17,7 @@
         </div>
         <div class="system-popup-line">
           <div class="system-popup-label">
-            <div class="fc-45">单价</div>
+            <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.UnitPrice') }}</div>
             <div>
               <span class="fc-85">600.00</span>
               <span class="fc-45">eDRF</span>
@@ -39,7 +39,15 @@
         </div>
 
         <div class="system-popup-line">
-          <div class="system-popup-label  fz-12"><span class="fc-45">燃烧数量</span> <span class="fc-80">有效期<span class="fc-yellow">+20</span>天</span></div>
+          <div class="system-popup-label  fz-12"><span class="fc-45">{{ $t('Broker.Broker.DepositPopup.BurnAmount') }}</span>
+            <span class="fc-80">
+              <i18n path="Broker.Broker.DepositPopup.ValidPeriod">
+                <template #0>
+                  <span class="fc-yellow">20</span>
+                </template>
+              </i18n>
+            </span>
+          </div>
           <div class="system-popup-input">
             <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
                        :formatter="(value) => value.replace(/-/g, '')"
@@ -49,8 +57,8 @@
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Brokers.cancel')}}</div>
-        <div class="system-popup-button confirm" @click="close">{{$t('Brokers.Burns')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Broker.Broker.DepositPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="close">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
       </div>
     </div>
   </van-popup>
