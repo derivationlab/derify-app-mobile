@@ -325,7 +325,7 @@
 			"ApplyBroker":"申请成为经纪商",
 			"Confirm":"确认",
 			"MyWallet":"我的钱包",
-			"GetBrokersPrivilege":"您需要燃烧60000个eDRF以成为经纪商",
+			"GetBrokersPrivilege":"您需要燃烧{0}个eDRF以成为经纪商",
 			"AddInfo":"完善信息",
 			"AccountBalance":"可用余额",
 			"TradePendingMsg":"正在执行，请稍候",

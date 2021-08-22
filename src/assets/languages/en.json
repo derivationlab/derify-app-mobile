@@ -325,7 +325,7 @@
 			"ApplyBroker":"Apply to be Broker",
 			"Confirm":"Confirm",
 			"MyWallet":"My Wallet",
-			"GetBrokersPrivilege":"Burn 60,000 eDRF to get Brokers Privilege",
+			"GetBrokersPrivilege":"Burn {0} eDRF to get Brokers Privilege",
 			"AddInfo":"Add Info",
 			"AccountBalance":"Account Balance",
 			"TradePendingMsg":"Pending ……",

@@ -1,7 +1,7 @@
 <template>
   <span :style="wrapStyle">
-    <slot name="first" v-bind:value="first"><span :style="firstStyle">{{first}}</span></slot>
-    <slot name="last" v-bind:value="last"><span :style="lastStyle">{{last}}</span></slot>
+    <slot name="first" :first="first"><span :style="firstStyle">{{first}}</span></slot>
+    <slot name="last" :last="last"><span :style="lastStyle">{{last}}</span></slot>
   </span>
 </template>
 <script>
@@ -31,7 +31,7 @@ export default {
   computed:{
     first () {
       const numStr = this.value + ''
-      let first = numStr.substring(0, numStr.indexOf("."))
+      let first = numStr.indexOf('.') > -1 ? numStr.substring(0, numStr.indexOf(".")) : numStr
       if(this.digitSplit) {
         let nums = []
         let splits = first.split('')
@@ -44,10 +44,15 @@ export default {
     },
     last (){
       const numStr = (this.value + '')
+
+      if(numStr.indexOf('.') === -1) {
+        return ''
+      }
+
       return numStr.substring(numStr.indexOf("."))
     },
     spliter () {
-      return digitSplit
+      return this.digitSplit
     }
   }
 }
