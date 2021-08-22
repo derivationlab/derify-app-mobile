@@ -67,7 +67,6 @@ export default {
     return {
       showError: false,
       errorMsg: '',
-      editAccount: true,
       broker:{
         id: 1,
         avatar: require('@/assets/images/broker-default-avatar.png'),
@@ -84,13 +83,15 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    editAccount () {
+      return this.$route.query.editAccount !== false
     }
   },
   methods: {
     submitThenClose () {
-      this.errorNotice("错误提示")
+      this.$router.push({name: 'broker', query: {apply: false}})
     },
-
     errorNotice (msg) {
       if(msg){
         this.showError = true

@@ -80,7 +80,7 @@
 
     </div>
     <!-- apply requirements -->
-    <van-popup class="derify-popup" v-model="showApplyPopup" round :closeable="false" @close="closeApplyPopup">
+    <van-popup class="derify-popup" v-model="showApply" round :closeable="false" @close="closeApplyPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
@@ -149,7 +149,7 @@ export default {
   },
   data () {
     return {
-      showApplyPopup: true,
+      showApplyPopup: this.$route.query.apply !== false,
       termPopup: false,
       succPopup: false,
       active: '1',
@@ -177,6 +177,13 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    showApply () {
+      if(this.$route.query.apply === false) {
+        return false
+      }
+
+      return this.showApplyPopup
     }
   },
   methods: {
@@ -195,7 +202,7 @@ export default {
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
-      this.go('brokerInfo')
+      this.go('brokerInfo', {editAccount: false})
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
@@ -209,8 +216,8 @@ export default {
         this.succPopup = true
       }
     },
-    go(name){
-      this.$router.push({name})
+    go(name, query = {}){
+      this.$router.push({name, query})
     }
   }
 }
