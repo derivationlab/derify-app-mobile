@@ -899,6 +899,7 @@ export default {
         context.tokenMiningRateEvent = null
       }
 
+      this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: '--', shortPmrRate: '--'})
       context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
         //update mining fee
         //{"longPmrRate":0,"shortPmrRate":0}
