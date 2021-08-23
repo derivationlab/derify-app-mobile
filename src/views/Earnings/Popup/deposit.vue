@@ -19,7 +19,7 @@
         </div>
         <div class="popup-text">{{ $t(langKey.amount) }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+          <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="number" v-model="amount" @change="checkAmount"/>
           <div class="unit">{{ tokenName }}</div>

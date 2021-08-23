@@ -49,7 +49,7 @@
             </span>
           </div>
           <div class="system-popup-input">
-            <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8"
+            <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                        :formatter="(value) => value.replace(/-/g, '')"
                        type="number" v-model="amount"/>
             <div class="unit">eDRF</div>

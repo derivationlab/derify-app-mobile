@@ -26,7 +26,7 @@
         </div>
         <div class="system-popup-num">
           <span class="popup-span1">{{$t(langKey.max)}}：{{maxRedeemAmount | fck(-8,4)}} {{redeemName}}</span>
-          <span class="popup-span2" @click="redeemAll">{{$t(langKey.max)}}</span>
+          <span class="popup-span2" @click="redeemAll">{{$t(langKey.all)}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">

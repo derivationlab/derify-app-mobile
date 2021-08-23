@@ -18,7 +18,7 @@
         </div>
         <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number"
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="" type="number"
                      :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
@@ -186,7 +186,7 @@ export default {
           { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
         accoutOptions = [
-          { text: this.$t('Rewards.Bond.PledgePopup.StakingbDRF'), value: 0 },
+          { text: this.$t('Rewards.Bond.PledgePopup.bDRFAccount'), value: 0 },
           { text: this.$t('Rewards.Bond.PledgePopup.MyWallet'), value: 1 }]
       }
 

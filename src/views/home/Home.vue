@@ -25,7 +25,7 @@
           <div class="home-top-items">
             <span class="fc-65">{{$t('Trade.OpenPosition.Kline.PCFRate')}}</span>
             <img @click="changeShowHint(true, 'key4')" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">:
-            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(4, true, 0, -8)}}%</span>
+            <span :class="curPositionChangeFeeRatio > 0 ? 'fc-green' : 'fc-red'">{{curPositionChangeFeeRatio | amountFormt(4, true, 0, -6)}}%</span>
           </div>
           <div class="home-top-items">
             <span class="fc-65">{{$t('Trade.OpenPosition.Kline.PMAPY')}}</span>
@@ -176,7 +176,7 @@
                           <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
                             {{data.unrealizedPnl | amountFormt(2, true, '--', -8)}}
                           </div>
-                          <div>USDT<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -8)}}%)</span></template></div>
+                          <div>USDT<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -6)}}%)</span></template></div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.PositionHeld')}}：</div>
