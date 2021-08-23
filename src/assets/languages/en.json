@@ -2,12 +2,19 @@
 	"Trade":{
 		"TradeHistory":{
 			"Hint":{
-				"PCF":"PCF PCF rewards (positive) or payment (negative) when you open/close your position.",
-				"Compensation":"Compensation Your profit paid in bDRF.",
-				"OrderVolume":"Amount Amount = Price * Volume",
-				"OrderPrice":"Price The price when you open/close your position.",
-				"TradingFee":"Trading Fees Trading Fees when you open/close position.",
-				"PnL":"PnL Long position PnL = (Close Price - Open Price) * Amount Short position PnL = (Open Price - Close Price) * Amount"
+				"CompensationDetail":"Your profit paid in bDRF.",
+				"OrderVolume":"Volume",
+				"OrderPrice":"Amount",
+				"PnL":"PnL",
+				"PCFDetail":"PCF rewards (positive) or payment (negative) when you open/close your position.",
+				"PCF":"PCF",
+				"OrderPriceDetail":"Amount = Price * Volume",
+				"OrderVolumeDetail":"The volume of asset this order be opened/closed",
+				"PnLDetail2":"Short position PnL = (Open Price - Close Price) * Amount",
+				"Compensation":"Compensation",
+				"PnLDetail1":"Long position PnL = (Close Price - Open Price) * Amount",
+				"TradingFee":"Trading Fees",
+				"TradingFeeDetail":"Trading Fees when you open/close position."
 			},
 			"List":{
 				"CloseTPSL":"Close / TPSL",
@@ -90,9 +97,12 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"Hint":{
-				"OrderTime":"Order Time The moment this order is placed.",
-				"OrderVolume":"Order Volume The volume of asset this order will be trading.",
-				"OrderPrice":"Order Price Target execution price of this order."
+				"OrderTime":"Order Time",
+				"OrderPriceDetail":"Target execution price of this order.",
+				"OrderVolumeDetail":"The volume of asset this order will be trading.",
+				"OrderVolume":"Order Volume",
+				"OrderPrice":"Order Price",
+				"OrderTimeDetail":"The moment this order is placed."
 			},
 			"List":{
 				"CurrentOrder":"Current Order",
@@ -161,15 +171,25 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"Hint":{
-				"PositionHeld":"Position Held Position Held in this Derivative",
-				"CurrentPrice":"Current Price Current Derivative Price of the Platform",
-				"PositionMargin":"Position Margin Used Position Margin = Position Held/Leverage",
-				"TakeProfitSetting":"Take Profit Setting When the TP price is reached, system will be automatically close your position to realize your current profit.",
-				"UnrealizedPnL":"Unrealized PnL Unrealized P&L of Long Position = (Current Derivative Price – Average Position Price) * Position Held Unrealized P&L of Short Position = (Average Position Price - Current Derivative Price) * Position Held",
-				"Risk":"Risk Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules click here>>",
-				"AveragePrice":"Average Price Average Opening Price for this Position",
-				"LiquidationPrice":"Liquidation Price This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. Know more>>",
-				"StopLossSetting":"Stop Loss Setting When the SL price is reached, system will be automatically close your position to prevent further loss."
+				"StopLossSettingDetail":"When the SL price is reached, system will be automatically close your position to prevent further loss.",
+				"UnrealizedPnLDetail2":"Unrealized P&L of Short Position = (Average Position Price - Current Derivative Price) * Position Held",
+				"PositionMargin":"Position Margin",
+				"TakeProfitSetting":"Take Profit Setting",
+				"TakeProfitSettingDetail":"When the TP price is reached, system will be automatically close your position to realize your current profit.",
+				"UnrealizedPnLDetail1":"Unrealized P&L of Long Position = (Current Derivative Price – Average Position Price) * Position Held",
+				"UnrealizedPnL":"Unrealized PnL",
+				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules click here>>",
+				"PositionMarginDetail":"Used Position Margin = Position Held/Leverage",
+				"Risk":"Risk",
+				"AveragePrice":"Average Price",
+				"LiquidationPrice":"Liquidation Price",
+				"StopLossSetting":"Stop Loss Setting",
+				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. Know more>>",
+				"PositionHeld":"Position Held",
+				"CurrentPrice":"Current Price",
+				"AveragePriceDetail":"Average Opening Price for this Position",
+				"CurrentPriceDetail":"Current Derivative Price of the Platform",
+				"PositionHeldDetail":"Position Held in this Derivative"
 			},
 			"SetStopPricePopup":{
 				"Cancel":"Cancel",
@@ -225,8 +245,10 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"Hint":{
-				"PositionMiningAPY":"Position Mining APY The higher the leverage of positions, the higher the APY of position mining will be. Mining rules click here.",
-				"PCFRate":"PCF Rate Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules click here."
+				"PositionMiningAPY":"Position Mining APY",
+				"PositionMiningAPYDetail":"The higher the leverage of positions, the higher the APY of position mining will be. Mining rules click here.",
+				"PCFRate":"PCF Rate",
+				"PCFRateDetail":"Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules click here."
 			},
 			"Kline":{
 				"PMAPY":"PM APY",

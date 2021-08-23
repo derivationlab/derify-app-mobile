@@ -62,7 +62,7 @@ function isProxyPropertyKey(key) {
     return false
   }
 
-  if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables'.indexOf(key) > -1){
+  if('getTraderVariables,getTraderPositionVariables'.indexOf(key) > -1){
     return false
   }
 

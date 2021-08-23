@@ -43,6 +43,7 @@ export default {
 
       this.$store.dispatch('contract/closeAllPositions').then((r) => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
         this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       });

@@ -43,7 +43,7 @@ export default {
       amount: 0,
       //maxAmout: 10*1e8,
       curPercent: 25,
-      withdrawName: 'eDRF'
+      withdrawName: 'USDT'
     }
   },
   computed: {
@@ -63,15 +63,6 @@ export default {
       this.showPopup = this.show
       if(this.show) {
         this.amount = 0
-      }
-    },
-    withdrawId () {
-      if (this.withdrawId === EarningType.MIN) {
-        this.withdrawName = 'USDT'
-      } else if (this.withdrawId === EarningType.EDRF) {
-        this.withdrawName = 'DRF'
-      } else if(this.withdrawId === EarningType.BDRF){
-        this.withdrawName = 'bDRF'
       }
     }
   },

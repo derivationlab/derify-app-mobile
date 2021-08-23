@@ -106,7 +106,7 @@
             <div class="home-mid-four-btn yellow-gra" @click="changeShowOpen(true, 2)">{{$t('Trade.OpenPosition.OpenPage.TwoWay')}}</div>
           </div>
           <div class="home-mid-four" v-if="!isLogin">
-            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+            <div class="home-mid-four-btn yellow-gra" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
           </div>
         </div>
       </template>
@@ -314,7 +314,7 @@
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Volume')}}：</div>
-                          <div>{{data.size | fck(-8, 4)}} {{getPairByAddress(data.token).key}}</div>
+                          <div>{{data.size | amountFormt(4, false, '--')}} {{getPairByAddress(data.token).key}}</div>
                         </div>
                       </div>
                       <div class="exchange-item">

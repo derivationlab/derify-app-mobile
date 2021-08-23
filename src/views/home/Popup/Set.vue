@@ -24,7 +24,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeProfitPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
+          <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" @change="checkPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
@@ -41,7 +41,7 @@
       <div class="system-popup-input-block">
         <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" :formatter="(value) => value.replace(/-/g, '')" @change="onChangeLossPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
+          <van-field class="derify-input no-padding-hor" :formatter="(value) => value.replace(/-/g, '')" @change="checkPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
           <div class="unit">USDT</div>
         </div>
         <div class="system-popup-input-hint">
@@ -149,19 +149,11 @@ export default {
 
       this.calLossAndProfit();
     },
-
-    onChangeProfitPrice() {
-      const {position} = this;
-
-      if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
-        this.errorNotice(this.$t('global.NumberError'))
-      }else{
-        this.errorNotice(null)
-      }
-    },
-    onChangeLossPrice() {
+    checkPrice() {
       const {position} = this;
       if(!this.checkLossPrice(position, position.stopLossPriceInput)){
+        this.errorNotice(this.$t('global.NumberError'))
+      }else if(!this.checkProfitPrice(position, position.stopProfitPriceInput)){
         this.errorNotice(this.$t('global.NumberError'))
       }else{
         this.errorNotice(null)
@@ -201,14 +193,14 @@ export default {
     },
     calLossAndProfit(){
       if(this.position.stopProfitPrice > 0) {
-        this.position.profitAmount = (fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
-          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+        this.position.profitAmount = toContractNum((fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1))
 
       }
 
       if(this.position.stopLossPrice > 0) {
-        this.position.lostAmount = (fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
-          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1)
+        this.position.lostAmount = toContractNum((fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
+          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1))
       }
 
     },
@@ -241,6 +233,7 @@ export default {
           token, side, closeType: CancelOrderedPositionTypeEnum.StopProfitAndLossOrder
         }).then(_ => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+          this.$store.dispatch('contract/loadPositionData').then(r => {})
         }).catch(msg => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         })

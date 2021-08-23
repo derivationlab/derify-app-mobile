@@ -81,12 +81,13 @@ export default {
 
       const param = {...this.extraData, closeType: closePositionOrderType}
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/' + action, param).then((r) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       });
 
       this.close();

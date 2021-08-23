@@ -27,7 +27,7 @@
               <span class="fz-13" @click="withdraw(true, EarningType.MIN)">{{ $t('Rewards.Mining.Card.Withdraw') }}</span>
             </template>
             <template v-else>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </template>
           </div>
         </div>
@@ -70,7 +70,7 @@
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </div>
           </template>
         </div>
@@ -117,7 +117,7 @@
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </div>
           </template>
         </div>

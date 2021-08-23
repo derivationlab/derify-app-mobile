@@ -88,22 +88,24 @@ export default {
     }
   },
   data () {
-    console.log(this.show)
+
     return {
       showError: false,
       errorMsg: '',
       accountType: 0,
       amount: 1200.00,
-      accountOptions: [
-        { text: 'Derify账户', value: 0 },
-        { text: '我的钱包', value: 1 }
-      ],
+      accountOptions: this.getAccountOptions(),
       showPopup: this.show
     }
   },
   watch: {
     show() {
       this.showPopup = this.show
+    },
+    '$i18n.locale':{
+      handler(){
+        this.accountOptions = this.getAccountOptions()
+      }
     }
   },
   computed: {
@@ -115,6 +117,12 @@ export default {
     },
     submitThenClose () {
 
+    },
+    getAccountOptions() {
+      return [
+        { text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0 },
+        { text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1 }
+      ]
     }
   }
 }

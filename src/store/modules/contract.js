@@ -110,8 +110,8 @@ const mutations = {
     state.accountData = Object.assign(state.accountData, accountData)
   },
   RESET_POSITION_DATA (state) {
-    state.positionData.positions.splice(0, state.positionData.positions.length)
-    state.positionData.orderPositions.splice(0, state.positionData.orderPositions.length)
+    state.positionData.positions.splice(0)
+    state.positionData.orderPositions.splice(0)
   },
   ADD_POSITION_DATA (state, {positionData, pair}) {
     if(!positionData) {
@@ -163,6 +163,9 @@ const mutations = {
   },
   SET_LIMIT_POSITION_DATA (state, positionData) {
     state.limitPositionData = positionData
+  },
+  SET_POSITION_DATA (state, positionData) {
+    state.positionData = positionData
   }
 
 }
@@ -494,29 +497,29 @@ const actions = {
     }())
   },
   loadPositionData ({state, commit}) {
-    return new Promise((resolve, reject) => {
+    return (async () => {
       if(!state.wallet_address){
         return {}
       }
 
       const contract = web3Utils.contract(state.wallet_address)
 
-      state.pairs.forEach((pair) => {
-
-        const pairItem = pair
+      const positionDatas = []
+      for(let idx = 0; idx < state.pairs.length; idx++) {
+        const pairItem = state.pairs[idx]
         if(!pairItem.enable){
-          return
+          continue
         }
 
-        contract.getTraderAllPosition(state.wallet_address, pairItem.address).then((positionData) => {
-          commit('ADD_POSITION_DATA', {positionData, pair: pairItem})
+        positionDatas.push({positionData: await contract.getTraderAllPosition(state.wallet_address, pairItem.address), pair: pairItem})
+      }
 
-          resolve(state.positionData)
-        }).catch(() => {
-          reject()
-        })
+      commit('RESET_POSITION_DATA')
+      positionDatas.forEach((positionData) => {
+        commit('ADD_POSITION_DATA', {...positionData})
       })
-    })
+
+    })()
   },
   loadTradeRecords ({state, commit}) {
     return getTradeList(state.wallet_address)
