@@ -302,8 +302,7 @@
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Type')}}：</div>
                           <div>
-                            <span>{{$t(getTradeType(data.type).tradeType)}}</span>
-<!--                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).opType)}}</span>/<span>{{$t(getTradeType(data.type).tradeType)}}</span>-->
+                            <span :class="getTradeType(data.type).showType">{{$t(getTradeType(data.type).tradeType + "1")}}</span><span>{{$t(getTradeType(data.type).tradeType + "2")}}</span>
                           </div>
                         </div>
                       </div>
@@ -433,15 +432,15 @@ const context = {
 };
 
 const TradeTypeMap = {
-  0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition},//-MarketPriceOpen
-  1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition},//-HedgeMarketPriceOpen
-  2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition},//-LimitPriceOpen
-  3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition},//-StopProfitStopLossClose
-  4: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition},//-AutoDeleveragingClose
-  5: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition},//-MandatoryLiquidationClose
-  6: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition},//-SingleClose
-  7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition},//-AllCloseHedgePart
-  8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition}//-AllCloseLeftPart
+  0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'fc-green'},//-MarketPriceOpen
+  1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'fc-green'},//-HedgeMarketPriceOpen
+  2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'fc-green'},//-LimitPriceOpen
+  3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'},//-StopProfitStopLossClose
+  4: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'},//-AutoDeleveragingClose
+  5: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'},//-MandatoryLiquidationClose
+  6: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'},//-SingleClose
+  7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'},//-AllCloseHedgePart
+  8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'fc-red'}//-AllCloseLeftPart
 
 }
 
