@@ -64,7 +64,10 @@
               <van-field class="derify-input" type="text" input-align="center" disabled :value="$t('Trade.OpenPosition.OpenPage.MarketPrice')" />
             </div>
             <div class="home-mid-input" v-else>
-              <van-field class="derify-input" type="text" v-model.number="amount" @change="updateTraderOpenUpperBound"/>
+              <van-field class="derify-input" type="text" v-model.number="amount" :formatter="(value) => {
+                value = value.replace(/-/g, '')
+                return value
+              }" @change="updateTraderOpenUpperBound"/>
               <div class="fc-30">USDT</div>
             </div>
           </div>
