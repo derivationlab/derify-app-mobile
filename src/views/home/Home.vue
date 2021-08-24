@@ -877,6 +877,7 @@ export default {
       }
 
       if(amount <= 0) {
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
