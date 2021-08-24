@@ -497,6 +497,7 @@
 				"Type4":"TransferToBank",
 				"Type5":"Interest",
 				"Withdraw":"Withdraw",
+				"Amount":"Amount",
 				"Time":"Time",
 				"Stakinginterest":"Staking interest",
 				"Type0":"Income",

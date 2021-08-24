@@ -497,6 +497,7 @@
 				"Type4":"存入（收益计划）",
 				"Type5":"收入（利息）",
 				"Withdraw":"提现",
+				"Amount":"金额",
 				"Time":"时间",
 				"Stakinginterest":"质押利息",
 				"Type0":"收入（增发）",
