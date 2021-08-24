@@ -160,7 +160,7 @@ export default {
       }
     },
     exchangeAll () {
-      this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
+      this.amount = fck(this.maxPledgeAmout, -8, 4)
     },
     onDropDowOpen () {
     },

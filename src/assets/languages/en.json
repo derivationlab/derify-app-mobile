@@ -64,7 +64,7 @@
 				"Compensation":"Compensation",
 				"Gas":"Gas",
 				"BalanceHistory":"Balance History",
-				"Profit":"Profit",
+				"Profit":"PnL",
 				"TradFee":"Trad. Fee",
 				"Balance":"Balance",
 				"LiqCost":"Liq. Cost"
@@ -492,18 +492,23 @@
 				"bDRFAccount":"bDRF Account"
 			},
 			"History":{
+				"Type2":"Exchange",
+				"Type3":"TransferFromBank",
+				"Type4":"TransferToBank",
+				"Type5":"Interest",
+				"Withdraw":"Withdraw",
+				"Time":"Time",
+				"Stakinginterest":"Staking interest",
+				"Type0":"Income",
+				"Type1":"Withdraw",
 				"Exchange":"Exchange",
 				"NoMoreInfo":"No more info",
 				"Type":"Type",
-				"Withdraw":"Withdraw",
 				"SystemCompensation":"System compensation",
-				"Amount":"Amount",
 				"Staking":"Staking",
 				"Redeem":"Redeem",
-				"Time":"Time",
 				"bDRF":"bDRF",
-				"Balance":"Balance",
-				"Stakinginterest":"Staking interest"
+				"Balance":"Balance"
 			},
 			"PledgePopup":{
 				"All":"All",

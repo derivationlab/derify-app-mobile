@@ -87,7 +87,7 @@
         </div>
         <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
         <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
-        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ConnectWallet')}}</div>
+        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
       </div>
     </van-popup>
     <!-- requirements -->
@@ -233,7 +233,7 @@ export default {
       this.succPopup = false
 
       if(!sessionStorage.getItem('brokerApplied')) {
-        this.go('brokerInfo', {editAccount: false})
+        this.go('brokerInfo')
       }
 
     },

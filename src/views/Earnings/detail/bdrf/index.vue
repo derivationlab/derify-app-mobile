@@ -15,7 +15,7 @@
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Bond.History.SystemCompensation') : $t('Rewards.Bond.History.Withdraw')}}</div>
+          <div class="color-type">{{$t(getUpdateType(data.bond_update_type))}}</div>
           <div>
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">bDRF</div>
@@ -34,6 +34,7 @@
   </div>
 </template>
 <script>
+
 export default {
   data () {
     return {
@@ -45,6 +46,10 @@ export default {
   methods: {
     onLoad () {
 
+    },
+    getUpdateType(type) {
+
+      return 'Rewards.Bond.History.Type' + type;
     }
   },
   mounted () {

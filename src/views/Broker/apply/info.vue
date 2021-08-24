@@ -30,19 +30,16 @@
           </div>
         </div>
 
-        <div class="account-wrap" v-if="editAccount">
+        <div class="account-label">
+          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
+          <span class="fz-15 fc-85">coinbaby</span>
+        </div>
 
-          <div class="account-label">
-            <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
-            <span class="fz-15 fc-85">coinbaby</span>
-          </div>
-
-          <div class="system-popup-input">
-            <van-field class="derify-input no-padding-hor fz-15 fc-45" placeholder=""
-                       :formatter="(value) => value.replace(/-/g, '')"
-                       type="text" value="http://app.derify.finance/"/>
-            <span class="fc-85">coinbaby</span>
-          </div>
+        <div class="system-popup-input">
+          <van-field class="derify-input no-padding-hor fz-15 fc-45" placeholder=""
+                     :formatter="(value) => value.replace(/-/g, '')"
+                     type="text" value="http://app.derify.finance/"/>
+          <span class="fc-85">coinbaby</span>
         </div>
 
         <div class="btn-wrap">
@@ -83,9 +80,6 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
-    },
-    editAccount () {
-      return this.$route.query.editAccount !== false
     }
   },
   methods: {
