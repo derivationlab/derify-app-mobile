@@ -71,7 +71,7 @@ export default {
     submitThenClose () {
       const closePositionOrderType = this.closePositionOrderType
       const closePositionOrderTypeMap = {}
-      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.AllOrder] = 'closeAllPositions'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.AllOrder] = 'cancleAllOrderedPositions'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.LimitedOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopLossOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopProfitOrder] = 'cancleOrderedPosition'

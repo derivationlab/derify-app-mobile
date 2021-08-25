@@ -194,13 +194,13 @@ export default {
     calLossAndProfit(){
       if(this.position.stopProfitPrice > 0) {
         this.position.profitAmount = toContractNum((fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
-          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1))
+          * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
 
       }
 
       if(this.position.stopLossPrice > 0) {
         this.position.lostAmount = toContractNum((fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
-          * this.position.size * (this.position.side === SideEnum.LONG ? 1 : -1))
+          * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
       }
 
     },

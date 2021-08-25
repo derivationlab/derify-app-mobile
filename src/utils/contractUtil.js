@@ -492,7 +492,21 @@ export default class Contract {
    * @return {*}
    */
   cancleAllOrderedPositions (token, trader) {
-    return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
+    if(!token){
+      //fixme there's twice call of the smart contract
+      return (async() => {
+        try{
+          let ret1 = this.__getDerifyDerivativeContract(Token.ETH).methods.cancleAllOrderedPositions(trader).send()
+          let ret2 = this.__getDerifyDerivativeContract(Token.BTC).methods.cancleAllOrderedPositions(trader).send()
+          return await ret1 && await ret2
+        }catch (ex){
+          return false
+        }
+      })()
+    }else{
+      return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
+    }
+
   }
 
   /**

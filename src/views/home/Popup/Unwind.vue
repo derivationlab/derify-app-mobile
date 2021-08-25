@@ -137,6 +137,8 @@ export default {
       }
 
       if(size > fromContractUnit(this.closeUpperBound)) {
+        this.value1 = fromContractUnit(this.closeUpperBound)
+        this.curPercent = 100
         this.errorNotice(this.$t('global.NumberError'))
         return
       }

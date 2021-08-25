@@ -33,6 +33,7 @@
         v-model="amount"
         class="derify-input no-padding-hor"
         :formatter="formatter"
+        @input="onAmoutChange"
         type="number"
       >
       </van-field>
@@ -112,30 +113,37 @@ export default {
     },
 
     transferAll () {
-      if(this.type === 'deposit') {
-        this.amount = fromContractUnit(this.balanceOfWallet)
-      }
-
-      if(this.type === 'withdraw') {
-        this.amount = this.amount = fromContractUnit(this.balanceOfDerify)
-      }
+      this.amount = fromContractUnit(this.maxAmount)
     },
-    deposit () {
+    onAmoutChange () {
+      this.checkAmount()
+    },
+    checkAmount() {
       if (!this.amount || this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
-
-
       const a = parseFloat(this.amount)
-      const amount = toContractUnit(a)
+      const amount = fromContractUnit(a)
 
-      if(toContractNum(this.amount) > this.balanceOfWallet) {
+      if(amount > this.maxAmount) {
         this.errorNotice(this.$t('global.NumberError'))
         return  false
       }
 
+      this.errorNotice(null)
+
+      return true
+    },
+    deposit () {
+      if(!this.checkAmount()){
+        return
+      }
+
       const self = this
+      const a = parseFloat(this.amount)
+      const amount = toContractUnit(a)
+
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: self.$t('global.TradePendingMsg')});
       this.$store.dispatch('contract/depositAccount', amount).then(_ => {
         self.$userProcessBox({status: UserProcessStatus.success, msg: self.$t('global.TradeSuccessMsg')});
@@ -146,14 +154,8 @@ export default {
       })
     },
     withdraw () {
-      if (!this.amount || this.amount <= 0) {
-        this.errorNotice(this.$t('global.NumberError'))
-        return false
-      }
-
-      if(toContractNum(this.amount) > this.account.marginBalance) {
-        this.errorNotice(this.$t('global.NumberError'))
-        return  false
+      if(!this.checkAmount()){
+        return
       }
 
       const a = parseFloat(this.amount)
@@ -172,7 +174,7 @@ export default {
     formatter(value) {
       value = value.replace(/-/g, '');
       const maxAmount = this.maxAmount
-      if(parseInt(value) >= maxAmount) {
+      if(parseFloat(value) >= maxAmount) {
         return maxAmount
       }
       return value.replace(/-/g, '');
