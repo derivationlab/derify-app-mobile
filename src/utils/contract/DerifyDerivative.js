@@ -1,4 +1,5 @@
-export default [
+export default
+[
   {
     "inputs": [
       {
@@ -9,21 +10,6 @@ export default [
       {
         "internalType": "address",
         "name": "_exchange",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_bond",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_broker",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_staking",
         "type": "address"
       }
     ],
@@ -172,32 +158,6 @@ export default [
   },
   {
     "inputs": [],
-    "name": "bond",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "broker",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "exchange",
     "outputs": [
       {
@@ -250,38 +210,12 @@ export default [
   },
   {
     "inputs": [],
-    "name": "miningRatio",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "roRatio",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "staking",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -302,7 +236,7 @@ export default [
   },
   {
     "inputs": [],
-    "name": "tradingFeeRatio",
+    "name": "tradingFeeBrokerRatio",
     "outputs": [
       {
         "internalType": "uint256",
@@ -315,7 +249,33 @@ export default [
   },
   {
     "inputs": [],
-    "name": "uRatio",
+    "name": "tradingFeeInusranceRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tradingFeePmrRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tradingFeeRatio",
     "outputs": [
       {
         "internalType": "uint256",
@@ -335,12 +295,17 @@ export default [
       },
       {
         "internalType": "uint256",
-        "name": "_uRatio",
+        "name": "_tradingFeePmrRatio",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_miningRatio",
+        "name": "_tradingFeeInusranceRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tradingFeeBrokerRatio",
         "type": "uint256"
       },
       {
@@ -359,7 +324,7 @@ export default [
         "type": "uint256"
       }
     ],
-    "name": "updateRatios",
+    "name": "updateParams",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -374,6 +339,11 @@ export default [
       {
         "internalType": "address",
         "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
         "type": "address"
       },
       {
@@ -471,6 +441,39 @@ export default [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.StopType",
+        "name": "orderStopType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "orderPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.StopType",
+        "name": "cancleStopType",
+        "type": "uint8"
+      }
+    ],
+    "name": "orderAndCancleStopPosition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "enum IDerifyDerivative.TradeType",
         "name": "tradeType",
         "type": "uint8"
@@ -478,6 +481,11 @@ export default [
       {
         "internalType": "address",
         "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
         "type": "address"
       },
       {
@@ -492,6 +500,47 @@ export default [
       }
     ],
     "name": "closePositionByTrader",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
+        "type": "uint8"
+      }
+    ],
+    "name": "closePositionByLiquidation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      }
+    ],
+    "name": "closeDerivativePositions",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -551,24 +600,6 @@ export default [
       }
     ],
     "name": "cancleAllOrderedPositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivative.Side",
-        "name": "side",
-        "type": "uint8"
-      }
-    ],
-    "name": "closePositionByLiquidation",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -972,9 +1003,48 @@ export default [
         "internalType": "address",
         "name": "trader",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
       }
     ],
     "name": "operateOrderedLimitPositions",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "operatedSize",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "spotPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "operateSideOrderedStopPositions",
     "outputs": [
       {
         "internalType": "uint256",

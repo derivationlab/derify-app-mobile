@@ -1,9 +1,15 @@
-export default  [
+export default
+[
   {
     "inputs": [
       {
         "internalType": "address",
         "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_rewards",
         "type": "address"
       },
       {
@@ -209,6 +215,19 @@ export default  [
   },
   {
     "inputs": [],
+    "name": "rewards",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "thetaRatio",
     "outputs": [
       {
@@ -236,23 +255,82 @@ export default  [
   {
     "inputs": [
       {
-        "internalType": "enum IDerifyExchange.AccountType",
-        "name": "from",
-        "type": "uint8"
+        "internalType": "uint256",
+        "name": "tradingFee",
+        "type": "uint256"
       },
       {
-        "internalType": "enum IDerifyExchange.AccountType",
-        "name": "to",
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradingFeePmrRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradingFeeInusranceRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tradingFeeBrokerRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "operateTradingFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "trader",
+        "type": "address"
+      },
+      {
+        "internalType": "int256",
+        "name": "unrealizedPnl",
+        "type": "int256"
+      },
+      {
+        "internalType": "enum IDerifyDerivative.Side",
+        "name": "side",
         "type": "uint8"
       },
       {
         "internalType": "uint256",
-        "name": "value",
+        "name": "size",
         "type": "uint256"
       }
     ],
-    "name": "transferFrom",
-    "outputs": [],
+    "name": "operateProfitAndLoss",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "pnlUsdt",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pnlBond",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -285,25 +363,6 @@ export default  [
         "internalType": "address",
         "name": "trader",
         "type": "address"
-      }
-    ],
-    "name": "getTraderBalance",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "balance",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -312,24 +371,6 @@ export default  [
       }
     ],
     "name": "exchangeBondByInsuranceFund",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
-    "name": "operateLiquidityBalance",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -377,6 +418,11 @@ export default  [
     "inputs": [
       {
         "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "token",
         "type": "address"
       },
@@ -415,6 +461,11 @@ export default  [
     "inputs": [
       {
         "internalType": "address",
+        "name": "theBroker",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "token",
         "type": "address"
       },
@@ -435,59 +486,16 @@ export default  [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "closeAllPositions",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "trader",
+        "name": "theBroker",
         "type": "address"
-      },
-      {
-        "internalType": "int256",
-        "name": "sysNetPnl",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "sysTotalUnrealizedProfit",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "allHeldPositionsTradersMarginBalance",
-        "type": "int256"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyDerivative.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
       }
     ],
-    "name": "getTraderMarginCompensation",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "traderMarginCompensation",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "closeAllPositions",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -798,6 +806,11 @@ export default  [
         "type": "address[]"
       },
       {
+        "internalType": "address[]",
+        "name": "brokers",
+        "type": "address[]"
+      },
+      {
         "internalType": "uint256",
         "name": "estimateGasFee",
         "type": "uint256"
@@ -817,7 +830,17 @@ export default  [
       },
       {
         "internalType": "address[]",
+        "name": "partLiquidateBrokers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
         "name": "liquidateTraders",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "liquidateBrokers",
         "type": "address[]"
       },
       {
