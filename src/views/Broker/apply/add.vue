@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="新增经济商" :logo="false" :showGoback="true"/>
+    <navbar title="新增经纪商" :logo="false" :showGoback="true"/>
     <div class="home-mid">
       <div class="market-popup system-popup">
         <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
