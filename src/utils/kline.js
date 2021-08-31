@@ -20,11 +20,13 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
   max = max + (max - min)/10
   min = min - (max - min)/10
 
-  const distance = -((curPrice+"").length) * 7
+  const distance = 10
+  const rightOffset = ((curPrice+"").length) * 7
 
   return {
     darkMode: true,
     tooltip: {
+      show: false,
       trigger: 'axis',
       axisPointer: {
         type: 'cross'
@@ -36,7 +38,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     grid: {
       top: '0%',
       left: '0%',
-      right: '0%',
+      right: rightOffset,
       bottom: '10%'
     },
     dataZoom: [],
@@ -62,7 +64,8 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       max: max,
       boundaryGap: ['0%', '0%'],
       axisLabel: {
-        inside: true,
+        inside: false,
+        margin: '10',
         color: 'rgba(255,255,255,0.3)',
         showMinLabel: false,
         showMaxLabel: false,

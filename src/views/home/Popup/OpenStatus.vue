@@ -3,17 +3,17 @@
     <div class="open-status-popup">
       <template v-if="status === 'pending'">
         <img src="@/assets/images/home/open-pending.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradePendingMsg')}}</div>
+        <div class="open-status-text">{{$t('global.TradePendingMsg')}}</div>
       </template>
       <template v-if="status === 'success'">
         <img src="@/assets/images/home/open-success.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradeSuccessMsg')}}</div>
+        <div class="open-status-text">{{$t('global.TradeSuccessMsg')}}</div>
       </template>
       <template v-if="status === 'fail'">
         <img src="@/assets/images/home/open-fail.png" alt="" class="open-status-icon">
-        <div class="open-status-text">{{$t('Trade.OpenPositionPopup.TradeFailedMsg')}}</div>
+        <div class="open-status-text">{{$t('global.TradeFailedMsg')}}</div>
         <div class="system-popup-buttons padding">
-          <div class="system-popup-button confirm">{{$t('Trade.OpenPositionPopup.Confirm')}}</div>
+          <div class="system-popup-button confirm">{{$t('global.Confirm')}}</div>
         </div>
       </template>
     </div>

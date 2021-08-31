@@ -1,11 +1,14 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{$t('Rewards.Staking.Staking')}}{{pledgeName}}</div>
+      <div class="system-popup-title">{{$t(langKey.title)}}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div class="derify-dropmenu-wrap">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="accountType" :options="accountOptions" @change="updateTokenBalance"  @open="onDropDowOpen()" class="derify-dropmenu-item">
+            <van-dropdown-item v-model="accountType" :options="accountOptions" @change="updateTokenBalance"  @open="onDropDowOpen()" class="derify-dropmenu-item-wrap derify-dropmenu-item">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -13,25 +16,20 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">{{$t('Rewards.Staking.StakAmount')}}</div>
+        <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" />
+          <van-field class="derify-input no-padding-hor fz-17" placeholder="" type="number"
+                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{$t('Rewards.Staking.StakMax')}}：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
-          <span class="popup-span2" @click="exchangeAll">{{$t('Rewards.Staking.StakAll')}}</span>
+          <span class="popup-span1">{{$t(langKey.max)}}：{{maxPledgeAmout|fck(-8,4)}} {{pledgeName}}</span>
+          <span class="popup-span2" @click="exchangeAll">{{$t(langKey.all)}}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Rewards.Staking.StakCancel')}}</div>
-
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn">{{$t('Rewards.Staking.Staking')}}</div>
-        </template>
+        <div class="system-popup-button cancel" @click="close">{{$t(langKey.cancel)}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t(langKey.confirm)}}</div>
       </div>
     </div>
   </van-popup>
@@ -42,14 +40,18 @@ import { BondAccountType, fromContractUnit, toContractUnit } from '../../../util
 import { UserProcessStatus } from '../../../store/modules/user'
 import { fck } from '../../../utils/utils'
 import { EarningType } from '../../../store/modules/earnings'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'pledgeId'],
   data () {
 
     let accoutOptions = this.getAccountOptions()
 
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
@@ -65,7 +67,7 @@ export default {
     },
     pledgeId () {
       if (this.pledgeId === EarningType.EDRF) {
-        this.pledgeName = 'eDRF'
+        this.pledgeName = 'DRF'
       } else if(this.pledgeId === EarningType.BDRF) {
         this.pledgeName = 'bDRF'
       }
@@ -91,16 +93,53 @@ export default {
 
       }
       return 0
+    },
+    langKey () {
+      if(this.pledgeId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          max: 'Rewards.Staking.PledgePopup.Max',
+          amount: 'Rewards.Staking.PledgePopup.Amount',
+          all: 'Rewards.Staking.PledgePopup.All',
+          cancel: 'Rewards.Staking.PledgePopup.Cancel',
+          confirm: 'Rewards.Staking.PledgePopup.Staking'
+        }
+      }else if(this.pledgeId === EarningType.BDRF) {
+        return {
+          title: 'Rewards.Bond.PledgePopup.StakingbDRF',
+          max: 'Rewards.Bond.PledgePopup.Max',
+          amount: 'Rewards.Bond.PledgePopup.Amount',
+          all: 'Rewards.Bond.PledgePopup.All',
+          cancel: 'Rewards.Bond.PledgePopup.Cancel',
+          confirm: 'Rewards.Bond.PledgePopup.Staking'
+        }
+      }
+
+      return {title: '', max: '', amount: '', all: '', cancel: '', confirm: ''}
     }
   },
   methods: {
     close () {
       this.$emit('closePledge', false)
     },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
+    checkAmount () {
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+      return true
+    },
     submitThenClose(){
 
-      if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
-        this.$toast(this.$t('global.NumberError'))
+      if(!this.checkAmount()) {
         return
       }
 
@@ -109,22 +148,21 @@ export default {
 
       } else if(this.pledgeId === EarningType.BDRF) {
         this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         this.$store.dispatch("earnings/depositBondToBank", {bondAccountType: this.accountType, amount: toContractUnit(this.amount)})
           .then(() => {
-            this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+            this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
           }).catch(() => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
         }).finally(() => {
           this.$store.dispatch('earnings/loadEarningData')
         })
       }
     },
     exchangeAll () {
-      this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
+      this.amount = fck(this.maxPledgeAmout, -8, 4)
     },
     onDropDowOpen () {
-      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     updateTokenBalance() {
       const earningTokenMap = {}
@@ -139,15 +177,17 @@ export default {
 
     getAccountOptions() {
       let accoutOptions = [
-        { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }
+        { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }
       ]
 
       if(this.pledgeId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Staking.DRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.StakMyWallet'), value: 1 }]
+        accoutOptions = [
+          { text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFStakingAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.RedeemMyWallet'), value: 1 }]
+        accoutOptions = [
+          { text: this.$t('Rewards.Bond.PledgePopup.bDRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.PledgePopup.MyWallet'), value: 1 }]
       }
 
       return accoutOptions

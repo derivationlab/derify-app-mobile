@@ -11,7 +11,7 @@ import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
-import { getWallet } from './store/modules/user'
+import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
 let locale = 'en'
 try {
@@ -49,12 +49,16 @@ Date.prototype.Format = function (fmt) {
     's+': this.getSeconds(), // sec
     'q+': Math.floor((this.getMonth() + 3) / 3), // quarter
     S: this.getMilliseconds(), // ms
-    W: ['日', '一', '二', '三', '四', '五', '六'][this.getDay()]
+    W: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][this.getDay()]
   }
   if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
   for (var k in o) { if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length))) }
   return fmt
 }
+
+// Vue.config.errorHandler = (err, vm, info) => {
+//   console.log.apply(console, arguments);
+// }
 
 const vueApp = new Vue({
   router,
@@ -70,15 +74,19 @@ Vue.prototype.$userProcessBox = function (param) {
 Vue.prototype.$eventBus = vueApp
 
 Vue.prototype.$loginWallet = function () {
-  const walletInfo = getWallet()
+  asyncInitWallet().then(() => {
+    const walletInfo = getWallet()
 
-  if(!walletInfo.isLogin){
-    walletInfo.showWallet = true
-  }else{
-    walletInfo.showWallet = false
-  }
+    if(!walletInfo.isLogin){
+      walletInfo.showWallet = true
+    }else{
+      walletInfo.showWallet = false
+    }
 
-  this.$store.commit("user/updateState", walletInfo)
+    this.$store.commit("user/updateState", walletInfo)
+  }).catch(() => {
+    console.log('init wallet failed')
+  })
 }
 
 window.onload = function (){
@@ -92,6 +100,14 @@ window.onload = function (){
     })
 
     updateWallet()
+  }else{
+    window.addEventListener('ethereum#initialized', updateWallet, {
+      once: true,
+    });
+
+    // If the event is not dispatched by the end of the timeout,
+    // the user probably doesn't have MetaMask installed.
+    setTimeout(updateWallet, 3000); // 3 seconds
   }
 }
 
@@ -99,10 +115,19 @@ window.vexstore = store
 window.vuexApp = vueApp
 
 function updateWallet (eventType = 0) {
-  const walletInfo = getWallet()
-  store.commit("user/updateState", walletInfo)
-  if(eventType > 0){
-    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
-  }
 
+  asyncInitWallet().then(() => {
+    const walletInfo = getWallet()
+    if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
+      eventType = 1
+    }
+    store.commit("user/updateState", walletInfo)
+    if(eventType > 0){
+      vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
+    }
+  }).catch(() => {
+    console.log('init wallet failed')
+  })
 }
+
+

@@ -1,7 +1,8 @@
 import Contract from './contractUtil'
 import * as CfgUtil from '../config'
 
-const contractDebug = CfgUtil.isDebug()
+export const contractDebug = CfgUtil.isDebug()
+
 export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {
@@ -33,11 +34,11 @@ export function contract (account) {
                   })();
 
                 }else{
-                  console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
+                  console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
                 }
                 return ret;
               }catch (e) {
-                console.log('contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
+                console.log('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
               }
 
             }
@@ -61,9 +62,9 @@ function isProxyPropertyKey(key) {
     return false
   }
 
-  // if('getTraderVariables,getTraderPositionLiquidatePrice,getTraderPositionVariables,getTraderAllPosition'.indexOf(key) > -1){
-  //   return false
-  // }
+  if('getTraderVariables,getTraderPositionVariables'.indexOf(key) > -1){
+    return false
+  }
 
   return true
 }

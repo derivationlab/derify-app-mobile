@@ -1,10 +1,10 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Rewards.title')" />
+    <navbar :title="$t('Trade.navbar.Rewards')" />
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">{{ $t('Rewards.Mining.PositionMiningReward') }}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.TransactionHistory') }} ></span>
+          <span class="span1">{{ $t('Rewards.Mining.Card.PositionMining') }}</span>
+          <span class="span2 fz-12 fc-yellow" @click="goDetail(EarningType.MIN)">{{ $t('Rewards.Mining.Card.TransactionHistory') }} ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
@@ -13,29 +13,30 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{accountData.totalPositionAmount | fck(-8)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.PositionHeld') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.PositionHeld') }}（USDT）</span>
           </div>
           <div class="div1">
             <span class="span1">{{pmrAccumulatedBalance | fck(-8, 2)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.AccumulatedReward') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.AccumulatedReward') }}（USDT）</span>
           </div>
         </div>
         <div class="earnings-item">
           <div class="item-div">
             <van-icon class="van-icon" name="refund-o" size="18"/>
             <template v-if="isLogin">
-              <span class="fz-13" @click="withdraw(true, EarningType.MIN)">{{ $t('Rewards.Mining.Withdraw') }}</span>
+              <span class="fz-13" @click="withdraw(true, EarningType.MIN)">{{ $t('Rewards.Mining.Card.Withdraw') }}</span>
             </template>
             <template v-else>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </template>
           </div>
         </div>
       </div>
-      <div class="mining-earnings">
+
+    <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">{{ $t('Rewards.Staking.StakEquity') }}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.TransactionHistory') }}></span>
+          <span class="span1">{{ $t('Rewards.Staking.Card.eDRFAccount') }}</span>
+          <span class="span2 fz-12  fc-yellow" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.Card.TransactionHistory') }}></span>
         </div>
         <div class="earnings-num">
           <span class="span1">2345.4</span>
@@ -44,52 +45,52 @@
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Staking.StakAmount') }}（EDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.Card.StakAmount(DRF)') }}</span>
           </div>
           <div class="div1">
             <span class="span1">24891.34</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Staking.AccumulatedReward') }}（eDRF）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Staking.Card.DailyYield(eDRF)') }}</span>
           </div>
         </div>
         <div class="earnings-item">
           <template v-if="isLogin">
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="withdraw(true,EarningType.EDRF)">{{$t('Rewards.Staking.Withdraw')}}</span>
-            </div>
-            <div class="item-div flex1">
-              <van-icon class="van-icon" name="peer-pay" size="18"/>
-              <span class="fz-13" @click="redeem(true,EarningType.EDRF)">{{$t('Rewards.Staking.Redeem')}}</span>
+              <span class="fz-13" @click="withdraw(true,EarningType.EDRF)">{{$t('Rewards.Staking.Card.Withdraw')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-              <span class="fz-13" @click="pledge(true,EarningType.EDRF)">{{$t('Rewards.Staking.Staking')}}</span>
+              <span class="fz-13" @click="pledge(true,EarningType.EDRF)">{{$t('Rewards.Staking.Card.Staking')}}</span>
+            </div>
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="peer-pay" size="18"/>
+              <span class="fz-13" @click="redeem(true,EarningType.EDRF)">{{$t('Rewards.Staking.Card.Redeem')}}</span>
             </div>
           </template>
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </div>
           </template>
         </div>
       </div>
       <div class="mining-earnings">
         <div class="earnings-title">
-          <span class="span1">{{$t('Rewards.Bond.Bond')}}</span>
-          <span class="span2 fz-12" @click="goDetail(EarningType.BDRF)">{{$t('Rewards.Bond.TransactionHistory')}} ></span>
+          <span class="span1">{{$t('Rewards.Bond.Card.bDRFAccount')}}</span>
+          <span class="span2 fz-12  fc-yellow" @click="goDetail(EarningType.BDRF)">{{$t('Rewards.Bond.Card.TransactionHistory')}} ></span>
         </div>
         <div class="earnings-num">
           <span class="span1">{{bondInfo.bondBalance | fck(-8)}}</span>
-          <span class="span2">USDT</span>
+          <span class="span2">bDRF</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{bondInfo.bondReturnBalance | fck(-8)}}</span>
-            <span class="span2 fz-11">{{$t('Rewards.Bond.DepoAmount')}} ( bDRF )</span>
+            <span class="span2 fz-11">{{$t('Rewards.Bond.Card.StakingAmount(bDRF)')}}</span>
           </div>
           <div class="div1">
-            <span class="span1">{{bondInfo.bondAnnualInterestRatio | fck(-8,2)}}%</span>
+            <span class="span1">{{bondInfo.bondAnnualInterestRatio | fck(-6,2)}}%</span>
             <span class="span2 fz-11">APY</span>
           </div>
         </div>
@@ -97,25 +98,26 @@
           <template v-if="isLogin">
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="withdraw(true,EarningType.BDRF)">{{$t('Rewards.Bond.Withdraw')}}</span>
+              <span class="fz-13" @click="withdraw(true,EarningType.BDRF)">{{$t('Rewards.Bond.Card.Withdraw')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="balance-o" size="18"/>
-              <span class="fz-13" @click="deposit(true, EarningType.BDRF)">{{$t('Rewards.Bond.Exchange')}}</span>
-            </div>
-            <div class="item-div flex1">
-              <van-icon class="van-icon" name="peer-pay" size="18"/>
-              <span class="fz-13" @click="redeem(true,EarningType.BDRF)">{{$t('Rewards.Bond.Redeem')}}</span>
+              <span class="fz-13" @click="deposit(true, EarningType.BDRF)">{{$t('Rewards.Bond.Card.Exchange')}}</span>
             </div>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="cash-on-deliver" size="18"/>
-              <span class="fz-13" @click="pledge(true,EarningType.BDRF)">{{$t('Rewards.Bond.Staking')}}</span>
+              <span class="fz-13" @click="pledge(true,EarningType.BDRF)">{{$t('Rewards.Bond.Card.Staking')}}</span>
+            </div>
+
+            <div class="item-div flex1">
+              <van-icon class="van-icon" name="peer-pay" size="18"/>
+              <span class="fz-13" @click="redeem(true,EarningType.BDRF)">{{$t('Rewards.Bond.Card.Redeem')}}</span>
             </div>
           </template>
           <template v-else>
             <div class="item-div flex1">
               <van-icon class="van-icon" name="refund-o" size="18"/>
-              <span class="fz-13" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</span>
+              <span class="fz-13" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</span>
             </div>
           </template>
         </div>
@@ -248,7 +250,6 @@ export default {
         font-weight: 400;
       }
       .span2{
-        color: rgba(255,255,255,0.65);
         font-weight: 400;
       }
     }
@@ -291,6 +292,7 @@ export default {
         margin: 0 0.2rem;
        .van-icon{
           vertical-align: text-top;
+         margin-right: 0.2rem;
        }
         span{
           /*margin-left: .5rem;*/
@@ -298,7 +300,9 @@ export default {
       }
       .flex1{
         flex: 1;
+        align-items: center;
         text-align: center;
+        justify-content: center;
       }
     }
   }

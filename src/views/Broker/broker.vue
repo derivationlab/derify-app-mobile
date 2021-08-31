@@ -1,93 +1,141 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Brokers.Brokers')" />
+    <navbar :title="$t('Trade.navbar.Broker')" />
     <div class="home-top">
-      <div class="account-div">{{$t('Brokers.AccBalance')}}</div>
-      <div class="num-div">
-        <span class="num"> 23,456.78</span>
-        <span class="unit">USDT</span>
-      </div>
-      <div class="income-div">
-        <div class="taday-div">
-          <span class="span1">24,691.34</span>
-          <span class="span2 fz-11">{{$t('Brokers.DailyEarning')}} ( USDT )</span>
+
+      <div class="broker-info">
+        <div class="broker-avatar">
+          <img :src="broker.avatar" style="width: 4.4rem;height: 4.4rem" alt=""/>
         </div>
-        <div class="taday-div">
-          <span class="span1">24,691.34</span>
-          <span class="span2 fz-11">{{$t('Brokers.AccumulatedEarning')}} ( USDT )</span>
+        <div class="broker-contact">
+          <div class="broker-name">{{broker.userName}}</div>
+          <div class="broker-addr">
+            <p>{{broker.account}}</p>
+            <p>{{broker.address | textwrap(32)}}</p>
+          </div>
+        </div>
+        <div class="go-right-wrap"  @click="go('brokerInfo')">
+          <i class="go-right-icon">
+            <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
+          </i>
         </div>
       </div>
-      <div class="cbtn-div fz-17 mrb-17">{{$t('Brokers.Burn')}}</div>
-      <div class="tbtm-div fz-17">{{$t('Brokers.Withdraw')}}</div>
-      <div class="dealer-div">{{$t('Brokers.PrivilegeValiduntil')}}<span>365</span>{{$t('Brokers.Days')}}，{{$t('Brokers.Until')}} 2048.12.31</div>
-      <div class="explain-div">
-        <div>{{$t('Brokers.Note')}}：</div>
-        <ul>
-          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify1')}}</li>
-          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify2')}}</li>
-          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify3')}}</li>
-          <li>*&nbsp;&nbsp;{{$t('Brokers.NoteDerify4')}}</li>
-        </ul>
+
+      <div class="market-popup">
+        <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
+        <div class="num-div">
+          <span class="num"> 23,456.78</span>
+          <span class="unit">USDT</span>
+        </div>
+
+        <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Broker.Broker.Account.Withdraw')}}</div>
+
+        <div class="income-div">
+          <div class="taday-div">
+            <span class="span1">24,691.34</span>
+            <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
+          </div>
+          <div class="taday-div">
+            <span class="span1">24,691.34</span>
+            <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
+          </div>
+        </div>
+
+        <div class="dealer-div">
+          <div class="dealer-label">
+            <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
+            <span class="fc-yellow fz-12">{{$t('Broker.Broker.Account.Myreferralpage')}}></span>
+          </div>
+          <div class="dealer-ctn">
+            <span class="dealer-day-num fc-yellow">365</span>
+            <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
+            <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [2048,12, 31])}}</span>
+          </div>
+        </div>
+
+        <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Broker.Broker.Account.Burn')}}</div>
+
+        <div class="explain-div">
+          <div>{{$t('Broker.Broker.Account.BrokerHint')}}</div>
+          <ul>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail1')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail2')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail3')}}</li>
+            <li>{{$t('Broker.Broker.Account.BrokerHintDetail4')}}</li>
+          </ul>
+        </div>
       </div>
-      <van-tabs v-model="active">
-        <van-tab :title="$t('Brokers.AccountHistory')">
-          <trader></trader>
-        </van-tab>
-        <van-tab :title="$t('Brokers.TraderInfo')">
-          <account></account>
-        </van-tab>
-      </van-tabs>
+      <div class="broker-tab-wrap">
+        <van-tabs v-model="active">
+          <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
+            <trader></trader>
+          </van-tab>
+          <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
+            <account></account>
+          </van-tab>
+        </van-tabs>
+
+        <DerifyPageNation :total="10" :cur="1"></DerifyPageNation>
+      </div>
+
     </div>
-    <!-- 提示申请弹框 -->
-    <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="closeshowPopup">
+    <!-- apply requirements -->
+    <van-popup class="derify-popup" v-model="showApplyPopup" round :closeable="false" @close="closeApplyPopup">
       <div class="unwind-popup system-popup">
         <div class="hintImg">
           <img src="@/assets/images/Frame.png" alt="" srcset="">
         </div>
-        <div class="hintTitle">{{$t('Brokers.YouPartner')}}</div>
-        <div v-if="isLogin" class="btnDiv" @click="closeshowPopup">{{$t('Brokers.ApplyPartner')}}</div>
-        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('global.ClickConnectWallet')}}</div>
+        <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
+        <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
+        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
       </div>
-  </van-popup>
-  <!-- 申请条件 -->
-  <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="closetermPopup">
-      <div class="unwind-popup system-popup">
-        <div class="hint-div">{{$t('Brokers.BurnEDRF')}}</div>
-        <!-- <div class="hint-num">
-          <span class="num">60,000</span>
-          <span class="unit">eDRF</span>
-        </div> -->
-        <!-- <div class="hint-title">{{$t('Brokers.YouPrivilege')}}</div> -->
-          <div>
-          <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item v-model="value1" :options="option1">
-                <div class="derify-dropmenu-title" slot="title">
-                  <span>{{option1[value1]}}</span>
-                  <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
-                </div>
-            </van-dropdown-item>
-          </van-dropdown-menu>
-          <!-- <van-dropdown-menu active-color="#1989fa">
-            <van-dropdown-item v-model="value1" :options="option1" />
-          </van-dropdown-menu> -->
+    </van-popup>
+    <!-- requirements -->
+    <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="setTermPopup(false)">
+        <div class="unwind-popup system-popup">
+          <div class="system-popup-title">
+            <div class="fz-15 fc-65">
+              <i18n path="Broker.Apply.GetBrokersPrivilege">
+                <DecimalView value="60000" digit-split=",">
+                  <template #first="{first}"><br/><span class="fz-33 fc-yellow">{{first}}</span><br/></template>
+                  <template #last></template>
+                </DecimalView>
+              </i18n>
+            </div>
           </div>
-        <div class="balance-div">{{$t('Brokers.Balances')}}：1234567.00000000 eDRF</div>
-        <div class="system-popup-buttons">
-          <div class="system-popup-button cancel" @click="closetermPopup">{{$t('Brokers.cancel')}}</div>
-          <div class="system-popup-button confirm" @click="closetermPopup">{{$t('Brokers.affirm')}}</div>
-      </div>
-      </div>
-  </van-popup>
-  <!-- 申请成功弹框 -->
-  <van-popup class="derify-popup" v-model="succPopup" round :closeable="false" @close="closesuccPopup">
-      <div class="unwind-popup system-popup">
-        <div class="hintImg">
-          <img src="@/assets/images/succFrame.png" alt="" srcset="">
+          <DerifyErrorNotice :show="depositErrorMsg.length > 0">{{depositErrorMsg}}</DerifyErrorNotice>
+
+          <div>
+            <van-dropdown-menu :overlay="false" class="derify-dropmenus">
+              <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
+                  <div class="derify-dropmenu-title" slot="title">
+                    <span>{{accountOptions[accountType].text}}</span>
+                    <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+                  </div>
+              </van-dropdown-item>
+            </van-dropdown-menu>
+          </div>
+          <div class="balance-div">{{$t('Broker.Apply.AccountBalance')}}：1234567.00000000 eDRF</div>
+          <div class="system-popup-buttons">
+            <div class="system-popup-button cancel" @click="setTermPopup(false)">{{$t('Broker.Apply.Cancel')}}</div>
+            <div class="system-popup-button confirm" @click="setTermPopup(false)">{{$t('Broker.Apply.Confirm')}}</div>
+          </div>
         </div>
-        <div class="hintTitle">{{$t('Brokers.YouPrivilege')}}</div>
-        <div class="btnDiv succPopup" @click="closesuccPopup">{{$t('Brokers.Close')}}</div>
-      </div>
-  </van-popup>
+    </van-popup>
+    <!-- apply popup -->
+    <van-popup class="derify-popup" v-model="succPopup" round :closeable="false" @close="closesuccPopup">
+        <div class="unwind-popup system-popup">
+          <div class="hintImg">
+            <img src="@/assets/images/succFrame.png" alt="" srcset="">
+          </div>
+          <div class="hintTitle" v-if="brokerApplied">{{$t('global.TradeSuccessMsg')}}</div>
+          <div class="hintTitle" v-else>{{$t('Broker.Apply.ApplySuccessMsg')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup" v-if="brokerApplied">{{$t('Broker.Apply.Confirm')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup" v-else>{{$t('Broker.Apply.AddInfo')}}</div>
+        </div>
+    </van-popup>
+    <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
+    <BrokerWithdrawPopup :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
   </div>
 </template>
 
@@ -95,47 +143,114 @@
 import Navbar from '@/components/Navbar'
 import trader from './trader/index.vue'
 import account from './account/index.vue'
+import DerifyPageNation from '@/components/DerifyPageNation/DerifyPageNation'
+import DerifyErrorNotice from '@/components/DerifyErrorNotice/DerifyErrorNotice'
+import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
+import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
+import DecimalView from "@/components/DecimalView/DecimalView";
+
 export default {
   name: 'Home',
   components: {
+    DecimalView,
+    BrokerWithdrawPopup,
+    BrokerDepositPopup,
+    DerifyErrorNotice,
+    DerifyPageNation,
     Navbar,
     trader,
     account
   },
   data () {
+
+    const showApply = !sessionStorage.getItem('brokerApplied')
+
     return {
-      showPopup: true,
+      showApplyPopup: showApply,
       termPopup: false,
       succPopup: false,
       active: '1',
-      value1: '',
-      option1: [
-        { text: '市价委托', value: 0 },
-        { text: '限价委托', value: 1 }
-      ]
+      accountType: 0,
+      broker:{
+        id: 1,
+        avatar: 'https://dummyimage.com/400x400/fef/fff',
+        address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
+        userName: 'Coinbaby\'s Playground',
+        account: 'Coinbaby',
+        accountAddress: 'http://app.derify.finance/@Coinbaby',
+        selected: true
+      },
+      showDepositPopup: false,
+      showWithdrawPopup: false,
+      depositErrorMsg: '',
+      accountOptions: this.getAccountOptions(),
     }
   },
   created () {
   },
+  watch: {
+    '$i18n.locale': {
+      handler(){
+        this.accountOptions = this.getAccountOptions()
+      }
+    }
+  },
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    brokerApplied(){
+      return !!sessionStorage.getItem('brokerApplied');
     }
   },
   methods: {
-    // 关闭申请弹框
-    closeshowPopup () {
-      this.termPopup = true
-      this.showPopup = false
+    getAccountOptions() {
+      return [
+        {
+          text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'),
+          value: 0
+        },
+        {
+          text: this.$t('Broker.Broker.DepositPopup.MyWallet'),
+          value: 1
+        }
+      ]
     },
-    // 申请条件弹框
-    closetermPopup () {
-      this.succPopup = true
-      this.termPopup = false
+    // close popup
+    closeApplyPopup () {
+      this.setTermPopup(true)
+      this.showApplyPopup = false
     },
-    // 关闭申请成功后弹框
+    // close apply popup
+    setTermPopup (bool) {
+      this.termPopup = bool
+      if(!bool) {
+        this.succPopup = true
+      }
+    },
+    // close apply success popup
     closesuccPopup () {
       this.succPopup = false
+
+      if(!sessionStorage.getItem('brokerApplied')) {
+        this.go('brokerInfo')
+      }
+
+    },
+    setShowDepositPopup(bool) {
+      this.showDepositPopup = bool
+      if(!bool){
+        this.succPopup = true
+      }
+    },
+    setShowWidthdrawPopup(bool) {
+      this.showWithdrawPopup = bool
+      if(!bool){
+        this.succPopup = true
+      }
+    },
+    go(name, query = {}){
+      this.$router.push({name, query})
     }
   }
 }
@@ -143,6 +258,39 @@ export default {
 
 <style lang="less" scoped>
 .home-top{
+  .broker-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0;
+    .broker-avatar {
+      img{
+        width: 5.5rem;
+        height: 5.5rem;
+        border-radius: 2.5rem;
+      }
+    }
+
+    .broker-contact {
+      overflow: hidden;
+      overflow-wrap: break-word;
+      text-overflow: ellipsis;
+      color: rgba(255,255,255,0.45);
+      font-size: 1.3rem;
+      line-height: 1.8rem;
+      padding-left: 1rem;
+      .broker-name{
+        font-size: 1.7rem;
+        text-align: LEFT;
+        color: #ffffff;
+      }
+    }
+  }
+  .market-popup{
+    background: #272354;
+    border-radius: 1.8rem;
+    padding: 1.8rem;
+  }
   .account-div{
     margin: 1.6rem 0;
     color: rgba(255,255,255,0.85);
@@ -162,7 +310,7 @@ export default {
   }
   .income-div{
     display: flex;
-    margin-bottom: 4rem;
+    margin: 4rem 0;
     .taday-div{
       flex: 1;
       display: flex;
@@ -201,26 +349,47 @@ export default {
   .dealer-div{
     margin: 4rem 0;
     color: rgba(255,255,255,0.85);
-    span{
-      color: #FAE247;
+    .dealer-label{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dealer-ctn{
+      margin: 1rem 0;
+      .dealer-day-num{
+        font-size: 2.2rem;
+      }
+      span{
+        margin-right: 1rem;
+      }
     }
   }
   .explain-div{
-    margin-bottom: 2.4rem;
     div{
       color: rgba(255,255,255,0.85);
       margin-bottom: 1rem;
     }
     ul{
       font-size: 1.2rem;
-      padding-bottom: 4rem;
-      border-bottom: .1rem solid rgba(255,255,255,0.15);
       color: rgba(255,255,255,0.65);
       // list-style: initial
       li{
         line-height: 2rem;
       }
     }
+  }
+}
+
+.broker-tab-wrap{
+  margin-top: 4.4rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.15);
+
+  .page-btn-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 .hintImg{
@@ -250,6 +419,7 @@ export default {
   font-weight: 400;
   text-align: LEFT;
   color: rgba(255,255,255,0.65);
+  margin: 1rem 0;
 }
 .hint-num{
   text-align: center;
@@ -279,5 +449,14 @@ export default {
 }
 .succPopup{
   width: 12rem;
+}
+</style>
+
+<style>
+.derify-dropmenus .van-dropdown-menu__bar {
+  margin-bottom: 0;
+}
+.derify-dropmenus .van-dropdown-item__content{
+  margin-top: 0;
 }
 </style>

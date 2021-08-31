@@ -29,7 +29,7 @@ export async function getTradeList (trader) {
 }
 
 /**
- *
+ * mining trade history
  * @param trader
  * @returns {Promise<Array<TradeBalanceDetail>>}
  */
@@ -43,6 +43,11 @@ export async function getTradeBalanceDetail (trader) {
   return [];
 }
 
+/**
+ *
+ * @param trader
+ * @returns {Promise<*[]|TraderBondBalance>}
+ */
 export async function getTraderBondBalance (trader) {
   const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
   if(content) {
@@ -52,6 +57,11 @@ export async function getTraderBondBalance (trader) {
   return [];
 }
 
+/**
+ *
+ * @param trader
+ * @returns {Promise<*[]|TradePMRBalance>}
+ */
 export async function getTraderPMRBalance (trader) {
   const content =  await io.get(TRADER_PMR_BALANCE_URL + trader)
   if(content) {
@@ -140,16 +150,16 @@ export class TradeBalanceDetail {
   amount;// The value of each in and out, the in is positive, and the out is negative
   balance;// Balance after change
   /*
-  0-TradingFee
-  1-PositionChangeFee
-  2-ProfitAndLoss, Profit and loss (judging profit/loss according to the positive and negative amount)
-  3-ProfitAndLossAuto,Profit and loss (profit and loss during automatic deduction and forced liquidation)
-  4-GasFee
-  5-Liquidation
-  6-SysCompensation
-  7-SysLossApportionment
-  100-Deposit
-  101-Withdraw
+    0-TradingFee
+    1-PositionChangeFee
+    2-ProfitAndLoss, Profit and loss (judging profit/loss according to the positive and negative amount)
+    3-ProfitAndLossAuto,Profit and loss (profit and loss during automatic deduction and forced liquidation)
+    4-GasFee
+    5-Liquidation
+    6-SysCompensation
+    7-SysLossApportionment
+    100-Deposit
+    101-Withdraw
   */
   fee_type;
   event_time;// Smart contract event time£¨UTC£©

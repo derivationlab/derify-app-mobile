@@ -1,12 +1,15 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{ $t('Rewards.Bond.Exchange') }}{{ withdrawName }}</div>
+      <div class="system-popup-title">{{ $t(langKey.title) }}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div>
         <div>
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions"
-                               class="derify-dropmenu-item" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
+                               class="derify-dropmenu-item derify-dropmenu-item-wrap" @open="onDropDowOpen" @change="updateExchangeBondSizeUpperBound">
                 <div class="derify-dropmenu-title" slot="title">
                   <span>{{accountOptions[accountType].text}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -14,24 +17,21 @@
             </van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="popup-text">{{ $t('Rewards.Bond.ExchangeAmount') }}</div>
+        <div class="popup-text">{{ $t(langKey.amount) }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-17" placeholder="0.8" type="number" v-model="amount" @input="checkAmount"/>
-          <div class="unit">{{ withdrawName }}</div>
+          <van-field class="derify-input no-padding-hor fz-17" placeholder=""
+                     :formatter="(value) => value.replace(/-/g, '')"
+                     type="number" v-model="amount" @change="checkAmount"/>
+          <div class="unit">{{ tokenName }}</div>
         </div>
         <div class="system-popup-num">
-          <span class="popup-span1">{{ $t('Rewards.Bond.ExchangeMax') }}：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
-          <span class="popup-span2" @click="exchangeAll">{{ $t('Rewards.Bond.ExchangeAll') }}</span>
+          <span class="popup-span1">{{ $t(langKey.max) }}：{{exchangeBondSizeUpperBound | fck(-8, 4)}} bDRF</span>
+          <span class="popup-span2" @click="exchangeAll">{{ $t(langKey.all) }}</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{ $t('Rewards.Bond.StakingCancel') }}</div>
-        <template v-if="amount > 0">
-          <div class="system-popup-button confirm" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
-        <template v-else>
-          <div class="system-popup-button disabled-btn" @click="submitThenClose">{{ $t('Rewards.Bond.Exchange') }}</div>
-        </template>
+        <div class="system-popup-button cancel" @click="close">{{ $t(langKey.cancel) }}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{ $t(langKey.confirm) }}</div>
       </div>
     </div>
   </van-popup>
@@ -43,25 +43,53 @@ import {UserProcessStatus} from "@/store/modules/user"
 import {fck} from '@/utils/utils';
 import { BondAccountType } from '../../../utils/contractUtil'
 import {EarningType} from "@/store/modules/earnings";
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: ['show', 'depositId'],
   data () {
 
     let accoutOptions = this.getAccountOptions()
 
     return {
+      errorMsg: '',
+      showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
       amount: 0,
       curPercent: 25,
-      withdrawName: null,
+      tokenName: null,
       accountOptions: accoutOptions
     }
   },
   computed: {
     exchangeBondSizeUpperBound () {
       return this.$store.state.earnings.exchangeBondSizeUpperBound
+    },
+    langKey () {
+      if (this.depositId === EarningType.MIN) {
+        return {}
+      } else if (this.depositId === EarningType.EDRF) {
+        return {
+          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          max: 'Rewards.Staking.PledgePopup.Max',
+          amount: 'Rewards.Staking.PledgePopup.Amount',
+          all: 'Rewards.Staking.PledgePopup.All',
+          cancel: 'Rewards.Staking.PledgePopup.Cancel',
+          confirm: 'Rewards.Staking.PledgePopup.Staking'
+        }
+      } else {
+        //BDRF
+        return {
+          title: 'Rewards.Bond.ExchangePopup.ExchangebDRF',
+          max: 'Rewards.Bond.ExchangePopup.Max',
+          amount: 'Rewards.Bond.ExchangePopup.Amount',
+          all: 'Rewards.Bond.ExchangePopup.All',
+          cancel: 'Rewards.Bond.ExchangePopup.Cancel',
+          confirm: 'Rewards.Bond.ExchangePopup.Exchange'
+        }
+      }
     }
   },
   watch: {
@@ -71,11 +99,11 @@ export default {
     },
     depositId () {
       if (this.depositId === EarningType.MIN) {
-        this.withdrawName = 'USDT'
+        this.tokenName = 'USDT'
       } else if (this.depositId === EarningType.EDRF) {
-        this.withdrawName = 'eDRF'
+        this.tokenName = 'DRF'
       } else {
-        this.withdrawName = 'bDRF'
+        this.tokenName = 'bDRF'
       }
 
       this.updateAccountOptions()
@@ -100,22 +128,20 @@ export default {
     submitThenClose () {
 
       if(!this.checkAmount()) {
-        this.$toast(this.$t('global.NumberError'))
         return
       }
 
       this.close()
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Rewards.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Rewards.TradeSuccessMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
       }).catch(e => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Rewards.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       }).finally( p => {
         this.$store.dispatch('earnings/loadEarningData')
       })
     },
     onDropDowOpen () {
-      return this.$el.querySelector(".derify-dropmenu-item .van-dropdown-item").style.top = "150px"
     },
     updateExchangeBondSizeUpperBound() {
       this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
@@ -127,7 +153,9 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
-      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+
+      if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.errorNotice(this.$t('global.NumberError'))
         return false
       }
 
@@ -135,17 +163,16 @@ export default {
     },
 
     getAccountOptions() {
-      let accoutOptions = [{ text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+      let accoutOptions = [{ text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
+        { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
 
       if (this.depositId === EarningType.MIN) {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = []
       } else if (this.depositId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = []
       } else {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.bDRFExchangeAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.StakingMyWallet'), value: 1 }]
+        accoutOptions = [      { text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
+          { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
       }
 
       return accoutOptions
@@ -153,6 +180,14 @@ export default {
 
     updateAccountOptions() {
       this.accountOptions = this.getAccountOptions()
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
     }
   }
 }

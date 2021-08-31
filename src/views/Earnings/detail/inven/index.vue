@@ -3,21 +3,21 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        :finished-text="$t('Rewards.Mining.NoMoreData')"
-        :loading-text="$t('Trade.OpenPosition.Loading')"
+        :finished-text="$t('global.NoMoreInfo')"
+        :loading-text="$t('global.Loading')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>{{$t('Rewards.Mining.Type')}}</div>
-        <div>{{$t('Rewards.Mining.Amount')}}</div>
-        <div class="center-span">{{$t('Rewards.Mining.Balance')}}</div>
-        <div class="center-span">{{$t('Rewards.Mining.Time')}}</div>
+        <div>{{$t('Rewards.Mining.History.Type')}}</div>
+        <div>{{$t('Rewards.Mining.History.Amount')}}</div>
+        <div class="center-span">{{$t('Rewards.Mining.History.Balance')}}</div>
+        <div class="center-span">{{$t('Rewards.Mining.History.Time')}}</div>
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Mining.Earning') : $t('Rewards.Mining.Withdraw')}}</div>
+          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Mining.History.Earning') : $t('Rewards.Mining.History.Withdraw')}}</div>
           <div>
-            <div class="color-type">{{data.amount | amountFormt(2, true, '-')}}</div>
+            <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">USDT</div>
           </div>
           <div class="center-span">
@@ -39,7 +39,7 @@ export default {
     return {
       list: [],
       loading: false,
-      finished: false
+      finished: true
     }
   },
   methods: {
@@ -57,6 +57,9 @@ export default {
         data.forEach((item) => self.list.push(item))
         self.loading = false
       }
+    }).finally(() => {
+      self.loading = false
+      self.finished = true
     });
   }
 }
@@ -65,9 +68,9 @@ export default {
 .heard{
   margin: 2.4rem 0;
   display: flex;
+  color: rgba(255,255,255,0.45);
   div{
     flex: 1;
-    color: rgba(255,255,255,0.45);
     font-size: 1.3rem;
   }
   .center-span{

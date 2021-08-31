@@ -1,62 +1,57 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup" v-if="openData">
-      <div class="system-popup-title">{{$t('Trade.OpenPositionPopup.OpenConfirm')}}</div>
-      <div class="error-notice" v-if="showError">
-        <span>{{errorMsg}}</span>
-        <div class="error-right">
-          <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showError=false}"></van-icon>
-        </div>
-      </div>
+      <div class="system-popup-title">{{$t('Trade.OpenPosition.OpenPopup.OpenConfirm')}}</div>
+      <ErrorNotice :show="showError" @close="() => {this.showError = false}">{{errorMsg}}</ErrorNotice>
       <div class="system-popup-price">
-        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Price')}}</div>
+        <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.Price')}}</div>
         <div v-if="openData.entrustType === OpenType.LimitOrder && sideType !== SideEnum.HEDGE">
           <span class="fc-85">{{openData.amount}}</span>
           <span class="fc-45">USDT</span>
         </div>
         <div v-else>
-          <span class="fc-85">{{$t('Trade.OpenPositionPopup.Market')}}</span>
+          <span class="fc-85">{{$t('Trade.OpenPosition.OpenPopup.Market')}}</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Type')}}</div>
+        <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.Type')}}</div>
         <div v-if="sideType === SideEnum.SHORT">
-          <span class="fc-red">{{$t('Trade.OpenPositionPopup.Short')}}</span>
+          <span class="fc-red">{{$t('Trade.OpenPosition.OpenPopup.Short')}}</span>
           <span class="fc-red">{{openData.leverage}}x</span>
         </div>
         <div v-if="sideType === SideEnum.LONG">
-          <span class="fc-green">{{$t('Trade.OpenPositionPopup.Long')}}</span>
+          <span class="fc-green">{{$t('Trade.OpenPosition.OpenPopup.Long')}}</span>
           <span class="fc-green">{{openData.leverage}}x</span>
         </div>
         <div v-if="sideType === SideEnum.HEDGE">
-          <span class="fc-yellow">{{$t('Trade.OpenPositionPopup.Two-Way')}}</span>
+          <span class="fc-yellow">{{$t('Trade.OpenPosition.OpenPopup.TwoWay')}}</span>
           <span class="fc-yellow">{{openData.leverage}}x</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">{{$t('Trade.OpenPositionPopup.Amount')}}</div>
+        <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.Amount')}}</div>
         <div>
           <span class="fc-85">{{size | amountFormt(4, false, 0)}}</span>
           <span class="fc-45">{{unitConfig[openData.unit].text}}</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">{{$t('Trade.OpenPositionPopup.PCF')}}</div>
+        <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.PCF')}}</div>
         <div>
           <span :class="'fc-85 ' + (-openData.positionChangeFee >= 0 ? 'fc-green' : 'fc-red')">{{-openData.positionChangeFee | amountFormt(4, true, 0)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
       <div class="system-popup-price">
-        <div class="fc-45">{{$t('Trade.OpenPositionPopup.TradeFee')}}</div>
+        <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.TradFee')}}</div>
         <div>
           <span class="fc-85">{{-openData.tradingFee | amountFormt(4, true, 0)}}</span>
           <span class="fc-45">USDT</span>
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Trade.OpenPositionPopup.Cancel')}}</div>
-        <div :class="confirmDisabled ? 'system-popup-button disabled-btn' : 'system-popup-button confirm'" @click="submitThenClose">{{$t('Trade.OpenPositionPopup.Confirm')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.OpenPosition.OpenPopup.Cancel')}}</div>
+        <div :class="confirmDisabled ? 'system-popup-button disabled-btn' : 'system-popup-button confirm'" @click="submitThenClose">{{$t('Trade.OpenPosition.OpenPopup.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -74,8 +69,10 @@ import {
   import { fck } from '../../../utils/utils'
   import { UnitTypeEnum } from '../../../store/modules/contract'
   import { UserProcessStatus } from '../../../store/modules/user'
+import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { ErrorNotice },
   props: {
     show: {
       type: Boolean,
@@ -181,7 +178,7 @@ export default {
       this.close()
       const {unit} = this.extraData
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.OpenPositionPopup.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price))
 
@@ -192,9 +189,10 @@ export default {
         price: toContractNum(price),
         leverage: toContractNum(leverage)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.OpenPositionPopup.TradeSuccessMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.OpenPositionPopup.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       })
 
     },
@@ -218,14 +216,14 @@ export default {
         if (size > fromContractUnit(this.sysOpenUpperBound.size)) {
 
           self.showError = true
-          self.errorMsg = `${this.$t('Trade.OpenPositionPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)} USDT`
+          self.errorMsg = `${this.$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)} USDT`
           return fromContractUnit(this.sysOpenUpperBound.size)
         }
       } else {
         if (size > fromContractUnit(this.sysOpenUpperBound.amount)) {
 
           self.showError = true
-          self.errorMsg = `${this.$t('Trade.OpenPositionPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)}${self.unitConfig[self.openData.unit].text}`
+          self.errorMsg = `${this.$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)}${self.unitConfig[self.openData.unit].text}`
 
           return fromContractUnit(this.sysOpenUpperBound.amount)
         }

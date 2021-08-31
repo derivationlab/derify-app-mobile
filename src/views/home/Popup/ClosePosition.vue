@@ -6,8 +6,8 @@
         <span class="fc-65">{{$t(popupInfos[popupInfoIndex].content)}}</span>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Trade.ClosePosition.Cancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.ClosePosition.Confirm')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.CurrentOrder.CancelOrderPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.CurrentOrder.CancelOrderPopup.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -40,11 +40,11 @@ export default {
       showPopup: this.show,
       popupInfoIndex: 0,
       popupInfos: [
-        {type: CancelOrderedPositionTypeEnum.StopLossOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
-        {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
-        {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'Trade.CancelOrderPopup.CancelOneOrder', content: 'Trade.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.StopLossOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.StopProfitOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
+        {type: CancelOrderedPositionTypeEnum.LimitedOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo', calfunc: 'cancleOrderedPosition'},
 
-        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CancelOrderPopup.CancelAllOrder', content: 'Trade.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
+        {type: CancelOrderedPositionTypeEnum.AllOrder, title: 'Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder', content: 'Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo', calfunc: 'cancleAllOrderedPositions'},
       ]
     }
   },
@@ -71,7 +71,7 @@ export default {
     submitThenClose () {
       const closePositionOrderType = this.closePositionOrderType
       const closePositionOrderTypeMap = {}
-      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.AllOrder] = 'closeAllPositions'
+      closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.AllOrder] = 'cancleAllOrderedPositions'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.LimitedOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopLossOrder] = 'cancleOrderedPosition'
       closePositionOrderTypeMap[CancelOrderedPositionTypeEnum.StopProfitOrder] = 'cancleOrderedPosition'
@@ -81,12 +81,13 @@ export default {
 
       const param = {...this.extraData, closeType: closePositionOrderType}
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: '交易执行中,请等待'})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/' + action, param).then((r) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: '交易执行成功'})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: '交易执行失败'})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       });
 
       this.close();

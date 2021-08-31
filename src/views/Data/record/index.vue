@@ -3,21 +3,21 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        :loading-text="$t('Trade.OpenPosition.Loading')"
-        :finished-text="$t('data.NoMoreData')"
+        :loading-text="$t('global.Loading')"
+        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>{{$t('data.contract')}}</div>
-        <div>{{$t('data.dealingSlip')}}</div>
-        <div class="center-span">{{$t('data.freightSpace')}}</div>
-        <div class="center-span">{{$t('data.Time')}}</div>
+        <div>{{$t('Data.TradeHitory.List.Contract')}}</div>
+        <div>{{$t('Data.TradeHitory.List.TradeType')}}</div>
+        <div class="center-span">{{$t('Data.TradeHitory.List.Size')}}</div>
+        <div class="center-span">{{$t('Data.TradeHitory.List.Time')}}</div>
       </div>
       <div class="heard">
         <div class="color-type">ETH / USDT</div>
         <div>
-          <div class="color-type">{{$t('data.open')}}</div>
-          <div class="unit-span mrt-5">{{$t('data.more')}}</div>
+          <div class="color-type">{{$t('Data.Data.Token.Price')}}</div>
+          <div class="unit-span mrt-5">{{$t('Data.Data.Token.TokenInfo')}}</div>
         </div>
         <div class="center-span">
           <div class="color-type">7890.12</div>

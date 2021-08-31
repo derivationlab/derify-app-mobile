@@ -3,25 +3,25 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        :finished-text="$t('Rewards.Staking.NoMoreData')"
-        :loading-text="$t('Trade.OpenPosition.Loading')"
+        :finished-text="$t('global.NoMoreInfo')"
+        :loading-text="$t('global.Loading')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>{{$t('Rewards.Mining.Type')}}</div>
-        <div>{{$t('Rewards.Mining.Amount')}}</div>
-        <div class="center-span">{{$t('Rewards.Mining.Balance')}}</div>
-        <div class="center-span">{{$t('Rewards.Mining.Time')}}</div>
+        <div>{{$t('Rewards.Staking.History.Type')}}</div>
+        <div>{{$t('Rewards.Staking.History.Amount')}}</div>
+        <div class="center-span">{{$t('Rewards.Staking.History.Balance')}}</div>
+        <div class="center-span">{{$t('Rewards.Staking.History.Time')}}</div>
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Mining.Earning') : $t('Rewards.Mining.Withdraw')}}</div>
+          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Staking.History.Earning') : $t('Rewards.Staking.History.Withdraw')}}</div>
           <div>
-            <div class="color-type">{{data.amount | amountFormt(2, true, '-')}}</div>
+            <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">eDRF</div>
           </div>
           <div class="center-span">
-            <div class="color-type">{{data.balance | amountFormt(2, true, '-')}}</div>
+            <div class="color-type">{{data.balance | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">eDRF</div>
           </div>
           <div class="center-span unit-span">
@@ -50,13 +50,15 @@ export default {
     const self = this;
     self.loading = true
     this.$store.dispatch("earnings/getTraderBondBalance").then((data) => {
-
       if(data instanceof Array){
         self.list.splice(0)
         data.forEach((item) => self.list.push(item))
-        self.loading = false
       }
-    });
+
+    }).finally(() => {
+      self.loading = false
+      self.finished = true
+    });;
   }
 }
 </script>
@@ -64,9 +66,9 @@ export default {
 .heard{
   margin: 2.4rem 0;
   display: flex;
+  color: rgba(255,255,255,0.45);
   div{
     flex: 1;
-    color: rgba(255,255,255,0.45);
     font-size: 1.3rem;
   }
   .center-span{

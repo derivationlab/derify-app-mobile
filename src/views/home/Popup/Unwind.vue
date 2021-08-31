@@ -1,24 +1,27 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="unwind-popup system-popup">
-      <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
+      <div class="system-popup-title">{{ $t('Trade.MyPosition.ClosePositionPopup.Close') }}</div>
+      <DerifyErrorNotice @close="errorNotice" :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <div style="margin-top: 2rem">
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.PositionHeld') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.PositionHeld') }}</div>
             <div>
               <span class="fc-85">{{position.size | fck(-8, 8)}}</span>
               <span class="fc-45">{{getPairByAddress(position.token).key}}</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.AveragePrice') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.AveragePrice') }}</div>
             <div>
               <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
             </div>
           </div>
           <div class="system-popup-price">
-            <div class="fc-45">{{ $t('Trade.ClosePosition.CurrentPrice') }}</div>
+            <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.CurrentPrice') }}</div>
             <div>
               <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
               <span class="fc-45">USDT</span>
@@ -26,9 +29,9 @@
           </div>
       </div>
       <div class="system-popup-input-block">
-        <div class="system-popup-input-title">{{ $t('Trade.ClosePosition.Amount') }}</div>
+        <div class="system-popup-input-title">{{ $t('Trade.MyPosition.ClosePositionPopup.Amount') }}</div>
         <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor" placeholder="" type="number" @input="onPositionSizeChange" v-model="value1" />
+          <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" type="number" @input="onPositionSizeChange" v-model="value1" />
           <div class="unit">{{getPairByAddress(position.token).key}}</div>
         </div>
         <div class="unwind-popup-set">
@@ -37,18 +40,20 @@
         </div>
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.ClosePosition.Cancel') }}</div>
-        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">{{ $t('Trade.ClosePosition.Confirm') }}</div>
+        <div class="system-popup-button cancel" @click="close">{{ $t('Trade.MyPosition.ClosePositionPopup.Cancel') }}</div>
+        <div :class="closeUpperBound > 0 ? 'system-popup-button confirm' : 'system-popup-button disabled-btn'" @click="submitThenClose">{{ $t('Trade.MyPosition.ClosePositionPopup.Confirm') }}</div>
       </div>
     </div>
   </van-popup>
 </template>
 
 <script>
-  import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
-  import { UserProcessStatus } from '../../../store/modules/user'
+  import { fromContractUnit, toContractUnit } from '@/utils/contractUtil'
+  import { UserProcessStatus } from '@/store/modules/user'
+  import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
+  components: { DerifyErrorNotice },
   props: {
     show: {
       type: Boolean,
@@ -64,14 +69,14 @@ export default {
     }
   },
   data () {
-    console.log('unwind popup', this.extraData)
-
     const defaultPercent = 100
     const size = this.extraData == null ? 0 : this.extraData.size
 
     const value1 = size * defaultPercent / 100
     return {
       showPopup: this.show,
+      errorMsg: '',
+      showError: false,
       value1: value1 > 0 ? value1 : '',
       position: Object.assign({size : 0}, this.extraData),
       percents: [
@@ -127,12 +132,17 @@ export default {
 
 
       if(size <= 0){
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
+        return
       }
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast(this.$t('global.NumberError'))
+        this.value1 = fromContractUnit(this.closeUpperBound)
+        this.curPercent = 100
+        this.errorNotice(this.$t('global.NumberError'))
+        return
       }
+      this.errorNotice(null)
     },
     submitThenClose (){
       const size = this.value1
@@ -140,25 +150,26 @@ export default {
       const token = this.position.token
 
       if(size > fromContractUnit(this.closeUpperBound)) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
       if(size <= 0) {
-        this.$toast(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$toast(this.$t('Trade.ClosePosition.TradePendingMsg'))})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
         size: toContractUnit(size)
       }).then(() => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$toast(this.$t('Trade.ClosePosition.TradeSuccessMsg'))})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$toast(this.$t('Trade.ClosePosition.TradeFailedMsg'))})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       })
 
       this.close()
@@ -171,7 +182,14 @@ export default {
 
       return pair
     },
-
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
   }
 }
 </script>

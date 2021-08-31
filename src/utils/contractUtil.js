@@ -97,7 +97,7 @@ export const Token = {
   USDT: ABIData.DUSD.address
 }
 
-const cache = {}
+const cache = {gasPrice: 1e9}
 
 export const contractDecimals = 8
 
@@ -116,10 +116,10 @@ export function toShiftedString (number, decimals = 0, bit = 2) {
 export function convertAmount2TokenSize(unit, amount, price) {
 
   if(unit === UnitTypeEnum.USDT) {
-    return amount / price
+    return fromContractUnit(amount) / fromContractUnit(price)
   }
 
-  return amount
+  return fromContractUnit(amount)
 }
 
 
@@ -169,23 +169,30 @@ export default class Contract {
   constructor (from) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-
-    const gasPrice = null;
+    option.gasPrice = 1e9
 
     this.web3 = web3
     this.from = from
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, Object.assign({ gasPrice }, option))
+    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, option)
 
     this.DerifyDerivative = {
-      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, Object.assign({ gasPrice }, option)),
-      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, Object.assign({ gasPrice }, option))
+      BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, option),
+      ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, option)
     }
 
-    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, Object.assign({ gasPrice }, option))
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, Object.assign({ gasPrice }, option))
-    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, Object.assign({ gasPrice }, option))
-    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, Object.assign({ gasPrice }, option))
+    this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
+    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, option)
+    this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
+    this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
+  }
+
+  updateGasPrice (web3) {
+    web3.eth.getGasPrice().then((gasPrice) => {
+      if(gasPrice) {
+        cache.gasPrice = gasPrice
+      }
+    })
   }
 
   /**
@@ -485,7 +492,21 @@ export default class Contract {
    * @return {*}
    */
   cancleAllOrderedPositions (token, trader) {
-    return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
+    if(!token){
+      //fixme there's twice call of the smart contract
+      return (async() => {
+        try{
+          let ret1 = this.__getDerifyDerivativeContract(Token.ETH).methods.cancleAllOrderedPositions(trader).send()
+          let ret2 = this.__getDerifyDerivativeContract(Token.BTC).methods.cancleAllOrderedPositions(trader).send()
+          return await ret1 && await ret2
+        }catch (ex){
+          return false
+        }
+      })()
+    }else{
+      return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
+    }
+
   }
 
   /**
@@ -837,6 +858,7 @@ export default class Contract {
     }
 
     const variables = await this.getTraderPositionVariables(params)
+    const marginMaintenanceRatio = await this.DerifyExchange.methods.marginMaintenanceRatio().call();
 
     position.margin = variables.margin
     position.unrealizedPnl = variables.unrealizedPnl
@@ -850,11 +872,11 @@ export default class Contract {
 
     const liquidPriceParam = {
       side: position.side,
-      spotPrice: position.spotPrice,
-      size: position.size,
-      marginMaintenanceRatio:  position.marginRate,
-      marginBalance: position.marginBalance,
-      totalPositionAmount: position.totalPositionAmount
+      spotPrice: fromContractUnit(position.spotPrice),
+      size: fromContractUnit(position.size),
+      marginMaintenanceRatio:  fromContractUnit(marginMaintenanceRatio),
+      marginBalance: fromContractUnit(position.marginBalance),
+      totalPositionAmount: fromContractUnit(position.totalPositionAmount)
     }
     position.liquidatePrice = await this.getTraderPositionLiquidatePrice(liquidPriceParam);
 

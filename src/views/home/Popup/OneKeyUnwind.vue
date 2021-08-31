@@ -1,13 +1,13 @@
 <template>
   <van-popup class="derify-popup" v-model="showPopup" round :closeable="false" @close="close">
     <div class="system-popup">
-      <div class="system-popup-title">{{ $t('Trade.ClosePosition.Close') }}</div>
+      <div class="system-popup-title">{{ $t('Trade.MyPosition.ClosePositionPopup.Close') }}</div>
       <div class="fz-15" style="margin-top: 1rem">
-        {{$t('Trade.ClosePosition.ClosePositionPopupInfo')}}
+        {{$t('Trade.MyPosition.ClosePositionPopup.ClosePositionPopupInfo')}}
       </div>
       <div class="system-popup-buttons">
-        <div class="system-popup-button cancel" @click="close">{{$t('Trade.ClosePosition.Cancel')}}</div>
-        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.ClosePosition.Confirm')}}</div>
+        <div class="system-popup-button cancel" @click="close">{{$t('Trade.MyPosition.ClosePositionPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Trade.MyPosition.ClosePositionPopup.Confirm')}}</div>
       </div>
     </div>
   </van-popup>
@@ -39,12 +39,13 @@ export default {
       this.$emit('closeOneKeyUnwindPopup', false)
     },
     submitThenClose () {
-      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('Trade.ClosePosition.TradePendingMsg')})
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
       this.$store.dispatch('contract/closeAllPositions').then((r) => {
-        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('Trade.ClosePosition.TradeSuccessMsg')})
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {
-        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('Trade.ClosePosition.TradeFailedMsg')})
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
       });
 
       this.close();

@@ -3,18 +3,18 @@
     <van-list
         v-model="loading"
         :finished="finished"
-        :loading-text="$t('Trade.OpenPosition.Loading')"
-        :finished-text="$t('Trade.Account.NoMoreInfo')"
+        :loading-text="$t('global.Loading')"
+        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
-        <div>{{$t('Brokers.Type')}}</div>
-        <div>{{$t('Brokers.Amount')}}</div>
-        <div class="center-span">{{$t('Brokers.Balance')}}</div>
-        <div class="center-span">{{$t('Brokers.Time')}}</div>
+        <div>{{$t('Broker.Broker.History.Type')}}</div>
+        <div>{{$t('Broker.Broker.History.Amount')}}</div>
+        <div class="center-span">{{$t('Broker.Broker.History.Balance')}}</div>
+        <div class="center-span">{{$t('Broker.Broker.History.Time')}}</div>
       </div>
       <div class="heard">
-        <div class="color-type">{{$t('Brokers.Earnings')}}</div>
+        <div class="color-type">{{$t('Broker.Broker.History.Earnings')}}</div>
         <div>
           <div class="color-type">-1234.56</div>
           <div class="unit-span mrt-5">USDT</div>

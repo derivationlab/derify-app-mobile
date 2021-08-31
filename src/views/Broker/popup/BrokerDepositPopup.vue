@@ -1,0 +1,168 @@
+<template>
+  <van-popup class="derify-popup" v-model="showPopup" round @close="close">
+    <div class="unwind-popup system-popup">
+      <div class="system-popup-title">{{ $t('Broker.Broker.DepositPopup.Burn') }}</div>
+      <DerifyErrorNotice :show="showError">
+        {{errorMsg}}
+      </DerifyErrorNotice>
+      <div class="system-popup-info">
+        <div class="system-popup-line">
+          <div class="system-popup-label fz-15">
+            <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.Balance') }}</div>
+            <div>
+              <span class="fc-85">1.234567890</span>
+              <span class="fc-45">eDRF</span>
+            </div>
+          </div>
+        </div>
+        <div class="system-popup-line">
+          <div class="system-popup-label">
+            <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.UnitPrice') }}</div>
+            <div>
+              <span class="fc-85">600.00</span>
+              <span class="fc-45">eDRF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="system-popup-form">
+        <div class="system-popup-line">
+          <van-dropdown-menu :overlay="false" class="derify-dropmenus">
+            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
+              <div class="derify-dropmenu-title" slot="title">
+                <span>{{accountOptions[accountType].text}}</span>
+                <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
+              </div>
+            </van-dropdown-item>
+          </van-dropdown-menu>
+        </div>
+
+        <div class="system-popup-line">
+          <div class="system-popup-label  fz-12"><span class="fc-45">{{ $t('Broker.Broker.DepositPopup.BurnAmount') }}</span>
+            <span class="fc-80">
+              <i18n path="Broker.Broker.DepositPopup.ValidPeriod">
+                <template #0>
+                  <span class="fc-yellow">20</span>
+                </template>
+              </i18n>
+            </span>
+          </div>
+          <div class="system-popup-input">
+            <van-field class="derify-input no-padding-hor fz-17" placeholder=""
+                       :formatter="(value) => value.replace(/-/g, '')"
+                       type="number" v-model="amount"/>
+            <div class="unit">eDRF</div>
+          </div>
+        </div>
+      </div>
+      <div class="system-popup-buttons">
+        <div class="system-popup-button cancel" @click="close">{{$t('Broker.Broker.DepositPopup.Cancel')}}</div>
+        <div class="system-popup-button confirm" @click="close">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
+      </div>
+    </div>
+  </van-popup>
+</template>
+
+<script>
+import {
+  fromContractUnit,
+  toContractUnit,
+  toHexString,
+  SideEnum,
+  OpenType,
+  convertAmount2TokenSize, toContractNum
+} from '../../../utils/contractUtil'
+import { fck } from '../../../utils/utils'
+import { UnitTypeEnum } from '../../../store/modules/contract'
+import { UserProcessStatus } from '../../../store/modules/user'
+import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
+
+export default {
+  components: {DerifyErrorNotice},
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+
+    return {
+      showError: false,
+      errorMsg: '',
+      accountType: 0,
+      amount: 1200.00,
+      accountOptions: this.getAccountOptions(),
+      showPopup: this.show
+    }
+  },
+  watch: {
+    show() {
+      this.showPopup = this.show
+    },
+    '$i18n.locale':{
+      handler(){
+        this.accountOptions = this.getAccountOptions()
+      }
+    }
+  },
+  computed: {
+
+  },
+  methods: {
+    close () {
+      this.$emit('close')
+    },
+    submitThenClose () {
+
+    },
+    getAccountOptions() {
+      return [
+        { text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0 },
+        { text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1 }
+      ]
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.derify-popup{
+  .system-popup-line{
+    .system-popup-label{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .system-popup-info{
+    background: #343166;
+    border-radius: 0.9rem;
+    .system-popup-line {
+      line-height: 3rem;
+      padding: 1rem;
+    }
+    span{
+      padding-right: 1rem;
+    }
+  }
+
+  .system-popup-form{
+    .system-popup-line{
+      margin-top: 3rem;
+    }
+    .system-popup-label{
+      margin: 1rem 0;
+    }
+  }
+}
+.van-dropdown-menu__title{
+  padding: 0;
+}
+.derify-dropmenus .van-dropdown-menu__bar{
+  padding-bottom: 0;
+}
+</style>
