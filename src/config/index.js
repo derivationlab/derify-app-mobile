@@ -1,14 +1,12 @@
-import DerifyBond from '../utils/contract/DerifyRewards'
 import DerifyDerivative from '../utils/contract/DerifyDerivative'
 import DerifyExchange from '../utils/contract/DerifyExchange'
-import DerifyStaking from '../utils/contract/DerifyRewards'
+import DerifyRewards from '../utils/contract/DerifyRewards'
 import DUSD from '../utils/contract/DUSD'
 import bDRF from '../utils/contract/bDRF'
 import DRF from '../utils/contract/DRF'
 import eDRF from '../utils/contract/eDRF'
 
 const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
-
 
 const config = {
   currentEnv: currentEnv,
@@ -26,8 +24,8 @@ const config = {
   contract: {
     development: {},
     debug: {
-      DerifyBond: {
-        abi: DerifyBond,
+      DerifyRewards: {
+        abi: DerifyRewards,
         address: '0xC04195aB6ff125EabA2A23d72E7B061F0A90e001'
       },
       DerifyDerivative: {
@@ -44,10 +42,6 @@ const config = {
       DerifyExchange: {
         abi: DerifyExchange,
         address: '0x7af1EdeAD20EF8cDDdCEE3bAb641718A6a3349DF'
-      },
-      DerifyStaking: {
-        abi: DerifyStaking,
-        address: '0x519231B9A4Eef0A59FE8fF57FF50fD018b9950cC'
       },
       DUSD: {
         abi: DUSD,

@@ -174,15 +174,13 @@ export default class Contract {
     this.web3 = web3
     this.from = from
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, option)
-
+    this.DerifyRewards = new web3.eth.Contract(ABIData.DerifyRewards.abi, ABIData.DerifyRewards.address, option)
     this.DerifyDerivative = {
       BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, option),
       ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, option)
     }
 
     this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, option)
     this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
     this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
   }
@@ -556,7 +554,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawBond (amount) {
-    return this.DerifyBond.methods.withdrawBond(amount).send();
+    return this.DerifyRewards.methods.withdrawBond(amount).send();
   }
 
   /**
@@ -574,13 +572,13 @@ export default class Contract {
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
-            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyRewards, amount)
           }else{
             approveRet = true
           }
 
           if(approveRet){
-            resolve(await this.DerifyBond.methods.exchangeBond(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.exchangeBond(amount, bondAccountType).send())
           }else{
             reject('approve failed')
           }
@@ -605,13 +603,13 @@ export default class Contract {
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
-            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyRewards, amount)
           }else{
             approveRet = true
           }
 
           if(approveRet){
-            resolve(await this.DerifyBond.methods.depositBondToBank(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.depositBondToBank(amount, bondAccountType).send())
           }else{
             reject('approve failed')
           }
@@ -646,7 +644,7 @@ export default class Contract {
    * @return {*}
    */
   redeemBondFromBank ({amount, bondAccountType }) {
-    return this.DerifyBond.methods.redeemBondFromBank(amount, bondAccountType).send();
+    return this.DerifyRewards.methods.redeemBondFromBank(amount, bondAccountType).send();
   }
 
   /**
@@ -656,7 +654,7 @@ export default class Contract {
    * @return {BondInfo}
    */
   getBondInfo (trader) {
-    return this.DerifyBond.methods.getBondInfo(trader).call();
+    return this.DerifyRewards.methods.getBondInfo(trader).call();
   }
 
   /**
@@ -666,7 +664,7 @@ export default class Contract {
    * @return {int} bDRF exchangeable maximum（The precision is 8 bits）
    */
   getExchangeBondSizeUpperBound ({trader, bondAccountType}) {
-    return this.DerifyBond.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
+    return this.DerifyRewards.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
   }
 
   /**
@@ -675,7 +673,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawPMReward (amount) {
-    return this.DerifyStaking.methods.withdrawPMReward(amount).send();
+    return this.DerifyRewards.methods.withdrawPMReward(amount).send();
   }
 
   /**
@@ -684,8 +682,9 @@ export default class Contract {
    * @return {Promise<int>} （The precision is 8 bits）
    */
   getPMReward (trader) {
-    return this.DerifyStaking.methods.getPMReward(trader).call();
+    return this.DerifyRewards.methods.getPMReward(trader).call();
   }
+
   /**
    * get All positions
    * @param trader
