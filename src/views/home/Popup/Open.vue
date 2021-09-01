@@ -67,7 +67,7 @@ import {
   convertAmount2TokenSize, toContractNum
 } from '../../../utils/contractUtil'
   import { fck } from '../../../utils/utils'
-  import { UnitTypeEnum } from '../../../store/modules/contract'
+  import { UnitTypeEnum } from '../../../utils/contractUtil'
   import { UserProcessStatus } from '../../../store/modules/user'
 import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 

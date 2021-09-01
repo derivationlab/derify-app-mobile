@@ -82,6 +82,18 @@ export default
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "longTotalSize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "shortTotalSize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "timestamp",
         "type": "uint256"
       }
@@ -149,6 +161,18 @@ export default
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "longTotalSize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "shortTotalSize",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "timestamp",
         "type": "uint256"
       }
@@ -210,7 +234,33 @@ export default
   },
   {
     "inputs": [],
+    "name": "longTotalSize",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "roRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "shortTotalSize",
     "outputs": [
       {
         "internalType": "uint256",
@@ -599,7 +649,7 @@ export default
         "type": "address"
       }
     ],
-    "name": "cancleAllOrderedPositions",
+    "name": "cancleDerivativeOrderedPositions",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

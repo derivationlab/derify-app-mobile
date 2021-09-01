@@ -14,6 +14,10 @@ Vue.filter('amountFormt', (value, bit, showPositive, zeroDefault, shiftNum) => {
 })
 
 Vue.filter('textwrap', (value, length) => {
+  if(!value) {
+    return ''
+  }
+
   if(value.length <= length) {
     return value
   }

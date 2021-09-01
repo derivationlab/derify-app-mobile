@@ -402,7 +402,7 @@ import {
   toContractUnit
 } from '@/utils/contractUtil'
 import {fck} from "@/utils/utils";
-import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/store/modules/contract'
+import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'

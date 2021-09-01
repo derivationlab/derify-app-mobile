@@ -7,7 +7,7 @@ export const EVENT_WALLET_CHANGE = 'walletChange'
 
 export function contract (account) {
 
-  const contractObj = new Contract(account)
+  const contractObj = new Contract({from: account, broker: '1'})
 
   if(contractDebug){
 

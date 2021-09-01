@@ -1,10 +1,45 @@
 import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
-import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../store/modules/contract'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
+export class UnitTypeEnum {
+  static get USDT() {
+    return 0
+  }
+
+  static get CurPair() {
+    return 1
+  }
+
+  static get Percent() {
+    return 2
+  }
+}
+
+export class CancelOrderedPositionTypeEnum {
+  static get LimitedOrder() {
+    return 0
+  }
+
+  static get StopProfitOrder() {
+    return 1
+  }
+
+  static get StopLossOrder() {
+    return 2
+  }
+
+  static get AllOrder() {
+    return 3
+  }
+
+  static get StopProfitAndLossOrder() {
+    return 4
+  }
+}
+
 export class SideEnum {
   static get LONG (){
     return 0;
@@ -93,9 +128,11 @@ export const Token = {
   ETH: ABIData.DerifyDerivative.ETH.token,
   DUSD: ABIData.DUSD.address,
   bDRF: ABIData.bDRF.address,
-  eDRF: ABIData.bDRF.address,
+  eDRF: ABIData.eDRF.address,
+  DRF: ABIData.DRF.address,
   USDT: ABIData.DUSD.address
 }
+
 
 const cache = {gasPrice: 1e9}
 
@@ -166,13 +203,14 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
  */
 export default class Contract {
 
-  constructor (from) {
+  constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
     option.gasPrice = 1e9
 
     this.web3 = web3
     this.from = from
+    this.broker = broker
 
     this.DerifyRewards = new web3.eth.Contract(ABIData.DerifyRewards.abi, ABIData.DerifyRewards.address, option)
     this.DerifyDerivative = {
@@ -183,6 +221,8 @@ export default class Contract {
     this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
     this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
     this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
+    this.eDRF = new web3.eth.Contract(ABIData.eDRF.abi, ABIData.eDRF.address, option)
+    this.DRF = new web3.eth.Contract(ABIData.DRF.abi, ABIData.DRF.address, option)
   }
 
   updateGasPrice (web3) {
@@ -257,7 +297,7 @@ export default class Contract {
    */
   openPosition ({token, side, openType, size, price, leverage}) {
     return this.DerifyExchange.methods
-      .openPosition(token, side, openType, size, price, leverage)
+      .openPosition(this.broker, token, side, openType, size, price, leverage)
       .send()
   }
   /**
@@ -268,7 +308,7 @@ export default class Contract {
    * @return {*}
    */
   closePosition (token, side, size) {
-    return this.DerifyExchange.methods.closePosition(token, side, size)
+    return this.DerifyExchange.methods.closePosition(this.broker, token, side, size)
       .send()
   }
 
@@ -276,7 +316,7 @@ export default class Contract {
    * closeAllPositions
    */
   closeAllPositions () {
-    return this.DerifyExchange.methods.closeAllPositions()
+    return this.DerifyExchange.methods.closeAllPositions(this.broker)
       .send()
   }
 
@@ -490,21 +530,7 @@ export default class Contract {
    * @return {*}
    */
   cancleAllOrderedPositions (token, trader) {
-    if(!token){
-      //fixme there's twice call of the smart contract
-      return (async() => {
-        try{
-          let ret1 = this.__getDerifyDerivativeContract(Token.ETH).methods.cancleAllOrderedPositions(trader).send()
-          let ret2 = this.__getDerifyDerivativeContract(Token.BTC).methods.cancleAllOrderedPositions(trader).send()
-          return await ret1 && await ret2
-        }catch (ex){
-          return false
-        }
-      })()
-    }else{
-      return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
-    }
-
+    return this.DerifyExchange.methods.cancleAllOrderedPositions().send()
   }
 
   /**

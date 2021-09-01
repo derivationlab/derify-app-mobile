@@ -4,27 +4,12 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "_factory",
+        "name": "account",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_tokenUSD",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_tokenBDRF",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_tokenDRF",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_tokenEDRF",
+        "name": "minter_",
         "type": "address"
       }
     ],
@@ -35,37 +20,25 @@ export default
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "enum IDerifyRewards.UpdateType",
-        "name": "updateType",
-        "type": "uint8"
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
+        "name": "spender",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
+        "name": "value",
         "type": "uint256"
       }
     ],
-    "name": "BondUpdates",
+    "name": "Approval",
     "type": "event"
   },
   {
@@ -73,715 +46,183 @@ export default
     "inputs": [
       {
         "indexed": false,
-        "internalType": "enum IDerifyRewards.UpdateType",
-        "name": "updateType",
-        "type": "uint8"
-      },
-      {
-        "indexed": true,
         "internalType": "address",
-        "name": "broker",
+        "name": "minter",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "trader",
+        "name": "newMinter",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
-    "name": "BrokerRewardBalanceUpdate",
+    "name": "MinterChanged",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "enum IDerifyRewards.UpdateType",
-        "name": "updateType",
-        "type": "uint8"
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
+        "name": "to",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
+        "name": "value",
         "type": "uint256"
       }
     ],
-    "name": "DrfBalanceUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum IDerifyRewards.UpdateType",
-        "name": "updateType",
-        "type": "uint8"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "EdrfBalanceUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum IDerifyRewards.UpdateType",
-        "name": "updateType",
-        "type": "uint8"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "amount",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "PMRewardUpdates",
+    "name": "Transfer",
     "type": "event"
   },
   {
     "inputs": [],
-    "name": "bondAnnualInterestRate",
+    "name": "decimals",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "brokerApplyNumber",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "brokerRewardPool",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "brokerValidUnitNumber",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "exchange",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "factory",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "positionMiningRewardPool",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenBDRF",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenDRF",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenEDRF",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "tokenUSD",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_exchange",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_bondAnnualInterestRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_brokerApplyNumber",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_brokerValidUnitNumber",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateParams",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "payBond",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawBond",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
         "type": "uint8"
       }
     ],
-    "name": "exchangeBond",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
-        "type": "uint8"
-      }
-    ],
-    "name": "depositBondToBank",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
-        "type": "uint8"
-      }
-    ],
-    "name": "redeemBondFromBank",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
-    "name": "bondReturn",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "minter",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "trader",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "getBondInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "bondBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "bondReturnBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "bondWalletBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "bondAnnualInterestRatio",
-        "type": "uint256"
-      }
-    ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
-        "type": "uint8"
-      }
-    ],
-    "name": "getExchangeBondSizeUpperBound",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "maxBondSize",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
-    "name": "getSysExchangeBondSizeUpperBound",
+    "name": "name",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "sysMaxBondSize",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "stakingDrf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "redeemDrf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawEdrf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
-    "name": "mintEdrf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "burnEdrf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      }
-    ],
-    "name": "getStakingInfo",
+    "name": "symbol",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "drfBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "edrfBalance",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "addPMRewardByTradingFee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "traders",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "amounts",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "updateTradersPMReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawPMReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      }
-    ],
-    "name": "getPMReward",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "pmrBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "pmrAccumulatedBalance",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "broker",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "addBrokerReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdrawBrokerReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
-        "type": "uint8"
-      }
-    ],
-    "name": "applyBroker",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IDerifyRewards.AccountType",
-        "name": "accountType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "burnEdrfExtendValidPeriod",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
-    "name": "updateBrokerValidPeriod",
+    "name": "version",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "minter_",
+        "type": "address"
+      }
+    ],
+    "name": "setMinter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -790,29 +231,95 @@ export default
     "inputs": [
       {
         "internalType": "address",
-        "name": "broker",
+        "name": "dst",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "getBrokerInfo",
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "rewardBalance",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "accumulatedReward",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "validPeriodInDay",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "transfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

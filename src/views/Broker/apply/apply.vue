@@ -2,21 +2,28 @@
   <div class="home-container page-container">
     <navbar title="选择经济商" :logo="false" :showGoback="true"/>
     <div class="home-mid">
-      <van-list class="brokers-wrap">
+      <van-list class="brokers-wrap"
+                v-model="loading"
+                @load="loadBrokers"
+                :finished="finished"
+                :loading-text="$t('global.Loading')"
+      >
         <template v-for="(broker,key) in brokers">
-          <div :class="broker.selected ? 'broker-info active' : 'broker-info'" :key="key">
+          <div :class="broker.selected ? 'broker-info active' : 'broker-info'" :key="key" @click="() => {
+              broker.selected = !broker.selected
+            }">
             <i class="selected-icon" v-if="broker.selected">
               <img src="@/assets/images/wallet/select.png" alt="" style="width: 100%;height: 100%;"/>
             </i>
 
             <div class="broker-avatar">
-              <img :src="broker.avatar" style="width: 5rem;height: 5rem" alt=""/>
+              <img :src="broker.logo" style="width: 5rem;height: 5rem" alt=""/>
             </div>
             <div class="broker-contact">
-              <div class="broker-name">{{broker.userName}}</div>
+              <div class="broker-name">{{broker.id}}</div>
               <div class="broker-addr">
-                <p>{{broker.account}}</p>
-                <p>{{broker.address | textwrap(36)}}</p>
+                <p>@{{broker.name}}</p>
+                <p>{{broker.broker | textwrap(36)}}</p>
               </div>
             </div>
           </div>
@@ -40,38 +47,15 @@ export default {
   },
   data () {
     return {
-      brokers:[
-        {
-          id: 1,
-          avatar: 'https://dummyimage.com/400x400/fef/fff',
-          address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-          userName: 'Coinbaby\'s Playground',
-          account: 'Coinbaby',
-          accountAddress: 'http://app.derify.finance/@Coinbaby',
-          selected: true
-        },
-        {
-          id: 2,
-          avatar: 'https://dummyimage.com/400x400/fef/fff',
-          address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-          userName: 'Coinbaby\'s Playground',
-          account: 'Coinbaby',
-          accountAddress: 'http://app.derify.finance/@Coinbaby',
-          selected: false
-        },
-        {
-          id: 3,
-          avatar: 'https://dummyimage.com/400x400/fef/fff',
-          address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-          userName: 'Coinbaby\'s Playground',
-          account: 'Coinbaby',
-          accountAddress: 'http://app.derify.finance/@Coinbaby',
-          selected: false
-        },
-      ]
+      loading: false,
+      finished: true,
+      brokers: [],
+      brokerPageSize: 10,
+      brokerPageNum: 0
     }
   },
   created () {
+    this.loadBrokers()
   },
   computed: {
     isLogin () {
@@ -79,6 +63,24 @@ export default {
     }
   },
   methods: {
+    loadBrokers() {
+      this.loading = true
+      this.$store.dispatch('broker/getBrokerList', {page: this.brokerPageNum, size: this.brokerPageSize})
+        .then((brokers) => {
+        if(brokers.length < 1) {
+          this.finished = true
+        }else{
+          brokers.forEach(broker => {
+            this.brokers.push(Object.assign({selected: false}, broker))
+          })
+          this.finished = false
+        }
+      }).finally(() => {
+        this.loading = false
+      })
+
+      this.brokerPageNum++
+    }
   }
 }
 </script>
@@ -104,8 +106,7 @@ export default {
     padding: 1.1rem;
     border-radius: 1.8rem;
     background-color: #272354;
-
-
+    border: 0.1rem solid transparent;
     &.active{
       border: 0.1rem solid #fae247;
     }

@@ -9,6 +9,9 @@ const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
 const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
 //User holdings and mining revenue flow details
 const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
+//edrf balance
+const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
+
 const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
 const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
 
@@ -16,13 +19,15 @@ const isNotCallEvent = false;
 /**
  *
  * @param trader
+ * @param pageNum
+ * @param pageSize
  * @returns {Promise<Array<TradeRecord>>}
  */
-export async function getTradeList (trader) {
-  const content = await io.get(TRADE_LIST_URL + trader)
+export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
+  const content = await io.get(TRADE_LIST_URL + trader + "/" + pageNum + "/" + pageSize)
 
   if(content) {
-    return content.data;
+    return content.data.data;
   }
 
   return [];
@@ -31,13 +36,15 @@ export async function getTradeList (trader) {
 /**
  * mining trade history
  * @param trader
+ * @param pageNum
+ * @param pageSize
  * @returns {Promise<Array<TradeBalanceDetail>>}
  */
-export async function getTradeBalanceDetail (trader) {
+export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(FUND_LIST_URL + trader)
 
   if(content) {
-    return content.data;
+    return content.data.data;
   }
 
   return [];
@@ -46,12 +53,14 @@ export async function getTradeBalanceDetail (trader) {
 /**
  *
  * @param trader
+ * @param pageNum
+ * @param pageSize
  * @returns {Promise<*[]|TraderBondBalance>}
  */
-export async function getTraderBondBalance (trader) {
+export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
   if(content) {
-    return content.data;
+    return content.data.data;
   }
 
   return [];
@@ -60,12 +69,30 @@ export async function getTraderBondBalance (trader) {
 /**
  *
  * @param trader
+ * @param pageNum
+ * @param pageSize
  * @returns {Promise<*[]|TradePMRBalance>}
  */
-export async function getTraderPMRBalance (trader) {
+export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(TRADER_PMR_BALANCE_URL + trader)
   if(content) {
-    return content.data;
+    return content.data.data;
+  }
+
+  return [];
+}
+
+/**
+ *
+ * @param trader
+ * @param pageNum
+ * @param pageSize
+ * @returns {Promise<*[]|TraderEDRFBalance>}
+ */
+export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) {
+  const content =  await io.get(TRADER_EDRF_BALANCE_URL + trader)
+  if(content) {
+    return content.data.data;
   }
 
   return [];
@@ -115,7 +142,7 @@ export function createTokenPriceChangeEvenet (tokenKey, callback){
 
 
 /**
- * ½»Ò×¼ÇÂ¼
+ * äº¤æ˜“è®°å½•
  */
 export class TradeRecord {
   id;// uuid
@@ -131,16 +158,16 @@ export class TradeRecord {
     5-MandatoryLiquidationTrade
   */
   type;
-  side; // 0-LONG£¬1-SHORT
+  side; // 0-LONGï¼Œ1-SHORT
   size; // The number of transactions
   price; // deal price
   amount; // Transaction amount (transaction price*transaction quantity)
   trading_fee;
   position_change_fee;
   pnl_usdt; //Profit and loss (unit: USDT)
-  pnl_bond //Apportioned compensation£¨unit:bDRF£©
-  event_time;// Smart contract event time£¨UTC£©
-  update_time;// Update the back-end database time£¨UTC£©
+  pnl_bond //Apportioned compensationï¼ˆunit:bDRFï¼‰
+  event_time;// Smart contract event timeï¼ˆUTCï¼‰
+  update_time;// Update the back-end database timeï¼ˆUTCï¼‰
 }
 
 export class TradeBalanceDetail {
@@ -162,8 +189,8 @@ export class TradeBalanceDetail {
     101-Withdraw
   */
   fee_type;
-  event_time;// Smart contract event time£¨UTC£©
-  update_time;// Update the back-end database time£¨UTC£©
+  event_time;// Smart contract event timeï¼ˆUTCï¼‰
+  update_time;// Update the back-end database timeï¼ˆUTCï¼‰
 }
 
 
@@ -181,7 +208,7 @@ export class PositionMiningRate {
 }
 
 /**
- * bDRFÊÕÒæÃ÷Ï¸
+ * bDRF balance history
  */
 export class TraderBondBalance {
   id;//uuid
@@ -198,8 +225,27 @@ export class TraderBondBalance {
    5-Interest
    */
   bond_update_type;
-  event_time;//contract event time£¨UTC£©
-  update_time;//db update time£¨UTC£©
+  event_time;//contract event timeï¼ˆUTCï¼‰
+  update_time;//db update timeï¼ˆUTCï¼‰
+}
+
+/**
+ * EDRF trade history
+ */
+export class TraderEDRFBalance {
+  id;//uuid
+  tx;//contract transactionHash
+  user;//trader address
+  amount;//
+  balance;//amout after changed
+  /**
+   0-Income
+   1-Withdraw
+   6-Burn
+   */
+  update_type;
+  event_time;//contract event timeï¼ˆUTCï¼‰
+  update_time;//db update timeï¼ˆUTCï¼‰
 }
 
 /**
@@ -217,9 +263,9 @@ export class TradePMRBalance {
    */
   pmr_update_type;
 
-  event_time;//contract event time£¨UTC£©
+  event_time;//contract event timeï¼ˆUTCï¼‰
 
-  update_time;//db update time£¨UTC£©
+  update_time;//db update timeï¼ˆUTCï¼‰
 }
 
 window.axios = io
