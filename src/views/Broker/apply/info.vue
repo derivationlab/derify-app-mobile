@@ -12,34 +12,34 @@
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.WalletAddress') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="0x8503ea9b"/>
+                     type="text" v-model="broker.broker"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="Coinbaby's Playground"/>
+                     type="text" v-model="broker.name"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
-            <input type="file" class="broker-avatar-file"/>
-            <img :src="broker.avatar" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            <input type="file" class="broker-avatar-file" ref="logo"/>
+            <img :src="broker.logo" style="width: 5.5rem;height: 5.5rem" alt=""/>
           </div>
         </div>
 
-        <div class="account-label">
+        <div class="account-label system-popup-line">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
-          <span class="fz-15 fc-85">coinbaby</span>
+          <span class="fz-15 fc-85">{{broker.id}}</span>
         </div>
 
-        <div class="system-popup-input">
+        <div class="system-popup-input derify-broker-url">
           <van-field class="derify-input no-padding-hor fz-15 fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="http://app.derify.finance/"/>
-          <span class="fc-85">coinbaby</span>
+                type="text" value="http://app.derify.finance/"/>
+          <span class="fc-85">{{broker.id}}</span>
         </div>
 
         <div class="btn-wrap">
@@ -54,6 +54,7 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
+import { BrokerInfo } from '@/api/broker'
 export default {
   name: 'Home',
   components: {
@@ -61,21 +62,15 @@ export default {
     Navbar
   },
   data () {
+    const broker = new BrokerInfo()
     return {
       showError: false,
       errorMsg: '',
-      broker:{
-        id: 1,
-        avatar: require('@/assets/images/broker-default-avatar.png'),
-        address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-        userName: 'Coinbaby\'s Playground',
-        account: 'Coinbaby',
-        accountAddress: 'http://app.derify.finance/@Coinbaby',
-        selected: true
-      },
+      broker: {...broker},
     }
   },
   created () {
+    this.loadBrokerInfo()
   },
   computed: {
     isLogin () {
@@ -83,9 +78,31 @@ export default {
     }
   },
   methods: {
+    loadBrokerInfo() {
+      this.$store.dispatch("broker/getBrokerByBrokerId", this.$route.params.id).then(broker => {
+        Object.assign(this.broker, broker)
+      })
+    },
     submitThenClose () {
-      sessionStorage.setItem('brokerApplied', 'true')
-      this.$router.push({name: 'broker'})
+      //TODO validate form params
+      const param = {broker: this.broker.broker, id: this.broker.id, name: this.broker.name}
+
+      if(this.$refs.logo.files.length > 0){
+        param.logo = this.$refs.logo.files[0]
+      }
+
+      this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
+        if(data.success) {
+          this.loadBrokerInfo()
+        }else{
+          this.errorNotice(data.msg)
+        }
+        //this.$router.push({name: 'broker'})
+      }).catch(e => {
+        this.errorNotice(e)
+      });
+
+
     },
     errorNotice (msg) {
       if(msg){
@@ -164,12 +181,21 @@ export default {
       width: auto;
     }
 
+    .fc-85 .van-field__control{
+      color: rgba(255,255,255,0.85);
+    }
+  }
+
+  .derify-broker-url {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     .van-field__control{
       text-align: right;
       color: rgba(255,255,255,0.45);
     }
-    .fc-85 .van-field__control{
-      color: rgba(255,255,255,0.85);
+    .van-cell{
+      width: auto;
     }
   }
 

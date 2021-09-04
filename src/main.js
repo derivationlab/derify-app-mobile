@@ -67,6 +67,10 @@ const vueApp = new Vue({
   render: h => h(App)
 }).$mount('#app')
 
+/**
+ *
+ * @param {{show: Boolean,status: UserProcessStatus,msg:String}} param
+ */
 Vue.prototype.$userProcessBox = function (param) {
   UserProcessBox.install(i18n, param)
 }
@@ -120,16 +124,24 @@ function updateWallet (eventType = 0) {
     const walletInfo = await getWallet()
 
     if(walletInfo.isLogin && !walletInfo.hasBroker) {
-      return await vueApp.$router.push({name: 'brokerApply'})
+      if(vueApp.$route.name === 'home' && vueApp.$route.params.id){
+        await store.dispatch('broker/bindBroker', {trader: walletInfo.selectedAddress, brokerId: vueApp.$route.params.id}).then((data) => {
+          this.$toast(data.msg)
+        }).catch(e => {
+          this.$toast(e)
+        })
+      }else{
+        return await vueApp.$router.push({name: 'brokerApply'})
+      }
     }
 
     if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
       eventType = 1
     }
     store.commit("user/updateState", walletInfo)
-    if(eventType > 0){
-      vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
-    }
+
+    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
+
   }).catch(() => {
     console.log('init wallet failed')
   })

@@ -57,7 +57,7 @@ export default {
 
       this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
         if(data.success){
-          this.$router.push({name:'home'})
+          this.$router.go(-1)
         }else{
           this.errorNotice(data.msg)
         }

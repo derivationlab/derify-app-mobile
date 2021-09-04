@@ -324,6 +324,9 @@ export default class Contract {
       }else if(ABIData.bDRF.address === token){
         decimals = await this.bDRF.methods.decimals().call()
         tokenAmount = await this.bDRF.methods.balanceOf(trader).call()
+      }else if(ABIData.eDRF.address === token){
+        decimals = await this.eDRF.methods.decimals().call()
+        tokenAmount = await this.eDRF.methods.balanceOf(trader).call()
       }
 
       return convertTokenNumToContractNum(tokenAmount, contractDecimals - decimals)
@@ -507,7 +510,7 @@ export default class Contract {
 
   /**
    * Get the current price of the token
-   * @param token 币合约地址
+   * @param token
    * @return {*}
    */
   getSpotPrice (token) {
@@ -555,7 +558,7 @@ export default class Contract {
     }
 
     if(operateType.method === 'cancleOrderedStopPosition') {
-      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, side, operateType.stopType)
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, operateType.stopType, side)
         .send()
     }
 
@@ -781,6 +784,68 @@ export default class Contract {
    */
   getPMReward (trader) {
     return this.DerifyRewards.methods.getPMReward(trader).call();
+  }
+
+  /**
+   * get broker chain data
+   * @param trader
+   * @return {Promise<{rewardBalance:  BigInt, accumulatedReward: BigInt, validPeriodInDay: BigInt}>}
+   */
+  getBrokerInfo(trader) {
+    return this.DerifyRewards.methods.getBrokerInfo(trader).call();
+  }
+
+  /**
+   * apply to be broker
+   * @param accountType {BondAccountType}
+   * @param amount apply data
+   * @return {Promise<*>}
+   */
+  applyBroker(accountType,amount = toContractNum(60000)) {
+    const tokenContract = this.eDRF
+    return new Promise(async (resolve, reject) => {
+      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.applyBroker(accountType).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * burn eDRF
+   * @param accountType
+   * @param amount
+   */
+  burnEdrfExtendValidPeriod(accountType, amount) {
+    const tokenContract = this.eDRF
+    return new Promise(async (resolve, reject) => {
+      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * width draw edrf
+   * @param amount
+   */
+  withdrawBrokerReward(amount) {
+    return this.DerifyRewards.methods.burnEdrfExtendValidPeriod(amount).send()
   }
 
   /**

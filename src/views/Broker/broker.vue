@@ -5,16 +5,16 @@
 
       <div class="broker-info">
         <div class="broker-avatar">
-          <img :src="broker.avatar" style="width: 4.4rem;height: 4.4rem" alt=""/>
+          <img :src="broker.logo" style="width: 4.4rem;height: 4.4rem" alt=""/>
         </div>
         <div class="broker-contact">
-          <div class="broker-name">{{broker.userName}}</div>
+          <div class="broker-name">{{broker.name}}</div>
           <div class="broker-addr">
-            <p>{{broker.account}}</p>
-            <p>{{broker.address | textwrap(32)}}</p>
+            <p>{{broker.id}}</p>
+            <p>{{broker.broker | textwrap(32)}}</p>
           </div>
         </div>
-        <div class="go-right-wrap"  @click="go('brokerInfo')">
+        <div class="go-right-wrap"  @click="goPath(`/broker/info/${broker.id}`)">
           <i class="go-right-icon">
             <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
           </i>
@@ -24,7 +24,7 @@
       <div class="market-popup">
         <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
         <div class="num-div">
-          <span class="num"> 23,456.78</span>
+          <DecimalView :value="broker.rewardBalance | fck(-8,2)" className="num"></DecimalView>
           <span class="unit">USDT</span>
         </div>
 
@@ -32,11 +32,11 @@
 
         <div class="income-div">
           <div class="taday-div">
-            <span class="span1">24,691.34</span>
+            <DecimalView :value="broker.todayReward | fck(0,2)" className="span1"></DecimalView>
             <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
           </div>
           <div class="taday-div">
-            <span class="span1">24,691.34</span>
+            <DecimalView :value="broker.accumulatedReward | fck(-8,2)" className="span1"></DecimalView>
             <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
           </div>
         </div>
@@ -44,12 +44,14 @@
         <div class="dealer-div">
           <div class="dealer-label">
             <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
-            <span class="fc-yellow fz-12">{{$t('Broker.Broker.Account.Myreferralpage')}}></span>
+            <span class="fc-yellow fz-12">
+              <a class="fc-yellow fz-12" :href="broker.reference">{{$t('Broker.Broker.Account.Myreferralpage')}}></a>
+            </span>
           </div>
           <div class="dealer-ctn">
-            <span class="dealer-day-num fc-yellow">365</span>
+            <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay}}</span>
             <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
-            <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [2048,12, 31])}}</span>
+            <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [broker.expireDate.getFullYear(), broker.expireDate.getMonth(), broker.expireDate.getDate()])}}</span>
           </div>
         </div>
 
@@ -75,7 +77,7 @@
           </van-tab>
         </van-tabs>
 
-        <DerifyPageNation :total="10" :cur="1"></DerifyPageNation>
+<!--        <DerifyPageNation :total="10" :cur="1"></DerifyPageNation>-->
       </div>
 
     </div>
@@ -96,7 +98,7 @@
           <div class="system-popup-title">
             <div class="fz-15 fc-65">
               <i18n path="Broker.Apply.GetBrokersPrivilege">
-                <DecimalView value="60000" digit-split=",">
+                <DecimalView :value="applyBurnAmount+''" digit-split=",">
                   <template #first="{first}"><br/><span class="fz-33 fc-yellow">{{first}}</span><br/></template>
                   <template #last></template>
                 </DecimalView>
@@ -115,10 +117,10 @@
               </van-dropdown-item>
             </van-dropdown-menu>
           </div>
-          <div class="balance-div">{{$t('Broker.Apply.AccountBalance')}}：1234567.00000000 eDRF</div>
+          <div class="balance-div">{{$t('Broker.Apply.AccountBalance')}}：{{this.maxAmount | fck(-8,4)}} eDRF</div>
           <div class="system-popup-buttons">
             <div class="system-popup-button cancel" @click="setTermPopup(false)">{{$t('Broker.Apply.Cancel')}}</div>
-            <div class="system-popup-button confirm" @click="setTermPopup(false)">{{$t('Broker.Apply.Confirm')}}</div>
+            <div class="system-popup-button confirm" @click="applyBroker">{{$t('Broker.Apply.Confirm')}}</div>
           </div>
         </div>
     </van-popup>
@@ -148,6 +150,9 @@ import DerifyErrorNotice from '@/components/DerifyErrorNotice/DerifyErrorNotice'
 import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
 import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
 import DecimalView from "@/components/DecimalView/DecimalView";
+import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
+import { BondAccountType } from '@/utils/contractUtil'
+import { UserProcessStatus } from '@/store/modules/user'
 
 export default {
   name: 'Home',
@@ -156,37 +161,34 @@ export default {
     BrokerWithdrawPopup,
     BrokerDepositPopup,
     DerifyErrorNotice,
-    DerifyPageNation,
+    // DerifyPageNation,
     Navbar,
     trader,
     account
   },
   data () {
 
-    const showApply = !sessionStorage.getItem('brokerApplied')
-
     return {
-      showApplyPopup: showApply,
+      showApplyPopup: !this.isBroker,
       termPopup: false,
       succPopup: false,
       active: '1',
       accountType: 0,
-      broker:{
-        id: 1,
-        avatar: 'https://dummyimage.com/400x400/fef/fff',
-        address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-        userName: 'Coinbaby\'s Playground',
-        account: 'Coinbaby',
-        accountAddress: 'http://app.derify.finance/@Coinbaby',
-        selected: true
-      },
       showDepositPopup: false,
       showWithdrawPopup: false,
+      applyBurnAmount: 60000,
       depositErrorMsg: '',
       accountOptions: this.getAccountOptions(),
+
+      rewardHistory: [],
+
+      bindTraders: [],
     }
   },
   created () {
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.loadTraderBrokerInfo()
+    })
   },
   watch: {
     '$i18n.locale': {
@@ -200,7 +202,20 @@ export default {
       return this.$store.state.user.isLogin
     },
     brokerApplied(){
-      return !!sessionStorage.getItem('brokerApplied');
+      return this.$store.state.broker.isBroker
+    },
+    broker () {
+      return this.$store.state.broker.broker
+    },
+    trader() {
+      return this.$store.state.user.selectedAddress
+    },
+    maxAmount() {
+      if(this.accountType === BondAccountType.DerifyAccount) {
+        return this.$store.state.broker.broker.rewardBalance
+      }else{
+        return this.$store.state.broker.broker.edrfBalance
+      }
     }
   },
   methods: {
@@ -216,6 +231,9 @@ export default {
         }
       ]
     },
+    loadTraderBrokerInfo(){
+      this.$store.dispatch('broker/getTraderBrokerInfo', this.trader);
+    },
     // close popup
     closeApplyPopup () {
       this.setTermPopup(true)
@@ -223,34 +241,44 @@ export default {
     },
     // close apply popup
     setTermPopup (bool) {
-      this.termPopup = bool
-      if(!bool) {
-        this.succPopup = true
+
+      if(bool) {
+        this.$store.dispatch('broker/getTraderBrokerInfo', this.trader);
       }
+
+      this.termPopup = bool
+    },
+
+    applyBroker() {
+
+      //TODO 余额判断
+
+      this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')});
+
+      this.$store.dispatch('broker/applyBroker', {trader: this.trader, accountType: this.accountType, amount: this.applyBurnAmount})
+        .then(() => {
+          this.succPopup = true
+        })
+        .catch(() => {
+          this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')});
+        });
     },
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
-
-      if(!sessionStorage.getItem('brokerApplied')) {
-        this.go('brokerInfo')
-      }
-
+      this.goPath(`/broker/info/${this.broker.id}`)
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
-      if(!bool){
-        this.succPopup = true
-      }
     },
     setShowWidthdrawPopup(bool) {
       this.showWithdrawPopup = bool
-      if(!bool){
-        this.succPopup = true
-      }
     },
     go(name, query = {}){
       this.$router.push({name, query})
+    },
+    goPath(path){
+      this.$router.push({path})
     }
   }
 }

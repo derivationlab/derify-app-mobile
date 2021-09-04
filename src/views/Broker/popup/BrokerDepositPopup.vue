@@ -10,7 +10,7 @@
           <div class="system-popup-label fz-15">
             <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.Balance') }}</div>
             <div>
-              <span class="fc-85">1.234567890</span>
+              <span class="fc-85">{{maxAmount}}</span>
               <span class="fc-45">eDRF</span>
             </div>
           </div>
@@ -19,7 +19,7 @@
           <div class="system-popup-label">
             <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.UnitPrice') }}</div>
             <div>
-              <span class="fc-85">600.00</span>
+              <span class="fc-85">{{unitAmount|fck(0,2)}}</span>
               <span class="fc-45">eDRF</span>
             </div>
           </div>
@@ -43,7 +43,7 @@
             <span class="fc-80">
               <i18n path="Broker.Broker.DepositPopup.ValidPeriod">
                 <template #0>
-                  <span class="fc-yellow">20</span>
+                  <span class="fc-yellow">{{validatePeriod}}</span>
                 </template>
               </i18n>
             </span>
@@ -71,7 +71,7 @@ import {
   toHexString,
   SideEnum,
   OpenType,
-  convertAmount2TokenSize, toContractNum
+  convertAmount2TokenSize, toContractNum, BondAccountType
 } from '../../../utils/contractUtil'
 import { fck } from '../../../utils/utils'
 import { UnitTypeEnum } from '../../../store/modules/contract'
@@ -93,7 +93,8 @@ export default {
       showError: false,
       errorMsg: '',
       accountType: 0,
-      amount: 1200.00,
+      unitAmount: 600,
+      amount: null,
       accountOptions: this.getAccountOptions(),
       showPopup: this.show
     }
@@ -109,14 +110,45 @@ export default {
     }
   },
   computed: {
+    broker () {
+      return this.$store.state.broker.broker
+    },
+    trader() {
+      return this.$store.state.user.selectedAddress
+    },
+    maxAmount() {
+      if(this.accountType === BondAccountType.DerifyAccount) {
+        return this.$store.state.broker.broker.rewardBalance
+      }else{
+        return this.$store.state.broker.broker.edrfBalance
+      }
+    },
+    validatePeriod () {
 
+      if(this.amount < 1){
+        return 0
+      }
+
+      return this.amount / this.unitAmount
+    }
   },
   methods: {
     close () {
       this.$emit('close')
     },
     submitThenClose () {
-
+      this.$userProcessBox({show: true, status: UserProcessStatus.waiting
+        ,msg: this.$t('global.TradePendingMsg')})
+      this.$store.dispatch('broker/burnEdrfExtendValidPeriod',
+        {trader: this.trader, accountType: this.accountType, amount: this.amount})
+        .then(() => {
+          this.$userProcessBox({show: true, status: UserProcessStatus.success
+            ,msg: this.$t('global.TradeSuccessMsg')})
+        })
+        .catch(() => {
+          this.$userProcessBox({show: true, status: UserProcessStatus.failed
+            ,msg: this.$t('global.TradeFailedMsg')})
+        })
     },
     getAccountOptions() {
       return [

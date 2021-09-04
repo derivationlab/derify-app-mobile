@@ -21,6 +21,11 @@ const config = {
     debug: 'https://app-test.haoping.video',
     production: 'https://app-test.haoping.video',
   },
+  webroot: {
+    development: 'https://app-test.haoping.video',
+    debug: 'https://app-test.haoping.video',
+    production: 'https://app-test.haoping.video',
+  },
   contract: {
     development: {
       DerifyRewards: {
@@ -154,6 +159,10 @@ export function getCurrentEnv() {
 
 export function isCurrentProduction() {
   return currentEnv === 'production'
+}
+
+export function getWebroot(){
+  return config.webroot[currentEnv]
 }
 
 export function  isDebug() {
