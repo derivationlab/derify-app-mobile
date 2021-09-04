@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="新增经济商" :logo="false" :showGoback="true"/>
+    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="true"/>
     <div class="home-mid">
       <div class="market-popup system-popup">
         <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
@@ -8,13 +8,13 @@
         </DerifyErrorNotice>
 
         <div class="home-mid-input">
-          <div class="fc-85 fz-15">输入邀请码</div>
-          <van-field class="derify-big-input" type="text" input-align="center" />
+          <div class="fc-85 fz-15">{{ $t('Trade.BrokerBind.BrokerCodes.BrokerCode') }}</div>
+          <van-field class="derify-big-input" type="text" placeholder="" input-align="center" v-model="brokerCode"/>
         </div>
 
         <div class="btn-wrap">
-          <p class="code-wrap"><span class="fc-yellow">还没有邀请码</span></p>
-          <div class="derify-big-btn btn-yellow" @click="submitThenClose">提交</div>
+          <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerApply'})">{{ $t('Trade.BrokerBind.BrokerCodes.NoBrokerCode') }}</span></p>
+          <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Trade.BrokerBind.BrokerCodes.Submit') }}</div>
         </div>
       </div>
     </div>
@@ -34,7 +34,8 @@ export default {
   data () {
     return {
       showError: false,
-      errorMsg: ''
+      errorMsg: '',
+      brokerCode: ''
     }
   },
   created () {
@@ -42,13 +43,28 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    trader () {
+      return this.$store.state.user.selectedAddress;
     }
   },
   methods: {
     submitThenClose () {
-      this.errorNotice("错误提示")
-    },
+      if(!this.brokerCode) {
+        this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'))
+        return
+      }
 
+      this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
+        if(data.success){
+          this.$router.push({name:'home'})
+        }else{
+          this.errorNotice(data.msg)
+        }
+      }).catch(e => {
+        this.$toast(e)
+      })
+    },
     errorNotice (msg) {
       if(msg){
         this.showError = true

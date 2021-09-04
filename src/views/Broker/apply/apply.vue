@@ -1,7 +1,10 @@
 <template>
   <div class="home-container page-container">
-    <navbar title="选择经济商" :logo="false" :showGoback="true"/>
+    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="true"/>
     <div class="home-mid">
+      <DerifyErrorNotice :show="showError" @close="errorNotice">
+        {{errorMsg}}
+      </DerifyErrorNotice>
       <van-list class="brokers-wrap"
                 v-model="loading"
                 @load="loadBrokers"
@@ -9,10 +12,14 @@
                 :loading-text="$t('global.Loading')"
       >
         <template v-for="(broker,key) in brokers">
-          <div :class="broker.selected ? 'broker-info active' : 'broker-info'" :key="key" @click="() => {
-              broker.selected = !broker.selected
+          <div :class="broker.id === selectedBroker.id ? 'broker-info active' : 'broker-info'" :key="key" @click="() => {
+              if(selectedBroker === broker) {
+                selectedBroker = {}
+              }else{
+                selectedBroker = broker
+              }
             }">
-            <i class="selected-icon" v-if="broker.selected">
+            <i class="selected-icon" v-if="broker.id === selectedBroker.id">
               <img src="@/assets/images/wallet/select.png" alt="" style="width: 100%;height: 100%;"/>
             </i>
 
@@ -32,7 +39,7 @@
     </div>
     <div class="home-last">
       <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">I have a code ...</span></p>
-      <div class="derify-big-btn btn-yellow">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
+      <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
     </div>
 
   </div>
@@ -40,9 +47,11 @@
 
 <script>
 import Navbar from '@/components/Navbar'
+import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 export default {
   name: 'Home',
   components: {
+    DerifyErrorNotice,
     Navbar
   },
   data () {
@@ -50,8 +59,11 @@ export default {
       loading: false,
       finished: true,
       brokers: [],
+      selectedBroker: {},
       brokerPageSize: 10,
-      brokerPageNum: 0
+      brokerPageNum: 0,
+      showError: false,
+      errorMsg: ''
     }
   },
   created () {
@@ -60,6 +72,9 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    trader () {
+      return this.$store.state.user.selectedAddress;
     }
   },
   methods: {
@@ -80,6 +95,32 @@ export default {
       })
 
       this.brokerPageNum++
+    },
+    bindBroker () {
+
+      if(!this.selectedBroker || !this.selectedBroker.id) {
+        this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'))
+        return
+      }
+
+      this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.selectedBroker.id})
+        .then((data) => {
+          if(data.success){
+            this.$router.push({name:'home'})
+          }else{
+            this.errorNotice(data.msg)
+          }
+        }).catch(e => {
+        this.$toast(e)
+      })
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
     }
   }
 }

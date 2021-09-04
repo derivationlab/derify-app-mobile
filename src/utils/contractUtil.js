@@ -94,6 +94,52 @@ export class BondAccountType {
   }
 }
 
+export class OrderedOperateType {
+  type;
+  method;
+  stopType;
+  /**
+   * 0-TakeProfit，1-StopLoss
+   */
+  orderStopType;
+  /**
+   * 0-TakeProfit，1-StopLoss
+   */
+  cancleStopType;
+
+  static get SetTakeProfitPrice () {
+    return {type: 0, method: 'orderStopPosition', stopType: 0}
+  }
+
+  static get SetStopLossPrice () {
+    return {type: 1, method: 'orderStopPosition', stopType: 1}
+  }
+
+  static get SetTakeProfitAndStopLossPrice () {
+    return {type: 2, method: 'orderStopPosition', stopType: 2}
+  }
+
+  static get UnSetTakeProfitPrice () {
+    return {type: 3, method: 'cancleOrderedStopPosition', stopType: 0}
+  }
+
+  static get UnSetStopLossPrice () {
+    return {type: 4, method: 'cancleOrderedStopPosition', stopType: 1}
+  }
+
+  static get UnSetTakeProfitAndStopLossPrice () {
+    return {type: 5, method: 'cancleOrderedStopPosition', stopType: 2}
+  }
+
+  static get SetTakeProfitAndUnSetStopLossPrice () {
+    return {type: 6, method: 'orderAndCancleStopPosition', orderStopType: 0, cancleStopType: 1}
+  }
+
+  static get UnSetTakeProfitAndSetStopLossPrice () {
+    return {type: 7, method: 'orderAndCancleStopPosition', orderStopType: 1, cancleStopType: 0}
+  }
+}
+
 /**
  * Order type
  */
@@ -473,25 +519,51 @@ export default class Contract {
    * @param token
    * @param trader
    * @param side
-   * @param stopType 0-TakeProfit，1-StopLoss，2-TakeProfitStopLoss
-   * @param stopPrice
+   * @param stopLossPrice
+   * @param takeProfitPrice
    * @return {*}
    */
   orderStopPosition ({token, trader, side, takeProfitPrice, stopLossPrice}) {
-    let stopType = 0
-    if(takeProfitPrice && !stopLossPrice) {
-      stopType = 0
-    }else if(!takeProfitPrice && stopLossPrice) {
-      stopType = 1
-    }else if(takeProfitPrice && stopLossPrice){
-      stopType = 2
-    }else {
-      //FIXME stopPrice not set, cancel orderedStopPosition
-      return async () => {}
+
+
+    let operateType = new OrderedOperateType();
+    if(takeProfitPrice > 0 && stopLossPrice === 0) {
+      operateType = OrderedOperateType.SetTakeProfitPrice
+    }else if(takeProfitPrice === 0 && stopLossPrice > 0) {
+      operateType = OrderedOperateType.SetStopLossPrice
+    }else if(takeProfitPrice > 0 && stopLossPrice > 0){
+      operateType = OrderedOperateType.SetTakeProfitAndStopLossPrice
+    } else if (takeProfitPrice < 0 && stopLossPrice === 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitPrice
+    }else if (takeProfitPrice === 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.UnSetStopLossPrice
+    }else if (takeProfitPrice < 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitAndStopLossPrice
+    }else if (takeProfitPrice > 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.SetTakeProfitAndUnSetStopLossPrice
+    }else if (takeProfitPrice < 0 && stopLossPrice > 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitAndSetStopLossPrice
     }
 
-    return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, takeProfitPrice, stopLossPrice)
-      .send()
+    if(operateType === null) {
+      return
+    }
+
+    if(operateType.method === 'orderStopPosition') {
+      return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, operateType.stopType, takeProfitPrice, stopLossPrice)
+        .send()
+    }
+
+    if(operateType.method === 'cancleOrderedStopPosition') {
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, side, operateType.stopType)
+        .send()
+    }
+
+    if(operateType.method === 'orderAndCancleStopPosition') {
+      let price = operateType.orderStopType === 0 ? takeProfitPrice : stopLossPrice;
+      return this.__getDerifyDerivativeContract(token).methods.orderAndCancleStopPosition(trader, side, operateType.orderStopType, price, operateType.cancleStopType)
+        .send()
+    }
   }
 
   /**

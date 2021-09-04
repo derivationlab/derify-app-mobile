@@ -182,12 +182,14 @@ export default {
 
       let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price))
 
+      const brokerId = this.$store.state.user.brokerId
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
         size: toContractNum(tokenSize),
         openType: this.openData.entrustType,
         price: toContractNum(price),
-        leverage: toContractNum(leverage)
+        leverage: toContractNum(leverage),
+        brokerId: brokerId,
       }).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         this.$store.dispatch('contract/loadPositionData').then(r => {})

@@ -116,8 +116,13 @@ window.vuexApp = vueApp
 
 function updateWallet (eventType = 0) {
 
-  asyncInitWallet().then(() => {
-    const walletInfo = getWallet()
+  asyncInitWallet().then(async () => {
+    const walletInfo = await getWallet()
+
+    if(walletInfo.isLogin && !walletInfo.hasBroker) {
+      return await vueApp.$router.push({name: 'brokerApply'})
+    }
+
     if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
       eventType = 1
     }

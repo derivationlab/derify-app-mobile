@@ -144,8 +144,9 @@
 				"BindBrokerPrivilege":"Bind Your Broker Privilege",
 				"NoBrokerCode":"No Broker Code",
 				"Submit":"Submit",
-				"BrokerCodeNoExistError":"The Broker Code you submit does not exist"
-			}
+				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
+              	"SelectOrInputBrokerId": "SelectOrInputBrokerId"
+            }
 		},
 		"navbar":{
 			"ClickToLogin":"Click To Login",

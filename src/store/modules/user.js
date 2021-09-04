@@ -1,5 +1,6 @@
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
+import { getBrokerIdByTrader } from '../../api/broker'
 
 export class ChainEnum {
   static values = []
@@ -57,7 +58,7 @@ export class WalletEnum {
 }
 
 /**
- * ÓÃ»§µÈ´ý×´Ì¬
+ * user wait pop box
  * 0(finished)->1(waiting)->2(success)->0(finished)
  * 0(finished)->1(waiting)->3(failed)->0(finished)
  *
@@ -92,7 +93,8 @@ const state = {
   isMetaMask: false,
   processStatus: UserProcessStatus.finished,
   processStatusMsg: '',
-  balanceOfDUSD: 0
+  balanceOfDUSD: 0,
+  brokerId: null
 };
 
 export async function asyncInitWallet() {
@@ -102,6 +104,7 @@ export async function asyncInitWallet() {
 
   window.ethereum.chainId = await window.ethereum.request({method: 'eth_chainId'})
   window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
+
   if(window.ethereum.ethAccounts.length > 0){
     window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
   }
@@ -111,11 +114,12 @@ export async function asyncInitWallet() {
   return window.ethereum
 }
 
-export function getWallet(){
+export async function getWallet(){
 
   if(!window.ethereum){
     return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
+
 
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
@@ -123,12 +127,15 @@ export function getWallet(){
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
+  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
 
   return {
     selectedAddress: wethereum.selectedAddress,
     isLogin: wethereum.selectedAddress && isEthum,
+    hasBroker: !!brokerId,
     showWallet: false,
     chainEnum: chainEnum,
+    brokerId: brokerId,
     isEthum,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
@@ -157,7 +164,6 @@ const actions = {
       }
 
       const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
-      console.log(balanceOf)
       commit('updateState', {balanceOfDUSD : balanceOf})
       return balanceOf;
     })();

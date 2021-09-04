@@ -40,8 +40,8 @@ export default {
     },
     submitThenClose () {
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-
-      this.$store.dispatch('contract/closeAllPositions').then((r) => {
+      const brokerId = this.$store.state.user.brokerId
+      this.$store.dispatch('contract/closeAllPositions', {brokerId}).then((r) => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         this.$store.dispatch('contract/loadPositionData').then(r => {})
       }).catch((msg) => {

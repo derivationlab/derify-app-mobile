@@ -950,8 +950,8 @@ export default {
     closeAllPositions () {
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-
-      this.$store.dispatch('contract/closeAllPositions').then(() => {
+      const brokerId = this.$store.state.user.brokerId
+      this.$store.dispatch('contract/closeAllPositions', {brokerId}).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
       }).catch((ex) => {
         this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})

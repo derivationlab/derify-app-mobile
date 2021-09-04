@@ -5,9 +5,9 @@ export const contractDebug = CfgUtil.isDebug()
 
 export const EVENT_WALLET_CHANGE = 'walletChange'
 
-export function contract (account) {
+export function contract (account, broker = '') {
 
-  const contractObj = new Contract({from: account, broker: '1'})
+  const contractObj = new Contract({from: account, broker: broker})
 
   if(contractDebug){
 

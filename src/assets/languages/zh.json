@@ -144,7 +144,8 @@
 				"BindBrokerPrivilege":"绑定经纪商",
 				"NoBrokerCode":"没有经纪商编码...",
 				"Submit":"提交",
-				"BrokerCodeNoExistError":"您输入的编码不存在，请重新输入"
+				"BrokerCodeNoExistError":"您输入的编码不存在，请重新输入",
+				"SelectOrInputBrokerId": "SelectOrInputBrokerId"
 			}
 		},
 		"navbar":{

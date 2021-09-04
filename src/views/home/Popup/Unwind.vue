@@ -160,11 +160,12 @@ export default {
       }
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-
+      const brokerId = this.$store.state.user.brokerId
       this.$store.dispatch('contract/closePosition', {
         token,
         side,
-        size: toContractUnit(size)
+        size: toContractUnit(size),
+        brokerId
       }).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         this.$store.dispatch('contract/loadPositionData').then(r => {})

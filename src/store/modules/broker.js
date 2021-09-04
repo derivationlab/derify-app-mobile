@@ -1,4 +1,4 @@
-import { getBrokerList } from '../../api/broker'
+import { bindBroker, getBrokerList } from '../../api/broker'
 
 const state = {
   brokers:[]
@@ -19,10 +19,15 @@ const actions = {
     return (async () => {
       const brokers = await getBrokerList(page, size)
       commit('addBrokers', brokers)
-
-      console.log(brokers)
-
       return brokers
+    })()
+  },
+  bindBroker ({state, commit, dispatch}, {trader, brokerId}) {
+    return (async () => {
+      return await bindBroker({
+        brokerId,
+        trader
+      })
     })()
   }
 }

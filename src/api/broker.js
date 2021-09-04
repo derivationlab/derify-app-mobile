@@ -5,7 +5,7 @@ const serverEndPoint = configUtil.getCurrentServerEndPoint()
 /**
  * get trader's brokerId
  * @param trader
- * @return {String} brokerId
+ * @return {Promise<String>} brokerId
  */
 export async function getBrokerIdByTrader(trader) {
   const content =  await io.get("/api/brokerId_of_trader/" + trader)
@@ -23,6 +23,24 @@ export async function getBrokerList(page = 0, size = 10) {
   }
 
   return [];
+}
+
+/**
+ * bind broker code
+ * @param trader
+ * @param brokerId
+ * @return {Promise<{msg: string, success: boolean}>}
+ */
+export async function bindBroker({trader,brokerId}) {
+  const content =  await io.post('/api/bind_broker', {brokerId,trader})
+
+  if(content && content.msg) {
+    return {success: true, msg: content.msg}
+  }else if(content && content.error){
+    return {success: false, msg: content.error}
+  }
+
+  return {success: false, msg: 'unknown'};
 }
 
 /**
