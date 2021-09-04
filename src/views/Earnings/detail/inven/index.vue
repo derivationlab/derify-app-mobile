@@ -39,28 +39,31 @@ export default {
     return {
       list: [],
       loading: false,
-      finished: true
+      page: 0,
+      finished: false
     }
   },
   methods: {
     onLoad () {
+      const self = this;
+      self.loading = true
+      this.$store.dispatch("earnings/getTraderPMRBalance", {page: this.page}).then((data) => {
 
+        if(!data || data.length < 1) {
+          self.finished = true
+          return
+        }
+        this.page++
+        data.forEach((item) => self.list.push(item))
+      }).catch(() => {
+        self.finished = true
+      }).finally(() => {
+        self.loading = false
+      });
     }
   },
   mounted () {
-    const self = this;
-    self.loading = true
-    this.$store.dispatch("earnings/getTraderPMRBalance").then((data) => {
 
-      if(data instanceof Array){
-        self.list.splice(0)
-        data.forEach((item) => self.list.push(item))
-        self.loading = false
-      }
-    }).finally(() => {
-      self.loading = false
-      self.finished = true
-    });
   }
 }
 </script>

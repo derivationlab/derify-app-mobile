@@ -60,7 +60,7 @@ export default {
       finished: true,
       brokers: [],
       selectedBroker: {},
-      brokerPageSize: 10,
+      brokerPageSize: 9,
       brokerPageNum: 0,
       showError: false,
       errorMsg: ''

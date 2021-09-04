@@ -145,7 +145,16 @@ export default {
 
       if (this.pledgeId === EarningType.EDRF) {
         //eDRF
-
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+        this.$store.dispatch("earnings/stakingDrf", {bondAccountType: this.accountType, amount: toContractUnit(this.amount)})
+          .then(() => {
+            this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+          }).catch(() => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+        }).finally(() => {
+          this.$store.dispatch('earnings/loadEarningData')
+        })
       } else if(this.pledgeId === EarningType.BDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})

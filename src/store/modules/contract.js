@@ -1,6 +1,6 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
-import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
+import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
 import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
 import { amountFormt, fck } from '@/utils/utils'
 import { createTokenPriceChangeEvenet } from '@/api/trade'
@@ -484,9 +484,6 @@ const actions = {
 
     })()
   },
-  loadTradeRecords ({state, commit}) {
-    return getTradeList(state.wallet_address)
-  },
   getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
     return (async () => {
 
@@ -514,9 +511,11 @@ const actions = {
       return data;
     })()
   },
-
-  getTraderTradeBalanceDetail ({state, commit}) {
-    return getTradeBalanceDetail(state.wallet_address)
+  loadTradeRecords ({state, commit}, {page=0, size=10}) {
+    return getTradeList(state.wallet_address, page, size)
+  },
+  getTraderTradeBalanceDetail ({state, commit}, {page = 0, size = 10}) {
+    return getTradeBalanceDetail(state.wallet_address, page, size)
   },
   async getPositionChangeFee ({state, commit, dispatch}, {side, actionType, size, price}) {
 

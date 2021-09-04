@@ -849,6 +849,55 @@ export default class Contract {
   }
 
   /**
+   * get Staking Info
+   * @param trader
+   * @return {Promise<{drfBalance: BigInt, edrfBalance: BigInt}>}
+   */
+  getStakingInfo(trader) {
+    return this.DerifyRewards.methods.getStakingInfo(amount).call()
+  }
+
+  /**
+   * withdraw edrf
+   * @param amount
+   * @return {Promise}
+   */
+  withdrawEdrf(amount) {
+    return this.DerifyRewards.methods.withdrawEdrf(amount).send()
+  }
+
+  /**
+   * staking drf
+   * @param amount
+   * @return {Promise<unknown>}
+   */
+  stakingDrf(amount) {
+    const tokenContract = this.DRF
+    return new Promise(async (resolve, reject) => {
+      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.stakingDrf(amount).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * redeem drf
+   * @param amount
+   * @return {*}
+   */
+  redeemDrf(amount) {
+    return this.DerifyRewards.methods.redeemDrf(amount).send()
+  }
+
+  /**
    * get All positions
    * @param trader
    * @param token

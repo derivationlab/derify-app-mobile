@@ -24,7 +24,7 @@ const isNotCallEvent = false;
  * @returns {Promise<Array<TradeRecord>>}
  */
 export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
-  const content = await io.get(TRADE_LIST_URL + trader + "/" + pageNum + "/" + pageSize)
+  const content = await io.get(`/api/trade_records/${trader}/${pageNum}/${pageSize}`)
 
   if(content) {
     return content.data.data;
@@ -41,7 +41,7 @@ export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
  * @returns {Promise<Array<TradeBalanceDetail>>}
  */
 export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(FUND_LIST_URL + trader)
+  const content =  await io.get(`/api/trader_balance/${trader}/${pageNum}/${pageSize}`)
 
   if(content) {
     return content.data.data;
@@ -58,9 +58,9 @@ export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10)
  * @returns {Promise<*[]|TraderBondBalance>}
  */
 export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(TRADER_BOND_BALANCE_URL + trader)
+  const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum}/${pageSize}`)
   if(content) {
-    return content.data.data;
+    return content.data.records;
   }
 
   return [];
@@ -74,9 +74,9 @@ export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) 
  * @returns {Promise<*[]|TradePMRBalance>}
  */
 export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(TRADER_PMR_BALANCE_URL + trader)
+  const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum}/${pageSize}`)
   if(content) {
-    return content.data.data;
+    return content.data.records;
   }
 
   return [];
@@ -90,9 +90,9 @@ export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
  * @returns {Promise<*[]|TraderEDRFBalance>}
  */
 export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(TRADER_EDRF_BALANCE_URL + trader)
+  const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum}/${pageSize}`)
   if(content) {
-    return content.data.data;
+    return content.data.records;
   }
 
   return [];

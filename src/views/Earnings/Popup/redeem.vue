@@ -152,7 +152,15 @@ export default {
       }
 
       if (this.redeemId === EarningType.EDRF) {
-
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+        this.$store.dispatch("earnings/redeemDrf", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        }).catch(e => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+        }).finally( p => {
+          this.$store.dispatch('earnings/loadEarningData')
+        })
       } else if(this.redeemId === EarningType.BDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})

@@ -148,7 +148,7 @@
                 v-model="loading"
                 :loading-text="$t('global.Loading')"
                 :finished="finished"
-                @load="loadMore"
+                @load="onLoad"
               >
 
                 <template v-if="active === 'key1'">
@@ -576,7 +576,8 @@ export default {
       loading: false,
       positionFinished: true,
       positionOrdersFinished: true,
-      tradeRecordsFinished: true,
+      tradeRecordsFinished: false,
+      tradeRecordsPage: 0,
       showMarket: false, // market popup，change token pair
       showHint: false, // show hit popup
       hintType: 'key1', // show hit type
@@ -618,8 +619,6 @@ export default {
     },
     ClickBox () {
       this.show = true
-    },
-    loadMore () {
     },
     changeShowMarket (bool) {
       this.showMarket = bool
@@ -801,24 +800,62 @@ export default {
 
       if(key === 'key3'){
         self.loading = true
-        this.$store.dispatch('contract/loadTradeRecords').then(r => {
-          //@see TradeRecord
-          if (r === undefined) {
-            return
-          }
-          self.tradeRecords.splice(0)
-          r.forEach((item) => {
-            if (item !== undefined || !isNaN(item)) {
-              self.tradeRecords.push(item)
-            }
+        self.loadTradeHistory(true)
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {
+          self.loading = false
+        }).catch(()=>{
+            self.loading = false
           })
-
+          .finally(() => {
           self.loading = false
         })
-      }else{
-        this.$store.dispatch('contract/loadPositionData').then(r => {})
       }
     },
+
+    loadTradeHistory(truncate = false) {
+      const self = this
+
+      if(truncate) {
+        this.tradeRecordsPage = 0
+        this.tradeRecordsFinished =  false
+      }
+
+      this.$store.dispatch('contract/loadTradeRecords', {page: this.tradeRecordsPage}).then(r => {
+        //@see TradeRecord
+        this.loading = false
+        if (!r || r.length < 1) {
+          this.tradeRecordsFinished = true
+          return
+        }
+
+        this.tradeRecordsPage++
+        if(truncate) {
+          self.tradeRecords.splice(0)
+        }
+
+        r.forEach((item) => {
+          if (item !== undefined || !isNaN(item)) {
+            self.tradeRecords.push(item)
+          }
+        })
+
+        self.loading = false
+      })
+    },
+
+    onLoad () {
+      const self = this
+      const {key} = this
+      if(key === 'key3'){
+        self.loadTradeHistory(false)
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {
+          self.loading = false
+        })
+      }
+    },
+
     onOpenTypeChange () {
       if(!this.amount) {
         this.amount = fromContractUnit(this.curSpotPrice)
@@ -921,22 +958,21 @@ export default {
         if(self.curTraderOpenUpperBound.amount > 0 && self.sliderValue > 0) {
           self.size = fromContractUnit(self.sliderValue / 100 * self.curTraderOpenUpperBound.amount, 2);
         }
-
       })
 
-      self.loading = true
-      self.positionFinished = false
-      self.positionOrdersFinished = false
-      self.tradeRecordsFinished = false
-
-      this.$store.dispatch('contract/loadPositionData').then(r => {
-        self.loading = false
-        self.positionFinished = true
-        self.positionOrdersFinished = true
-        self.tradeRecordsFinished = true
-      })
+      this.loadPositionData()
 
       this.updateTraderOpenUpperBound()
+    },
+
+    loadPositionData () {
+      const self = this
+      self.loading = true
+
+      this.$store.dispatch('contract/loadPositionData').then(r => {
+      }).finally(() => {
+        self.loading = false
+      })
     },
     getPairByAddress (token) {
       const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)

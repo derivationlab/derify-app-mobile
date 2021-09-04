@@ -39,16 +39,16 @@
           <span class="span2 fz-12  fc-yellow" @click="goDetail(EarningType.EDRF)">{{ $t('Rewards.Staking.Card.TransactionHistory') }}></span>
         </div>
         <div class="earnings-num">
-          <span class="span1">2345.4</span>
+          <span class="span1">{{ edrfInfo.edrfBalance|fck(-8,2) }}</span>
           <span class="span2">eDRF</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
-            <span class="span1">24891.34</span>
+            <span class="span1">{{ edrfInfo.drfBalance|fck(-8,2) }}</span>
             <span class="span2 fz-11">{{ $t('Rewards.Staking.Card.StakAmount(DRF)') }}</span>
           </div>
           <div class="div1">
-            <span class="span1">24891.34</span>
+            <span class="span1">{{ edrfInfo.drfBalance|fck(-8,2) }}</span>
             <span class="span2 fz-11">{{ $t('Rewards.Staking.Card.DailyYield(eDRF)') }}</span>
           </div>
         </div>
@@ -180,6 +180,13 @@ export default {
       const bondInfo = this.$store.state.earnings.bondInfo
       if(bondInfo) {
         return bondInfo
+      }
+      return {}
+    },
+    edrfInfo () {
+      const edrfInfo = this.$store.state.earnings.edrfInfo
+      if(edrfInfo) {
+        return edrfInfo
       }
       return {}
     },

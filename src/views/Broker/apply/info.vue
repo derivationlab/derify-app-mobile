@@ -69,8 +69,20 @@ export default {
       broker: {...broker},
     }
   },
-  created () {
+  mounted () {
     this.loadBrokerInfo()
+    const logoFileItem = this.$refs.logo;
+    const self = this;
+
+    //picture preview
+    logoFileItem.onchange =  function () {
+      var file = logoFileItem.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e) {
+        self.broker.logo = e.target.result;
+      };
+    }
   },
   computed: {
     isLogin () {
