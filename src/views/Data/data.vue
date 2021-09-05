@@ -237,11 +237,12 @@ export default {
           const seriers = [tradAmSeries, tradFeeSeries]
 
           //{long_position_amount: number, short_position_amount: number, day_time: string}
-          data.history.forEach((data) => {
-            xaxis.push(data.day_time)
-            tradAmSeries.push(data.trading_amount)
-            tradFeeSeries.push(data.trading_fee)
-          })
+          for(let i = 0; i < data.history.length; i++) {
+            const item = data.history[i];
+            xaxis.push(item.day_time)
+            tradAmSeries.data.push(item.trading_amount)
+            tradFeeSeries.data.push(item.trading_fee)
+          }
 
           const options = generateDataEchartsOptions(color, xaxis, seriers)
           this.drawLine(options)
@@ -268,8 +269,8 @@ export default {
           //{long_position_amount: number, short_position_amount: number, day_time: string}
           data.history.forEach((item) => {
             xaxis.push(item.day_time)
-            longSeries.push(item.long_position_amount)
-            shortSeries.push(item.short_position_amount)
+            longSeries.data.push(item.long_position_amount)
+            shortSeries.data.push(item.short_position_amount)
           })
 
           const options = generateDataEchartsOptions(color, xaxis, seriers)
@@ -296,9 +297,9 @@ export default {
           const seriers = [insuranceSeriers]
 
           //{long_position_amount: number, short_position_amount: number, day_time: string}
-          data.history.forEach((data) => {
-            xaxis.push(data.day_time)
-            insuranceSeriers.push(data.insurance_pool)
+          data.history.forEach((item) => {
+            xaxis.push(item.day_time)
+            insuranceSeriers.data.push(item.insurance_pool)
           })
 
           const options = generateDataEchartsOptions(color, xaxis, seriers)

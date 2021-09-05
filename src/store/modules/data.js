@@ -42,7 +42,6 @@ const actions = {
   loadTokenInfoData ({state, commit, dispatch}) {
     return (async() => {
       const current = await getCurrentIndexData()
-      const history = await getHistoryPositionData()
 
       return {current}
     })()

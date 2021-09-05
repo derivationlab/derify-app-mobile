@@ -5,9 +5,20 @@
  * @param {stack: string, data:array}seriesData
  * @return {{yAxis: [{type: string}], xAxis: [{data, type: string, boundaryGap: boolean}], color, grid: {left: string, bottom: string, right: string, containLabel: boolean}, series: *[], tooltip: {axisPointer: {label: {backgroundColor: string}, type: string}, trigger: string}, toolbox: {feature: {saveAsImage: {}}}}}
  */
+import * as echarts from 'echarts'
+
+function convertHexColorToRGB(hexColor, opacity){
+  const r = parseInt('0x'+hexColor.substr(1,2))
+  const g = parseInt('0x'+hexColor.substr(3,2))
+  const b = parseInt('0x'+hexColor.substr(5,2))
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
 export default function generateDataEchartsOptions(colors, xaxisDta, seriesData) {
 
   const seriers = [];
+
   seriesData.forEach((data, index) => {
     seriers.push({
       name: 'Line 1',
@@ -15,17 +26,19 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
       stack: data.stack,
       smooth: false,
       lineStyle: {
-        width: 0
+        width: 1,
+        type: 'solid',
+        color: colors[index]
       },
       showSymbol: false,
       areaStyle: {
-        opacity: 0.8,
+        opacity: 0.2,
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
           offset: 0,
-          color: 'rgba(128, 255, 165)'
+          color: convertHexColorToRGB(colors[index], 1)
         }, {
           offset: 1,
-          color: 'rgba(1, 191, 236)'
+          color: convertHexColorToRGB(colors[index], 0)
         }])
       },
       emphasis: {
@@ -37,21 +50,6 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
 
   return {
     color: colors,
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        label: {
-          backgroundColor: '#6a7985'
-        }
-      }
-    },
-
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
-    },
     grid: {
       left: '3%',
       right: '4%',
@@ -67,7 +65,14 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
     ],
     yAxis: [
       {
-        type: 'value'
+        type: 'value',
+        splitLine: {
+          show: true,
+          lineStyle:{
+            color: ['rgba(255,255,255, 0.1)'],
+            width: 1
+          }
+        },
       }
     ],
     series: seriers
