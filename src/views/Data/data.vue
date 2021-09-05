@@ -115,11 +115,10 @@
           </div>
         </div>
       </template>
-
-      <template v-if="mainOption !== 3">
-        <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
-      </template>
     </div>
+    <template v-if="mainOption !== 3">
+      <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
+    </template>
   </div>
 </template>
 
@@ -327,6 +326,12 @@ export default {
 </script>
 
 <style lang="less">
+.home-top{
+  padding: 6.6rem 1.6rem 0 1.6rem;
+}
+.page-container{
+  padding: 0;
+}
 .data-filter-wrap{
   display: flex;
   .derify-dropmenus {

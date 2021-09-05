@@ -51,8 +51,8 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
   return {
     color: colors,
     grid: {
-      left: '3%',
-      right: '4%',
+      left: '0%',
+      right: '0%',
       bottom: '3%',
       containLabel: true
     },
@@ -73,6 +73,10 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
             width: 1
           }
         },
+        position: 'right',
+        axisLabel:{
+          inside: true
+        }
       }
     ],
     series: seriers

@@ -10,6 +10,10 @@ import * as configUtil from '../config'
 export async function getHistoryTradingData(token, days=30) {
   const content =  await io.get(`/api/history_trading_amount/${token}/${days}`)
   if(content && content.data) {
+    content.data.forEach((item) => {
+      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+    })
+
     return content.data;
   }
 
@@ -24,6 +28,7 @@ export async function getHistoryTradingData(token, days=30) {
 export async function getCurrentPositionData(token) {
   const content =  await io.get(`/api/current_positions_amount/${token}`)
   if(content && content.data) {
+
     return content.data;
   }
 
@@ -39,6 +44,10 @@ export async function getCurrentPositionData(token) {
 export async function getHistoryPositionData(token, days = 30) {
   const content =  await io.get(`/api/history_positions_amount/${token}/${days}`)
   if(content && content.data) {
+    content.data.forEach((item) => {
+      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+    })
+
     return content.data;
   }
 
@@ -72,6 +81,10 @@ export async function getCurrentInsurancePoolData() {
 export async function getHistoryInsurancePoolData(days = 30) {
   const content =  await io.get(`/api/history_insurance_pool/${days}`)
   if(content && content.data) {
+    content.data.forEach((item) => {
+      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+    })
+
     return content.data;
   }
 
