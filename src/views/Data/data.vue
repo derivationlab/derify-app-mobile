@@ -125,7 +125,6 @@
 
 <script>
 import Navbar from '@/components/Navbar'
-import record from './record/index.vue'
 import {options,data0} from '@/utils/kExample'
 import getEchartsOptions from "@/utils/kline";
 import { fromContractUnit, Token } from '@/utils/contractUtil'
@@ -138,8 +137,7 @@ const context = {
 export default {
   name: 'Home',
   components: {
-    Navbar,
-    record
+    Navbar
     // theme
   },
   data () {
