@@ -8,7 +8,7 @@ import {
   updateBroker
 } from '@/api/broker'
 import * as web3Utils from '@/utils/web3Utils'
-import { BondAccountType, fromContractUnit, toContractNum } from '@/utils/contractUtil'
+import { BondAccountType, fromContractUnit, toContractNum, Token } from '@/utils/contractUtil'
 import { getWebroot } from '@/config'
 
 const brokerInfo = new BrokerInfo()
@@ -21,10 +21,13 @@ const state = {
     accumulatedReward: 0,
     validPeriodInDay: 0,
     expireDate: new Date('1970-01-01'),
-    edrfBalance: 0,
     todayReward: 0,
     ...brokerInfo
-  }
+  },
+  wallet: {
+    derifyEdrfBalance: 0,
+    walletEdrfBalance: 0
+  },
 }
 
 const mutations = {
@@ -33,6 +36,9 @@ const mutations = {
   },
   updateBroker(state, payload) {
     state.broker = Object.assign({},state.broker, payload)
+  },
+  updateWallet(state, payload) {
+    state.wallet = Object.assign({},state.wallet, payload)
   }
 }
 
@@ -120,12 +126,12 @@ const actions = {
     return (async () => {
       const contract = web3Utils.contract(trader);
       if(accountType === BondAccountType.WalletAccount) {
-        const amount = await contract.balanceOf(trader, Token.eDRF.token)
+        const amount = await contract.balanceOf(trader, Token.eDRF)
 
-        commit('updateBroker', {edrfBalance: amount})
+        commit('updateWallet', {walletEdrfBalance: amount})
       }else{
-        const accountInfo = await contract.getBrokerInfo(trader)
-        commit('updateBroker', accountInfo)
+        const accountInfo = await contract.getStakingInfo(trader)
+        commit('updateWallet', {derifyEdrfBalance: accountInfo.edrfBalance})
       }
 
     })()

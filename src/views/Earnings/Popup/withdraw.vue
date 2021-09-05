@@ -9,7 +9,7 @@
         <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
-                     placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
+                     placeholder="0" type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -42,8 +42,7 @@ export default {
       showPopup: this.show,
       amount: 0,
       //maxAmout: 10*1e8,
-      curPercent: 25,
-      withdrawName: null
+      curPercent: 25
     }
   },
   computed: {
@@ -51,11 +50,22 @@ export default {
       if (this.withdrawId === EarningType.MIN) {
         return this.$store.state.earnings.pmrBalance
       } else if (this.withdrawId === EarningType.EDRF) {
-        return 0
+        return this.$store.state.earnings.edrfInfo.edrfBalance
       } else if(this.withdrawId === EarningType.BDRF){
         return this.$store.state.earnings.bondInfo.bondBalance
       }
       return 0
+    },
+    withdrawName () {
+      if (this.withdrawId === EarningType.MIN) {
+        return 'USDT'
+      } else if (this.withdrawId === EarningType.EDRF) {
+        return 'eDRF'
+      } else if(this.withdrawId === EarningType.BDRF){
+        return 'bDRF'
+      }
+
+      return ''
     },
     langKey () {
       if (this.withdrawId === EarningType.MIN) {
@@ -95,15 +105,6 @@ export default {
       if(this.show) {
         this.amount = 0
       }
-    },
-    withdrawId () {
-      if (this.withdrawId === EarningType.MIN) {
-        this.withdrawName = 'USDT'
-      } else if (this.withdrawId === EarningType.EDRF) {
-        this.withdrawName = 'eDRF'
-      } else if(this.withdrawId === EarningType.BDRF){
-        this.withdrawName = 'bDRF'
-      }
     }
   },
   methods: {
@@ -122,16 +123,16 @@ export default {
       }
     },
     checkAmount () {
-
-      if(this.amount > fromContractUnit(this.maxAmout)) {
-        this.amount = fromContractUnit(this.maxAmout)
-        return true
-      }
-
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxAmout)) {
+        this.amount = fromContractUnit(this.maxAmout)
+      }
+
+      this.errorNotice(null)
       return true
     },
     submitThenClose () {

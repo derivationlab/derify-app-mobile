@@ -854,7 +854,7 @@ export default class Contract {
    * @return {Promise<{drfBalance: BigInt, edrfBalance: BigInt}>}
    */
   getStakingInfo(trader) {
-    return this.DerifyRewards.methods.getStakingInfo(amount).call()
+    return this.DerifyRewards.methods.getStakingInfo(trader).call()
   }
 
   /**

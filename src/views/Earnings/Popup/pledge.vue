@@ -19,7 +19,7 @@
         <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="" type="number"
-                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
+                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @input="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
@@ -132,15 +132,16 @@ export default {
     },
     checkAmount () {
 
-      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.amount = fromContractUnit(this.maxRedeemAmount)
-        return true
-      }
-
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
+        this.amount = fromContractUnit(this.maxRedeemAmount)
+        return true
+      }
+      this.errorNotice(null)
       return true
     },
     submitThenClose(){

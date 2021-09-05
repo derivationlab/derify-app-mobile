@@ -21,7 +21,7 @@
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="number" v-model="amount" @change="checkAmount"/>
+                     type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{ tokenName }}</div>
         </div>
         <div class="system-popup-num">
@@ -153,15 +153,16 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
-      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
-        this.amount = fromContractUnit(this.exchangeBondSizeUpperBound)
-        return true
-      }
-
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.amount = fromContractUnit(this.exchangeBondSizeUpperBound)
+      }
+
+      this.errorNotice(null)
 
       return true
     },

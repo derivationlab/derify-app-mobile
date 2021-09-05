@@ -212,9 +212,9 @@ export default {
     },
     maxAmount() {
       if(this.accountType === BondAccountType.DerifyAccount) {
-        return this.$store.state.broker.broker.rewardBalance
+        return this.$store.state.broker.wallet.derifyEdrfBalance
       }else{
-        return this.$store.state.broker.broker.edrfBalance
+        return this.$store.state.broker.wallet.walletEdrfBalance
       }
     }
   },
@@ -243,7 +243,7 @@ export default {
     setTermPopup (bool) {
 
       if(bool) {
-        this.$store.dispatch('broker/getTraderBrokerInfo', this.trader);
+        this.accountTypeChange()
       }
 
       this.termPopup = bool

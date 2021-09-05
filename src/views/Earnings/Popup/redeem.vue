@@ -21,7 +21,7 @@
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="number" v-model="amount"  @change="checkAmount"/>
+                     type="number" v-model="amount"  @input="checkAmount"/>
           <div class="unit">{{redeemName}}</div>
         </div>
         <div class="system-popup-num">
@@ -66,7 +66,7 @@ export default {
   computed: {
     maxRedeemAmount () {
       if(this.redeemId === EarningType.EDRF) {
-        return 0
+        return this.$store.state.earnings.edrfInfo.drfBalance
       }else if(this.redeemId === EarningType.BDRF){
         return this.$store.state.earnings.bondInfo.bondReturnBalance
       }
@@ -139,16 +139,15 @@ export default {
       this.amount = fck(this.maxRedeemAmount, -8, 4)
     },
     checkAmount () {
-
-      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.amount = fromContractUnit(this.maxRedeemAmount)
-        return true
-      }
-
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
+        this.amount = fromContractUnit(this.maxRedeemAmount)
+      }
+      this.errorNotice(null)
       return true
     },
     submitThenClose () {
