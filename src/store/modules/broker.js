@@ -8,7 +8,7 @@ import {
   updateBroker
 } from '@/api/broker'
 import * as web3Utils from '@/utils/web3Utils'
-import { toContractNum } from '@/utils/contractUtil'
+import { BondAccountType, fromContractUnit, toContractNum } from '@/utils/contractUtil'
 import { getWebroot } from '@/config'
 
 const brokerInfo = new BrokerInfo()
@@ -66,14 +66,13 @@ const actions = {
         const accountInfo = await contract.getBrokerInfo(trader)
         if(accountInfo){
           const expireDate = new Date()
-          //TODO 过期时间处理
+          expireDate.setTime(expireDate.getTime() + 1000*60*60*24 * fromContractUnit(accountInfo.validPeriodInDay))
           accountInfo.expireDate = expireDate
           payload.broker = Object.assign(state.broker, accountInfo)
           payload.isBroker = true
         }else{
           payload.isBroker = false
         }
-
       }catch (e){
         payload.isBroker = false
       }
@@ -117,12 +116,18 @@ const actions = {
       return await contract.burnEdrfExtendValidPeriod(toContractNum(amount))
     })()
   },
-  getEDRFWalletBalance({state, commit, dispatch}, trader) {
+  getBrokerBalance({state, commit, dispatch}, {trader,accountType}) {
     return (async () => {
       const contract = web3Utils.contract(trader);
-      const amount = await contract.balanceOf(trader, Token.eDRF.token)
+      if(accountType === BondAccountType.WalletAccount) {
+        const amount = await contract.balanceOf(trader, Token.eDRF.token)
 
-      commit('updateBroker', {edrfBalance: amount})
+        commit('updateBroker', {edrfBalance: amount})
+      }else{
+        const accountInfo = await contract.getBrokerInfo(trader)
+        commit('updateBroker', accountInfo)
+      }
+
     })()
   },
   getBrokerRewardHistory({state, commit, dispatch}, {broker, page = 0, size = 10}) {

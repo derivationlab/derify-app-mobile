@@ -18,28 +18,26 @@
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
-                     :formatter="(value) => value.replace(/-/g, '')"
                      type="text" v-model="broker.name"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
-            <input type="file" class="broker-avatar-file" ref="logo"/>
+            <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
             <img :src="broker.logo" style="width: 5.5rem;height: 5.5rem" alt=""/>
           </div>
         </div>
 
         <div class="account-label system-popup-line">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
-          <span class="fz-15 fc-85">{{broker.id}}</span>
+          <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
+                     type="text" v-model="broker.id"/>
         </div>
 
         <div class="system-popup-input derify-broker-url">
-          <van-field class="derify-input no-padding-hor fz-15 fc-45" placeholder=""
-                     :formatter="(value) => value.replace(/-/g, '')"
-                type="text" value="http://app.derify.finance/"/>
-          <span class="fc-85">{{broker.id}}</span>
+          <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/</span>
+          <span class="fc-85 fz-12">{{broker.id}}</span>
         </div>
 
         <div class="btn-wrap">
@@ -55,6 +53,7 @@
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import { BrokerInfo } from '@/api/broker'
+import { getWebroot } from '@/config'
 export default {
   name: 'Home',
   components: {
@@ -64,6 +63,7 @@ export default {
   data () {
     const broker = new BrokerInfo()
     return {
+      webroot: getWebroot(),
       showError: false,
       errorMsg: '',
       broker: {...broker},
@@ -175,14 +175,14 @@ export default {
         width: inherit;
       }
     }
+  }
 
-    .van-field__control{
-      text-align: right;
-      color: rgba(255,255,255,0.45);
-    }
-    .fc-85 .van-field__control{
-      color: rgba(255,255,255,0.85);
-    }
+  .van-field__control{
+    text-align: right;
+    color: rgba(255,255,255,0.45);
+  }
+  .fc-85 .van-field__control{
+    color: rgba(255,255,255,0.85);
   }
   .system-popup-line {
     display: flex;
@@ -202,6 +202,7 @@ export default {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 1rem;
     .van-field__control{
       text-align: right;
       color: rgba(255,255,255,0.45);

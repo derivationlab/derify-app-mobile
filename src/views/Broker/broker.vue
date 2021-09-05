@@ -109,7 +109,7 @@
 
           <div>
             <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-              <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
+              <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions" @change="accountTypeChange">
                   <div class="derify-dropmenu-title" slot="title">
                     <span>{{accountOptions[accountType].text}}</span>
                     <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -151,7 +151,7 @@ import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
 import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
 import DecimalView from "@/components/DecimalView/DecimalView";
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
-import { BondAccountType } from '@/utils/contractUtil'
+import { BondAccountType, fromContractUnit } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 
 export default {
@@ -249,9 +249,23 @@ export default {
       this.termPopup = bool
     },
 
-    applyBroker() {
+    checkAmount() {
+      if(this.applyBurnAmount > fromContractUnit(this.maxAmount)) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
 
-      //TODO 余额判断
+      if(this.amount <= 0){
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+
+      return true
+    },
+    applyBroker() {
+      if(!this.checkAmount()){
+        return
+      }
 
       this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')});
 
@@ -279,6 +293,20 @@ export default {
     },
     goPath(path){
       this.$router.push({path})
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
+    },
+    accountTypeChange() {
+      this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: this.accountType})
+      .then(() => {
+        this.checkAmount()
+      })
     }
   }
 }

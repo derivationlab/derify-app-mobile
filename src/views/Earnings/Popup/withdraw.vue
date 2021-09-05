@@ -122,7 +122,13 @@ export default {
       }
     },
     checkAmount () {
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
+
+      if(this.amount > fromContractUnit(this.maxAmout)) {
+        this.amount = fromContractUnit(this.maxAmout)
+        return true
+      }
+
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }

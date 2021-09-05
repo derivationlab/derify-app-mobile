@@ -139,7 +139,13 @@ export default {
       this.amount = fck(this.maxRedeemAmount, -8, 4)
     },
     checkAmount () {
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxRedeemAmount)) {
+
+      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
+        this.amount = fromContractUnit(this.maxRedeemAmount)
+        return true
+      }
+
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }

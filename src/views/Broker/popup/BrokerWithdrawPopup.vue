@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
+import { BondAccountType, fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
 import { EarningType } from '../../../store/modules/earnings'
@@ -54,6 +54,10 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.show) {
+        this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: BondAccountType.DerifyAccount})
+          .then(() => {
+            this.checkAmount()
+          })
         this.amount = null
       }
     }
@@ -87,7 +91,6 @@ export default {
     },
     submitThenClose () {
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 

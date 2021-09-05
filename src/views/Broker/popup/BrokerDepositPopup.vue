@@ -29,7 +29,7 @@
       <div class="system-popup-form">
         <div class="system-popup-line">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
+            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions" @change="accountTypeChange">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{accountOptions[accountType].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -51,7 +51,7 @@
           <div class="system-popup-input">
             <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                        :formatter="(value) => value.replace(/-/g, '')"
-                       type="number" v-model="amount"/>
+                       type="number" v-model="amount" @input="checkAmount"/>
             <div class="unit">eDRF</div>
           </div>
         </div>
@@ -136,7 +136,25 @@ export default {
     close () {
       this.$emit('close')
     },
+
+    checkAmount() {
+      if(this.amount > fromContractUnit(this.maxAmount)) {
+        this.amount = fromContractUnit(this.maxAmount)
+        return true
+      }
+
+      if(this.amount <= 0){
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+    },
+
     submitThenClose () {
+
+      if(!this.checkAmount()) {
+        return
+      }
+
       this.$userProcessBox({show: true, status: UserProcessStatus.waiting
         ,msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch('broker/burnEdrfExtendValidPeriod',
@@ -155,6 +173,20 @@ export default {
         { text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0 },
         { text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1 }
       ]
+    },
+    accountTypeChange() {
+      this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: this.accountType})
+        .then(() => {
+          this.checkAmount()
+        })
+    },
+    errorNotice(msg){
+      if(msg){
+        this.errorMsg = msg
+        this.showError = true
+      }else{
+        this.showError = false
+      }
     }
   }
 }

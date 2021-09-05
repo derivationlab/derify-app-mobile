@@ -153,8 +153,12 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
+      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.amount = fromContractUnit(this.exchangeBondSizeUpperBound)
+        return true
+      }
 
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
