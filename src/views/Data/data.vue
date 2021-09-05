@@ -326,6 +326,9 @@ export default {
 </script>
 
 <style lang="less">
+.derify-dropmenus .van-dropdown-item__content{
+ width: auto;
+}
 .home-top{
   padding: 6.6rem 1.6rem 0 1.6rem;
 }
@@ -344,7 +347,7 @@ export default {
     }
   }
   .derify-dropmenu-wrap{
-    width: 13rem;
+    min-width: 13rem;
   }
 }
 </style>
