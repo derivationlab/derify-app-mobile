@@ -846,12 +846,16 @@ export default {
 
     onLoad () {
       const self = this
-      const {key} = this
-      if(key === 'key3'){
+      const {active} = this
+      if(active === 'key3'){
         self.loadTradeHistory(false)
-      }else{
+      }else if(active === 'key1' || active === 'key2'){
+        console.log(`${key} loadPositionData`)
         this.$store.dispatch('contract/loadPositionData').then(r => {
           self.loading = false
+        }).finally(() => {
+          self.positionFinished = true
+          self.positionOrdersFinished = true
         })
       }
     },

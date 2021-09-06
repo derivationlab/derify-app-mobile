@@ -332,9 +332,6 @@ export default {
 .home-top{
   padding: 6.6rem 1.6rem 0 1.6rem;
 }
-.page-container{
-  padding: 0;
-}
 .data-filter-wrap{
   display: flex;
   .derify-dropmenus {
@@ -352,6 +349,10 @@ export default {
 }
 </style>
 <style lang="less" scoped>
+.page-container{
+  padding: 0;
+}
+
 .token-info-wrap{
   .div1{
     display: flex;

@@ -98,6 +98,7 @@ export default {
           return
         }
 
+        this.page++
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             list.push(item)

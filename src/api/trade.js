@@ -27,7 +27,7 @@ export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
   const content = await io.get(`/api/trade_records/${trader}/${pageNum}/${pageSize}`)
 
   if(content) {
-    return content.data.data;
+    return content.data.records;
   }
 
   return [];
@@ -44,7 +44,7 @@ export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10)
   const content =  await io.get(`/api/trader_balance/${trader}/${pageNum}/${pageSize}`)
 
   if(content) {
-    return content.data.data;
+    return content.data.records;
   }
 
   return [];
