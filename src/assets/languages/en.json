@@ -1,598 +1,598 @@
 {
 	"Trade":{
-		"TradeHistory":{
-			"Hint":{
-				"CompensationDetail":"Your profit paid in bDRF.",
-				"OrderVolume":"Volume",
-				"OrderPrice":"Amount",
-				"PnL":"PnL",
-				"PCFDetail":"PCF rewards (positive) or payment (negative) when you open/close your position.",
-				"PCF":"PCF",
-				"OrderPriceDetail":"Amount = Price * Volume",
-				"OrderVolumeDetail":"The volume of asset this order be opened/closed",
-				"PnLDetail2":"Short position PnL = (Open Price - Close Price) * Amount",
-				"Compensation":"Compensation",
-				"PnLDetail1":"Long position PnL = (Close Price - Open Price) * Amount",
-				"TradingFee":"Trading Fees",
-				"TradingFeeDetail":"Trading Fees when you open/close position."
-			},
-			"List":{
-				"CloseTPSL":"Close / TPSL",
-				"CloseMarket":"Close/ Market",
-				"Compensation":"Compensation",
-				"OpenMarket":"Open / Market",
-				"OpenMarket2":"/ Market",
-				"CloseMarket1":"Close",
-				"CloseMarket2":"/ Market",
-				"TradFee":"Trad. Fee",
-				"Short":"S",
-				"OpenMarket1":"Open",
-				"CloseTPSL2":"/ TPSL",
-				"CloseTPSL1":"Close",
-				"CloseDeleverage":"Close / Deleverage",
-				"RealizedPnL":"Realized PnL",
-				"Amount":"Amount",
-				"CloseLiquidate":"Close / Liquidate",
-				"OpenLimit2":"/ Limit",
-				"OpenLimit1":"Open",
-				"TradeHistory":"Trade History",
-				"NoMoreInfo":"No more info",
-				"Type":"Type",
-				"PCF":"PCF",
-				"CloseDeleverage2":"/ Deleverage",
-				"Price":"Price",
-				"Volume":"Volume",
-				"CloseDeleverage1":"Close",
-				"Long":"L",
-				"CloseLiquidate2":"/ Liquidate",
-				"OpenLimit":"Open/ Limit",
-				"CloseLiquidate1":"Close"
-			}
+		"navbar":{
+			"Trade":"Trade",
+			"Rewards":"Rewards",
+			"Broker":"Broker",
+			"Data":"Data",
+			"ClickToLogin":"Click To Login",
+			"ClickToConnectYourWallet":"Click to connect your wallet",
+			"ConnectWallet":"Connect Wallet",
+			"Home":"Home",
+			"WalletAddress":"Wallet Address"
+		},
+		"Wallet":{
+			"ConnectWallet":"Connect Wallet",
+			"ChooseNetwork":"Choose Network",
+			"ChooseWallet":"Choose Wallet",
+			"NoWalletErrorMsg":"No wallet detected, please install Metamask first.",
+			"MainChainUnmatch":"Your wallet network does not match the network you choose. Please switch to {0} Testnet of Ethereum and retry.",
+			"Disconnect":"Disconnect"
 		},
 		"Account":{
-			"FinanceDetail":{
-				"Deposit":"Deposit",
-				"RealizedPnL":"Realized PnL",
-				"Withdraw":"Withdraw",
-				"Amount":"Amount",
-				"Loss":"Loss",
-				"SysLoss":"Sys. Loss",
-				"Time":"Time",
-				"NoMoreInfo":"No more info",
-				"Type":"Type",
-				"PCF":"PCF",
-				"Compensation":"Compensation",
-				"Gas":"Gas",
-				"BalanceHistory":"Balance History",
-				"Profit":"PnL",
-				"TradFee":"Trad. Fee",
-				"Balance":"Balance",
-				"LiqCost":"Liq. Cost"
-			},
 			"MarginAccount":{
-				"Deposit":"Deposit",
+				"WalletAddress":"Wallet Address",
 				"MarginAccount":"Margin Account",
-				"Withdraw":"Withdraw",
 				"AccountBalance":"Account Balance",
 				"BalanceHistory":"Balance History",
-				"WalletAddress":"Wallet Address",
 				"MarginBalance":"Margin Balance",
-				"Margin":"Margin"
+				"Margin":"Margin",
+				"Deposit":"Deposit",
+				"Withdraw":"Withdraw"
 			},
 			"Transfer":{
-				"All":"All",
-				"Deposit":"Deposit",
+				"Transfers":"Transfers",
+				"From":"From",
+				"To":"To",
+				"MyWallet":"My Wallet",
 				"MarginAccount":"Margin Account",
-				"Max":"Max",
-				"Withdraw":"Withdraw",
 				"Size":"Size",
 				"NumberError":"Error, please retry",
-				"From":"From",
-				"MyWallet":"My Wallet",
-				"Transfers":"Transfers",
-				"To":"To",
+				"Max":"Max",
+				"All":"All",
+				"Deposit":"Deposit",
+				"Withdraw":"Withdraw",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"FinanceDetail":{
+				"BalanceHistory":"Balance History",
+				"Type":"Type",
+				"Amount":"Amount",
+				"Balance":"Balance",
+				"Time":"Time",
+				"Gas":"Gas",
+				"TradFee":"Trad. Fee",
+				"Profit":"PnL",
+				"Loss":"Loss",
+				"RealizedPnL":"Realized PnL",
+				"PCF":"PCF",
+				"LiqCost":"Liq. Cost",
+				"Compensation":"Compensation",
+				"SysLoss":"Sys. Loss",
+				"Withdraw":"Withdraw",
+				"Deposit":"Deposit",
+				"NoMoreInfo":"No more info"
+			}
+		},
+		"BrokerBind":{
+			"BrokerCodes":{
+				"BindBrokerPrivilege":"Bind Your Broker Privilege",
+				"BrokerCode":"Broker Code",
+				"NoBrokerCode":"No Broker Code",
+				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
+				"Submit":"Submit",
+				"SelectOrInputBrokerId":"请选择或输入经纪商编码"
+			},
+			"BrokerBind":{
+				"ChooseBroker":"Choose Broker",
+				"HaveBrokerCode":"Have Broker Code",
+				"NoMoreInfo":"No more info.",
+				"Submit":"Submit"
+			}
+		},
+		"OpenPosition":{
+			"Market":{
+				"Market":"Market"
+			},
+			"Kline":{
+				"PCFRate":"PCF Rate",
+				"PMAPY":"PM APY",
+				"Long":"Long",
+				"Short":"Short"
+			},
+			"Hint":{
+				"PCFRate":"PCF Rate",
+				"PCFRateDetail":"Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules click here.",
+				"PositionMiningAPY":"Position Mining APY",
+				"PositionMiningAPYDetail":"The higher the leverage of positions, the higher the APY of position mining will be. Mining rules click here."
+			},
+			"OpenPage":{
+				"Market":"Market",
+				"Limit":"Limit",
+				"Price":"Price",
+				"MarketPrice":"Market Price",
+				"NumberError":"Error, please retry",
+				"Amount":"Amount",
+				"Max":"Max",
+				"Transfer":"Transfer",
+				"BuyLong":"Buy / Long",
+				"SellShort":"Sell / Short",
+				"TwoWay":"Two Way",
+				"TwoWayOpenPriceTypeError":"You can only place Two-way positions via market order"
+			},
+			"OpenPopup":{
+				"OpenConfirm":"Confirm",
+				"Price":"Price",
+				"Market":"Market",
+				"Type":"Type",
+				"Long":"Long",
+				"Short":"Short",
+				"TwoWay":"Two-Way",
+				"Amount":"Amount",
+				"PCF":"PCF（Estimate）",
+				"TradFee":"Trad. Fee",
+				"Cancel":"Cancel",
+				"Confirm":"Confirm",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry.",
+				"LiqLimitMsg":"Liquidity limit reached, maximum order"
+			}
+		},
+		"MyPosition":{
+			"List":{
+				"MyPosition":"My Position",
+				"Long":"L",
+				"Short":"S",
+				"UnrealizedPnL":"Unrealized PnL",
+				"PositionHeld":"Position Held",
+				"CurrentPrice":"Current Price",
+				"AveragePrice":"Average Price",
+				"StopLoss":"SL",
+				"TP":"TP",
+				"Margin":"Margin",
+				"Risk":"Risk",
+				"LiqPrice":"Liq. Price",
+				"SetTPSL":"Set TP / SL",
+				"Close":"Close",
+				"NoMoreInfo":"No more info",
+				"OneClickClose":"One-Click Close"
+			},
+			"Hint":{
+				"UnrealizedPnL":"Unrealized PnL",
+				"UnrealizedPnLDetail1":"Unrealized P&L of Long Position = (Current Derivative Price – Average Position Price) * Position Held",
+				"UnrealizedPnLDetail2":"Unrealized P&L of Short Position = (Average Position Price - Current Derivative Price) * Position Held",
+				"PositionHeld":"Position Held",
+				"PositionHeldDetail":"Position Held in this Derivative",
+				"CurrentPrice":"Current Price",
+				"CurrentPriceDetail":"Current Derivative Price of the Platform",
+				"AveragePrice":"Average Price",
+				"AveragePriceDetail":"Average Opening Price for this Position",
+				"PositionMargin":"Position Margin",
+				"PositionMarginDetail":"Used Position Margin = Position Held/Leverage",
+				"Risk":"Risk",
+				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules click here>>",
+				"LiquidationPrice":"Liquidation Price",
+				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. Know more>>",
+				"StopLossSetting":"Stop Loss Setting",
+				"StopLossSettingDetail":"When the SL price is reached, system will be automatically close your position to prevent further loss.",
+				"TakeProfitSetting":"Take Profit Setting",
+				"TakeProfitSettingDetail":"When the TP price is reached, system will be automatically close your position to realize your current profit."
+			},
+			"SetStopPricePopup":{
+				"SetTPSL":"Set TP / SL",
+				"AveragePrice":"Average Price",
+				"CurrentPrice":"Current Price",
+				"TakeProfit":"Take Profit",
+				"StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} USDT.",
+				"StopLoss":"Stop Loss",
+				"StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} USDT.",
+				"NumberError":"Error, please retry",
+				"Cancel":"Cancel",
+				"Confirm":"Confirm",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"ClosePositionPopup":{
+				"Close":"Close",
+				"PositionHeld":"Position Held",
+				"AveragePrice":"Average Price",
+				"CurrentPrice":"Current Price",
+				"Amount":"Amount",
+				"NumberError":"Error, please retry",
+				"Cancel":"Cancel",
+				"Confirm":"Confirm",
+				"OneClickClose":"One-Click Close",
+				"ClosePositionPopupInfo":"Click to close all positions at Market Price",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
 				"TradeFailedMsg":"Error, please retry."
 			}
 		},
 		"CurrentOrder":{
+			"List":{
+				"CurrentOrder":"Current Order",
+				"L":"L",
+				"S":"S",
+				"Price":"Price",
+				"Type":"Type",
+				"Volume":"Volume",
+				"OpenLimit":"Open / Limit",
+				"CloseTP":"Close / TP",
+				"CloseSL":"Close / SL",
+				"Time":"Time",
+				"Cancel":"Cancel",
+				"CancelAll":"Cancel All",
+				"NoMoreInfo":"No more info"
+			},
+			"Hint":{
+				"OrderPrice":"Order Price",
+				"OrderPriceDetail":"Target execution price of this order.",
+				"OrderVolume":"Order Volume",
+				"OrderVolumeDetail":"The volume of asset this order will be trading.",
+				"OrderTime":"Order Time",
+				"OrderTimeDetail":"The moment this order is placed."
+			},
 			"CancelOrderPopup":{
 				"CancelOneOrder":"Cancel",
 				"CancelOneOrderInfo":"Click to CANCEL the order",
 				"CancelAllOrder":"Cancel All",
+				"CloseAllOrderInfo":"Click to CANCEL ALL orders",
 				"Cancel":"Cancel",
 				"Confirm":"Confirm",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"CloseAllOrderInfo":"Click to CANCEL ALL orders",
 				"TradeFailedMsg":"Error, please retry."
-			},
-			"Hint":{
-				"OrderTime":"Order Time",
-				"OrderPriceDetail":"Target execution price of this order.",
-				"OrderVolumeDetail":"The volume of asset this order will be trading.",
-				"OrderVolume":"Order Volume",
-				"OrderPrice":"Order Price",
-				"OrderTimeDetail":"The moment this order is placed."
-			},
+			}
+		},
+		"TradeHistory":{
 			"List":{
-				"CurrentOrder":"Current Order",
-				"Cancel":"Cancel",
-				"CloseTP":"Close / TP",
-				"Time":"Time",
-				"L":"L",
-				"CloseSL":"Close / SL",
-				"NoMoreInfo":"No more info",
+				"TradeHistory":"Trade History",
+				"Long":"L",
+				"Short":"S",
+				"RealizedPnL":"Realized PnL",
 				"Type":"Type",
-				"S":"S",
 				"Price":"Price",
 				"Volume":"Volume",
-				"OpenLimit":"Open / Limit",
-				"CancelAll":"Cancel All"
-			}
-		},
-		"BrokerBind":{
-			"BrokerBind":{
-				"NoMoreInfo":"No more info.",
-				"ChooseBroker":"Choose Broker",
-				"HaveBrokerCode":"Have Broker Code",
-				"Submit":"Submit"
-			},
-			"BrokerCodes":{
-				"BrokerCode":"Broker Code",
-				"BindBrokerPrivilege":"Bind Your Broker Privilege",
-				"NoBrokerCode":"No Broker Code",
-				"Submit":"Submit",
-				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
-              	"SelectOrInputBrokerId": "SelectOrInputBrokerId"
-            }
-		},
-		"navbar":{
-			"ClickToLogin":"Click To Login",
-			"Trade":"Trade",
-			"Broker":"Broker",
-			"Rewards":"Rewards",
-			"ClickToConnectYourWallet":"Click to connect your wallet",
-			"ConnectWallet":"Connect Wallet",
-			"Data":"Data",
-			"Home":"Home",
-			"WalletAddress":"Wallet Address"
-		},
-		"Wallet":{
-			"NoWalletErrorMsg":"No wallet detected, please install Metamask first.",
-			"ChooseNetwork":"Choose Network",
-			"Disconnect":"Disconnect",
-			"ChooseWallet":"Choose Wallet",
-			"ConnectWallet":"Connect Wallet",
-			"MainChainUnmatch":"Your wallet network does not match the network you choose. Please switch to {0} Testnet of Ethereum and retry."
-		},
-		"MyPosition":{
-			"ClosePositionPopup":{
-				"Cancel":"Cancel",
-				"OneClickClose":"One-Click Close",
 				"Amount":"Amount",
-				"Confirm":"Confirm",
-				"NumberError":"Error, please retry",
-				"AveragePrice":"Average Price",
-				"PositionHeld":"Position Held",
-				"CurrentPrice":"Current Price",
-				"ClosePositionPopupInfo":"Click to close all positions at Market Price",
-				"Close":"Close",
-				"TradePendingMsg":"Pending ……",
-				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
-			},
-			"Hint":{
-				"StopLossSettingDetail":"When the SL price is reached, system will be automatically close your position to prevent further loss.",
-				"UnrealizedPnLDetail2":"Unrealized P&L of Short Position = (Average Position Price - Current Derivative Price) * Position Held",
-				"PositionMargin":"Position Margin",
-				"TakeProfitSetting":"Take Profit Setting",
-				"TakeProfitSettingDetail":"When the TP price is reached, system will be automatically close your position to realize your current profit.",
-				"UnrealizedPnLDetail1":"Unrealized P&L of Long Position = (Current Derivative Price – Average Position Price) * Position Held",
-				"UnrealizedPnL":"Unrealized PnL",
-				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules click here>>",
-				"PositionMarginDetail":"Used Position Margin = Position Held/Leverage",
-				"Risk":"Risk",
-				"AveragePrice":"Average Price",
-				"LiquidationPrice":"Liquidation Price",
-				"StopLossSetting":"Stop Loss Setting",
-				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. Know more>>",
-				"PositionHeld":"Position Held",
-				"CurrentPrice":"Current Price",
-				"AveragePriceDetail":"Average Opening Price for this Position",
-				"CurrentPriceDetail":"Current Derivative Price of the Platform",
-				"PositionHeldDetail":"Position Held in this Derivative"
-			},
-			"SetStopPricePopup":{
-				"Cancel":"Cancel",
-				"StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} USDT.",
-				"StopLoss":"Stop Loss",
-				"Confirm":"Confirm",
-				"NumberError":"Error, please retry",
-				"AveragePrice":"Average Price",
-				"StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} USDT.",
-				"TakeProfit":"Take Profit",
-				"CurrentPrice":"Current Price",
-				"TradePendingMsg":"Pending ……",
-				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry.",
-				"SetTPSL":"Set TP / SL"
-			},
-			"List":{
-				"LiqPrice":"Liq. Price",
-				"OneClickClose":"One-Click Close",
-				"UnrealizedPnL":"Unrealized PnL",
-				"MyPosition":"My Position",
-				"StopLoss":"SL",
-				"Risk":"Risk",
-				"AveragePrice":"Average Price",
-				"NoMoreInfo":"No more info",
-				"PositionHeld":"Position Held",
-				"CurrentPrice":"Current Price",
-				"Long":"L",
-				"Close":"Close",
-				"TP":"TP",
-				"Short":"S",
-				"Margin":"Margin",
-				"SetTPSL":"Set TP / SL"
-			}
-		},
-		"OpenPosition":{
-			"OpenPopup":{
-				"LiqLimitMsg":"Liquidity limit reached, maximum order",
-				"Cancel":"Cancel",
-				"Amount":"Amount",
-				"OpenConfirm":"Confirm",
-				"Confirm":"Confirm",
-				"Market":"Market",
-				"Type":"Type",
-				"PCF":"PCF（Estimate）",
-				"TwoWay":"Two-Way",
-				"Price":"Price",
-				"Long":"Long",
-				"TradePendingMsg":"Pending ……",
 				"TradFee":"Trad. Fee",
-				"TradeSuccessMsg":"Successful",
-				"Short":"Short",
-				"TradeFailedMsg":"Error, please retry."
+				"PCF":"PCF",
+				"Compensation":"Compensation",
+				"OpenMarket":"Open / Market",
+				"OpenMarket1":"Open",
+				"OpenMarket2":"/ Market",
+				"OpenLimit":"Open/ Limit",
+				"OpenLimit1":"Open",
+				"OpenLimit2":"/ Limit",
+				"CloseMarket":"Close/ Market",
+				"CloseMarket1":"Close",
+				"CloseMarket2":"/ Market",
+				"CloseTPSL":"Close / TPSL",
+				"CloseTPSL1":"Close",
+				"CloseTPSL2":"/ TPSL",
+				"CloseDeleverage":"Close / Deleverage",
+				"CloseDeleverage1":"Close",
+				"CloseDeleverage2":"/ Deleverage",
+				"CloseLiquidate":"Close / Liquidate",
+				"CloseLiquidate1":"Close",
+				"CloseLiquidate2":"/ Liquidate",
+				"NoMoreInfo":"No more info"
 			},
 			"Hint":{
-				"PositionMiningAPY":"Position Mining APY",
-				"PositionMiningAPYDetail":"The higher the leverage of positions, the higher the APY of position mining will be. Mining rules click here.",
-				"PCFRate":"PCF Rate",
-				"PCFRateDetail":"Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules click here."
-			},
-			"Kline":{
-				"PMAPY":"PM APY",
-				"Long":"Long",
-				"PCFRate":"PCF Rate",
-				"Short":"Short"
-			},
-			"OpenPage":{
-				"MarketPrice":"Market Price",
-				"TwoWay":"Two Way",
-				"Price":"Price",
-				"Max":"Max",
-				"TwoWayOpenPriceTypeError":"You can only place Two-way positions via market order",
-				"Amount":"Amount",
-				"Transfer":"Transfer",
-				"NumberError":"Error, please retry",
-				"Limit":"Limit",
-				"Market":"Market",
-				"BuyLong":"Buy / Long",
-				"SellShort":"Sell / Short"
-			},
-			"Market":{
-				"Market":"Market"
+				"PnL":"PnL",
+				"PnLDetail1":"Long position PnL = (Close Price - Open Price) * Amount",
+				"PnLDetail2":"Short position PnL = (Open Price - Close Price) * Amount",
+				"OrderPrice":"Amount",
+				"OrderPriceDetail":"Amount = Price * Volume",
+				"OrderVolume":"Volume",
+				"OrderVolumeDetail":"The volume of asset this order be opened/closed",
+				"TradingFee":"Trading Fees",
+				"TradingFeeDetail":"Trading Fees when you open/close position.",
+				"PCF":"PCF",
+				"PCFDetail":"PCF rewards (positive) or payment (negative) when you open/close your position.",
+				"Compensation":"Compensation",
+				"CompensationDetail":"Your profit paid in bDRF."
 			}
 		}
 	},
-	"Broker":{
-		"Broker":{
-			"Account":{
-				"DailyEarning":"Daily Earning",
-				"ExpireDate":"Until {0}/{1}/{1}",
-				"Withdraw":"Withdraw",
-				"AccumulatedEarning":"Accumulated Earning",
-				"BrokerHint":"Note:",
-				"AccBalance":"Acc. Balance",
-				"Myreferralpage":"My referral page",
-				"Burn":"Burn",
-				"BrokerHintDetail3":"Brokers need to burn eDRF to maintain its privilege. (Current price is 600 eDRF per day).",
-				"BrokerHintDetail4":"Once your privilege is expired, you will not be able to receive rewards, but your can resume as our Broker whenever you like.",
-				"BrokerHintDetail1":"Derify has Broker system, traders will be trading on our Broker’s page, Derify does not directly provide service.",
-				"Days":"Days",
-				"BrokerHintDetail2":"Brokers will receive trading fee rewards and potential DRF rewards.",
-				"PrivilegeValidDate":"Privilege Valid until"
-			},
-			"DepositPopup":{
-				"Burn":"Burn",
-				"UnitPrice":"Unit Price",
-				"ValidPeriod":"Valid Period + {0} days",
-				"Cancel":"Cancel",
-				"NumberError":"Error, please retry",
-				"TradePendingMsg":"Pending ……",
-				"eDRFAccount":"eDRF Account",
-				"TradeSuccessMsg":"Successful",
-				"Balance":"Balance",
-				"MyWallet":"My Wallet",
-				"TradeFailedMsg":"Error, please retry.",
-				"BurnAmount":"Burn Amount"
-			},
-			"WithdrawPopup":{
-				"All":"All",
-				"Max":"Max",
-				"Cancel":"Cancel",
-				"Withdraw":"Withdraw",
-				"Amount":"Amount",
-				"Title":"Withdraw"
-			},
-			"InfoEdit":{
-				"CodeOccuError":"Your Code is occupied, choose another one",
-				"BrokerCode":"Broker Code",
-				"Commit":"Commit",
-				"Title":"Broker Info",
-				"WalletAddress":"Wallet Address",
-				"PhotoSizeError":"Photo size shall not be larger than 2m, please retry",
-				"Avatar":"Avatar",
-				"Name":"Name"
-			},
-			"TraderInfo":{
-				"TraderAddress":"Trader Address",
-				"RegistrationDate":"Registration Date",
-				"TraderInfo":"Trader Info"
-			},
-			"History":{
-				"Type":"Type",
-				"Withdraw":"Withdraw",
-				"AccountHistory":"Account History",
-				"Amount":"Amount",
-				"Time":"Time",
-				"Earnings":"Earnings",
-				"Balance":"Balance"
-			}
-		},
-		"Apply":{
-			"Cancel":"Cancel",
-			"NotBrokerMessage":"You are not a Broker",
-			"Brokers":"Brokers",
-			"ApplyBroker":"Apply to be Broker",
-			"Confirm":"Confirm",
-			"MyWallet":"My Wallet",
-			"GetBrokersPrivilege":"Burn {0} eDRF to get Brokers Privilege",
-			"AddInfo":"Add Info",
-			"AccountBalance":"Account Balance",
-			"TradePendingMsg":"Pending ……",
-			"eDRFAccount":"eDRF Account",
-			"TradeFailedMsg":"Error, please retry.",
-			"ApplySuccessMsg":"You Purchased Broker Privilege!",
-			"InsufficientAccountBalanceError":"Insufficient Account Balance, choose another account"
-		}
-	},
-	"lng":"en",
 	"Rewards":{
 		"Mining":{
+			"Card":{
+				"PositionMining":"Position Mining",
+				"PositionHeld":"Position Held",
+				"AccumulatedReward":"Accumulated Reward",
+				"TransactionHistory":"Transaction History",
+				"Withdraw":"Withdraw",
+				"OpenPosition":"Open position"
+			},
 			"WithdrawPopup":{
-				"All":"All",
+				"Amount":"Amount",
 				"Max":"Max",
+				"All":"All",
 				"Cancel":"Cancel",
 				"Withdraw":"Withdraw",
-				"Amount":"Amount",
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"History":{
-				"NoMoreInfo":"No more info",
+				"PositionMining":"Position Mining",
 				"Type":"Type",
+				"Amount":"Amount",
+				"Balance":"Balance",
+				"Time":"Time",
 				"Earning":"Earning",
 				"Withdraw":"Withdraw",
-				"Amount":"Amount",
-				"Time":"Time",
-				"PositionMining":"Position Mining",
-				"Balance":"Balance"
-			},
-			"Card":{
-				"PositionHeld":"Position Held",
-				"Withdraw":"Withdraw",
-				"AccumulatedReward":"Accumulated Reward",
-				"TransactionHistory":"Transaction History",
-				"PositionMining":"Position Mining",
-				"OpenPosition":"Open position"
+				"NoMoreInfo":"No more info"
 			}
 		},
 		"Staking":{
+			"Card":{
+				"eDRFAccount":"eDRF Account",
+				"TransactionHistory":"Transaction History",
+				"StakAmount(DRF)":"Stak. Amount (DRF)",
+				"DailyYield(eDRF)":"Daily Yield (eDRF)",
+				"Withdraw":"Withdraw",
+				"Redeem":"Redeem",
+				"Staking":"Staking"
+			},
 			"WithdrawPopup":{
-				"All":"All",
 				"WithdraweDRF":"Withdraw eDRF",
+				"Amount":"Amount",
 				"Max":"Max",
-				"Cancel":"Cancel",
-				"Withdraw":"Withdraw",
-				"Amount":"Amount",
-				"NumberError":"Error, please retry",
-				"TradePendingMsg":"Pending ……",
-				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
-			},
-			"History":{
-				"Burn":"Burn",
-				"NoMoreInfo":"No more info",
-				"Type":"Type",
-				"Earning":"Earning",
-				"Withdraw":"Withdraw",
-				"Amount":"Amount",
-				"Time":"Time",
-				"eDRF":"eDRF",
-				"Balance":"Balance"
-			},
-			"PledgePopup":{
 				"All":"All",
-				"Max":"Max",
 				"Cancel":"Cancel",
-				"Amount":"Amount",
-				"Staking":"Staking",
-				"StakingDRF":"Staking DRF",
-				"DRFAccount":"DRF Account",
+				"Withdraw":"Withdraw",
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"MyWallet":"My Wallet",
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"RedeemPopup":{
 				"RedeemDRF":"Redeem DRF",
-				"All":"All",
-				"Max":"Max",
-				"Cancel":"Cancel",
-				"Amount":"Amount",
-				"Redeem":"Redeem",
 				"DRFAccount":"DRF Account",
+				"MyWallet":"My Wallet",
+				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
+				"Redeem":"Redeem",
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"MyWallet":"My Wallet",
 				"TradeFailedMsg":"Error, please retry."
 			},
-			"Card":{
-				"Withdraw":"Withdraw",
-				"TransactionHistory":"Transaction History",
-				"Redeem":"Redeem",
+			"PledgePopup":{
+				"StakingDRF":"Staking DRF",
+				"DRFAccount":"DRF Account",
+				"MyWallet":"My Wallet",
+				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
 				"Staking":"Staking",
-				"DailyYield(eDRF)":"Daily Yield (eDRF)",
-				"eDRFAccount":"eDRF Account",
-				"StakAmount(DRF)":"Stak. Amount (DRF)"
+				"NumberError":"Error, please retry",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"History":{
+				"eDRF":"eDRF",
+				"Type":"Type",
+				"Amount":"Amount",
+				"Balance":"Balance",
+				"Time":"Time",
+				"Earning":"Earning",
+				"Withdraw":"Withdraw",
+				"Burn":"Burn",
+				"NoMoreInfo":"No more info"
 			}
 		},
 		"Bond":{
+			"Card":{
+				"bDRFAccount":"bDRF Account",
+				"TransactionHistory":"Transaction History",
+				"StakingAmount(bDRF)":"Staking Amount (bDRF)",
+				"Withdraw":"Withdraw",
+				"Exchange":"Exchange",
+				"Redeem":"Redeem",
+				"Staking":"Staking"
+			},
 			"WithdrawPopup":{
-				"All":"All",
+				"WithdrawbDRF":"Withdraw bDRF",
+				"Amount":"Amount",
 				"Max":"Max",
+				"All":"All",
 				"Cancel":"Cancel",
 				"Withdraw":"Withdraw",
-				"Amount":"Amount",
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"WithdrawbDRF":"Withdraw bDRF",
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"ExchangePopup":{
-				"All":"All",
-				"Exchange":"Exchange",
 				"ExchangebDRF":"Exchange bDRF",
-				"Max":"Max",
-				"Cancel":"Cancel",
+				"bDRFAccount":"bDRF Account",
+				"MyWallet":"My Wallet",
 				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
+				"Exchange":"Exchange",
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"RedeemPopup":{
+				"RedeembDRF":"Redeem bDRF",
+				"bDRFAccount":"bDRF Account",
 				"MyWallet":"My Wallet",
-				"TradeFailedMsg":"Error, please retry.",
-				"bDRFAccount":"bDRF Account"
+				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
+				"Redeem":"Redeem",
+				"NumberError":"Error, please retry",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"PledgePopup":{
+				"StakingbDRF":"Staking bDRF",
+				"bDRFAccount":"bDRF Account",
+				"MyWallet":"My Wallet",
+				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
+				"Staking":"Staking",
+				"NumberError":"Error, please retry",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
 			},
 			"History":{
+				"bDRF":"bDRF",
+				"Type":"Type",
+				"Type0":"Income",
+				"Type1":"Withdraw",
 				"Type2":"Exchange",
 				"Type3":"TransferFromBank",
 				"Type4":"TransferToBank",
 				"Type5":"Interest",
-				"Withdraw":"Withdraw",
 				"Amount":"Amount",
+				"Balance":"Balance",
 				"Time":"Time",
-				"Stakinginterest":"Staking interest",
-				"Type0":"Income",
-				"Type1":"Withdraw",
-				"Exchange":"Exchange",
-				"NoMoreInfo":"No more info",
-				"Type":"Type",
 				"SystemCompensation":"System compensation",
-				"Staking":"Staking",
-				"Redeem":"Redeem",
-				"bDRF":"bDRF",
-				"Balance":"Balance"
-			},
-			"PledgePopup":{
-				"All":"All",
-				"Max":"Max",
-				"Cancel":"Cancel",
-				"Amount":"Amount",
-				"Staking":"Staking",
-				"StakingbDRF":"Staking bDRF",
-				"NumberError":"Error, please retry",
-				"TradePendingMsg":"Pending ……",
-				"TradeSuccessMsg":"Successful",
-				"MyWallet":"My Wallet",
-				"TradeFailedMsg":"Error, please retry.",
-				"bDRFAccount":"bDRF Account"
-			},
-			"RedeemPopup":{
-				"All":"All",
-				"RedeembDRF":"Redeem bDRF",
-				"Max":"Max",
-				"Cancel":"Cancel",
-				"Amount":"Amount",
-				"Redeem":"Redeem",
-				"NumberError":"Error, please retry",
-				"TradePendingMsg":"Pending ……",
-				"TradeSuccessMsg":"Successful",
-				"MyWallet":"My Wallet",
-				"TradeFailedMsg":"Error, please retry.",
-				"bDRFAccount":"bDRF Account"
-			},
-			"Card":{
-				"Exchange":"Exchange",
+				"Stakinginterest":"Staking interest",
 				"Withdraw":"Withdraw",
-				"TransactionHistory":"Transaction History",
-				"Redeem":"Redeem",
+				"Exchange":"Exchange",
 				"Staking":"Staking",
-				"StakingAmount(bDRF)":"Staking Amount (bDRF)",
-				"bDRFAccount":"bDRF Account"
+				"Redeem":"Redeem",
+				"NoMoreInfo":"No more info"
 			}
 		}
 	},
-	"global":{
-		"NoMoreInfo":"No more info",
-		"Loading":"Loading",
-		"Confirm":"Confirm",
-		"NumberError":"Error, please retry",
-		"TradePendingMsg":"Pending ……",
-		"TradeSuccessMsg":"Successful",
-		"TradeFailedMsg":"Error, please retry.",
-		"ClickConnectWallet":"click connect wallet"
+	"Broker":{
+		"Apply":{
+			"Brokers":"Brokers",
+			"NotBrokerMessage":"You are not a Broker",
+			"ApplyBroker":"Apply to be Broker",
+			"GetBrokersPrivilege":"Burn {0} eDRF to get Brokers Privilege",
+			"eDRFAccount":"eDRF Account",
+			"MyWallet":"My Wallet",
+			"AccountBalance":"Account Balance",
+			"Cancel":"Cancel",
+			"Confirm":"Confirm",
+			"InsufficientAccountBalanceError":"Insufficient Account Balance, choose another account",
+			"TradePendingMsg":"Pending ……",
+			"TradeFailedMsg":"Error, please retry.",
+			"ApplySuccessMsg":"You Purchased Broker Privilege!",
+			"AddInfo":"Add Info"
+		},
+		"Broker":{
+			"InfoEdit":{
+				"WalletAddress":"Wallet Address",
+				"Name":"Name",
+				"Avatar":"Avatar",
+				"BrokerCode":"Broker Code",
+				"PhotoSizeError":"Photo size shall not be larger than 2m, please retry",
+				"CodeOccuError":"Your Code is occupied, choose another one",
+				"Title":"Broker Info",
+				"Commit":"Commit"
+			},
+			"Account":{
+				"AccBalance":"Acc. Balance",
+				"Withdraw":"Withdraw",
+				"DailyEarning":"Daily Earning",
+				"AccumulatedEarning":"Accumulated Earning",
+				"PrivilegeValidDate":"Privilege Valid until",
+				"Myreferralpage":"My referral page",
+				"Days":"Days",
+				"ExpireDate":"Until {0}/{1}/{1}",
+				"Burn":"Burn",
+				"BrokerHint":"Note:",
+				"BrokerHintDetail1":"Derify has Broker system, traders will be trading on our Broker’s page, Derify does not directly provide service.",
+				"BrokerHintDetail2":"Brokers will receive trading fee rewards and potential DRF rewards.",
+				"BrokerHintDetail3":"Brokers need to burn eDRF to maintain its privilege. (Current price is 600 eDRF per day).",
+				"BrokerHintDetail4":"Once your privilege is expired, you will not be able to receive rewards, but your can resume as our Broker whenever you like."
+			},
+			"WithdrawPopup":{
+				"Title":"Withdraw",
+				"Amount":"Amount",
+				"Max":"Max",
+				"All":"All",
+				"Cancel":"Cancel",
+				"Withdraw":"Withdraw"
+			},
+			"DepositPopup":{
+				"Burn":"Burn",
+				"Balance":"Balance",
+				"UnitPrice":"Unit Price",
+				"eDRFAccount":"eDRF Account",
+				"MyWallet":"My Wallet",
+				"BurnAmount":"Burn Amount",
+				"ValidPeriod":"Valid Period + {0} days",
+				"NumberError":"Error, please retry",
+				"Cancel":"Cancel",
+				"TradePendingMsg":"Pending ……",
+				"TradeSuccessMsg":"Successful",
+				"TradeFailedMsg":"Error, please retry."
+			},
+			"History":{
+				"AccountHistory":"Account History",
+				"Type":"Type",
+				"Amount":"Amount",
+				"Balance":"Balance",
+				"Time":"Time",
+				"Earnings":"Earnings",
+				"Withdraw":"Withdraw"
+			},
+			"TraderInfo":{
+				"TraderInfo":"Trader Info",
+				"TraderAddress":"Trader Address",
+				"RegistrationDate":"Registration Date"
+			}
+		}
 	},
 	"Data":{
-		"TradeHitory":{
-			"List":{
-				"Size":"Size",
-				"Time":"Time",
-				"TradeType":"Trade Type",
-				"Contract":"Contract"
-			},
-			"title":"Trade History"
-		},
 		"Data":{
 			"Trade":{
-				"All":"All",
 				"Data":"Data",
-				"TradFeeEarning":"Trad. Fee Earning",
-				"TradingVolume":"Trading Volume"
-			},
-			"Insurance":{
-				"InsurancePool":"Insurance Pool",
-				"InsurancePoolBalance":"Insurance Pool Balance"
+				"TradingVolume":"Trading Volume",
+				"All":"All",
+				"TradFeeEarning":"Trad. Fee Earning"
 			},
 			"Held":{
 				"PositionVolume":"Position Volume",
 				"TotalLong":"Total Long",
 				"TotalShort":"Total Short"
 			},
+			"Insurance":{
+				"InsurancePool":"Insurance Pool",
+				"InsurancePoolBalance":"Insurance Pool Balance"
+			},
 			"Token":{
-				"TotalDestroyedVolume":"Total Destroyed Volume",
-				"BuyBackFundBalance":"Buy Back Fund Balance",
+				"TokenInfo":"Token Info",
 				"Price":"Price",
-				"TokenInfo":"Token Info"
+				"TotalDestroyedVolume":"Total Destroyed Volume",
+				"BuyBackFundBalance":"Buy Back Fund Balance"
+			}
+		},
+		"TradeHitory":{
+			"title":"Trade History",
+			"List":{
+				"Contract":"Contract",
+				"TradeType":"Trade Type",
+				"Size":"Size",
+				"Time":"Time"
 			}
 		}
-	}
+	},
+	"global":{
+		"ClickConnectWallet":"click connect wallet",
+		"Confirm":"Confirm",
+		"Loading":"Loading",
+		"NoMoreInfo":"No more info",
+		"NumberError":"Error, please retry",
+		"TradeSuccessMsg":"Successful",
+		"TradeFailedMsg":"Error, please retry.",
+		"TradePendingMsg":"Pending ……"
+	},
+	"lng":"en"
 }
