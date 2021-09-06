@@ -316,7 +316,7 @@ export default {
 .home-top{
   .broker-info{
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin: 2rem 0;
     .broker-avatar {

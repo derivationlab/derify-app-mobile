@@ -18,8 +18,12 @@ const mutations = {
 const actions = {
   loadTradeData ({state, commit, dispatch}, token) {
     return (async() => {
-      const current = {}
+      let current = {}
       const history = await getHistoryTradingData(token)
+
+      if(history && history.length > 0) {
+        current = history[0]
+      }
 
       return {current,history}
     })()

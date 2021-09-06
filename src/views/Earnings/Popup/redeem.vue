@@ -56,7 +56,7 @@ export default {
       showError: false,
       showPopup: this.show,
       value1: null,
-      amount: 0,
+      amount: null,
       curPercent: 25,
       redeemName: null,
       accountType: BondAccountType.DerifyAccount,
@@ -139,6 +139,10 @@ export default {
       this.amount = fck(this.maxRedeemAmount, -8, 4)
     },
     checkAmount () {
+      if(this.amount === null) {
+        return false
+      }
+
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false

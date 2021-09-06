@@ -54,7 +54,7 @@ export default {
       showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
-      amount: 0,
+      amount: null,
       curPercent: 25,
       pledgeName: null,
       accountOptions:  accoutOptions
@@ -82,6 +82,10 @@ export default {
   },
   computed: {
     maxPledgeAmout () {
+      if(this.amount === null) {
+        return false
+      }
+
       if(this.pledgeId === EarningType.EDRF) {
         return 0
       }else if(this.pledgeId === EarningType.BDRF) {
@@ -137,9 +141,8 @@ export default {
         return false
       }
 
-      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
-        this.amount = fromContractUnit(this.maxRedeemAmount)
-        return true
+      if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
+        this.amount = fromContractUnit(this.maxPledgeAmout)
       }
       this.errorNotice(null)
       return true

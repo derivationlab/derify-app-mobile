@@ -40,7 +40,7 @@ export default {
       errorMsg: '',
       showError: false,
       showPopup: this.show,
-      amount: 0,
+      amount: null,
       //maxAmout: 10*1e8,
       curPercent: 25
     }
@@ -123,6 +123,9 @@ export default {
       }
     },
     checkAmount () {
+      if(this.amount === null) {
+        return false
+      }
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false

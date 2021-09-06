@@ -9,9 +9,9 @@ const serverEndPoint = configUtil.getCurrentServerEndPoint()
  * @return {Promise<String>} brokerId
  */
 export async function getBrokerIdByTrader(trader) {
-  const content =  await io.get("/api/brokerId_of_trader/" + trader)
+  const content =  await io.get("/api/broker_info_of_trader/" + trader)
   if(content && content.data && content.data.length > 0) {
-    return content.data[0].brokerId;
+    return content.data[0].broker;
   }
 
   return null;
@@ -67,13 +67,12 @@ export async function getBrokerByBrokerId(brokerId) {
  * @return {Promise<{}|BrokerInfo>}
  */
 export async function getBrokerByTrader(trader) {
-  const brokerIdContent = await io.get(`/api/brokerId_of_trader/${trader}`)
-  if(!brokerIdContent || !brokerIdContent.data || brokerIdContent.data.length < 1) {
-    return {}
+  const content = await io.get(`/api/broker_info_by_addr/${trader}`)
+  if(content && content.data && content.data.length > 0) {
+    return content.data[0]
   }
 
-  const brokerId = brokerIdContent.data[0].brokerId
-  return await getBrokerByBrokerId(brokerId)
+  return {}
 }
 
 /**

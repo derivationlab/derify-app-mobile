@@ -30,7 +30,7 @@
               <div class="broker-name">{{broker.id}}</div>
               <div class="broker-addr">
                 <p>@{{broker.name}}</p>
-                <p>{{broker.broker | textwrap(36)}}</p>
+                <p>{{broker.broker | textwrap(29)}}</p>
               </div>
             </div>
           </div>
