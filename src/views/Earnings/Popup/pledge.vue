@@ -136,7 +136,7 @@ export default {
     },
     checkAmount () {
 
-      if(this.amount === null) {
+      if(this.amount === null || this.amount === '') {
         return false
       }
 

@@ -115,15 +115,16 @@ export default {
       this.amount = fck(this.maxAmout, -8, 4)
     },
     errorNotice(msg){
+      this.errorMsg = msg
       if(msg){
-        this.errorMsg = msg
         this.showError = true
       }else{
         this.showError = false
       }
+
     },
     checkAmount () {
-      if(this.amount === null) {
+      if(this.amount === null || this.amount === '') {
         return false
       }
       if(this.amount <= 0) {
@@ -140,7 +141,6 @@ export default {
     },
     submitThenClose () {
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 

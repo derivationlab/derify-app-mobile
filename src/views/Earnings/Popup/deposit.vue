@@ -153,7 +153,7 @@ export default {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
-      if(this.amount === null) {
+      if(this.amount === null || this.amount === '') {
         return false
       }
 
