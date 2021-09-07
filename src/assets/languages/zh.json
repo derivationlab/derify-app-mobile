@@ -494,7 +494,8 @@
 				"PhotoSizeError":"图片不得大于2M，请重新上传",
 				"CodeOccuError":"您的编码已被占用，请重新设置",
 				"Title":"经济商信息",
-				"Commit":"提交"
+				"Commit":"提交",
+				"InfoRequired":"信息填写不完整，请重新填写"
 			},
 			"Account":{
 				"AccBalance":"账户余额",

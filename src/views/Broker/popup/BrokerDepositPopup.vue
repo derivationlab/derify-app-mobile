@@ -2,7 +2,7 @@
   <van-popup class="derify-popup" v-model="showPopup" round @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{ $t('Broker.Broker.DepositPopup.Burn') }}</div>
-      <DerifyErrorNotice :show="showError">
+      <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div class="system-popup-info">
@@ -10,7 +10,7 @@
           <div class="system-popup-label fz-15">
             <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.Balance') }}</div>
             <div>
-              <span class="fc-85">{{maxAmount}}</span>
+              <span class="fc-85">{{maxAmount | fck(-8, 2)}}</span>
               <span class="fc-45">eDRF</span>
             </div>
           </div>
@@ -58,7 +58,7 @@
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Broker.Broker.DepositPopup.Cancel')}}</div>
-        <div class="system-popup-button confirm" @click="close">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
       </div>
     </div>
   </van-popup>
@@ -118,9 +118,9 @@ export default {
     },
     maxAmount() {
       if(this.accountType === BondAccountType.DerifyAccount) {
-        return this.$store.state.broker.broker.rewardBalance
+        return this.$store.state.broker.wallet.derifyEdrfBalance
       }else{
-        return this.$store.state.broker.broker.edrfBalance
+        return this.$store.state.broker.wallet.walletEdrfBalance
       }
     },
     validatePeriod () {
@@ -138,15 +138,23 @@ export default {
     },
 
     checkAmount() {
-      if(this.amount > fromContractUnit(this.maxAmount)) {
-        this.amount = fromContractUnit(this.maxAmount)
-        return true
+
+      if(this.amount === null || this.amount === '') {
+        return false
       }
 
       if(this.amount <= 0){
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxAmount)) {
+        this.amount = fromContractUnit(this.maxAmount)
+      }
+
+      this.errorNotice(null)
+
+      return true
     },
 
     submitThenClose () {
@@ -181,8 +189,8 @@ export default {
         })
     },
     errorNotice(msg){
+      this.errorMsg = msg
       if(msg){
-        this.errorMsg = msg
         this.showError = true
       }else{
         this.showError = false

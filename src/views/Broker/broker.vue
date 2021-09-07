@@ -197,12 +197,9 @@ export default {
         this.accountOptions = this.getAccountOptions()
       }
     },
-    brokerApplied() {
-      this.showApplyPopup = !this.brokerApplied
-    },
     broker:{
       handler(){
-
+        
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
           || !this.broker.name || !this.broker.id
 
@@ -247,7 +244,9 @@ export default {
       ]
     },
     loadTraderBrokerInfo(){
-      this.$store.dispatch('broker/getTraderBrokerInfo', this.trader);
+      this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+        this.showApplyPopup = !this.brokerApplied
+      });
     },
     // close popup
     closeApplyPopup () {
@@ -293,6 +292,11 @@ export default {
     closesuccPopup () {
       this.succPopup = false
       this.goPath(`/broker/info/${this.broker.id}`)
+    },
+
+    goBorkerInfo () {
+      this.succPopup = false
+      this.goPath(`/broker/info`)
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool

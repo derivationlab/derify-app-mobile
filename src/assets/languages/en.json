@@ -494,7 +494,8 @@
 				"PhotoSizeError":"Photo size shall not be larger than 2m, please retry",
 				"CodeOccuError":"Your Code is occupied, choose another one",
 				"Title":"Broker Info",
-				"Commit":"Commit"
+				"Commit":"Commit",
+				"InfoRequired":"Information is incomplete, please re-filled"
 			},
 			"Account":{
 				"AccBalance":"Acc. Balance",

@@ -71,6 +71,7 @@ export default {
   },
   data () {
     const broker = new BrokerInfo()
+    broker.broker = this.trader
     return {
       webroot: getWebroot(),
       showError: false,
@@ -108,27 +109,30 @@ export default {
   methods: {
     loadBrokerInfo() {
       this.$store.dispatch("broker/getBrokerByTrader", this.trader).then(broker => {
+        if(!broker.broker) {
+          broker.broker = this.trader
+        }
         Object.assign(this.broker, broker)
       })
     },
 
     async checkForm() {
-      // if(!this.broker.broker) {
-      //   this.errorNotice(this.$t('global.NumberError'))
-      //   return false
-      // }
-      //
-      // if(!this.broker.name) {
-      //   this.errorNotice(this.$t('global.NumberError'))
-      //   return false
-      // }
-      //
-      //
-      // if(!this.$refs.logo.files.length < 1) {
-      //   this.errorNotice(this.$t('global.NumberError'))
-      //   return false
-      // }
-      //
+      if(!this.broker.broker) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+      if(!this.broker.name) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+
+      if(!this.$refs.logo.files.length < 1) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
       var file = this.$refs.logo.files[0];
 
 
@@ -138,7 +142,7 @@ export default {
       }
 
       if(!this.broker.id) {
-        this.errorNotice(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
         return false
       }
 
@@ -164,15 +168,17 @@ export default {
 
       if(this.$refs.logo.files.length > 0){
         param.logo = this.$refs.logo.files[0]
+      }else{
+        param.logo = this.broker.logo
       }
 
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
-          this.loadBrokerInfo()
+          this.$router.go(-1)
         }else{
           this.errorNotice(data.msg)
         }
-        //this.$router.push({name: 'broker'})
+
       }).catch(e => {
         this.errorNotice(e)
       });

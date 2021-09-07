@@ -122,6 +122,7 @@ function updateWallet (eventType = 0) {
 
   asyncInitWallet().then(async () => {
     const walletInfo = await getWallet()
+    store.commit("user/updateState", walletInfo)
 
     if(walletInfo.isLogin && !walletInfo.hasBroker) {
       if(vueApp.$route.name === 'home' && vueApp.$route.params.id){
@@ -138,7 +139,6 @@ function updateWallet (eventType = 0) {
     if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
       eventType = 1
     }
-    store.commit("user/updateState", walletInfo)
 
     vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
 

@@ -9,7 +9,7 @@
         <div class="popup-text">{{$t('Broker.Broker.WithdrawPopup.Amount')}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
-                     placeholder="" type="number" v-model="amount" @change="checkAmount"/>
+                     placeholder="" type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    trader() {
+      return this.$store.state.user.selectedAddress
+    },
     maxAmout () {
       return this.$store.state.broker.broker.rewardBalance
     }
@@ -70,14 +73,20 @@ export default {
       this.amount = fck(this.maxAmout, -8, 4)
     },
     errorNotice(msg){
+      this.errorMsg = msg
+
       if(msg){
-        this.errorMsg = msg
         this.showError = true
       }else{
         this.showError = false
       }
     },
     checkAmount () {
+
+      if(this.amount === null || this.amount === ''){
+        return false
+      }
+
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
@@ -86,7 +95,7 @@ export default {
       if(this.amount > fromContractUnit(this.maxAmout)) {
         this.amount = fromContractUnit(this.maxAmout)
       }
-
+      this.errorNotice(null)
       return true
     },
     submitThenClose () {
