@@ -25,7 +25,7 @@
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
             <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
-            <img :src="broker.logo" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            <img :src="broker.logo | urlFormat" style="width: 5.5rem;height: 5.5rem" alt=""/>
           </div>
         </div>
 

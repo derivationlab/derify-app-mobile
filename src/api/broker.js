@@ -17,8 +17,12 @@ export async function getBrokerIdByTrader(trader) {
   return null;
 }
 
-
-
+/**
+ *
+ * @param page
+ * @param size
+ * @returns {Promise<[BrokerInfo]>}
+ */
 export async function getBrokerList(page = 0, size = 10) {
   const content =  await io.get(`/api/brokers_list/${page}/${size}`)
   if(content && content.data) {
