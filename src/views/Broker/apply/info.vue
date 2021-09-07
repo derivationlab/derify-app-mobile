@@ -80,6 +80,7 @@ export default {
     }
   },
   mounted () {
+    this.loadBrokerInfo()
 
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadBrokerInfo()

@@ -186,7 +186,8 @@ export default {
       bindTraders: [],
     }
   },
-  created () {
+  mounted () {
+    this.loadTraderBrokerInfo()
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadTraderBrokerInfo()
     })
