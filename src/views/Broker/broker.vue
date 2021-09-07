@@ -5,7 +5,7 @@
 
       <div class="broker-info">
         <div class="broker-avatar">
-          <img :src="broker.logo" style="width: 4.4rem;height: 4.4rem" alt=""/>
+          <img :src="broker.logo | urlFormat" style="width: 4.4rem;height: 4.4rem" alt=""/>
         </div>
         <div class="broker-contact">
           <div class="broker-name">{{broker.name}}</div>

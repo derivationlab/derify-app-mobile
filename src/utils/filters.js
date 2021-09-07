@@ -24,3 +24,11 @@ Vue.filter('textwrap', (value, length) => {
 
   return value.substring(0, length) + "..."
 })
+
+Vue.filter('urlFormat', (value, protocol = '') => {
+  if(!value) {
+    return ''
+  }
+
+  return value.replace(/^https?:/, protocol)
+})

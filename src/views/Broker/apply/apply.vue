@@ -24,7 +24,7 @@
             </i>
 
             <div class="broker-avatar">
-              <img :src="broker.logo" style="width: 5rem;height: 5rem" alt=""/>
+              <img :src="broker.logo | urlFormat" style="width: 5rem;height: 5rem" alt=""/>
             </div>
             <div class="broker-contact">
               <div class="broker-name">{{broker.id}}</div>
