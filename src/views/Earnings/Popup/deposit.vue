@@ -147,7 +147,7 @@ export default {
       this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
     },
     resetAmount () {
-      this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
+      //this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
     },
     exchangeAll () {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)

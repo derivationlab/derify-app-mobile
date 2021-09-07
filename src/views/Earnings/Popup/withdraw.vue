@@ -9,7 +9,7 @@
         <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
-                     placeholder="0" type="number" v-model="amount" @input="checkAmount"/>
+                     placeholder="" type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -103,7 +103,7 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.show) {
-        this.amount = 0
+        this.amount = null
       }
     }
   },

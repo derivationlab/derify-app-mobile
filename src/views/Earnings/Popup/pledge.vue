@@ -136,6 +136,10 @@ export default {
     },
     checkAmount () {
 
+      if(this.amount === null) {
+        return false
+      }
+
       if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
