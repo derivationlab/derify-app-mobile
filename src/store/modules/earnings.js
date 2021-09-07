@@ -59,7 +59,7 @@ const state = {
     /**
      * Annualized bond yield(accuracy of 8 digits)
      */
-    bondAnnualInterestRate: 0
+    bondAnnualInterestRatio: 0
   },
   edrfInfo: {
     drfBalance: 0,

@@ -724,6 +724,7 @@ export default class Contract {
 
   async __approve(tokenContract, contractABI, amount) {
     try {
+
       let decimals = await tokenContract.methods.decimals().call();
 
       const decimalNum = parseInt(decimals)
@@ -731,8 +732,10 @@ export default class Contract {
       const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
       //The wallet obtains the authorized amount
-      return await tokenContract.methods.approve(contractABI.address, approveNum).send()
+      tokenContract.methods.approve(contractABI.address, approveNum).send()
+      return true
     } catch (e) {
+      console.error(`__approve exception`, e)
       return false
     }
   }

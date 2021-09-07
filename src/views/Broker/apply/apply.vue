@@ -142,7 +142,7 @@ export default {
     position: relative;
     box-sizing: content-box;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 1.1rem;
     border-radius: 1.8rem;

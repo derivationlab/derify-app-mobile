@@ -131,7 +131,7 @@ function updateWallet (eventType = 0) {
           this.$toast(e)
         })
       }else{
-        return await vueApp.$router.push({name: 'brokerApply'})
+        return await vueApp.$router.push({name: 'brokerAdd'})
       }
     }
 

@@ -61,6 +61,11 @@ const actions = {
       return await getBrokerByBrokerId(brokerId)
     })()
   },
+  getBrokerByTrader({state, commit, dispatch}, trader) {
+    return (async () => {
+      return await getBrokerByTrader(trader)
+    })()
+  },
   getTraderBrokerInfo({state, commit, dispatch}, trader) {
 
     return (async () => {

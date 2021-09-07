@@ -25,7 +25,15 @@
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
             <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
-            <img :src="broker.logo" style="width: 5.5rem;height: 5.5rem" alt=""/>
+
+            <template v-if="broker.logo">
+              <img :src="broker.logo" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            </template>
+
+            <template v-else>
+              <img src="@/assets/images/broker-default-avatar.png" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            </template>
+
           </div>
         </div>
 
@@ -54,6 +62,7 @@ import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import { BrokerInfo } from '@/api/broker'
 import { getWebroot } from '@/config'
+import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 export default {
   name: 'Home',
   components: {
@@ -70,7 +79,11 @@ export default {
     }
   },
   mounted () {
-    this.loadBrokerInfo()
+
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.loadBrokerInfo()
+    })
+
     const logoFileItem = this.$refs.logo;
     const self = this;
 
@@ -87,16 +100,66 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    trader () {
+      return this.$store.state.user.selectedAddress
     }
   },
   methods: {
     loadBrokerInfo() {
-      this.$store.dispatch("broker/getBrokerByBrokerId", this.$route.params.id).then(broker => {
+      this.$store.dispatch("broker/getBrokerByTrader", this.trader).then(broker => {
         Object.assign(this.broker, broker)
       })
     },
-    submitThenClose () {
-      //TODO validate form params
+
+    async checkForm() {
+      // if(!this.broker.broker) {
+      //   this.errorNotice(this.$t('global.NumberError'))
+      //   return false
+      // }
+      //
+      // if(!this.broker.name) {
+      //   this.errorNotice(this.$t('global.NumberError'))
+      //   return false
+      // }
+      //
+      //
+      // if(!this.$refs.logo.files.length < 1) {
+      //   this.errorNotice(this.$t('global.NumberError'))
+      //   return false
+      // }
+      //
+      var file = this.$refs.logo.files[0];
+
+
+      if(file && file.size > 2*1024*1024) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.PhotoSizeError'))
+        return false
+      }
+
+      if(!this.broker.id) {
+        this.errorNotice(this.$t('global.NumberError'))
+        return false
+      }
+
+      const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.broker.id)
+      if(resBroker && resBroker.brokerId) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.CodeOccuError'))
+        return false
+      }
+
+      this.errorNotice(null)
+
+      return true
+    },
+
+    async submitThenClose () {
+
+      const checkRet = await this.checkForm()
+      if(!checkRet) {
+        return
+      }
+
       const param = {broker: this.broker.broker, id: this.broker.id, name: this.broker.name}
 
       if(this.$refs.logo.files.length > 0){

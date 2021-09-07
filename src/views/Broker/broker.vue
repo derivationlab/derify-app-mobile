@@ -105,7 +105,7 @@
               </i18n>
             </div>
           </div>
-          <DerifyErrorNotice :show="depositErrorMsg.length > 0">{{depositErrorMsg}}</DerifyErrorNotice>
+          <DerifyErrorNotice :show="errorMsg.length > 0" @close="errorNotice('')">{{errorMsg}}</DerifyErrorNotice>
 
           <div>
             <van-dropdown-menu :overlay="false" class="derify-dropmenus">
@@ -130,9 +130,9 @@
           <div class="hintImg">
             <img src="@/assets/images/succFrame.png" alt="" srcset="">
           </div>
-          <div class="hintTitle" v-if="brokerApplied">{{$t('global.TradeSuccessMsg')}}</div>
+          <div class="hintTitle" v-if="brokerApplied && showCompleteInfo">{{$t('global.TradeSuccessMsg')}}</div>
           <div class="hintTitle" v-else>{{$t('Broker.Apply.ApplySuccessMsg')}}</div>
-          <div class="btnDiv succPopup" @click="closesuccPopup" v-if="brokerApplied">{{$t('Broker.Apply.Confirm')}}</div>
+          <div class="btnDiv succPopup" @click="closesuccPopup" v-if="!showCompleteInfo">{{$t('Broker.Apply.Confirm')}}</div>
           <div class="btnDiv succPopup" @click="closesuccPopup" v-else>{{$t('Broker.Apply.AddInfo')}}</div>
         </div>
     </van-popup>
@@ -169,15 +169,16 @@ export default {
   data () {
 
     return {
-      showApplyPopup: !this.isBroker,
+      showApplyPopup: false,
       termPopup: false,
       succPopup: false,
+      showCompleteInfo: false,
       active: '1',
       accountType: 0,
       showDepositPopup: false,
       showWithdrawPopup: false,
       applyBurnAmount: 60000,
-      depositErrorMsg: '',
+      errorMsg: '',
       accountOptions: this.getAccountOptions(),
 
       rewardHistory: [],
@@ -195,6 +196,20 @@ export default {
       handler(){
         this.accountOptions = this.getAccountOptions()
       }
+    },
+    brokerApplied() {
+      this.showApplyPopup = !this.brokerApplied
+    },
+    broker:{
+      handler(){
+
+        this.showCompleteInfo = !this.broker.logo || !this.broker.broker
+          || !this.broker.name || !this.broker.id
+
+        this.succPopup = this.brokerApplied && this.showCompleteInfo
+      },
+      deep:true,
+      immediate: true
     }
   },
   computed: {
@@ -251,14 +266,11 @@ export default {
 
     checkAmount() {
       if(this.applyBurnAmount > fromContractUnit(this.maxAmount)) {
-        this.errorNotice(this.$t('global.NumberError'))
+        this.errorNotice(this.$t('Broker.Apply.InsufficientAccountBalanceError'))
         return false
       }
 
-      if(this.amount <= 0){
-        this.errorNotice(this.$t('global.NumberError'))
-        return false
-      }
+      this.errorNotice('')
 
       return true
     },
@@ -299,7 +311,7 @@ export default {
         this.errorMsg = msg
         this.showError = true
       }else{
-        this.showError = false
+        this.errorMsg = ''
       }
     },
     accountTypeChange() {

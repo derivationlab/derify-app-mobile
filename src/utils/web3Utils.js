@@ -39,6 +39,7 @@ export function contract (account, broker = '') {
                 return ret;
               }catch (e) {
                 console.log('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
+                throw e;
               }
 
             }

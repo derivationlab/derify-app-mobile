@@ -66,7 +66,7 @@ const routes = [
     component: () => import('@/views/Broker/apply/add.vue')
   },
   {
-    path: '/broker/info/:id',
+    path: '/broker/info/:id?',
     name: 'brokerInfo',
     component: () => import('@/views/Broker/apply/info.vue')
   },

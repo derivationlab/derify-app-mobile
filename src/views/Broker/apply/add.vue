@@ -49,10 +49,11 @@ export default {
     }
   },
   methods: {
-    submitThenClose () {
-      if(!this.brokerCode) {
+    async submitThenClose () {
+      const checkRes = await this.checkBrokerCode()
+      if(!checkRes) {
         this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'))
-        return
+        return false
       }
 
       this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
@@ -64,13 +65,39 @@ export default {
       }).catch(e => {
         this.$toast(e)
       })
+      return true
     },
+
+    async checkBrokerCode() {
+
+      if(this.brokerCode === null) {
+        this.errorNotice(null)
+        return true
+      }
+
+      if(this.brokerCode.trim() === '') {
+        this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.NoBrokerCode'))
+        return false
+      }
+
+      const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.brokerCode)
+      if(!resBroker || !resBroker.brokerId) {
+        this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'))
+        return false
+      }
+
+      this.errorNotice(null)
+
+      return true
+    },
+
     errorNotice (msg) {
       if(msg){
         this.showError = true
         this.errorMsg = msg
       }else{
         this.showError = false
+        this.errorMsg = msg
       }
     }
   }

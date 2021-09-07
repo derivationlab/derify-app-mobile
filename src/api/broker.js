@@ -52,7 +52,7 @@ export async function bindBroker({trader,brokerId}) {
  * @return {Promise<BrokerInfo>}
  */
 export async function getBrokerByBrokerId(brokerId) {
-  const content =  await io.get(`/api/broker_info/${brokerId}`)
+  const content =  await io.get(`/api/broker_info_by_id/${brokerId}`)
 
   if(content && content.data) {
     return content.data[0]
