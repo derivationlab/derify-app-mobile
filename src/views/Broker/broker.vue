@@ -14,7 +14,7 @@
             <p>{{broker.broker | textwrap(32)}}</p>
           </div>
         </div>
-        <div class="go-right-wrap"  @click="goPath(`/broker/info/${broker.id}`)">
+        <div class="go-right-wrap"  @click="goPath(`/broker/info`)">
           <i class="go-right-icon">
             <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
           </i>
@@ -199,7 +199,7 @@ export default {
     },
     broker:{
       handler(){
-        
+
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
           || !this.broker.name || !this.broker.id
 
