@@ -58,7 +58,7 @@ export async function bindBroker({trader,brokerId}) {
 export async function getBrokerByBrokerId(brokerId) {
   const content =  await io.get(`/api/broker_info_by_id/${brokerId}`)
 
-  if(content && content.data) {
+  if(content && content.data && content.data.length > 0) {
     return content.data[0]
   }
 

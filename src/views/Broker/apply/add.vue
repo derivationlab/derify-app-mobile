@@ -52,13 +52,12 @@ export default {
     async submitThenClose () {
       const checkRes = await this.checkBrokerCode()
       if(!checkRes) {
-        this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'))
         return false
       }
 
       this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
         if(data.success){
-          this.$router.go(-1)
+          this.$router.push({name: 'home'})
         }else{
           this.errorNotice(data.msg)
         }
@@ -72,7 +71,7 @@ export default {
 
       if(this.brokerCode === null) {
         this.errorNotice(null)
-        return true
+        return false
       }
 
       if(this.brokerCode.trim() === '') {
@@ -81,7 +80,7 @@ export default {
       }
 
       const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.brokerCode)
-      if(!resBroker || !resBroker.brokerId) {
+      if(!resBroker || !resBroker.id) {
         this.errorNotice(this.$t('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'))
         return false
       }
