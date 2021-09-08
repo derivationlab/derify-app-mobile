@@ -231,6 +231,7 @@ export default {
       width: 5.5rem;
       height: 5.5rem;
       opacity: 0;
+      z-index: 100;
       position: absolute;
     }
   }
