@@ -49,7 +49,7 @@
             </span>
           </div>
           <div class="dealer-ctn">
-            <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay}}</span>
+            <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay | fck(-8,0)}}</span>
             <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
             <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [broker.expireDate.getFullYear(), broker.expireDate.getMonth(), broker.expireDate.getDate()])}}</span>
           </div>
