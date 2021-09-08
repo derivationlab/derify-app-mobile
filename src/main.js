@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Vant from 'vant'
+import { Lazyload } from 'vant';
 import 'vant/lib/index.less'
 import './styles/index.less'
 import * as echarts from 'echarts'
@@ -37,6 +38,8 @@ const i18n = new VueI18n({
 })
 Vue.prototype.$echarts = echarts
 Vue.use(Vant)
+Vue.use(Lazyload);
+
 Vue.config.productionTip = false
 
 /* eslint-disable */

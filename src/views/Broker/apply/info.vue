@@ -27,7 +27,7 @@
             <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
 
             <template v-if="broker.logo">
-              <img :src="broker.logo | urlFormat" style="width: 5.5rem;height: 5.5rem" alt=""/>
+              <van-image :round="true" lazy-load :src="broker.logo" width="5.5rem" height="5.5rem" alt=""/>
             </template>
 
             <template v-else>

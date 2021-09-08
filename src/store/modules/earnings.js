@@ -34,6 +34,7 @@ const state = {
   },
   wallet: {
     bdrfBalance: 0,
+    drfBalance: 0,
     edrfBalance: 0
   },
   pmrBalance: 0,

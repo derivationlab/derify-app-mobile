@@ -1,97 +1,100 @@
 <template>
   <div class="home-container page-container">
     <navbar :title="$t('Trade.navbar.Broker')" />
-    <div class="home-top">
+    <template v-if="!showApplyPopup">
+      <div class="home-top">
 
-      <div class="broker-info">
-        <div class="broker-avatar">
-          <img :src="broker.logo | urlFormat" style="width: 4.4rem;height: 4.4rem" alt=""/>
-        </div>
-        <div class="broker-contact">
-          <div class="broker-name">{{broker.name}}</div>
-          <div class="broker-addr">
-            <p>{{broker.id}}</p>
-            <p>{{broker.broker | textwrap(32)}}</p>
+        <div class="broker-info">
+          <div class="broker-avatar">
+            <van-image :round="true" lazy-load :src="broker.logo" width="4.4rem" height="4.4rem" alt=""/>
           </div>
-        </div>
-        <div class="go-right-wrap"  @click="goPath(`/broker/info`)">
-          <i class="go-right-icon">
-            <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
-          </i>
-        </div>
-      </div>
-
-      <div class="market-popup">
-        <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
-        <div class="num-div">
-          <DecimalView :value="broker.rewardBalance | fck(-8,2)" className="num"></DecimalView>
-          <span class="unit">USDT</span>
-        </div>
-
-        <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Broker.Broker.Account.Withdraw')}}</div>
-
-        <div class="income-div">
-          <div class="taday-div">
-            <DecimalView :value="broker.todayReward | fck(0,2)" className="span1"></DecimalView>
-            <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
+          <div class="broker-contact">
+            <div class="broker-name">{{broker.name}}</div>
+            <div class="broker-addr">
+              <p>{{broker.id}}</p>
+              <p>{{broker.broker | textwrap(32)}}</p>
+            </div>
           </div>
-          <div class="taday-div">
-            <DecimalView :value="broker.accumulatedReward | fck(-8,2)" className="span1"></DecimalView>
-            <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
+          <div class="go-right-wrap"  @click="goPath(`/broker/info`)">
+            <i class="go-right-icon">
+              <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
+            </i>
           </div>
         </div>
 
-        <div class="dealer-div">
-          <div class="dealer-label">
-            <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
-            <span class="fc-yellow fz-12">
+        <div class="market-popup">
+          <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
+          <div class="num-div">
+            <DecimalView :value="broker.rewardBalance | fck(-8,2)" className="num"></DecimalView>
+            <span class="unit">USDT</span>
+          </div>
+
+          <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Broker.Broker.Account.Withdraw')}}</div>
+
+          <div class="income-div">
+            <div class="taday-div">
+              <DecimalView :value="broker.todayReward | fck(0,2)" className="span1"></DecimalView>
+              <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
+            </div>
+            <div class="taday-div">
+              <DecimalView :value="broker.accumulatedReward | fck(-8,2)" className="span1"></DecimalView>
+              <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
+            </div>
+          </div>
+
+          <div class="dealer-div">
+            <div class="dealer-label">
+              <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
+              <span class="fc-yellow fz-12">
               <a class="fc-yellow fz-12" :href="broker.reference">{{$t('Broker.Broker.Account.Myreferralpage')}}></a>
             </span>
+            </div>
+            <div class="dealer-ctn">
+              <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay | fck(-8,0)}}</span>
+              <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
+              <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [broker.expireDate.getFullYear(), broker.expireDate.getMonth()+1, broker.expireDate.getDate()])}}</span>
+            </div>
           </div>
-          <div class="dealer-ctn">
-            <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay | fck(-8,0)}}</span>
-            <span class="fz-12 fc-45">{{$t('Broker.Broker.Account.Days')}}</span>
-            <span class="fz-11 fc-45">{{$t('Broker.Broker.Account.ExpireDate', [broker.expireDate.getFullYear(), broker.expireDate.getMonth()+1, broker.expireDate.getDate()])}}</span>
+
+          <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Broker.Broker.Account.Burn')}}</div>
+
+          <div class="explain-div">
+            <div>{{$t('Broker.Broker.Account.BrokerHint')}}</div>
+            <ul>
+              <li>{{$t('Broker.Broker.Account.BrokerHintDetail1')}}</li>
+              <li>{{$t('Broker.Broker.Account.BrokerHintDetail2')}}</li>
+              <li>{{$t('Broker.Broker.Account.BrokerHintDetail3')}}</li>
+              <li>{{$t('Broker.Broker.Account.BrokerHintDetail4')}}</li>
+            </ul>
           </div>
         </div>
+        <div class="broker-tab-wrap">
+          <van-tabs v-model="active">
+            <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
+              <trader></trader>
+            </van-tab>
+            <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
+              <account></account>
+            </van-tab>
+          </van-tabs>
 
-        <div class="cbtn-div fz-17 mrb-17" @click="setShowDepositPopup(true)">{{$t('Broker.Broker.Account.Burn')}}</div>
+          <!--        <DerifyPageNation :total="10" :cur="1"></DerifyPageNation>-->
+        </div>
 
-        <div class="explain-div">
-          <div>{{$t('Broker.Broker.Account.BrokerHint')}}</div>
-          <ul>
-            <li>{{$t('Broker.Broker.Account.BrokerHintDetail1')}}</li>
-            <li>{{$t('Broker.Broker.Account.BrokerHintDetail2')}}</li>
-            <li>{{$t('Broker.Broker.Account.BrokerHintDetail3')}}</li>
-            <li>{{$t('Broker.Broker.Account.BrokerHintDetail4')}}</li>
-          </ul>
+      </div>
+    </template>
+    <template v-else>
+      <div class="home-top">
+        <div class="unwind-popup system-popup">
+          <div class="hintImg">
+            <img src="@/assets/images/Frame.png" alt="" srcset="">
+          </div>
+          <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
+          <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
+          <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
         </div>
       </div>
-      <div class="broker-tab-wrap">
-        <van-tabs v-model="active">
-          <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
-            <trader></trader>
-          </van-tab>
-          <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
-            <account></account>
-          </van-tab>
-        </van-tabs>
-
-<!--        <DerifyPageNation :total="10" :cur="1"></DerifyPageNation>-->
-      </div>
-
-    </div>
-    <!-- apply requirements -->
-    <van-popup class="derify-popup" v-model="showApplyPopup" round :closeable="false" @close="closeApplyPopup">
-      <div class="unwind-popup system-popup">
-        <div class="hintImg">
-          <img src="@/assets/images/Frame.png" alt="" srcset="">
-        </div>
-        <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
-        <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
-        <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
-      </div>
-    </van-popup>
+    </template>
     <!-- requirements -->
     <van-popup class="derify-popup" v-model="termPopup" round :closeable="false" @close="setTermPopup(false)">
         <div class="unwind-popup system-popup">
@@ -187,7 +190,11 @@ export default {
     }
   },
   mounted () {
-    this.loadTraderBrokerInfo()
+
+    if(this.trader) {
+      this.loadTraderBrokerInfo()
+    }
+
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadTraderBrokerInfo()
     })
@@ -333,7 +340,7 @@ export default {
 .home-top{
   .broker-info{
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     margin: 2rem 0;
     .broker-avatar {
