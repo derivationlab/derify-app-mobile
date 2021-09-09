@@ -73,7 +73,7 @@ export default {
     const broker = new BrokerInfo()
     broker.broker = this.trader
     return {
-      webroot: getWebroot(),
+      webroot: getWebroot() + "/home",
       showError: false,
       errorMsg: '',
       broker: {...broker},
