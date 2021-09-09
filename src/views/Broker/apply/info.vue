@@ -133,7 +133,7 @@ export default {
       }
 
 
-      if(!this.$refs.logo.files.length < 1) {
+      if(this.$refs.logo.files.length < 1) {
         this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
         return false
       }
