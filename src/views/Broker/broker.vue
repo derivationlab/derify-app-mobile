@@ -172,7 +172,7 @@ export default {
   data () {
 
     return {
-      showApplyPopup: false,
+      showApplyPopup: true,
       termPopup: false,
       succPopup: false,
       showCompleteInfo: false,
@@ -259,7 +259,6 @@ export default {
     // close popup
     closeApplyPopup () {
       this.setTermPopup(true)
-      this.showApplyPopup = false
     },
     // close apply popup
     setTermPopup (bool) {
@@ -328,9 +327,6 @@ export default {
     },
     accountTypeChange() {
       this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: this.accountType})
-      .then(() => {
-        this.checkAmount()
-      })
     }
   }
 }

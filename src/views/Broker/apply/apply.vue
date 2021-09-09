@@ -27,9 +27,9 @@
               <van-image fit="cover" radius="2.5rem" :src="broker.logo" width="5rem" height="5rem" alt=""/>
             </div>
             <div class="broker-contact">
-              <div class="broker-name">{{broker.id}}</div>
+              <div class="broker-name">{{broker.name}}</div>
               <div class="broker-addr">
-                <p>@{{broker.name}}</p>
+                <p>@{{broker.id}}</p>
                 <p>{{broker.broker | textwrap(29)}}</p>
               </div>
             </div>
@@ -137,6 +137,8 @@ export default {
 }
 
 .home-mid{
+  height: 57rem;
+  overflow-y: scroll;
   .broker-info{
     margin: 1.5rem 0;
     position: relative;
