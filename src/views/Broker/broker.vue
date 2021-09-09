@@ -46,8 +46,8 @@
             <div class="dealer-label">
               <span class="fz-15">{{$t('Broker.Broker.Account.PrivilegeValidDate')}}</span>
               <span class="fc-yellow fz-12">
-              <a class="fc-yellow fz-12" :href="broker.reference">{{$t('Broker.Broker.Account.Myreferralpage')}}></a>
-            </span>
+                <a target="_blank" class="fc-yellow fz-12" :href="broker.reference">{{$t('Broker.Broker.Account.Myreferralpage')}}></a>
+              </span>
             </div>
             <div class="dealer-ctn">
               <span class="dealer-day-num fc-yellow">{{broker.validPeriodInDay | fck(-8,0)}}</span>

@@ -143,8 +143,8 @@ export default {
         return false
       }
 
-      if(this.amount <= 0){
-        this.errorNotice(this.$t('global.NumberError'))
+      if(this.amount < this.unitAmount){
+        this.errorNotice('单次最少燃烧600eDRF')
         return false
       }
 
