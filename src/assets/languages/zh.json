@@ -533,7 +533,8 @@
 				"Cancel":"取消",
 				"TradePendingMsg":"正在执行，请稍候",
 				"TradeSuccessMsg":"执行成功",
-				"TradeFailedMsg":"执行失败，请重试"
+				"TradeFailedMsg":"执行失败，请重试",
+				"MinAmountError":"单次最少燃烧{0}eDRF"
 			},
 			"History":{
 				"AccountHistory":"账户流水",

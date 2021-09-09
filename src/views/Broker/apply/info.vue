@@ -10,7 +10,7 @@
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.WalletAddress') }}</span></span>
-          <van-field class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
+          <van-field readonly class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
                      type="text" v-model="broker.broker"/>
         </div>
@@ -52,6 +52,11 @@
           <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
         </div>
       </div>
+
+      <van-overlay :show="showLoading" @click="showLoading = false" class-name="derify-loading-wrap">
+        <van-loading size="2.4rem" v-show="showLoading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+      </van-overlay>
+
     </div>
 
   </div>
@@ -73,6 +78,7 @@ export default {
     const broker = new BrokerInfo()
     broker.broker = this.trader
     return {
+      showLoading: false,
       webroot: getWebroot() + "/home",
       showError: false,
       errorMsg: '',
@@ -133,7 +139,7 @@ export default {
       }
 
 
-      if(this.$refs.logo.files.length < 1) {
+      if(this.$refs.logo.files.length < 1 && !this.broker.logo) {
         this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
         return false
       }
@@ -177,6 +183,7 @@ export default {
         param.logo = this.broker.logo
       }
 
+      this.showLoading = true
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
           this.$router.go(-1)
@@ -185,7 +192,9 @@ export default {
         }
 
       }).catch(e => {
-        this.errorNotice(e)
+        this.errorNotice(this.$t('global.TradeFailedMsg'))
+      }).finally(() => {
+        this.showLoading = false
       });
 
 
@@ -203,6 +212,12 @@ export default {
 </script>
 
 <style lang="less">
+.derify-loading-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
 .selected-icon{
   width: 2rem;
   height: 2rem;

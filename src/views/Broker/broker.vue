@@ -1,7 +1,7 @@
 <template>
   <div class="home-container page-container">
     <navbar :title="$t('Trade.navbar.Broker')" />
-    <template v-if="!showApplyPopup">
+    <template v-if="!showLoading && !showApplyPopup">
       <div class="home-top">
 
         <div class="broker-info">
@@ -83,7 +83,7 @@
 
       </div>
     </template>
-    <template v-else>
+    <template v-if="!showLoading && showApplyPopup">
       <div class="home-top">
         <div class="unwind-popup system-popup">
           <div class="hintImg">
@@ -141,6 +141,10 @@
     </van-popup>
     <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
     <BrokerWithdrawPopup :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
+
+    <van-overlay :show="showLoading" @click="showLoading = false" class-name="derify-loading-wrap">
+      <van-loading size="2.4rem" v-show="showLoading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+    </van-overlay>
   </div>
 </template>
 
@@ -172,7 +176,8 @@ export default {
   data () {
 
     return {
-      showApplyPopup: true,
+      showLoading: true,
+      showApplyPopup: false,
       termPopup: false,
       succPopup: false,
       showCompleteInfo: false,
@@ -252,8 +257,11 @@ export default {
       ]
     },
     loadTraderBrokerInfo(){
+      this.showLoading = true
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
+      }).finally(() => {
+        this.showLoading = false
       });
     },
     // close popup
@@ -333,6 +341,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.derify-loading-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
 .home-top{
   .broker-info{
     display: flex;

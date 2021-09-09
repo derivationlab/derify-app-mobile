@@ -73,7 +73,7 @@
 				"NoBrokerCode":"No Broker Code",
 				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
 				"Submit":"Submit",
-				"SelectOrInputBrokerId":"请选择或输入经纪商编码"
+				"SelectOrInputBrokerId":"SelectOrInputBrokerId"
 			},
 			"BrokerBind":{
 				"ChooseBroker":"Choose Broker",
@@ -533,7 +533,8 @@
 				"Cancel":"Cancel",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Error, please retry.",
+				"MinAmountError":"Minimum burning {0} eDRF"
 			},
 			"History":{
 				"AccountHistory":"Account History",

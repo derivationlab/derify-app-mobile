@@ -144,7 +144,7 @@ export default {
       }
 
       if(this.amount < this.unitAmount){
-        this.errorNotice('单次最少燃烧600eDRF')
+        this.errorNotice(this.$t('Broker.Broker.DepositPopup.MinAmountError', [this.unitAmount]))
         return false
       }
 
