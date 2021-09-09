@@ -132,8 +132,8 @@ export async function getBrokerTodayReward(trader, start=(new Date()).Format('yy
 export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
   const content = await io.get(`/api/broker_reward_balance/${broker}/${page}/${size}`)
 
-  if(content && content.data) {
-    return content.records
+  if(content && content.data && content.records) {
+    return content.data.records
   }
 
   return []
@@ -144,13 +144,14 @@ export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
  * @param broker
  * @param page
  * @param size
- * @return {Promise<*[]|{trader: String, registerTime: Date}>}
+ * @return {Promise<*[]|{trader: String, update_time: Date}>}
  */
 export async function getbrokerBindTraders(broker, page = 0, size = 10) {
   const content = await io.get(`/api/traders_of_broker/${broker}/${page}/${size}`)
 
-  if(content && content.data) {
-    return content.records
+  console.log(content)
+  if(content && content.data && content.data.records) {
+    return content.data.records
   }
 
   return []

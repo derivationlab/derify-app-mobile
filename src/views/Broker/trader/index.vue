@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     onLoad () {
-      this.$store.dispatch('broker/getBrokerBindTraders',
+      this.$store.dispatch('broker/getBrokerRewardHistory',
         {broker: this.broker, page: this.page, size: this.size})
       .then((records) => {
 

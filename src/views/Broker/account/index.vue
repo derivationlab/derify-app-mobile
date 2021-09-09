@@ -14,7 +14,7 @@
         <div class="heard" :key="key">
           <div class="color-type width-70">{{data.trader}}</div>
           <div class="rigth-span unit-span width-30">
-            2021-12-31
+            {{new Date(data.update_time).Format("yyyy-MM-dd hh:mm:ss")}}
           </div>
         </div>
       </template>
@@ -23,6 +23,8 @@
   </div>
 </template>
 <script>
+import { getbrokerBindTraders } from '@/api/broker'
+
 export default {
   props: ['broker'],
   data () {
@@ -38,10 +40,11 @@ export default {
     onLoad () {
       this.loading = true
       this.finished = false
-      this.$store.dispatch('broker/getBrokerRewardHistory',
+      this.$store.dispatch('broker/getBrokerBindTraders',
         {broker: this.broker, page: this.page, size: this.size})
         .then((records) => {
 
+          console.log(records)
 
           if(!records || records.length < 1) {
             this.finished = true

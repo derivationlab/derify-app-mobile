@@ -170,6 +170,7 @@ export default {
         .then(() => {
           this.$userProcessBox({show: true, status: UserProcessStatus.success
             ,msg: this.$t('global.TradeSuccessMsg')})
+          this.close()
         })
         .catch(() => {
           this.$userProcessBox({show: true, status: UserProcessStatus.failed

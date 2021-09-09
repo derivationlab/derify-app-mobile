@@ -71,10 +71,10 @@
         <div class="broker-tab-wrap">
           <van-tabs v-model="active">
             <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
-              <trader></trader>
+              <trader  :broker="this.broker.id" ></trader>
             </van-tab>
             <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
-              <account></account>
+              <account  :broker="this.broker.id" ></account>
             </van-tab>
           </van-tabs>
 
@@ -140,7 +140,7 @@
         </div>
     </van-popup>
     <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
-    <BrokerWithdrawPopup :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
+    <BrokerWithdrawPopup :broker="this.broker.id" :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
 
     <van-overlay :show="showLoading" @click="showLoading = false" class-name="derify-loading-wrap">
       <van-loading size="2.4rem" v-show="showLoading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
@@ -315,6 +315,9 @@ export default {
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
+      if(!bool) {
+        this.loadBrokerInfo()
+      }
     },
     setShowWidthdrawPopup(bool) {
       this.showWithdrawPopup = bool
