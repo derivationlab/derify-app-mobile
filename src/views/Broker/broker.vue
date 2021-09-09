@@ -6,7 +6,7 @@
 
         <div class="broker-info">
           <div class="broker-avatar">
-            <van-image :round="true" lazy-load :src="broker.logo" width="4.4rem" height="4.4rem" alt=""/>
+            <van-image fit="cover" :round="true" lazy-load :src="broker.logo" width="4.4rem" height="4.4rem" alt=""/>
           </div>
           <div class="broker-contact">
             <div class="broker-name">{{broker.name}}</div>

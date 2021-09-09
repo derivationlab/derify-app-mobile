@@ -24,7 +24,7 @@
             </i>
 
             <div class="broker-avatar">
-              <van-image radius="2.5rem" :src="broker.logo" width="5rem" height="5rem" alt=""/>
+              <van-image fit="cover" radius="2.5rem" :src="broker.logo" width="5rem" height="5rem" alt=""/>
             </div>
             <div class="broker-contact">
               <div class="broker-name">{{broker.id}}</div>
