@@ -505,7 +505,7 @@
 				"PrivilegeValidDate":"经纪商权益有效期",
 				"Myreferralpage":"我的推广页面",
 				"Days":"天",
-				"ExpireDate":"至{0}年{1}月{1}日",
+				"ExpireDate":"至{0}年{1}月{2}日",
 				"Burn":"充值",
 				"BrokerHint":"说明：",
 				"BrokerHintDetail1":"· 平台采取经纪商制度。所有的交易者只能通过访问经纪商的交易页面进行交易，Derify protocol并不直接面向交易者提供服务。",

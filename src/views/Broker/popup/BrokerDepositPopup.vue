@@ -168,6 +168,12 @@ export default {
       this.$store.dispatch('broker/burnEdrfExtendValidPeriod',
         {trader: this.trader, accountType: this.accountType, amount: this.amount})
         .then(() => {
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.showApplyPopup = !this.brokerApplied
+          }).finally(() => {
+            this.showLoading = false
+          });
+
           this.$userProcessBox({show: true, status: UserProcessStatus.success
             ,msg: this.$t('global.TradeSuccessMsg')})
           this.close()

@@ -124,6 +124,12 @@ export default {
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.showApplyPopup = !this.brokerApplied
+          }).finally(() => {
+            this.showLoading = false
+          });
+
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})

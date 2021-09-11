@@ -257,7 +257,7 @@ export default {
       ]
     },
     loadTraderBrokerInfo(){
-      this.showLoading = true
+      this.showLoading = !this.brokerApplied
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
       }).finally(() => {
@@ -298,6 +298,7 @@ export default {
       this.$store.dispatch('broker/applyBroker', {trader: this.trader, accountType: this.accountType, amount: this.applyBurnAmount})
         .then(() => {
           this.succPopup = true
+          this.loadTraderBrokerInfo()
         })
         .catch(() => {
           this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')});
@@ -316,7 +317,7 @@ export default {
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
       if(!bool) {
-        this.loadBrokerInfo()
+        this.loadTraderBrokerInfo()
       }
     },
     setShowWidthdrawPopup(bool) {

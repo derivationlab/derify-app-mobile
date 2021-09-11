@@ -73,7 +73,7 @@
 				"NoBrokerCode":"No Broker Code",
 				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
 				"Submit":"Submit",
-				"SelectOrInputBrokerId":"SelectOrInputBrokerId"
+				"SelectOrInputBrokerId":"Select Or Input Broker Code"
 			},
 			"BrokerBind":{
 				"ChooseBroker":"Choose Broker",
@@ -505,7 +505,7 @@
 				"PrivilegeValidDate":"Privilege Valid until",
 				"Myreferralpage":"My referral page",
 				"Days":"Days",
-				"ExpireDate":"Until {0}/{1}/{1}",
+				"ExpireDate":"Until {0}/{1}/{2}",
 				"Burn":"Burn",
 				"BrokerHint":"Note:",
 				"BrokerHintDetail1":"Derify has Broker system, traders will be trading on our Broker’s page, Derify does not directly provide service.",
