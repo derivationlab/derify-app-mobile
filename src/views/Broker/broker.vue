@@ -142,8 +142,8 @@
     <BrokerDepositPopup :show="showDepositPopup" @close="setShowDepositPopup(false)"/>
     <BrokerWithdrawPopup :broker="this.broker.id" :show="showWithdrawPopup" @close="setShowWidthdrawPopup(false)"/>
 
-    <van-overlay :show="showLoading" @click="showLoading = false" class-name="derify-loading-wrap">
-      <van-loading size="2.4rem" v-show="showLoading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+    <van-overlay :show="false" @click="showLoading = false" class-name="derify-loading-wrap">
+      <van-loading size="2.4rem" v-show="false" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
     </van-overlay>
   </div>
 </template>
@@ -174,7 +174,6 @@ export default {
     account
   },
   data () {
-
     return {
       showLoading: true,
       showApplyPopup: false,
@@ -258,10 +257,16 @@ export default {
     },
     loadTraderBrokerInfo(){
       this.showLoading = !this.brokerApplied
+
+      if(this.showLoading) {
+        this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.Loading')})
+      }
+
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
       }).finally(() => {
         this.showLoading = false
+        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
       });
     },
     // close popup

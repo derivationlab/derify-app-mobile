@@ -53,8 +53,8 @@
         </div>
       </div>
 
-      <van-overlay :show="showLoading" @click="showLoading = false" class-name="derify-loading-wrap">
-        <van-loading size="2.4rem" v-show="showLoading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+      <van-overlay :show="false" @click="showLoading = false" class-name="derify-loading-wrap">
+        <van-loading size="2.4rem" v-show="false" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
       </van-overlay>
 
     </div>
@@ -68,6 +68,7 @@ import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice"
 import { BrokerInfo } from '@/api/broker'
 import { getWebroot } from '@/config'
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
+import { UserProcessStatus } from '@/store/modules/user'
 export default {
   name: 'Home',
   components: {
@@ -183,7 +184,7 @@ export default {
         param.logo = this.broker.logo
       }
 
-      this.showLoading = true
+      this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
           this.$router.go(-1)
@@ -194,7 +195,7 @@ export default {
       }).catch(e => {
         this.errorNotice(this.$t('global.TradeFailedMsg'))
       }).finally(() => {
-        this.showLoading = false
+        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
       });
 
 
