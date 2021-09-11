@@ -22,9 +22,9 @@ const config = {
     production: 'https://app-test.haoping.video',
   },
   webroot: {
-    development: 'https://app-test.haoping.video',
-    debug: 'https://app-test.haoping.video',
-    production: 'https://app-test.haoping.video',
+    development: 'https://test-m.derify.exchange',
+    debug: 'https://test-m.derify.exchange',
+    production: 'https://test-m.derify.exchange',
   },
   contract: {
     development: {

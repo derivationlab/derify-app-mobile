@@ -447,17 +447,9 @@ export default class Contract {
    * @return {*}
    */
   getTraderPositionLiquidatePrice ({side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount}) {
-    let tempValue = (marginBalance - (totalPositionAmount * marginMaintenanceRatio)) / size;
-    if (side === SideEnum.SHORT) {
-      tempValue = tempValue * -1;
-    }
+    const sideRatio = side === SideEnum.SHORT ? -1 : 1;
 
-    let liquidatePrice = 0;
-    if (spotPrice - tempValue > 0) {
-      liquidatePrice = spotPrice - tempValue;
-    }
-
-    return liquidatePrice;
+    return Math.max(0,spotPrice - sideRatio * ((marginBalance - (totalPositionAmount * marginMaintenanceRatio)) / size));
   }
 
   /**
@@ -551,10 +543,6 @@ export default class Contract {
       operateType = OrderedOperateType.UnSetTakeProfitAndSetStopLossPrice
     }
 
-    if(operateType === null) {
-      return
-    }
-
     if(operateType.method === 'orderStopPosition') {
       return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, operateType.stopType, takeProfitPrice, stopLossPrice)
         .send()
@@ -570,6 +558,8 @@ export default class Contract {
       return this.__getDerifyDerivativeContract(token).methods.orderAndCancleStopPosition(trader, side, operateType.orderStopType, price, operateType.cancleStopType)
         .send()
     }
+
+    return Promise.resolve(true)
   }
 
   /**
@@ -735,8 +725,7 @@ export default class Contract {
       const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
       //The wallet obtains the authorized amount
-      tokenContract.methods.approve(contractABI.address, approveNum).send()
-      return true
+      return await tokenContract.methods.approve(contractABI.address, approveNum).send()
     } catch (e) {
       console.error(`__approve exception`, e)
       return false
@@ -1107,7 +1096,7 @@ export default class Contract {
       marginBalance: fromContractUnit(position.marginBalance),
       totalPositionAmount: fromContractUnit(position.totalPositionAmount)
     }
-    position.liquidatePrice = await this.getTraderPositionLiquidatePrice(liquidPriceParam);
+    position.liquidatePrice = toContractNum(this.getTraderPositionLiquidatePrice(liquidPriceParam));
 
 
     return position

@@ -213,7 +213,7 @@ export default {
           return
         }
 
-        profitPrice = toContractNum(this.position.stopProfitPriceInput)
+        profitPrice = toContractNum(this.position.stopProfitPriceInput) + ""
         if(profitPrice === this.position.stopProfitPrice) {
           profitPrice = 0
         }
@@ -227,7 +227,7 @@ export default {
           return
         }
 
-        lossPrice = toContractNum(this.position.stopLossPriceInput)
+        lossPrice = toContractNum(this.position.stopLossPriceInput)+""
         if(lossPrice === this.position.stopLossPrice) {
           lossPrice = 0
         }
