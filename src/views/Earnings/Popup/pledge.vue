@@ -10,7 +10,7 @@
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions" @change="updateTokenBalance"  @open="onDropDowOpen()" class="derify-dropmenu-item-wrap derify-dropmenu-item">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{accountOptions[accountType].text}}</span>
+                  <span>{{selectedAccountText}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
@@ -53,7 +53,7 @@ export default {
       errorMsg: '',
       showError: false,
       showPopup: this.show,
-      accountType: BondAccountType.DerifyAccount,
+      accountType: accoutOptions[0].value,
       amount: null,
       curPercent: 25,
       pledgeName: null,
@@ -63,7 +63,10 @@ export default {
   watch: {
     show () {
       this.showPopup = this.show
-      this.updateTokenBalance()
+      if(this.showPopup) {
+        this.updateTokenBalance()
+      }
+
     },
     pledgeId () {
       if (this.pledgeId === EarningType.EDRF) {
@@ -82,12 +85,14 @@ export default {
   },
   computed: {
     maxPledgeAmout () {
-      if(this.amount === null) {
-        return false
-      }
-
       if(this.pledgeId === EarningType.EDRF) {
-        return 0
+        if(this.accountType === BondAccountType.DerifyAccount){
+          //TODO
+          //return this.$store.state.earnings.bondInfo.bondBalance
+          return 0
+        }else{
+          return this.$store.state.earnings.wallet.drfBalance
+        }
       }else if(this.pledgeId === EarningType.BDRF) {
         if(this.accountType === BondAccountType.DerifyAccount){
           return this.$store.state.earnings.bondInfo.bondBalance
@@ -120,7 +125,15 @@ export default {
       }
 
       return {title: '', max: '', amount: '', all: '', cancel: '', confirm: ''}
-    }
+    },
+    selectedAccountText() {
+      let findItem = this.accountOptions.find(item => item.value === this.accountType)
+      if(!findItem){
+        findItem = this.accountOptions[0]
+      }
+
+      return findItem.text
+    },
   },
   methods: {
     close () {
@@ -189,7 +202,7 @@ export default {
     },
     updateTokenBalance() {
       const earningTokenMap = {}
-      earningTokenMap[EarningType.EDRF] = 'eDRF'
+      earningTokenMap[EarningType.EDRF] = 'DRF'
       earningTokenMap[EarningType.BDRF] = 'bDRF'
 
       if(this.accountType === BondAccountType.WalletAccount) {
@@ -205,7 +218,7 @@ export default {
 
       if(this.pledgeId === EarningType.EDRF) {
         accoutOptions = [
-          { text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
+          //{ text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
         accoutOptions = [

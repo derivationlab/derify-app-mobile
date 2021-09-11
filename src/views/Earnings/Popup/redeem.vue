@@ -11,7 +11,7 @@
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions" @open="onDropDowOpen()" class="derify-dropmenu-item derify-dropmenu-item-wrap">
               <div class="derify-dropmenu-title" slot="title">
-                <span>{{accountOptions[accountType].text}}</span>
+                <span>{{selectedAccountText}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
               </div>
             </van-dropdown-item>
@@ -49,7 +49,7 @@ export default {
   props: ['show', 'redeemId'],
   data () {
 
-    let accoutOptions = this.updateAccountOptions()
+    let accoutOptions = this.getAccountOptions()
 
     return {
       errorMsg: '',
@@ -59,11 +59,21 @@ export default {
       amount: null,
       curPercent: 25,
       redeemName: null,
-      accountType: BondAccountType.DerifyAccount,
+      accountType: accoutOptions[0].value,
       accountOptions: accoutOptions
     }
   },
   computed: {
+
+    selectedAccountText() {
+      let findItem = this.accountOptions.find(item => item.value === this.accountType)
+      if(!findItem){
+        findItem = this.accountOptions[0]
+      }
+
+      return findItem.text
+    },
+
     maxRedeemAmount () {
       if(this.redeemId === EarningType.EDRF) {
         return this.$store.state.earnings.edrfInfo.drfBalance
@@ -101,6 +111,9 @@ export default {
   watch: {
     show () {
       this.showPopup = this.show
+      if(this.showPopup) {
+
+      }
     },
     redeemId () {
       if (this.redeemId === EarningType.EDRF) {
@@ -121,6 +134,9 @@ export default {
   methods: {
     close () {
       this.$emit('closeRedeem', false)
+    },
+    getStakingInfo() {
+
     },
     errorNotice(msg){
       if(msg){
@@ -189,7 +205,8 @@ export default {
       let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 1 }]
 
       if(this.redeemId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
+        accoutOptions = [
+          // { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.RedeemPopup.MyWallet'), value: 1 }]
       }else if(this.redeemId === EarningType.BDRF){
         accoutOptions = [      { text: this.$t('Rewards.Bond.RedeemPopup.bDRFAccount'), value: 0 },

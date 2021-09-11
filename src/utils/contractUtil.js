@@ -327,6 +327,9 @@ export default class Contract {
       }else if(ABIData.eDRF.address === token){
         decimals = await this.eDRF.methods.decimals().call()
         tokenAmount = await this.eDRF.methods.balanceOf(trader).call()
+      }else if(ABIData.DRF.address === token){
+        decimals = await this.DRF.methods.decimals().call()
+        tokenAmount = await this.DRF.methods.balanceOf(trader).call()
       }
 
       return convertTokenNumToContractNum(tokenAmount, contractDecimals - decimals)

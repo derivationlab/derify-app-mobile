@@ -96,7 +96,7 @@ const actions = {
       const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
 
       const edrfInfo = await contract.getStakingInfo(state.wallet_address)
-      const edrfBalance = await contract.getStakingInfo(state.wallet_address, Token.eDRF)
+      const edrfBalance = await contract.balanceOf(state.wallet_address, Token.eDRF)
 
       //const edrfBalance = await contract.balanceOf(state.wallet_address, Token.EDRF)
 
@@ -158,6 +158,12 @@ const actions = {
         return bdrfBalance
       }
 
+      if(tokenName === 'DRF'){
+        const drfBalance = await contract.balanceOf(state.wallet_address, Token.DRF)
+        commit('updateWallet', {drfBalance})
+        return drfBalance
+      }
+
       return 0
     })()
   },
@@ -182,6 +188,15 @@ const actions = {
       return contract.redeemDrf(amount)
     })()
   },
+  getStakingInfo ({state, commit, dispatch}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+
+      const edrfInfo = await contract.getStakingInfo(state.wallet_address)
+
+      commit('updateState', {edrfInfo})
+    })()
+  }
 }
 
 export default {

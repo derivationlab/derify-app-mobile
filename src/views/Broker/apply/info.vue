@@ -158,7 +158,7 @@ export default {
       }
 
       const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.broker.id)
-      if(resBroker && resBroker.brokerId) {
+      if(resBroker && resBroker.id && resBroker.broker !== this.broker.broker) {
         this.errorNotice(this.$t('Broker.Broker.InfoEdit.CodeOccuError'))
         return false
       }
