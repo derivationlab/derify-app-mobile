@@ -495,7 +495,10 @@
 				"CodeOccuError":"Your Code is occupied, choose another one",
 				"Title":"Broker Info",
 				"Commit":"Commit",
-				"InfoRequired":"Information is incomplete, please re-filled"
+				"InfoRequired":"Information is incomplete, please re-filled",
+				"FormatError":"You can only input letters, numbers and symbols '_ ',' @ ',' $'",
+				"Edit":"Edit",
+				"Upload":"Upload"
 			},
 			"Account":{
 				"AccBalance":"Acc. Balance",
@@ -585,6 +588,13 @@
 				"Time":"Time"
 			}
 		}
+	},
+	"Faucet":{
+		"Faucet":"Faucet",
+		"Address":"Address",
+		"GetUSDT":"Get {0} Test USDT",
+		"GetETH":"Get Test ETH",
+		"GetUSDTError":"You have already claimed Test USDT"
 	},
 	"global":{
 		"ClickConnectWallet":"click connect wallet",

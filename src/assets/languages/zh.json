@@ -495,7 +495,10 @@
 				"CodeOccuError":"您的编码已被占用，请重新设置",
 				"Title":"经济商信息",
 				"Commit":"提交",
-				"InfoRequired":"信息填写不完整，请重新填写"
+				"InfoRequired":"信息填写不完整，请重新填写",
+				"FormatError":"只能输入字母、数字和符号\"_\",\"@\",\"$\"",
+				"Edit":"编辑",
+				"Upload":"上传头像"
 			},
 			"Account":{
 				"AccBalance":"账户余额",
@@ -585,6 +588,13 @@
 				"Time":"时间"
 			}
 		}
+	},
+	"Faucet":{
+		"Faucet":"水龙头",
+		"Address":"地址",
+		"GetUSDT":"领取{0}测试USDT",
+		"GetETH":"领取测试ETH",
+		"GetUSDTError":"测试USDT已被领取，不可重复领取"
 	},
 	"global":{
 		"ClickConnectWallet":"连接钱包",

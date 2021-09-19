@@ -110,7 +110,6 @@ export default {
         this.sideType = this.type
         this.showError = false
         this.errorMsg = ''
-        this.le
         this.$store.dispatch('contract/getSpotPrice')
         this.$store.dispatch('contract/getSysOpenUpperBound', {side: this.extraData.side})
       }
