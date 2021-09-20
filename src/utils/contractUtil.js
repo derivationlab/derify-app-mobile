@@ -144,15 +144,15 @@ export class OrderedOperateType {
  * Order type
  */
 export class OrderTypeEnum {
- static get LimitOrder () {
-   return 0
- }
- static get StopProfitOrder () {
-   return 1
- }
- static get StopLossOrder () {
-   return 2
- }
+  static get LimitOrder () {
+    return 0
+  }
+  static get StopProfitOrder () {
+    return 1
+  }
+  static get StopLossOrder () {
+    return 2
+  }
 
 }
 
@@ -376,7 +376,7 @@ export default class Contract {
   /**
    * getTraderAccount
    * @param trader
-   * @return {*}
+   * @return {Promise<TraderAccount>}
    */
   getTraderAccount (trader) {
     return this.DerifyExchange.methods.getTraderAccount(trader).call()
@@ -388,7 +388,7 @@ export default class Contract {
    * @param openType enum OpenType { MarketOrder, LimitOrder }
    * @param price
    * @param leverage
-   * @return {*}
+   * @return {{amount:0,size:0}}
    */
   getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
     return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
@@ -430,7 +430,7 @@ export default class Contract {
   /**
    * Get user margin information
    * @param trader
-   * @return {*}
+   * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
     return this.DerifyExchange.methods.getTraderVariables(trader).call()
@@ -506,7 +506,7 @@ export default class Contract {
   /**
    * Get the current price of the token
    * @param token
-   * @return {*}
+   * @return {Promise<number>}
    */
   getSpotPrice (token) {
     return this.__getDerifyDerivativeContract(token).methods.getSpotPrice().call()
@@ -593,11 +593,9 @@ export default class Contract {
   }
   /**
    * Cancel all orders
-   * @param token
-   * @param trader
    * @return {*}
    */
-  cancleAllOrderedPositions (token, trader) {
+  cancleAllOrderedPositions () {
     return this.DerifyExchange.methods.cancleAllOrderedPositions().send()
   }
 
@@ -631,13 +629,11 @@ export default class Contract {
    * @param size
    * @param price
    */
-  async getPositionChangeFee (token, side, actionType, size, price) {
+  async getPositionChangeFee ({token, side, actionType, size, price}) {
     const ratioSum = await this.__getPredictPositionChangeFeeRatioSum(token, side,
       size,
       price,
       actionType)
-
-    console.log('__getPredictPositionChangeFeeRatioSum:' + ratioSum)
     return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
   }
 
@@ -800,12 +796,14 @@ export default class Contract {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
 
-      if(accountType === BondAccountType.DerifyAccount) {
-        resolve(true)
-        return
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
       }
 
-      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+
       if(approveRet){
         try{
           await this.DerifyRewards.methods.applyBroker(accountType).send()
@@ -828,12 +826,13 @@ export default class Contract {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
 
-      if(accountType === BondAccountType.DerifyAccount) {
-        resolve(true)
-        return
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
       }
 
-      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
       if(approveRet){
         try{
           await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()
@@ -1120,10 +1119,10 @@ export default class Contract {
    * @returns {Promise<int>}
    */
   async __getPredictPositionChangeFeeRatioSum(token,
-    side,
-    size,
-    price,
-    actionType
+                                              side,
+                                              size,
+                                              price,
+                                              actionType
   ) {
 
     if(side === SideEnum.HEDGE) {
@@ -1169,6 +1168,8 @@ export default class Contract {
 const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
+  tx;
+
   isUsed;
   /**
    * token
@@ -1210,7 +1211,7 @@ export class PositionView {
 }
 
 export class LimitPoistion {
-
+  tx;
   size;
 
 
@@ -1223,6 +1224,7 @@ export class LimitPoistion {
 }
 
 export class OrderLimitPositionView {
+  tx;
   isUsed;
 
   /**
@@ -1260,6 +1262,7 @@ export class OrderLimitPositionView {
 
 
 export class PositionDataView {
+  tx;
   /**
    * @return {PositionView[]}
    */
@@ -1277,6 +1280,7 @@ export class PositionDataView {
 }
 
 export class OrderStopPoistionView {
+  tx;
 
   /**
    * @return {boolean}
@@ -1306,6 +1310,7 @@ export class OrderStopPoistionView {
 
 
 export class BondInfo {
+  tx;
   /**
    * The precision is 8 bits
    */
@@ -1328,6 +1333,7 @@ export class BondInfo {
 }
 
 export class DerivativePositions {
+  tx;
   /**
    * boolean
    */
