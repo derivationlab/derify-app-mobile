@@ -124,7 +124,7 @@ const actions = {
   withdrawBrokerReward({state, commit, dispatch}, {trader, amount}) {
     return (async () => {
       const contract = web3Utils.contract(trader);
-      return await contract.burnEdrfExtendValidPeriod(toContractNum(amount))
+      return await contract.withdrawBrokerReward(toContractNum(amount))
     })()
   },
   getBrokerBalance({state, commit, dispatch}, {trader,accountType}) {
