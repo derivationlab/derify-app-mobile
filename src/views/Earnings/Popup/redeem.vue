@@ -88,7 +88,7 @@ export default {
         return {}
       } else if (this.redeemId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.RedeemPopup.RedeemDRF',
+          title: 'Rewards.Staking.RedeemPopup.title',
           max: 'Rewards.Staking.RedeemPopup.Max',
           amount: 'Rewards.Staking.RedeemPopup.Amount',
           all: 'Rewards.Staking.RedeemPopup.All',
@@ -98,7 +98,7 @@ export default {
       } else {
         //BDRF
         return {
-          title: 'Rewards.Bond.RedeemPopup.RedeembDRF',
+          title: 'Rewards.Bond.RedeemPopup.title',
           max: 'Rewards.Bond.RedeemPopup.Max',
           amount: 'Rewards.Bond.RedeemPopup.Amount',
           all: 'Rewards.Bond.RedeemPopup.All',

@@ -72,7 +72,7 @@ export default {
         return {}
       } else if (this.depositId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          title: 'Rewards.Staking.PledgePopup.title',
           max: 'Rewards.Staking.PledgePopup.Max',
           amount: 'Rewards.Staking.PledgePopup.Amount',
           all: 'Rewards.Staking.PledgePopup.All',
@@ -82,7 +82,7 @@ export default {
       } else {
         //BDRF
         return {
-          title: 'Rewards.Bond.ExchangePopup.ExchangebDRF',
+          title: 'Rewards.Bond.ExchangePopup.title',
           max: 'Rewards.Bond.ExchangePopup.Max',
           amount: 'Rewards.Bond.ExchangePopup.Amount',
           all: 'Rewards.Bond.ExchangePopup.All',

@@ -307,7 +307,8 @@
 				"NumberError":"数值有误，请重新输入",
 				"TradePendingMsg":"正在执行，请稍候",
 				"TradeSuccessMsg":"执行成功",
-				"TradeFailedMsg":"执行失败，请重试"
+				"TradeFailedMsg":"执行失败，请重试",
+				"title":"提现USDT"
 			},
 			"History":{
 				"PositionMining":"持仓挖矿",
@@ -331,7 +332,7 @@
 				"Staking":"质押"
 			},
 			"WithdrawPopup":{
-				"WithdraweDRF":"提现 eDRF",
+				"title":"提现 eDRF",
 				"Amount":"提现数量",
 				"Max":"可提现",
 				"All":"全部提现",
@@ -343,7 +344,7 @@
 				"TradeFailedMsg":"执行失败，请重试"
 			},
 			"RedeemPopup":{
-				"RedeemDRF":"赎回 DRF",
+				"title":"赎回 DRF",
 				"DRFAccount":"DRF账户",
 				"MyWallet":"我的钱包",
 				"Amount":"赎回数量",
@@ -357,7 +358,7 @@
 				"TradeFailedMsg":"执行失败，请重试"
 			},
 			"PledgePopup":{
-				"StakingDRF":"质押 DRF",
+				"title":"质押 DRF",
 				"DRFAccount":"DRF账户",
 				"MyWallet":"我的钱包",
 				"Amount":"质押量",
@@ -393,7 +394,7 @@
 				"Staking":"质押"
 			},
 			"WithdrawPopup":{
-				"WithdrawbDRF":"提现 bDRF",
+				"title":"提现 bDRF",
 				"Amount":"提现数量",
 				"Max":"可提现",
 				"All":"全部提现",
@@ -405,7 +406,7 @@
 				"TradeFailedMsg":"执行失败，请重试"
 			},
 			"ExchangePopup":{
-				"ExchangebDRF":"兑换 bDRF",
+				"title":"兑换 bDRF",
 				"bDRFAccount":"bDRF账户",
 				"MyWallet":"我的钱包",
 				"Amount":"兑换数量",
@@ -419,7 +420,7 @@
 				"TradeFailedMsg":"执行失败，请重试"
 			},
 			"RedeemPopup":{
-				"RedeembDRF":"赎回 bDRF",
+				"title":"赎回 bDRF",
 				"bDRFAccount":"bDRF账户",
 				"MyWallet":"我的钱包",
 				"Amount":"赎回数量",
@@ -433,7 +434,7 @@
 				"TradeFailedMsg":"执行失败，请重试"
 			},
 			"PledgePopup":{
-				"StakingbDRF":"质押 bDRF",
+				"title":"质押 bDRF",
 				"bDRFAccount":"bDRF账户",
 				"MyWallet":"我的钱包",
 				"Amount":"质押数量",

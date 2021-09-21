@@ -106,7 +106,7 @@ export default {
     langKey () {
       if(this.pledgeId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          title: 'Rewards.Staking.PledgePopup.title',
           max: 'Rewards.Staking.PledgePopup.Max',
           amount: 'Rewards.Staking.PledgePopup.Amount',
           all: 'Rewards.Staking.PledgePopup.All',
@@ -115,7 +115,7 @@ export default {
         }
       }else if(this.pledgeId === EarningType.BDRF) {
         return {
-          title: 'Rewards.Bond.PledgePopup.StakingbDRF',
+          title: 'Rewards.Bond.PledgePopup.title',
           max: 'Rewards.Bond.PledgePopup.Max',
           amount: 'Rewards.Bond.PledgePopup.Amount',
           all: 'Rewards.Bond.PledgePopup.All',

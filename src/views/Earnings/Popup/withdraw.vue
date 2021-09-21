@@ -70,7 +70,7 @@ export default {
     langKey () {
       if (this.withdrawId === EarningType.MIN) {
         return {
-          title: 'Rewards.Mining.WithdrawPopup.Withdraw',
+          title: 'Rewards.Mining.WithdrawPopup.title',
           max: 'Rewards.Mining.WithdrawPopup.Max',
           amount: 'Rewards.Mining.WithdrawPopup.Amount',
           all: 'Rewards.Mining.WithdrawPopup.All',
@@ -79,7 +79,7 @@ export default {
         }
       } else if (this.withdrawId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.WithdrawPopup.WithdraweDRF',
+          title: 'Rewards.Staking.WithdrawPopup.title',
           max: 'Rewards.Staking.WithdrawPopup.Max',
           amount: 'Rewards.Staking.WithdrawPopup.Amount',
           all: 'Rewards.Staking.WithdrawPopup.All',
@@ -89,7 +89,7 @@ export default {
       } else {
         //BDRF
         return {
-          title: 'Rewards.Bond.WithdrawPopup.WithdrawbDRF',
+          title: 'Rewards.Bond.WithdrawPopup.title',
           max: 'Rewards.Bond.WithdrawPopup.Max',
           amount: 'Rewards.Bond.WithdrawPopup.Amount',
           all: 'Rewards.Bond.WithdrawPopup.All',

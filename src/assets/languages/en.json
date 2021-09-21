@@ -331,7 +331,7 @@
 				"Staking":"Staking"
 			},
 			"WithdrawPopup":{
-				"WithdraweDRF":"Withdraw eDRF",
+				"title":"Withdraw eDRF",
 				"Amount":"Amount",
 				"Max":"Max",
 				"All":"All",
@@ -343,7 +343,7 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"RedeemPopup":{
-				"RedeemDRF":"Redeem DRF",
+				"title":"Redeem DRF",
 				"DRFAccount":"DRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -357,7 +357,7 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"PledgePopup":{
-				"StakingDRF":"Staking DRF",
+				"title":"Staking DRF",
 				"DRFAccount":"DRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -393,7 +393,7 @@
 				"Staking":"Staking"
 			},
 			"WithdrawPopup":{
-				"WithdrawbDRF":"Withdraw bDRF",
+				"title":"Withdraw bDRF",
 				"Amount":"Amount",
 				"Max":"Max",
 				"All":"All",
@@ -405,7 +405,7 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"ExchangePopup":{
-				"ExchangebDRF":"Exchange bDRF",
+				"title":"Exchange bDRF",
 				"bDRFAccount":"bDRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -419,7 +419,7 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"RedeemPopup":{
-				"RedeembDRF":"Redeem bDRF",
+				"title":"Redeem bDRF",
 				"bDRFAccount":"bDRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -433,7 +433,7 @@
 				"TradeFailedMsg":"Error, please retry."
 			},
 			"PledgePopup":{
-				"StakingbDRF":"Staking bDRF",
+				"title":"Staking bDRF",
 				"bDRFAccount":"bDRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
