@@ -17,7 +17,7 @@
     </van-nav-bar>
     <div class="from-div">{{ $t('Trade.Account.Transfer.From') }}</div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.Transfer.MyWallet') : $t('Trade.Account.Transfer.MarginAccount')" :border='false' />
+      <van-field readonly class="derify-input no-padding-hor" :value="type === 'deposit' ? $t('Trade.Account.Transfer.MyWallet') : $t('Trade.Account.Transfer.MarginAccount')" :border='false' />
     </van-cell-group>
     <div class="to-div" @click="changeType"><span class="span1">{{ $t('Trade.Account.Transfer.To') }}</span>
       <span class="switch-updown-arrow">
@@ -25,7 +25,7 @@
       </span>
     </div>
     <van-cell-group>
-      <van-field class="derify-input no-padding-hor" :placeholder="type === 'deposit' ? $t('Trade.Account.Transfer.MarginAccount') : $t('Trade.Account.Transfer.MyWallet')" />
+      <van-field readonly class="derify-input no-padding-hor" :value="type === 'deposit' ? $t('Trade.Account.Transfer.MarginAccount') : $t('Trade.Account.Transfer.MyWallet')" />
     </van-cell-group>
     <div class="num-div">{{$t('Trade.Account.Transfer.Size')}}</div>
     <van-cell-group>
@@ -37,10 +37,10 @@
         type="number"
       >
       </van-field>
-      <span class="unit">DUSD</span>
+      <span class="unit">USDT</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Transfer.Size')}}
-      {{maxAmount}} DUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
+      {{maxAmount}} USDT</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
     <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Transfer.Deposit')}}</div>
     <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Transfer.Withdraw')}}</div>
   </div>

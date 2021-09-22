@@ -1134,7 +1134,6 @@ export default {
 </style>
 <style lang="less" scoped>
 .home-container{
-  background-color: #0C071E;
   padding-top: 6.6rem;
   padding-left: 0;
   padding-right: 0;

@@ -9,7 +9,7 @@
 <style lang="less">
 #app{
   background-color: #140B32;
-  height: 100vh;
+  min-height: 100vh;
 }
 </style>
 <script>

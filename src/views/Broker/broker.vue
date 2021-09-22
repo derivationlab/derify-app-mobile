@@ -261,7 +261,6 @@ export default {
       if(this.showLoading) {
         this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.Loading')})
       }
-
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
       }).finally(() => {
@@ -472,7 +471,8 @@ export default {
     ul{
       font-size: 1.2rem;
       color: rgba(255,255,255,0.65);
-      // list-style: initial
+      list-style: initial;
+      padding-left: 2rem;
       li{
         line-height: 2rem;
       }
