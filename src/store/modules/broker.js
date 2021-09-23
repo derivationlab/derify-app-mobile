@@ -1,6 +1,6 @@
 import {
   bindBroker,
-  BrokerInfo, getbrokerBindTraders,
+  BrokerInfo, getbrokerBindTraders, getBrokerBindTradersByAddr,
   getBrokerByBrokerId,
   getBrokerByTrader,
   getBrokerList, getBrokerRewardHistory,
@@ -148,7 +148,7 @@ const actions = {
   },
   getBrokerBindTraders({state, commit, dispatch}, {broker, page = 0, size = 10}) {
     return (async() => {
-      return await getbrokerBindTraders(broker, page, size)
+      return await getBrokerBindTradersByAddr(broker, page, size)
     })()
   },
 }

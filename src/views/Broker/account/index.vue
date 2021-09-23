@@ -23,7 +23,6 @@
   </div>
 </template>
 <script>
-import { getbrokerBindTraders } from '@/api/broker'
 
 export default {
   props: ['broker'],
