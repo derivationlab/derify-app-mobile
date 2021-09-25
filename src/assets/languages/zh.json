@@ -148,7 +148,8 @@
 				"SetTPSL":"设置止盈止损",
 				"Close":"平仓",
 				"NoMoreInfo":"没有更多了",
-				"OneClickClose":"一键平仓"
+				"OneClickClose":"一键平仓",
+				"Position":"仓位"
 			},
 			"Hint":{
 				"UnrealizedPnL":"未实现盈亏：",
@@ -216,7 +217,8 @@
 				"Time":"委托时间",
 				"Cancel":"取消委托",
 				"CancelAll":"取消所有委托",
-				"NoMoreInfo":"没有更多了"
+				"NoMoreInfo":"没有更多了",
+				"Position":"仓位"
 			},
 			"Hint":{
 				"OrderPrice":"委托价格：",
@@ -269,7 +271,9 @@
 				"CloseLiquidate":"平仓/强制平仓",
 				"CloseLiquidate1":"平仓",
 				"CloseLiquidate2":"/ 强制平仓",
-				"NoMoreInfo":"没有更多了"
+				"NoMoreInfo":"没有更多了",
+				"Position":"仓位",
+				"Time":"时间"
 			},
 			"Hint":{
 				"PnL":"已实现盈亏：",
@@ -450,12 +454,12 @@
 			"History":{
 				"bDRF":"bDRF",
 				"Type":"类型",
-				"Type0":"收入（增发）",
+				"Type0":"收入",
 				"Type1":"提取",
 				"Type2":"兑换",
-				"Type3":"赎回（收益计划）",
-				"Type4":"存入（收益计划）",
-				"Type5":"收入（利息）",
+				"Type3":"赎回",
+				"Type4":"存入",
+				"Type5":"利息",
 				"Amount":"金额",
 				"Balance":"余额",
 				"Time":"时间",

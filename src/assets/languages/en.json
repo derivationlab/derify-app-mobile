@@ -148,7 +148,8 @@
 				"SetTPSL":"Set TP / SL",
 				"Close":"Close",
 				"NoMoreInfo":"No more info",
-				"OneClickClose":"One-Click Close"
+				"OneClickClose":"One-Click Close",
+				"Position":"Position"
 			},
 			"Hint":{
 				"UnrealizedPnL":"Unrealized PnL",
@@ -216,7 +217,8 @@
 				"Time":"Time",
 				"Cancel":"Cancel",
 				"CancelAll":"Cancel All",
-				"NoMoreInfo":"No more info"
+				"NoMoreInfo":"No more info",
+				"Position":"Position"
 			},
 			"Hint":{
 				"OrderPrice":"Order Price",
@@ -269,7 +271,9 @@
 				"CloseLiquidate":"Close / Liquidate",
 				"CloseLiquidate1":"Close",
 				"CloseLiquidate2":"/ Liquidate",
-				"NoMoreInfo":"No more info"
+				"NoMoreInfo":"No more info",
+				"Position":"Position",
+				"Time":"Time"
 			},
 			"Hint":{
 				"PnL":"PnL",
@@ -307,7 +311,8 @@
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Error, please retry.",
+				"title":"Withdraw USDT"
 			},
 			"History":{
 				"PositionMining":"Position Mining",

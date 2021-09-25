@@ -71,7 +71,7 @@
         <div class="broker-tab-wrap">
           <van-tabs v-model="active">
             <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
-              <trader  :broker="this.broker.id" ></trader>
+              <trader  :broker="this.broker.broker" ></trader>
             </van-tab>
             <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
               <account  :broker="this.broker.broker" ></account>

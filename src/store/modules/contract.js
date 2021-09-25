@@ -18,7 +18,7 @@ const state = {
     {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
-  curPairKey: 'BTC',
+  curPairKey:  window.localStorage.getItem('curPairKey') || 'BTC',
   contractData: {
     positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
@@ -62,6 +62,7 @@ const mutations = {
     setCache('account', account)
   },
   SET_CURPAIRKEY (state, key) {
+    window.localStorage.setItem("curPairKey", key);
     state.curPairKey = key
   },
   SET_CURSPOTPRICE (state, price) {
