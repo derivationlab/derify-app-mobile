@@ -11,7 +11,7 @@
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions" @open="onDropDowOpen()" class="derify-dropmenu-item derify-dropmenu-item-wrap">
               <div class="derify-dropmenu-title" slot="title">
-                <span>{{accountOptions[accountType].text}}</span>
+                <span>{{selectedAccountText}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
               </div>
             </van-dropdown-item>
@@ -21,7 +21,7 @@
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="number" v-model="amount"  @change="checkAmount"/>
+                     type="number" v-model="amount"  @input="checkAmount"/>
           <div class="unit">{{redeemName}}</div>
         </div>
         <div class="system-popup-num">
@@ -49,24 +49,34 @@ export default {
   props: ['show', 'redeemId'],
   data () {
 
-    let accoutOptions = this.updateAccountOptions()
+    let accoutOptions = this.getAccountOptions()
 
     return {
       errorMsg: '',
       showError: false,
       showPopup: this.show,
       value1: null,
-      amount: 0,
+      amount: null,
       curPercent: 25,
       redeemName: null,
-      accountType: BondAccountType.DerifyAccount,
+      accountType: accoutOptions[0].value,
       accountOptions: accoutOptions
     }
   },
   computed: {
+
+    selectedAccountText() {
+      let findItem = this.accountOptions.find(item => item.value === this.accountType)
+      if(!findItem){
+        findItem = this.accountOptions[0]
+      }
+
+      return findItem.text
+    },
+
     maxRedeemAmount () {
       if(this.redeemId === EarningType.EDRF) {
-        return 0
+        return this.$store.state.earnings.edrfInfo.drfBalance
       }else if(this.redeemId === EarningType.BDRF){
         return this.$store.state.earnings.bondInfo.bondReturnBalance
       }
@@ -78,7 +88,7 @@ export default {
         return {}
       } else if (this.redeemId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.RedeemPopup.RedeemDRF',
+          title: 'Rewards.Staking.RedeemPopup.title',
           max: 'Rewards.Staking.RedeemPopup.Max',
           amount: 'Rewards.Staking.RedeemPopup.Amount',
           all: 'Rewards.Staking.RedeemPopup.All',
@@ -88,7 +98,7 @@ export default {
       } else {
         //BDRF
         return {
-          title: 'Rewards.Bond.RedeemPopup.RedeembDRF',
+          title: 'Rewards.Bond.RedeemPopup.title',
           max: 'Rewards.Bond.RedeemPopup.Max',
           amount: 'Rewards.Bond.RedeemPopup.Amount',
           all: 'Rewards.Bond.RedeemPopup.All',
@@ -101,6 +111,9 @@ export default {
   watch: {
     show () {
       this.showPopup = this.show
+      if(this.showPopup) {
+
+      }
     },
     redeemId () {
       if (this.redeemId === EarningType.EDRF) {
@@ -122,6 +135,9 @@ export default {
     close () {
       this.$emit('closeRedeem', false)
     },
+    getStakingInfo() {
+
+    },
     errorNotice(msg){
       if(msg){
         this.errorMsg = msg
@@ -139,10 +155,19 @@ export default {
       this.amount = fck(this.maxRedeemAmount, -8, 4)
     },
     checkAmount () {
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxRedeemAmount)) {
+      if(this.amount === null || this.amount === '') {
+        return false
+      }
+
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxRedeemAmount)) {
+        this.amount = fromContractUnit(this.maxRedeemAmount)
+      }
+      this.errorNotice(null)
       return true
     },
     submitThenClose () {
@@ -152,7 +177,15 @@ export default {
       }
 
       if (this.redeemId === EarningType.EDRF) {
-
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+        this.$store.dispatch("earnings/redeemDrf", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
+          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+        }).catch(e => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+        }).finally( p => {
+          this.$store.dispatch('earnings/loadEarningData')
+        })
       } else if(this.redeemId === EarningType.BDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
@@ -172,7 +205,8 @@ export default {
       let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 1 }]
 
       if(this.redeemId === EarningType.EDRF) {
-        accoutOptions = [      { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
+        accoutOptions = [
+          // { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.RedeemPopup.MyWallet'), value: 1 }]
       }else if(this.redeemId === EarningType.BDRF){
         accoutOptions = [      { text: this.$t('Rewards.Bond.RedeemPopup.bDRFAccount'), value: 0 },

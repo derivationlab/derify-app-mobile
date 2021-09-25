@@ -85,12 +85,17 @@ export default {
   },
   mounted () {
     this.type = (this.$route.query && this.$route.query.type) || 'deposit'
+
+    this.$store.dispatch('user/getBalanceOfDUSD')
+
+    this.$store.dispatch('contract/loadAccountData')
   },
   watch: {
     '$store.state.user.selectedAddress':{
       handler () {
         if(this.$store.state.user.selectedAddress) {
           this.$store.dispatch('user/getBalanceOfDUSD')
+          this.$store.dispatch('contract/loadAccountData')
         }
       },
       immediate: true
@@ -110,25 +115,27 @@ export default {
     },
     changeType () {
       this.type = this.type === 'deposit' ? 'withdraw' : 'deposit'
+      if(this.type === 'withdraw') {
+        this.$store.dispatch('contract/loadAccountData')
+      }else{
+        this.$store.dispatch('user/getBalanceOfDUSD')
+      }
     },
-
     transferAll () {
-      this.amount = fromContractUnit(this.maxAmount)
+      this.amount = this.maxAmount
     },
     onAmoutChange () {
       this.checkAmount()
     },
     checkAmount() {
+
       if (!this.amount || this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
-      const a = parseFloat(this.amount)
-      const amount = fromContractUnit(a)
 
-      if(amount > this.maxAmount) {
-        this.errorNotice(this.$t('global.NumberError'))
-        return  false
+      if(this.amount >= this.maxAmount) {
+        this.amount = this.maxAmount
       }
 
       this.errorNotice(null)

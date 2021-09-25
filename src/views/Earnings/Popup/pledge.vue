@@ -10,7 +10,7 @@
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
             <van-dropdown-item v-model="accountType" :options="accountOptions" @change="updateTokenBalance"  @open="onDropDowOpen()" class="derify-dropmenu-item-wrap derify-dropmenu-item">
                 <div class="derify-dropmenu-title" slot="title">
-                  <span>{{accountOptions[accountType].text}}</span>
+                  <span>{{selectedAccountText}}</span>
                   <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
                 </div>
             </van-dropdown-item>
@@ -19,7 +19,7 @@
         <div class="popup-text">{{$t(langKey.amount)}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder="" type="number"
-                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @change="checkAmount"/>
+                     :formatter="(value) => value.replace(/-/g, '')" v-model="amount"  @input="checkAmount"/>
           <div class="unit">{{pledgeName}}</div>
         </div>
         <div class="system-popup-num">
@@ -53,8 +53,8 @@ export default {
       errorMsg: '',
       showError: false,
       showPopup: this.show,
-      accountType: BondAccountType.DerifyAccount,
-      amount: 0,
+      accountType: accoutOptions[0].value,
+      amount: null,
       curPercent: 25,
       pledgeName: null,
       accountOptions:  accoutOptions
@@ -63,7 +63,10 @@ export default {
   watch: {
     show () {
       this.showPopup = this.show
-      this.updateTokenBalance()
+      if(this.showPopup) {
+        this.updateTokenBalance()
+      }
+
     },
     pledgeId () {
       if (this.pledgeId === EarningType.EDRF) {
@@ -83,7 +86,13 @@ export default {
   computed: {
     maxPledgeAmout () {
       if(this.pledgeId === EarningType.EDRF) {
-        return 0
+        if(this.accountType === BondAccountType.DerifyAccount){
+          //TODO
+          //return this.$store.state.earnings.bondInfo.bondBalance
+          return 0
+        }else{
+          return this.$store.state.earnings.wallet.drfBalance
+        }
       }else if(this.pledgeId === EarningType.BDRF) {
         if(this.accountType === BondAccountType.DerifyAccount){
           return this.$store.state.earnings.bondInfo.bondBalance
@@ -97,7 +106,7 @@ export default {
     langKey () {
       if(this.pledgeId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          title: 'Rewards.Staking.PledgePopup.title',
           max: 'Rewards.Staking.PledgePopup.Max',
           amount: 'Rewards.Staking.PledgePopup.Amount',
           all: 'Rewards.Staking.PledgePopup.All',
@@ -106,7 +115,7 @@ export default {
         }
       }else if(this.pledgeId === EarningType.BDRF) {
         return {
-          title: 'Rewards.Bond.PledgePopup.StakingbDRF',
+          title: 'Rewards.Bond.PledgePopup.title',
           max: 'Rewards.Bond.PledgePopup.Max',
           amount: 'Rewards.Bond.PledgePopup.Amount',
           all: 'Rewards.Bond.PledgePopup.All',
@@ -116,7 +125,15 @@ export default {
       }
 
       return {title: '', max: '', amount: '', all: '', cancel: '', confirm: ''}
-    }
+    },
+    selectedAccountText() {
+      let findItem = this.accountOptions.find(item => item.value === this.accountType)
+      if(!findItem){
+        findItem = this.accountOptions[0]
+      }
+
+      return findItem.text
+    },
   },
   methods: {
     close () {
@@ -131,10 +148,20 @@ export default {
       }
     },
     checkAmount () {
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxPledgeAmout)) {
+
+      if(this.amount === null || this.amount === '') {
+        return false
+      }
+
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxPledgeAmout)) {
+        this.amount = fromContractUnit(this.maxPledgeAmout)
+      }
+      this.errorNotice(null)
       return true
     },
     submitThenClose(){
@@ -145,7 +172,16 @@ export default {
 
       if (this.pledgeId === EarningType.EDRF) {
         //eDRF
-
+        this.close()
+        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+        this.$store.dispatch("earnings/stakingDrf", {bondAccountType: this.accountType, amount: toContractUnit(this.amount)})
+          .then(() => {
+            this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+          }).catch(() => {
+          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+        }).finally(() => {
+          this.$store.dispatch('earnings/loadEarningData')
+        })
       } else if(this.pledgeId === EarningType.BDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
@@ -166,7 +202,7 @@ export default {
     },
     updateTokenBalance() {
       const earningTokenMap = {}
-      earningTokenMap[EarningType.EDRF] = 'eDRF'
+      earningTokenMap[EarningType.EDRF] = 'DRF'
       earningTokenMap[EarningType.BDRF] = 'bDRF'
 
       if(this.accountType === BondAccountType.WalletAccount) {
@@ -182,7 +218,7 @@ export default {
 
       if(this.pledgeId === EarningType.EDRF) {
         accoutOptions = [
-          { text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
+          //{ text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
           { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
       }else if(this.pledgeId === EarningType.BDRF){
         accoutOptions = [

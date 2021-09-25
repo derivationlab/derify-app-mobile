@@ -28,6 +28,7 @@ import { UserProcessStatus } from '@/store/modules/user'
 
 export default {
   data () {
+
     return {
       show: false,
       msg: '',

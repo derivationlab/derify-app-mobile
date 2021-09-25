@@ -123,15 +123,27 @@ export function get (url, params) {
   * post method, corresponding to post request
  * @param {String} url [Requested url address]
   * @param {Object} params [Parameters carried in the request]
+ * @param config
   */
-export function post (url, params) {
+export function post (url, params, config = null) {
+
   return new Promise((resolve, reject) => {
-    axios.post(url, QS.stringify(params))
-      .then(res => {
-        resolve(res.data)
-      })
-      .catch(err => {
-        reject(err.data)
-      })
+    if(config) {
+      axios.post(url, params, config)
+        .then(res => {
+          resolve(res.data)
+        })
+        .catch(err => {
+          reject(err.data)
+        })
+    }else {
+      axios.post(url, QS.stringify(params))
+        .then(res => {
+          resolve(res.data)
+        })
+        .catch(err => {
+          reject(err.data)
+        })
+    }
   })
 }

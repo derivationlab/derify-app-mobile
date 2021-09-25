@@ -1,137 +1,141 @@
-import DerifyBond from '../utils/contract/DerifyBond'
 import DerifyDerivative from '../utils/contract/DerifyDerivative'
 import DerifyExchange from '../utils/contract/DerifyExchange'
-import DerifyStaking from '../utils/contract/DerifyStaking'
+import DerifyRewards from '../utils/contract/DerifyRewards'
 import DUSD from '../utils/contract/DUSD'
 import bDRF from '../utils/contract/bDRF'
 import DRF from '../utils/contract/DRF'
+import eDRF from '../utils/contract/eDRF'
 
 const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
-
 
 const config = {
   currentEnv: currentEnv,
   debug: true,
   server: {
-    development: "https://app-test.haoping.video",
-    debug: "https://app-test.haoping.video",
-    production: "https://app-test.haoping.video"
+    development: "https://test-m.derify.exchange",
+    debug: "https://test-m.derify.exchange",
+    production: "https://test-m.derify.exchange"
   },
   kdata:{
-    development: 'https://app-test.haoping.video',
-    debug: 'https://app-test.haoping.video',
-    production: 'https://app-test.haoping.video',
+    development: 'https://test-m.derify.exchange',
+    debug: 'https://test-m.derify.exchange',
+    production: 'https://test-m.derify.exchange',
+  },
+  webroot: {
+    development: 'https://test-m.derify.exchange',
+    debug: 'https://test-m.derify.exchange',
+    production: 'https://test-m.derify.exchange',
   },
   contract: {
     development: {
-      DerifyBond: {
-        abi: DerifyBond,
-        address: '0x3f013D2290CE40f6026B53F562630A331FA422c6'
+      DerifyRewards: {
+        abi: DerifyRewards,
+        address: '0x0213822c5b23c31588eba8EF5C4D954aa4d6a1Cf'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0xAa85ddA108AB30659a3A89E87C4048BBbAA71f54',
+          address: '0x6dC9E3beE4495C8C4AceaD90ebe9e8030B8ECB19',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0xEf42f61000fA5d554Fd111D8d6613129b9E28f6D',
+          address: '0x89c7e4C94108Ea7803fE3400e4417B9906cC087C',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xdBC38A5d8a10AdEb49e84e5Eb263dFa9d68a05a7'
-      },
-      DerifyStaking: {
-        abi: DerifyStaking,
-        address: '0x519231B9A4Eef0A59FE8fF57FF50fD018b9950cC'
+        address: '0xF5b162CC1Ad613CE2402091CCfBe2CfEe9214BbD'
       },
       DUSD: {
         abi: DUSD,
-        address: '0x04cE9B212B43b68cfC5b67Dc0ae9bDC81727c544'
+        address: '0x5C0E60b974C8E41A4c314d2F2B3FB87517c48E13'
       },
       bDRF: {
         abi: bDRF,
-        address: '0xDedE1D361CdD4Cfb72Eb9E41D6b530cD6581e8c8'
+        address: '0x93242E3a7C6878A372027EDfBefe000154cEc1De'
       },
       DRF: {
         abi: DRF,
-        address: '0x3A096d9d9bF3Cb355Ede5057657b887ef8C4cBed'
+        address: '0xB4A0DF1e7D0365c7c0BADc8A57a044FFc94dDc4C'
+      },
+      eDRF: {
+        abi: eDRF,
+        address: '0x8C31Ccaf8E155A7bb0222A5eF6Ce1C935efDD8c2'
       },
     },
     debug: {
-      DerifyBond: {
-        abi: DerifyBond,
-        address: '0x3f013D2290CE40f6026B53F562630A331FA422c6'
+      DerifyRewards: {
+        abi: DerifyRewards,
+        address: '0x0213822c5b23c31588eba8EF5C4D954aa4d6a1Cf'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0xAa85ddA108AB30659a3A89E87C4048BBbAA71f54',
+          address: '0x6dC9E3beE4495C8C4AceaD90ebe9e8030B8ECB19',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0xEf42f61000fA5d554Fd111D8d6613129b9E28f6D',
+          address: '0x89c7e4C94108Ea7803fE3400e4417B9906cC087C',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xdBC38A5d8a10AdEb49e84e5Eb263dFa9d68a05a7'
-      },
-      DerifyStaking: {
-        abi: DerifyStaking,
-        address: '0x519231B9A4Eef0A59FE8fF57FF50fD018b9950cC'
+        address: '0xF5b162CC1Ad613CE2402091CCfBe2CfEe9214BbD'
       },
       DUSD: {
         abi: DUSD,
-        address: '0x04cE9B212B43b68cfC5b67Dc0ae9bDC81727c544'
+        address: '0x5C0E60b974C8E41A4c314d2F2B3FB87517c48E13'
       },
       bDRF: {
         abi: bDRF,
-        address: '0xDedE1D361CdD4Cfb72Eb9E41D6b530cD6581e8c8'
+        address: '0x93242E3a7C6878A372027EDfBefe000154cEc1De'
       },
       DRF: {
         abi: DRF,
-        address: '0x3A096d9d9bF3Cb355Ede5057657b887ef8C4cBed'
+        address: '0xB4A0DF1e7D0365c7c0BADc8A57a044FFc94dDc4C'
+      },
+      eDRF: {
+        abi: eDRF,
+        address: '0x8C31Ccaf8E155A7bb0222A5eF6Ce1C935efDD8c2'
       },
     },
     production: {
-      DerifyBond: {
-        abi: DerifyBond,
-        address: '0x3f013D2290CE40f6026B53F562630A331FA422c6'
+      DerifyRewards: {
+        abi: DerifyRewards,
+        address: '0x0213822c5b23c31588eba8EF5C4D954aa4d6a1Cf'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0xAa85ddA108AB30659a3A89E87C4048BBbAA71f54',
+          address: '0x6dC9E3beE4495C8C4AceaD90ebe9e8030B8ECB19',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0xEf42f61000fA5d554Fd111D8d6613129b9E28f6D',
+          address: '0x89c7e4C94108Ea7803fE3400e4417B9906cC087C',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xdBC38A5d8a10AdEb49e84e5Eb263dFa9d68a05a7'
-      },
-      DerifyStaking: {
-        abi: DerifyStaking,
-        address: '0x519231B9A4Eef0A59FE8fF57FF50fD018b9950cC'
+        address: '0xF5b162CC1Ad613CE2402091CCfBe2CfEe9214BbD'
       },
       DUSD: {
         abi: DUSD,
-        address: '0x04cE9B212B43b68cfC5b67Dc0ae9bDC81727c544'
+        address: '0x5C0E60b974C8E41A4c314d2F2B3FB87517c48E13'
       },
       bDRF: {
         abi: bDRF,
-        address: '0xDedE1D361CdD4Cfb72Eb9E41D6b530cD6581e8c8'
+        address: '0x93242E3a7C6878A372027EDfBefe000154cEc1De'
       },
       DRF: {
         abi: DRF,
-        address: '0x3A096d9d9bF3Cb355Ede5057657b887ef8C4cBed'
+        address: '0xB4A0DF1e7D0365c7c0BADc8A57a044FFc94dDc4C'
+      },
+      eDRF: {
+        abi: eDRF,
+        address: '0x8C31Ccaf8E155A7bb0222A5eF6Ce1C935efDD8c2'
       },
     }
   }
@@ -155,6 +159,10 @@ export function getCurrentEnv() {
 
 export function isCurrentProduction() {
   return currentEnv === 'production'
+}
+
+export function getWebroot(){
+  return config.webroot[currentEnv]
 }
 
 export function  isDebug() {

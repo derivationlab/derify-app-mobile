@@ -1,5 +1,5 @@
 <template>
-  <span :style="wrapStyle">
+  <span :style="wrapStyle" :class="className">
     <slot name="first" :first="first"><span :style="firstStyle">{{first}}</span></slot>
     <slot name="last" :last="last"><span :style="lastStyle">{{last}}</span></slot>
   </span>
@@ -24,6 +24,10 @@ export default {
       default: 'font-size: 1rem; font-weight: lighter'
     },
     digitSplit:{
+      type: String,
+      default: null
+    },
+    className: {
       type: String,
       default: null
     }

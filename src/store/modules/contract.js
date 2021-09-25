@@ -1,47 +1,11 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
-import {getTradeList, getTradeBalanceDetail} from "@/api/trade";
-import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit } from '@/utils/contractUtil'
+import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
+import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
 import { amountFormt, fck } from '@/utils/utils'
 import { createTokenPriceChangeEvenet } from '@/api/trade'
 
 const tokenPriceRateEnventMap = {};
-
-export class UnitTypeEnum {
-  static get USDT() {
-    return 0
-  }
-
-  static get CurPair() {
-    return 1
-  }
-
-  static get Percent() {
-    return 2
-  }
-}
-
-export class CancelOrderedPositionTypeEnum {
-  static get LimitedOrder() {
-    return 0
-  }
-
-  static get StopProfitOrder() {
-    return 1
-  }
-
-  static get StopLossOrder() {
-    return 2
-  }
-
-  static get AllOrder() {
-    return 3
-  }
-
-  static get StopProfitAndLossOrder() {
-    return 4
-  }
-}
 
 const state = {
   get wallet_address () {
@@ -235,7 +199,7 @@ const actions = {
       return closeUpperBound
     })()
   },
-  openPosition ({state}, {side, size, openType, price, leverage}) {
+  openPosition ({state}, {side, size, openType, price, leverage, brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -253,20 +217,20 @@ const actions = {
         token: token.address, side, openType, size, price, leverage
       }
 
-      web3Utils.contract(state.wallet_address)
+      web3Utils.contract(state.wallet_address, brokerId)
         .openPosition(params).then(r => {
           resolve(r)
         }).catch(e => reject(e))
     })
   },
-  closePosition ({state}, {token, side, size}) {
+  closePosition ({state}, {token, side, size, brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
         return resolve({})
       }
 
-      web3Utils.contract(state.wallet_address)
+      web3Utils.contract(state.wallet_address, brokerId)
         .closePosition(token, side, size).then(r => {
         resolve(r)
       }).catch(e => reject(e))
@@ -278,7 +242,6 @@ const actions = {
       if(!state.wallet_address){
         return resolve({})
       }
-
       const params = {
         token: token,
         trader: state.wallet_address,
@@ -293,7 +256,7 @@ const actions = {
       }).catch(e => reject(e))
     })
   },
-  closeAllPositions ({state}) {
+  closeAllPositions ({state}, {brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -301,7 +264,7 @@ const actions = {
       }
 
 
-      web3Utils.contract(state.wallet_address)
+      web3Utils.contract(state.wallet_address, brokerId)
         .closeAllPositions().then(r => {
         resolve(r)
       }).catch(e => reject(e))
@@ -521,9 +484,6 @@ const actions = {
 
     })()
   },
-  loadTradeRecords ({state, commit}) {
-    return getTradeList(state.wallet_address)
-  },
   getTraderOpenUpperBound ({state, commit}, {openType, price, leverage}) {
     return (async () => {
 
@@ -551,9 +511,11 @@ const actions = {
       return data;
     })()
   },
-
-  getTraderTradeBalanceDetail ({state, commit}) {
-    return getTradeBalanceDetail(state.wallet_address)
+  loadTradeRecords ({state, commit}, {page=0, size=10}) {
+    return getTradeList(state.wallet_address, page, size)
+  },
+  getTraderTradeBalanceDetail ({state, commit}, {page = 0, size = 10}) {
+    return getTradeBalanceDetail(state.wallet_address, page, size)
   },
   async getPositionChangeFee ({state, commit, dispatch}, {side, actionType, size, price}) {
 

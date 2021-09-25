@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Vant from 'vant'
+import { Lazyload } from 'vant';
 import 'vant/lib/index.less'
 import './styles/index.less'
 import * as echarts from 'echarts'
@@ -37,6 +38,8 @@ const i18n = new VueI18n({
 })
 Vue.prototype.$echarts = echarts
 Vue.use(Vant)
+Vue.use(Lazyload);
+
 Vue.config.productionTip = false
 
 /* eslint-disable */
@@ -67,6 +70,10 @@ const vueApp = new Vue({
   render: h => h(App)
 }).$mount('#app')
 
+/**
+ *
+ * @param {{show: Boolean,status: UserProcessStatus,msg:String}} param
+ */
 Vue.prototype.$userProcessBox = function (param) {
   UserProcessBox.install(i18n, param)
 }
@@ -116,15 +123,28 @@ window.vuexApp = vueApp
 
 function updateWallet (eventType = 0) {
 
-  asyncInitWallet().then(() => {
-    const walletInfo = getWallet()
+  asyncInitWallet().then(async () => {
+    const walletInfo = await getWallet()
+    store.commit("user/updateState", walletInfo)
+
+    if(walletInfo.isLogin && !walletInfo.hasBroker) {
+      if(vueApp.$route.name === 'home' && vueApp.$route.params.id){
+        await store.dispatch('broker/bindBroker', {trader: walletInfo.selectedAddress, brokerId: vueApp.$route.params.id}).then((data) => {
+          this.$toast(data.msg)
+        }).catch(e => {
+          this.$toast(e)
+        })
+      }else{
+        return await vueApp.$router.push({name: 'brokerAdd'})
+      }
+    }
+
     if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
       eventType = 1
     }
-    store.commit("user/updateState", walletInfo)
-    if(eventType > 0){
-      vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE)
-    }
+
+    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
+
   }).catch(() => {
     console.log('init wallet failed')
   })

@@ -1,7 +1,7 @@
 import { Token,SideEnum } from '@/utils/contractUtil'
 import * as web3Util from '@/utils/web3Utils'
 import { getCache } from '../../utils/cache'
-import { getTraderBondBalance, getTraderPMRBalance } from '../../api/trade'
+import { getTraderBondBalance, getTraderEDRFBalance, getTraderPMRBalance } from '../../api/trade'
 
 export class EarningType {
   static get MIN () {
@@ -34,6 +34,7 @@ const state = {
   },
   wallet: {
     bdrfBalance: 0,
+    drfBalance: 0,
     edrfBalance: 0
   },
   pmrBalance: 0,
@@ -57,9 +58,13 @@ const state = {
     bondWalletBalance: 0,
 
     /**
-     * Annualized bond yield£¨accuracy of 8 digits£©
+     * Annualized bond yield(accuracy of 8 digits)
      */
-    bondAnnualInterestRate: 0
+    bondAnnualInterestRatio: 0
+  },
+  edrfInfo: {
+    drfBalance: 0,
+    edrfBalance: 0
   },
   exchangeBondSizeUpperBound: 0
 }
@@ -89,11 +94,15 @@ const actions = {
       const traderVariable = await contract.getTraderVariables(state.wallet_address)
       const bondInfo = await contract.getBondInfo(state.wallet_address)
       const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
+
+      const edrfInfo = await contract.getStakingInfo(state.wallet_address)
+      const edrfBalance = await contract.balanceOf(state.wallet_address, Token.eDRF)
+
       //const edrfBalance = await contract.balanceOf(state.wallet_address, Token.EDRF)
 
-      const earningData = {...pmrReward, accountData: {...traderVariable}, bondInfo}
+      const earningData = {...pmrReward, accountData: {...traderVariable}, bondInfo, edrfInfo}
       commit('updateState', earningData)
-      commit('updateWallet', {bdrfBalance, edrfBalance: 0})
+      commit('updateWallet', {bdrfBalance, edrfBalance: edrfBalance})
 
       return earningData
     })()
@@ -118,11 +127,14 @@ const actions = {
     const contract = web3Util.contract(state.wallet_address)
     return contract.redeemBondFromBank({amount, bondAccountType })
   },
-  getTraderPMRBalance ({state, commit, dispatch}) {
-    return getTraderPMRBalance(state.wallet_address)
+  getTraderPMRBalance ({state, commit, dispatch}, {page = 0, size = 10}) {
+    return getTraderPMRBalance(state.wallet_address, page, size)
   },
-  getTraderBondBalance ({state, commit, dispatch}) {
-    return getTraderBondBalance(state.wallet_address)
+  getTraderBondBalance ({state, commit, dispatch}, {page = 0, size = 10}) {
+    return getTraderBondBalance(state.wallet_address, page, size)
+  },
+  getTraderEdrfHistory ({state, commit}, {page = 0, size = 10}) {
+    return getTraderEDRFBalance(state.wallet_address, page, size)
   },
   getExchangeBondSizeUpperBound ({state, commit, dispatch}, {bondAccountType}) {
     return (async() => {
@@ -141,13 +153,48 @@ const actions = {
     return (async () => {
       const contract = web3Util.contract(state.wallet_address)
       if(tokenName === 'bDRF'){
-
         const bdrfBalance = await contract.balanceOf(state.wallet_address, Token.bDRF)
         commit('updateWallet', {bdrfBalance})
         return bdrfBalance
       }
 
+      if(tokenName === 'DRF'){
+        const drfBalance = await contract.balanceOf(state.wallet_address, Token.DRF)
+        commit('updateWallet', {drfBalance})
+        return drfBalance
+      }
+
       return 0
+    })()
+  },
+  withdrawEdrf({state, commit, dispatch}, {amount}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+
+      return contract.withdrawEdrf(amount)
+    })()
+  },
+  stakingDrf({state, commit, dispatch}, {amount}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+
+      return contract.stakingDrf(amount)
+    })()
+  },
+  redeemDrf({state, commit, dispatch}, {amount}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+
+      return contract.redeemDrf(amount)
+    })()
+  },
+  getStakingInfo ({state, commit, dispatch}) {
+    return (async() => {
+      const contract = web3Util.contract(state.wallet_address)
+
+      const edrfInfo = await contract.getStakingInfo(state.wallet_address)
+
+      commit('updateState', {edrfInfo})
     })()
   }
 }

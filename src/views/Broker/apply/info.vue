@@ -10,42 +10,53 @@
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.WalletAddress') }}</span></span>
-          <van-field class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
+          <van-field readonly class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="0x8503ea9b"/>
+                     type="text" v-model="broker.broker"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
-                     :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="Coinbaby's Playground"/>
+                     type="text" v-model="broker.name"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
-            <input type="file" class="broker-avatar-file"/>
-            <img :src="broker.avatar" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
+
+            <template v-if="broker.logo">
+              <van-image fit="cover" :round="true" lazy-load :src="broker.logo" width="5.5rem" height="5.5rem" alt=""/>
+            </template>
+
+            <template v-else>
+              <img src="@/assets/images/broker-default-avatar.png" style="width: 5.5rem;height: 5.5rem" alt=""/>
+            </template>
+
           </div>
         </div>
 
-        <div class="account-label">
+        <div class="account-label system-popup-line">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
-          <span class="fz-15 fc-85">coinbaby</span>
+          <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
+                     type="text" v-model="broker.id"/>
         </div>
 
-        <div class="system-popup-input">
-          <van-field class="derify-input no-padding-hor fz-15 fc-45" placeholder=""
-                     :formatter="(value) => value.replace(/-/g, '')"
-                     type="text" value="http://app.derify.finance/"/>
-          <span class="fc-85">coinbaby</span>
+        <div class="system-popup-input derify-broker-url">
+          <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/</span>
+          <span class="fc-85 fz-12">{{broker.id}}</span>
         </div>
 
         <div class="btn-wrap">
           <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
         </div>
       </div>
+
+      <van-overlay :show="false" @click="showLoading = false" class-name="derify-loading-wrap">
+        <van-loading size="2.4rem" v-show="false" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+      </van-overlay>
+
     </div>
 
   </div>
@@ -54,6 +65,10 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
+import { BrokerInfo } from '@/api/broker'
+import { getWebroot } from '@/config'
+import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
+import { UserProcessStatus } from '@/store/modules/user'
 export default {
   name: 'Home',
   components: {
@@ -61,31 +76,129 @@ export default {
     Navbar
   },
   data () {
+    const broker = new BrokerInfo()
+    broker.broker = this.trader
     return {
+      showLoading: false,
+      webroot: getWebroot() + "/home",
       showError: false,
       errorMsg: '',
-      broker:{
-        id: 1,
-        avatar: require('@/assets/images/broker-default-avatar.png'),
-        address: '0xc9f071844870552fa07726e57AcaaCC8E70a7B73',
-        userName: 'Coinbaby\'s Playground',
-        account: 'Coinbaby',
-        accountAddress: 'http://app.derify.finance/@Coinbaby',
-        selected: true
-      },
+      broker: {...broker},
     }
   },
-  created () {
+  mounted () {
+
+    if(this.trader) {
+      this.loadBrokerInfo()
+    }
+
+
+    this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
+      this.loadBrokerInfo()
+    })
+
+    const logoFileItem = this.$refs.logo;
+    const self = this;
+
+    //picture preview
+    logoFileItem.onchange =  function () {
+      var file = logoFileItem.files[0];
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e) {
+        self.broker.logo = e.target.result;
+      };
+    }
   },
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    trader () {
+      return this.$store.state.user.selectedAddress
     }
   },
   methods: {
-    submitThenClose () {
-      sessionStorage.setItem('brokerApplied', 'true')
-      this.$router.push({name: 'broker'})
+    loadBrokerInfo() {
+      this.$store.dispatch("broker/getBrokerByTrader", this.trader).then(broker => {
+        if(!broker.broker) {
+          broker.broker = this.trader
+        }
+        Object.assign(this.broker, broker)
+      })
+    },
+
+    async checkForm() {
+      if(!this.broker.broker) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+      if(!this.broker.name) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+
+      if(this.$refs.logo.files.length < 1 && !this.broker.logo) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+      var file = this.$refs.logo.files[0];
+
+
+      if(file && file.size > 2*1024*1024) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.PhotoSizeError'))
+        return false
+      }
+
+      if(!this.broker.id) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        return false
+      }
+
+      const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.broker.id)
+      if(resBroker && resBroker.id && resBroker.broker !== this.broker.broker) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.CodeOccuError'))
+        return false
+      }
+
+      this.errorNotice(null)
+
+      return true
+    },
+
+    async submitThenClose () {
+
+      const checkRet = await this.checkForm()
+      if(!checkRet) {
+        return
+      }
+
+      const param = {broker: this.broker.broker, id: this.broker.id, name: this.broker.name}
+
+      if(this.$refs.logo.files.length > 0){
+        param.logo = this.$refs.logo.files[0]
+      }else{
+        param.logo = this.broker.logo
+      }
+
+      this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+      this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
+        if(data.success) {
+          this.$router.go(-1)
+        }else{
+          this.errorNotice(data.msg)
+        }
+
+      }).catch(e => {
+        this.errorNotice(this.$t('global.TradeFailedMsg'))
+      }).finally(() => {
+        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
+      });
+
+
     },
     errorNotice (msg) {
       if(msg){
@@ -100,6 +213,12 @@ export default {
 </script>
 
 <style lang="less">
+.derify-loading-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
 .selected-icon{
   width: 2rem;
   height: 2rem;
@@ -128,6 +247,7 @@ export default {
       width: 5.5rem;
       height: 5.5rem;
       opacity: 0;
+      z-index: 100;
       position: absolute;
     }
   }
@@ -146,14 +266,14 @@ export default {
         width: inherit;
       }
     }
+  }
 
-    .van-field__control{
-      text-align: right;
-      color: rgba(255,255,255,0.45);
-    }
-    .fc-85 .van-field__control{
-      color: rgba(255,255,255,0.85);
-    }
+  .van-field__control{
+    text-align: right;
+    color: rgba(255,255,255,0.45);
+  }
+  .fc-85 .van-field__control{
+    color: rgba(255,255,255,0.85);
   }
   .system-popup-line {
     display: flex;
@@ -164,12 +284,22 @@ export default {
       width: auto;
     }
 
+    .fc-85 .van-field__control{
+      color: rgba(255,255,255,0.85);
+    }
+  }
+
+  .derify-broker-url {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 1rem;
     .van-field__control{
       text-align: right;
       color: rgba(255,255,255,0.45);
     }
-    .fc-85 .van-field__control{
-      color: rgba(255,255,255,0.85);
+    .van-cell{
+      width: auto;
     }
   }
 

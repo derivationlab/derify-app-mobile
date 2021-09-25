@@ -21,7 +21,7 @@
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
-                     type="number" v-model="amount" @change="checkAmount"/>
+                     type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{ tokenName }}</div>
         </div>
         <div class="system-popup-num">
@@ -57,7 +57,7 @@ export default {
       showError: false,
       showPopup: this.show,
       accountType: BondAccountType.DerifyAccount,
-      amount: 0,
+      amount: null,
       curPercent: 25,
       tokenName: null,
       accountOptions: accoutOptions
@@ -72,7 +72,7 @@ export default {
         return {}
       } else if (this.depositId === EarningType.EDRF) {
         return {
-          title: 'Rewards.Staking.PledgePopup.StakingDRF',
+          title: 'Rewards.Staking.PledgePopup.title',
           max: 'Rewards.Staking.PledgePopup.Max',
           amount: 'Rewards.Staking.PledgePopup.Amount',
           all: 'Rewards.Staking.PledgePopup.All',
@@ -82,7 +82,7 @@ export default {
       } else {
         //BDRF
         return {
-          title: 'Rewards.Bond.ExchangePopup.ExchangebDRF',
+          title: 'Rewards.Bond.ExchangePopup.title',
           max: 'Rewards.Bond.ExchangePopup.Max',
           amount: 'Rewards.Bond.ExchangePopup.Amount',
           all: 'Rewards.Bond.ExchangePopup.All',
@@ -147,17 +147,26 @@ export default {
       this.$store.dispatch("earnings/getExchangeBondSizeUpperBound", {bondAccountType: this.accountType})
     },
     resetAmount () {
-      this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
+      //this.amount = Math.min(this.amount, fromContractUnit(this.exchangeBondSizeUpperBound))
     },
     exchangeAll () {
       this.amount = fck(this.exchangeBondSizeUpperBound, -8, 4)
     },
     checkAmount () {
+      if(this.amount === null || this.amount === '') {
+        return false
+      }
 
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.exchangeBondSizeUpperBound)) {
+        this.amount = fromContractUnit(this.exchangeBondSizeUpperBound)
+      }
+
+      this.errorNotice(null)
 
       return true
     },

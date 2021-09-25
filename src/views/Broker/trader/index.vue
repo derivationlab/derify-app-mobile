@@ -4,7 +4,6 @@
         v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
-        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
@@ -13,48 +12,59 @@
         <div class="center-span">{{$t('Broker.Broker.History.Balance')}}</div>
         <div class="center-span">{{$t('Broker.Broker.History.Time')}}</div>
       </div>
-      <div class="heard">
-        <div class="color-type">{{$t('Broker.Broker.History.Earnings')}}</div>
-        <div>
-          <div class="color-type">-1234.56</div>
-          <div class="unit-span mrt-5">USDT</div>
+      <template v-for="(data,key) in list">
+        <div class="heard" :key="key">
+          <div class="color-type">{{$t(getUpdateType(data.update_type))}}</div>
+          <div>
+            <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
+            <div class="unit-span mrt-5">USDT</div>
+          </div>
+          <div class="center-span">
+            <div class="color-type">{{data.balance | amountFormt(2, false, '--')}}</div>
+            <div class="unit-span mrt-5">USDT</div>
+          </div>
+          <div class="center-span unit-span">
+            {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
+          </div>
         </div>
-        <div class="center-span">
-          <div class="color-type">7890.12</div>
-          <div class="unit-span mrt-5">USDT</div>
-        </div>
-        <div class="center-span unit-span">
-          2021-12-31
-        </div>
-      </div>
+      </template>
         <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
       </van-list>
   </div>
 </template>
 <script>
 export default {
+  props:['broker'],
   data () {
     return {
       list: [],
+      page: 0,
+      size: 10,
       loading: false,
       finished: false
     }
   },
   methods: {
     onLoad () {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
+      this.$store.dispatch('broker/getBrokerRewardHistory',
+        {broker: this.broker, page: this.page, size: this.size})
+      .then((records) => {
+
+        if(!records || records.length < 1) {
           this.finished = true
+          return
         }
-      }, 1000)
+
+        records.forEach((record) => {
+          this.list.push(record)
+        })
+        this.page++
+
+      }).catch((e) => {
+        console.warn(e)
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }

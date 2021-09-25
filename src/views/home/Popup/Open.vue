@@ -67,7 +67,7 @@ import {
   convertAmount2TokenSize, toContractNum
 } from '../../../utils/contractUtil'
   import { fck } from '../../../utils/utils'
-  import { UnitTypeEnum } from '../../../store/modules/contract'
+  import { UnitTypeEnum } from '../../../utils/contractUtil'
   import { UserProcessStatus } from '../../../store/modules/user'
 import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
@@ -110,7 +110,6 @@ export default {
         this.sideType = this.type
         this.showError = false
         this.errorMsg = ''
-        this.le
         this.$store.dispatch('contract/getSpotPrice')
         this.$store.dispatch('contract/getSysOpenUpperBound', {side: this.extraData.side})
       }
@@ -182,12 +181,14 @@ export default {
 
       let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price))
 
+      const brokerId = this.$store.state.user.brokerId
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
         size: toContractNum(tokenSize),
         openType: this.openData.entrustType,
         price: toContractNum(price),
-        leverage: toContractNum(leverage)
+        leverage: toContractNum(leverage),
+        brokerId: brokerId,
       }).then(() => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         this.$store.dispatch('contract/loadPositionData').then(r => {})

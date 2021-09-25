@@ -131,7 +131,6 @@ export default {
         price = 0
       }
 
-      this.position.stopProfitPrice = toContractNum(price)
       this.calLossAndProfit();
     },
     onInputLossPrice (price) {
@@ -144,8 +143,6 @@ export default {
       if(price < 0){
         price = 0
       }
-
-      this.position.stopLossPrice = toContractNum(price)
 
       this.calLossAndProfit();
     },
@@ -192,14 +189,14 @@ export default {
       return true
     },
     calLossAndProfit(){
-      if(this.position.stopProfitPrice > 0) {
-        this.position.profitAmount = toContractNum((fromContractUnit(this.position.stopProfitPrice) - fromContractUnit(this.position.averagePrice))
+      if(this.position.stopProfitPriceInput > 0) {
+        this.position.profitAmount = toContractNum((this.position.stopProfitPriceInput - fromContractUnit(this.position.averagePrice))
           * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
 
       }
 
-      if(this.position.stopLossPrice > 0) {
-        this.position.lostAmount = toContractNum((fromContractUnit(this.position.stopLossPrice) - fromContractUnit(this.position.averagePrice))
+      if(this.position.stopLossPriceInput > 0) {
+        this.position.lostAmount = toContractNum((this.position.stopLossPriceInput - fromContractUnit(this.position.averagePrice))
           * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
       }
 
@@ -211,41 +208,41 @@ export default {
       let profitPrice = null
       let lossPrice = null
       if(this.position.stopProfitPriceInput !== ''){
-        if(!this.checkProfitPrice(this.position, this.position.stopProfitPrice)){
+        if(!this.checkProfitPrice(this.position, this.position.stopProfitPriceInput)){
           this.errorNotice(this.$t('global.NumberError'))
           return
         }
-        profitPrice = this.position.stopProfitPrice
+
+        profitPrice = toContractNum(this.position.stopProfitPriceInput) + ""
+        if(profitPrice === this.position.stopProfitPrice) {
+          profitPrice = 0
+        }
+      }else{
+        profitPrice = -1
       }
 
       if(this.position.stopLossPriceInput !== ''){
-        if(!this.checkLossPrice(this.position, this.position.stopLossPrice)){
+        if(!this.checkLossPrice(this.position, this.position.stopLossPriceInput)){
           this.errorNotice(this.$t('global.NumberError'))
           return
         }
 
-        lossPrice = this.position.stopLossPrice
+        lossPrice = toContractNum(this.position.stopLossPriceInput)+""
+        if(lossPrice === this.position.stopLossPrice) {
+          lossPrice = 0
+        }
+      }else{
+        lossPrice = -1
       }
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-      if(lossPrice === null && profitPrice === null) {
-        this.$store.dispatch('contract/cancleOrderedPosition', {
-          token, side, closeType: CancelOrderedPositionTypeEnum.StopProfitAndLossOrder
-        }).then(_ => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
-          this.$store.dispatch('contract/loadPositionData').then(r => {})
-        }).catch(msg => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        })
-      } else {
-        this.$store.dispatch('contract/orderStopPosition', {
-          token, side, takeProfitPrice: profitPrice, stopLossPrice: lossPrice
-        }).then(_ => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
-        }).catch(msg => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        })
-      }
+      this.$store.dispatch('contract/orderStopPosition', {
+        token, side, takeProfitPrice: profitPrice, stopLossPrice: lossPrice
+      }).then(_ => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+      }).catch(msg => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+      })
 
       this.close()
     },

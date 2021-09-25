@@ -1,10 +1,45 @@
 import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
-import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '../store/modules/contract'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
+export class UnitTypeEnum {
+  static get USDT() {
+    return 0
+  }
+
+  static get CurPair() {
+    return 1
+  }
+
+  static get Percent() {
+    return 2
+  }
+}
+
+export class CancelOrderedPositionTypeEnum {
+  static get LimitedOrder() {
+    return 0
+  }
+
+  static get StopProfitOrder() {
+    return 1
+  }
+
+  static get StopLossOrder() {
+    return 2
+  }
+
+  static get AllOrder() {
+    return 3
+  }
+
+  static get StopProfitAndLossOrder() {
+    return 4
+  }
+}
+
 export class SideEnum {
   static get LONG (){
     return 0;
@@ -59,19 +94,65 @@ export class BondAccountType {
   }
 }
 
+export class OrderedOperateType {
+  type;
+  method;
+  stopType;
+  /**
+   * 0-TakeProfit，1-StopLoss
+   */
+  orderStopType;
+  /**
+   * 0-TakeProfit，1-StopLoss
+   */
+  cancleStopType;
+
+  static get SetTakeProfitPrice () {
+    return {type: 0, method: 'orderStopPosition', stopType: 0}
+  }
+
+  static get SetStopLossPrice () {
+    return {type: 1, method: 'orderStopPosition', stopType: 1}
+  }
+
+  static get SetTakeProfitAndStopLossPrice () {
+    return {type: 2, method: 'orderStopPosition', stopType: 2}
+  }
+
+  static get UnSetTakeProfitPrice () {
+    return {type: 3, method: 'cancleOrderedStopPosition', stopType: 0}
+  }
+
+  static get UnSetStopLossPrice () {
+    return {type: 4, method: 'cancleOrderedStopPosition', stopType: 1}
+  }
+
+  static get UnSetTakeProfitAndStopLossPrice () {
+    return {type: 5, method: 'cancleOrderedStopPosition', stopType: 2}
+  }
+
+  static get SetTakeProfitAndUnSetStopLossPrice () {
+    return {type: 6, method: 'orderAndCancleStopPosition', orderStopType: 0, cancleStopType: 1}
+  }
+
+  static get UnSetTakeProfitAndSetStopLossPrice () {
+    return {type: 7, method: 'orderAndCancleStopPosition', orderStopType: 1, cancleStopType: 0}
+  }
+}
+
 /**
  * Order type
  */
 export class OrderTypeEnum {
- static get LimitOrder () {
-   return 0
- }
- static get StopProfitOrder () {
-   return 1
- }
- static get StopLossOrder () {
-   return 2
- }
+  static get LimitOrder () {
+    return 0
+  }
+  static get StopProfitOrder () {
+    return 1
+  }
+  static get StopLossOrder () {
+    return 2
+  }
 
 }
 
@@ -93,9 +174,11 @@ export const Token = {
   ETH: ABIData.DerifyDerivative.ETH.token,
   DUSD: ABIData.DUSD.address,
   bDRF: ABIData.bDRF.address,
-  eDRF: ABIData.bDRF.address,
+  eDRF: ABIData.eDRF.address,
+  DRF: ABIData.DRF.address,
   USDT: ABIData.DUSD.address
 }
+
 
 const cache = {gasPrice: 1e9}
 
@@ -166,25 +249,26 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
  */
 export default class Contract {
 
-  constructor (from) {
+  constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
     option.gasPrice = 1e9
 
     this.web3 = web3
     this.from = from
+    this.broker = broker
 
-    this.DerifyBond = new web3.eth.Contract(ABIData.DerifyBond.abi, ABIData.DerifyBond.address, option)
-
+    this.DerifyRewards = new web3.eth.Contract(ABIData.DerifyRewards.abi, ABIData.DerifyRewards.address, option)
     this.DerifyDerivative = {
       BTC: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.BTC.address, option),
       ETH: new web3.eth.Contract(ABIData.DerifyDerivative.abi, ABIData.DerifyDerivative.ETH.address, option)
     }
 
     this.DerifyExchange = new web3.eth.Contract(ABIData.DerifyExchange.abi, ABIData.DerifyExchange.address, option)
-    this.DerifyStaking = new web3.eth.Contract(ABIData.DerifyStaking.abi, ABIData.DerifyStaking.address, option)
     this.DUSD = new web3.eth.Contract(ABIData.DUSD.abi, ABIData.DUSD.address, option)
     this.bDRF = new web3.eth.Contract(ABIData.bDRF.abi, ABIData.bDRF.address, option)
+    this.eDRF = new web3.eth.Contract(ABIData.eDRF.abi, ABIData.eDRF.address, option)
+    this.DRF = new web3.eth.Contract(ABIData.DRF.abi, ABIData.DRF.address, option)
   }
 
   updateGasPrice (web3) {
@@ -240,6 +324,12 @@ export default class Contract {
       }else if(ABIData.bDRF.address === token){
         decimals = await this.bDRF.methods.decimals().call()
         tokenAmount = await this.bDRF.methods.balanceOf(trader).call()
+      }else if(ABIData.eDRF.address === token){
+        decimals = await this.eDRF.methods.decimals().call()
+        tokenAmount = await this.eDRF.methods.balanceOf(trader).call()
+      }else if(ABIData.DRF.address === token){
+        decimals = await this.DRF.methods.decimals().call()
+        tokenAmount = await this.DRF.methods.balanceOf(trader).call()
       }
 
       return convertTokenNumToContractNum(tokenAmount, contractDecimals - decimals)
@@ -259,7 +349,7 @@ export default class Contract {
    */
   openPosition ({token, side, openType, size, price, leverage}) {
     return this.DerifyExchange.methods
-      .openPosition(token, side, openType, size, price, leverage)
+      .openPosition(this.broker, token, side, openType, size, price, leverage)
       .send()
   }
   /**
@@ -270,7 +360,7 @@ export default class Contract {
    * @return {*}
    */
   closePosition (token, side, size) {
-    return this.DerifyExchange.methods.closePosition(token, side, size)
+    return this.DerifyExchange.methods.closePosition(this.broker, token, side, size)
       .send()
   }
 
@@ -278,7 +368,7 @@ export default class Contract {
    * closeAllPositions
    */
   closeAllPositions () {
-    return this.DerifyExchange.methods.closeAllPositions()
+    return this.DerifyExchange.methods.closeAllPositions(this.broker)
       .send()
   }
 
@@ -286,7 +376,7 @@ export default class Contract {
   /**
    * getTraderAccount
    * @param trader
-   * @return {*}
+   * @return {Promise<TraderAccount>}
    */
   getTraderAccount (trader) {
     return this.DerifyExchange.methods.getTraderAccount(trader).call()
@@ -298,7 +388,7 @@ export default class Contract {
    * @param openType enum OpenType { MarketOrder, LimitOrder }
    * @param price
    * @param leverage
-   * @return {*}
+   * @return {{amount:0,size:0}}
    */
   getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
     return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
@@ -340,7 +430,7 @@ export default class Contract {
   /**
    * Get user margin information
    * @param trader
-   * @return {*}
+   * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
     return this.DerifyExchange.methods.getTraderVariables(trader).call()
@@ -357,17 +447,9 @@ export default class Contract {
    * @return {*}
    */
   getTraderPositionLiquidatePrice ({side, spotPrice, size, marginMaintenanceRatio, marginBalance, totalPositionAmount}) {
-    let tempValue = (marginBalance - (totalPositionAmount * marginMaintenanceRatio)) / size;
-    if (side === SideEnum.SHORT) {
-      tempValue = tempValue * -1;
-    }
+    const sideRatio = side === SideEnum.SHORT ? -1 : 1;
 
-    let liquidatePrice = 0;
-    if (spotPrice - tempValue > 0) {
-      liquidatePrice = spotPrice - tempValue;
-    }
-
-    return liquidatePrice;
+    return Math.max(0,spotPrice - sideRatio * ((marginBalance - (totalPositionAmount * marginMaintenanceRatio)) / size));
   }
 
   /**
@@ -423,8 +505,8 @@ export default class Contract {
 
   /**
    * Get the current price of the token
-   * @param token 币合约地址
-   * @return {*}
+   * @param token
+   * @return {Promise<number>}
    */
   getSpotPrice (token) {
     return this.__getDerifyDerivativeContract(token).methods.getSpotPrice().call()
@@ -435,25 +517,49 @@ export default class Contract {
    * @param token
    * @param trader
    * @param side
-   * @param stopType 0-TakeProfit，1-StopLoss，2-TakeProfitStopLoss
-   * @param stopPrice
+   * @param stopLossPrice
+   * @param takeProfitPrice
    * @return {*}
    */
   orderStopPosition ({token, trader, side, takeProfitPrice, stopLossPrice}) {
-    let stopType = 0
-    if(takeProfitPrice && !stopLossPrice) {
-      stopType = 0
-    }else if(!takeProfitPrice && stopLossPrice) {
-      stopType = 1
-    }else if(takeProfitPrice && stopLossPrice){
-      stopType = 2
-    }else {
-      //FIXME stopPrice not set, cancel orderedStopPosition
-      return async () => {}
+
+
+    let operateType = new OrderedOperateType();
+    if(takeProfitPrice > 0 && stopLossPrice === 0) {
+      operateType = OrderedOperateType.SetTakeProfitPrice
+    }else if(takeProfitPrice === 0 && stopLossPrice > 0) {
+      operateType = OrderedOperateType.SetStopLossPrice
+    }else if(takeProfitPrice > 0 && stopLossPrice > 0){
+      operateType = OrderedOperateType.SetTakeProfitAndStopLossPrice
+    } else if (takeProfitPrice < 0 && stopLossPrice === 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitPrice
+    }else if (takeProfitPrice === 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.UnSetStopLossPrice
+    }else if (takeProfitPrice < 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitAndStopLossPrice
+    }else if (takeProfitPrice > 0 && stopLossPrice < 0) {
+      operateType = OrderedOperateType.SetTakeProfitAndUnSetStopLossPrice
+    }else if (takeProfitPrice < 0 && stopLossPrice > 0) {
+      operateType = OrderedOperateType.UnSetTakeProfitAndSetStopLossPrice
     }
 
-    return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, stopType, takeProfitPrice, stopLossPrice)
-      .send()
+    if(operateType.method === 'orderStopPosition') {
+      return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, operateType.stopType, takeProfitPrice, stopLossPrice)
+        .send()
+    }
+
+    if(operateType.method === 'cancleOrderedStopPosition') {
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, operateType.stopType, side)
+        .send()
+    }
+
+    if(operateType.method === 'orderAndCancleStopPosition') {
+      let price = operateType.orderStopType === 0 ? takeProfitPrice : stopLossPrice;
+      return this.__getDerifyDerivativeContract(token).methods.orderAndCancleStopPosition(trader, side, operateType.orderStopType, price, operateType.cancleStopType)
+        .send()
+    }
+
+    return Promise.resolve(true)
   }
 
   /**
@@ -487,26 +593,10 @@ export default class Contract {
   }
   /**
    * Cancel all orders
-   * @param token
-   * @param trader
    * @return {*}
    */
-  cancleAllOrderedPositions (token, trader) {
-    if(!token){
-      //fixme there's twice call of the smart contract
-      return (async() => {
-        try{
-          let ret1 = this.__getDerifyDerivativeContract(Token.ETH).methods.cancleAllOrderedPositions(trader).send()
-          let ret2 = this.__getDerifyDerivativeContract(Token.BTC).methods.cancleAllOrderedPositions(trader).send()
-          return await ret1 && await ret2
-        }catch (ex){
-          return false
-        }
-      })()
-    }else{
-      return this.__getDerifyDerivativeContract(token).methods.cancleAllOrderedPositions(trader).send()
-    }
-
+  cancleAllOrderedPositions () {
+    return this.DerifyExchange.methods.cancleAllOrderedPositions().send()
   }
 
   /**
@@ -539,13 +629,11 @@ export default class Contract {
    * @param size
    * @param price
    */
-  async getPositionChangeFee (token, side, actionType, size, price) {
+  async getPositionChangeFee ({token, side, actionType, size, price}) {
     const ratioSum = await this.__getPredictPositionChangeFeeRatioSum(token, side,
       size,
       price,
       actionType)
-
-    console.log('__getPredictPositionChangeFeeRatioSum:' + ratioSum)
     return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
   }
 
@@ -556,7 +644,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawBond (amount) {
-    return this.DerifyBond.methods.withdrawBond(amount).send();
+    return this.DerifyRewards.methods.withdrawBond(amount).send();
   }
 
   /**
@@ -574,13 +662,13 @@ export default class Contract {
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
-            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyRewards, amount)
           }else{
             approveRet = true
           }
 
           if(approveRet){
-            resolve(await this.DerifyBond.methods.exchangeBond(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.exchangeBond(amount, bondAccountType).send())
           }else{
             reject('approve failed')
           }
@@ -605,13 +693,13 @@ export default class Contract {
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
-            approveRet = await this.__approve(this.bDRF, ABIData.DerifyBond, amount)
+            approveRet = await this.__approve(this.bDRF, ABIData.DerifyRewards, amount)
           }else{
             approveRet = true
           }
 
           if(approveRet){
-            resolve(await this.DerifyBond.methods.depositBondToBank(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.depositBondToBank(amount, bondAccountType).send())
           }else{
             reject('approve failed')
           }
@@ -625,6 +713,7 @@ export default class Contract {
 
   async __approve(tokenContract, contractABI, amount) {
     try {
+
       let decimals = await tokenContract.methods.decimals().call();
 
       const decimalNum = parseInt(decimals)
@@ -634,6 +723,7 @@ export default class Contract {
       //The wallet obtains the authorized amount
       return await tokenContract.methods.approve(contractABI.address, approveNum).send()
     } catch (e) {
+      console.error(`__approve exception`, e)
       return false
     }
   }
@@ -646,7 +736,7 @@ export default class Contract {
    * @return {*}
    */
   redeemBondFromBank ({amount, bondAccountType }) {
-    return this.DerifyBond.methods.redeemBondFromBank(amount, bondAccountType).send();
+    return this.DerifyRewards.methods.redeemBondFromBank(amount, bondAccountType).send();
   }
 
   /**
@@ -656,7 +746,7 @@ export default class Contract {
    * @return {BondInfo}
    */
   getBondInfo (trader) {
-    return this.DerifyBond.methods.getBondInfo(trader).call();
+    return this.DerifyRewards.methods.getBondInfo(trader).call();
   }
 
   /**
@@ -666,7 +756,7 @@ export default class Contract {
    * @return {int} bDRF exchangeable maximum（The precision is 8 bits）
    */
   getExchangeBondSizeUpperBound ({trader, bondAccountType}) {
-    return this.DerifyBond.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
+    return this.DerifyRewards.methods.getExchangeBondSizeUpperBound(trader, bondAccountType).call();
   }
 
   /**
@@ -675,7 +765,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawPMReward (amount) {
-    return this.DerifyStaking.methods.withdrawPMReward(amount).send();
+    return this.DerifyRewards.methods.withdrawPMReward(amount).send();
   }
 
   /**
@@ -684,8 +774,135 @@ export default class Contract {
    * @return {Promise<int>} （The precision is 8 bits）
    */
   getPMReward (trader) {
-    return this.DerifyStaking.methods.getPMReward(trader).call();
+    return this.DerifyRewards.methods.getPMReward(trader).call();
   }
+
+  /**
+   * get broker chain data
+   * @param trader
+   * @return {Promise<{rewardBalance:  BigInt, accumulatedReward: BigInt, validPeriodInDay: BigInt}>}
+   */
+  getBrokerInfo(trader) {
+    return this.DerifyRewards.methods.getBrokerInfo(trader).call();
+  }
+
+  /**
+   * apply to be broker
+   * @param accountType {BondAccountType}
+   * @param amount apply data
+   * @return {Promise<*>}
+   */
+  applyBroker(accountType,amount = toContractNum(60000)) {
+    const tokenContract = this.eDRF
+    return new Promise(async (resolve, reject) => {
+
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
+      }
+
+
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.applyBroker(accountType).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * burn eDRF
+   * @param accountType
+   * @param amount
+   */
+  burnEdrfExtendValidPeriod(accountType, amount) {
+    const tokenContract = this.eDRF
+    return new Promise(async (resolve, reject) => {
+
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
+      }
+
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * width draw edrf
+   * @param amount
+   */
+  withdrawBrokerReward(amount) {
+    return this.DerifyRewards.methods.burnEdrfExtendValidPeriod(amount).send()
+  }
+
+  /**
+   * get Staking Info
+   * @param trader
+   * @return {Promise<{drfBalance: BigInt, edrfBalance: BigInt}>}
+   */
+  getStakingInfo(trader) {
+    return this.DerifyRewards.methods.getStakingInfo(trader).call()
+  }
+
+  /**
+   * withdraw edrf
+   * @param amount
+   * @return {Promise}
+   */
+  withdrawEdrf(amount) {
+    return this.DerifyRewards.methods.withdrawEdrf(amount).send()
+  }
+
+  /**
+   * staking drf
+   * @param amount
+   * @return {Promise<unknown>}
+   */
+  stakingDrf(amount) {
+    const tokenContract = this.DRF
+    return new Promise(async (resolve, reject) => {
+      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      if(approveRet){
+        try{
+          await this.DerifyRewards.methods.stakingDrf(amount).send()
+          resolve(true)
+        }catch (e) {
+          reject(e)
+        }
+      }else{
+        reject('approve failed')
+      }
+    })
+  }
+
+  /**
+   * redeem drf
+   * @param amount
+   * @return {*}
+   */
+  redeemDrf(amount) {
+    return this.DerifyRewards.methods.redeemDrf(amount).send()
+  }
+
   /**
    * get All positions
    * @param trader
@@ -878,7 +1095,7 @@ export default class Contract {
       marginBalance: fromContractUnit(position.marginBalance),
       totalPositionAmount: fromContractUnit(position.totalPositionAmount)
     }
-    position.liquidatePrice = await this.getTraderPositionLiquidatePrice(liquidPriceParam);
+    position.liquidatePrice = toContractNum(this.getTraderPositionLiquidatePrice(liquidPriceParam));
 
 
     return position
@@ -902,10 +1119,10 @@ export default class Contract {
    * @returns {Promise<int>}
    */
   async __getPredictPositionChangeFeeRatioSum(token,
-    side,
-    size,
-    price,
-    actionType
+                                              side,
+                                              size,
+                                              price,
+                                              actionType
   ) {
 
     if(side === SideEnum.HEDGE) {
@@ -951,6 +1168,8 @@ export default class Contract {
 const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
+  tx;
+
   isUsed;
   /**
    * token
@@ -992,7 +1211,7 @@ export class PositionView {
 }
 
 export class LimitPoistion {
-
+  tx;
   size;
 
 
@@ -1005,6 +1224,7 @@ export class LimitPoistion {
 }
 
 export class OrderLimitPositionView {
+  tx;
   isUsed;
 
   /**
@@ -1042,6 +1262,7 @@ export class OrderLimitPositionView {
 
 
 export class PositionDataView {
+  tx;
   /**
    * @return {PositionView[]}
    */
@@ -1059,6 +1280,7 @@ export class PositionDataView {
 }
 
 export class OrderStopPoistionView {
+  tx;
 
   /**
    * @return {boolean}
@@ -1088,6 +1310,7 @@ export class OrderStopPoistionView {
 
 
 export class BondInfo {
+  tx;
   /**
    * The precision is 8 bits
    */
@@ -1110,6 +1333,7 @@ export class BondInfo {
 }
 
 export class DerivativePositions {
+  tx;
   /**
    * boolean
    */

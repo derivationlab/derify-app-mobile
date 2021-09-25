@@ -40,7 +40,8 @@ export default {
   position: relative;
   color: #EA446B;
   background: rgba(234,68,107,0.10);
-  padding: 0.8rem;
+  padding: 0.8rem 3rem 0.8rem 0.8rem;
+  overflow-wrap: break-word;
   .error-right{
     position: absolute;
     right: 0;

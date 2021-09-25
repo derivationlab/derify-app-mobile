@@ -34,7 +34,7 @@
 
     <van-popup class="menu-popup" v-model="showMenu" position="left">
       <div class="interactive-error" v-if="loginError">{{ loginError }}</div>
-      <div class="head-info" @click="$loginWallet()">
+      <div class="head-info">
         <div class="head-info-left" v-if="isLogin" @click="changeRouter('account')">
           <div class="first-letter-wrap">
             <img v-if="user.chainEnum"  :src="user.chainEnum ? user.chainEnum.logo : '#'"/>
@@ -47,7 +47,7 @@
             <div>{{ walletAddress }}</div>
           </div>
         </div>
-        <div class="head-info-left" v-else>
+        <div class="head-info-left"  v-else @click="$loginWallet()">
           <div class="first-letter-wrap">C</div>
           <div class="info-div">
             <div class="info-name">{{$t('Trade.navbar.ClickToLogin')}}</div>

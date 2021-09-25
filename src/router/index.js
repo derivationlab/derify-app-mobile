@@ -11,7 +11,7 @@ const routes = [
     redirect: '/home'
   },
   {
-    path: '/home',
+    path: '/home/:id?',
     name: 'home',
     component: () => import('@/views/home/Home')
   },
@@ -66,7 +66,7 @@ const routes = [
     component: () => import('@/views/Broker/apply/add.vue')
   },
   {
-    path: '/broker/info',
+    path: '/broker/info/:id?',
     name: 'brokerInfo',
     component: () => import('@/views/Broker/apply/info.vue')
   },

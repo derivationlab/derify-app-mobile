@@ -2,7 +2,7 @@
   <van-popup class="derify-popup" v-model="showPopup" round @close="close">
     <div class="unwind-popup system-popup">
       <div class="system-popup-title">{{ $t('Broker.Broker.DepositPopup.Burn') }}</div>
-      <DerifyErrorNotice :show="showError">
+      <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
         {{errorMsg}}
       </DerifyErrorNotice>
       <div class="system-popup-info">
@@ -10,7 +10,7 @@
           <div class="system-popup-label fz-15">
             <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.Balance') }}</div>
             <div>
-              <span class="fc-85">1.234567890</span>
+              <span class="fc-85">{{maxAmount | fck(-8, 2)}}</span>
               <span class="fc-45">eDRF</span>
             </div>
           </div>
@@ -19,7 +19,7 @@
           <div class="system-popup-label">
             <div class="fc-45">{{ $t('Broker.Broker.DepositPopup.UnitPrice') }}</div>
             <div>
-              <span class="fc-85">600.00</span>
+              <span class="fc-85">{{unitAmount|fck(0,2)}}</span>
               <span class="fc-45">eDRF</span>
             </div>
           </div>
@@ -29,7 +29,7 @@
       <div class="system-popup-form">
         <div class="system-popup-line">
           <van-dropdown-menu :overlay="false" class="derify-dropmenus">
-            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions">
+            <van-dropdown-item class="derify-dropmenu-item-wrap" v-model="accountType" :options="accountOptions" @change="accountTypeChange">
               <div class="derify-dropmenu-title" slot="title">
                 <span>{{accountOptions[accountType].text}}</span>
                 <van-icon name="arrow-down" size="1.8rem" color="rgba(255, 255, 255, .85)" />
@@ -43,7 +43,7 @@
             <span class="fc-80">
               <i18n path="Broker.Broker.DepositPopup.ValidPeriod">
                 <template #0>
-                  <span class="fc-yellow">20</span>
+                  <span class="fc-yellow">{{validatePeriod}}</span>
                 </template>
               </i18n>
             </span>
@@ -51,14 +51,14 @@
           <div class="system-popup-input">
             <van-field class="derify-input no-padding-hor fz-17" placeholder=""
                        :formatter="(value) => value.replace(/-/g, '')"
-                       type="number" v-model="amount"/>
+                       type="number" v-model="amount" @input="checkAmount"/>
             <div class="unit">eDRF</div>
           </div>
         </div>
       </div>
       <div class="system-popup-buttons">
         <div class="system-popup-button cancel" @click="close">{{$t('Broker.Broker.DepositPopup.Cancel')}}</div>
-        <div class="system-popup-button confirm" @click="close">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
+        <div class="system-popup-button confirm" @click="submitThenClose">{{$t('Broker.Broker.DepositPopup.Burn')}}</div>
       </div>
     </div>
   </van-popup>
@@ -71,7 +71,7 @@ import {
   toHexString,
   SideEnum,
   OpenType,
-  convertAmount2TokenSize, toContractNum
+  convertAmount2TokenSize, toContractNum, BondAccountType
 } from '../../../utils/contractUtil'
 import { fck } from '../../../utils/utils'
 import { UnitTypeEnum } from '../../../store/modules/contract'
@@ -93,7 +93,8 @@ export default {
       showError: false,
       errorMsg: '',
       accountType: 0,
-      amount: 1200.00,
+      unitAmount: 600,
+      amount: null,
       accountOptions: this.getAccountOptions(),
       showPopup: this.show
     }
@@ -109,20 +110,98 @@ export default {
     }
   },
   computed: {
+    broker () {
+      return this.$store.state.broker.broker
+    },
+    trader() {
+      return this.$store.state.user.selectedAddress
+    },
+    maxAmount() {
+      if(this.accountType === BondAccountType.DerifyAccount) {
+        return this.$store.state.broker.wallet.derifyEdrfBalance
+      }else{
+        return this.$store.state.broker.wallet.walletEdrfBalance
+      }
+    },
+    validatePeriod () {
 
+      if(this.amount < 1){
+        return 0
+      }
+
+      return this.amount / this.unitAmount
+    }
   },
   methods: {
     close () {
       this.$emit('close')
     },
+
+    checkAmount() {
+
+      if(this.amount === null || this.amount === '') {
+        return false
+      }
+
+      if(this.amount < this.unitAmount){
+        this.errorNotice(this.$t('Broker.Broker.DepositPopup.MinAmountError', [this.unitAmount]))
+        return false
+      }
+
+      if(this.amount > fromContractUnit(this.maxAmount)) {
+        this.amount = fromContractUnit(this.maxAmount)
+      }
+
+      this.errorNotice(null)
+
+      return true
+    },
+
     submitThenClose () {
 
+      if(!this.checkAmount()) {
+        return
+      }
+
+      this.$userProcessBox({show: true, status: UserProcessStatus.waiting
+        ,msg: this.$t('global.TradePendingMsg')})
+      this.$store.dispatch('broker/burnEdrfExtendValidPeriod',
+        {trader: this.trader, accountType: this.accountType, amount: this.amount})
+        .then(() => {
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.showApplyPopup = !this.brokerApplied
+          }).finally(() => {
+            this.showLoading = false
+          });
+
+          this.$userProcessBox({show: true, status: UserProcessStatus.success
+            ,msg: this.$t('global.TradeSuccessMsg')})
+          this.close()
+        })
+        .catch(() => {
+          this.$userProcessBox({show: true, status: UserProcessStatus.failed
+            ,msg: this.$t('global.TradeFailedMsg')})
+        })
     },
     getAccountOptions() {
       return [
         { text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0 },
         { text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1 }
       ]
+    },
+    accountTypeChange() {
+      this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: this.accountType})
+        .then(() => {
+          this.checkAmount()
+        })
+    },
+    errorNotice(msg){
+      this.errorMsg = msg
+      if(msg){
+        this.showError = true
+      }else{
+        this.showError = false
+      }
     }
   }
 }

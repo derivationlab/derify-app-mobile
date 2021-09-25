@@ -4,46 +4,62 @@
         v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
-        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
         <div>{{$t('Broker.Broker.TraderInfo.TraderAddress')}}</div>
         <div class="rigth-span">{{$t('Broker.Broker.TraderInfo.RegistrationDate')}}</div>
       </div>
-      <div class="heard">
-        <div class="color-type width-70">0x40d276e6a7C80562BB1848e3ACB7B7629234C5a6</div>
-        <div class="rigth-span unit-span width-30">
-          2021-12-31
+      <template v-for="(data,key) in list">
+        <div class="heard" :key="key">
+          <div class="color-type width-70">{{data.trader}}</div>
+          <div class="rigth-span unit-span width-30">
+            {{new Date(data.update_time).Format("yyyy-MM-dd hh:mm:ss")}}
+          </div>
         </div>
-      </div>
+      </template>
         <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
     </van-list>
   </div>
 </template>
 <script>
+
 export default {
+  props: ['broker'],
   data () {
     return {
       list: [],
+      page: 0,
+      size: 10,
       loading: false,
       finished: false
     }
   },
   methods: {
     onLoad () {
+      this.loading = true
+      this.finished = false
+      this.$store.dispatch('broker/getBrokerBindTraders',
+        {broker: this.broker, page: this.page, size: this.size})
+        .then((records) => {
 
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
+          console.log(records)
 
+          if(!records || records.length < 1) {
+            this.finished = true
+            return
+          }
+
+          records.forEach((record) => {
+            this.list.push(record)
+          })
+          this.page++
+
+        }).catch((e) => {
+        console.warn(e)
+      }).finally(() => {
         this.loading = false
-
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
+      })
     }
   }
 }

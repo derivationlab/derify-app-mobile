@@ -9,7 +9,7 @@
         <div class="popup-text">{{$t('Broker.Broker.WithdrawPopup.Amount')}}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor fz-17" :formatter="(value) => value.replace(/-/g, '')"
-                     placeholder="0" type="number" v-model="amount" @change="checkAmount"/>
+                     placeholder="" type="number" v-model="amount" @input="checkAmount"/>
           <div class="unit">{{withdrawName}}</div>
         </div>
         <div class="system-popup-num">
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
+import { BondAccountType, fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
 import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
 import { EarningType } from '../../../store/modules/earnings'
@@ -40,29 +40,28 @@ export default {
       errorMsg: '',
       showError: false,
       showPopup: this.show,
-      amount: 0,
-      //maxAmout: 10*1e8,
+      amount: null,
       curPercent: 25,
       withdrawName: 'USDT'
     }
   },
   computed: {
+    trader() {
+      return this.$store.state.user.selectedAddress
+    },
     maxAmout () {
-      if (this.withdrawId === EarningType.MIN) {
-        return this.$store.state.earnings.pmrBalance
-      } else if (this.withdrawId === EarningType.EDRF) {
-        return 0
-      } else if(this.withdrawId === EarningType.BDRF){
-        return this.$store.state.earnings.bondInfo.bondBalance
-      }
-      return 0
+      return this.$store.state.broker.broker.rewardBalance
     }
   },
   watch: {
     show () {
       this.showPopup = this.show
       if(this.show) {
-        this.amount = 0
+        this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: BondAccountType.DerifyAccount})
+          .then(() => {
+            this.checkAmount()
+          })
+        this.amount = null
       }
     }
   },
@@ -74,23 +73,33 @@ export default {
       this.amount = fck(this.maxAmout, -8, 4)
     },
     errorNotice(msg){
+      this.errorMsg = msg
+
       if(msg){
-        this.errorMsg = msg
         this.showError = true
       }else{
         this.showError = false
       }
     },
     checkAmount () {
-      if(this.amount <= 0 || this.amount > fromContractUnit(this.maxAmout)) {
+
+      if(this.amount === null || this.amount === ''){
+        return false
+      }
+
+      if(this.amount <= 0) {
         this.errorNotice(this.$t('global.NumberError'))
         return false
       }
+
+      if(this.amount > fromContractUnit(this.maxAmout)) {
+        this.amount = fromContractUnit(this.maxAmout)
+      }
+      this.errorNotice(null)
       return true
     },
     submitThenClose () {
       if(!this.checkAmount()) {
-        this.errorNotice(this.$t('global.NumberError'))
         return
       }
 
@@ -115,6 +124,12 @@ export default {
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //eDRF
         this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.showApplyPopup = !this.brokerApplied
+          }).finally(() => {
+            this.showLoading = false
+          });
+
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})

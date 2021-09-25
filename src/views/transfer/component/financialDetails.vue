@@ -15,7 +15,6 @@
         v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
-        :finished-text="$t('global.NoMoreInfo')"
         @load="onLoad"
       >
       <div class="heard">
@@ -65,6 +64,7 @@ export default {
     return {
       list: [],
       loading: false,
+      page: 0,
       finished: false
     }
   },
@@ -88,24 +88,27 @@ export default {
       }
 
       const self = this;
-      self.loading = true
-      self.finished = false
       const list = this.list
 
-      this.$store.dispatch('contract/getTraderTradeBalanceDetail').then(r => {
+      this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: this.page}).then(r => {
         // Array<TradeBalanceDetail>
-        if (r === undefined) {
+        self.loading = false
+        if (!r || r.length < 1) {
+          this.finished = true
           return
         }
 
+        this.page++
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             list.push(item)
           }
         })
-
+      }).catch(() => {
         self.loading = false
-        self.finished = true
+        this.finished = true
+      }).finally(() => {
+        self.loading = false
       })
     }
   },
