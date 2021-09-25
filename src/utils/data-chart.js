@@ -59,7 +59,7 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
     xAxis: [
       {
         type: 'category',
-        boundaryGap: false,
+        boundaryGap: true,
         data: xaxisDta
       }
     ],
