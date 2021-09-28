@@ -158,6 +158,24 @@ export async function getbrokerBindTraders(broker, page = 0, size = 10) {
 }
 
 /**
+ *
+ * @param broker
+ * @param page
+ * @param size
+ * @return {Promise<*[]|{trader: String, update_time: Date}>}
+ */
+export async function getBrokerBindTradersByAddr(brokerAddr, page = 0, size = 10) {
+  const content = await io.get(`/api/traders_of_brokerAddr/${brokerAddr}/${page}/${size}`)
+
+  console.log(content)
+  if(content && content.data && content.data.records) {
+    return content.data.records
+  }
+
+  return []
+}
+
+/**
  * brokerInfo
  */
 export class BrokerInfo {

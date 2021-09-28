@@ -45,6 +45,15 @@ export default {
           this.close();
         }, 3000);
       }
+    },
+    status() {
+      if(this.show && this.status === UserProcessStatus.success){
+        setTimeout(() => {
+          this.status = UserProcessStatus.finished;
+          this.msg = '';
+          this.close();
+        }, 3000);
+      }
     }
   },
   methods: {

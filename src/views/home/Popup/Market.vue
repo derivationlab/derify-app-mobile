@@ -54,6 +54,7 @@ export default {
         this.$toast(`${pair.name} does not support`)
         return false
       }
+
       this.$store.commit('contract/SET_CURPAIRKEY', pair.key)
 
       this.close()
