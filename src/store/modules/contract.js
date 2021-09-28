@@ -463,6 +463,7 @@ const actions = {
   loadPositionData ({state, commit}) {
     return (async () => {
       if(!state.wallet_address){
+        commit('RESET_POSITION_DATA');
         return {}
       }
 
@@ -475,10 +476,14 @@ const actions = {
           continue
         }
 
-        positionDatas.push({positionData: await contract.getTraderAllPosition(state.wallet_address, pairItem.address), pair: pairItem})
-      }
+        try{
+          positionDatas.push({positionData: await contract.getTraderAllPosition(state.wallet_address, pairItem.address), pair: pairItem})
+        }catch (e){
+          console.error("getTraderAllPosition exception:", e)
+        }
 
-      commit('RESET_POSITION_DATA')
+      }
+      commit('RESET_POSITION_DATA');
       positionDatas.forEach((positionData) => {
         commit('ADD_POSITION_DATA', {...positionData})
       })

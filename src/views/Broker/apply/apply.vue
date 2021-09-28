@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="true"/>
+    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="false"/>
     <div class="home-mid">
       <DerifyErrorNotice :show="showError" @close="errorNotice">
         {{errorMsg}}

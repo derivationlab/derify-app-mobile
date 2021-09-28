@@ -1071,6 +1071,11 @@ export default {
         {text:  this.$t('Trade.OpenPosition.OpenPage.Market'), value: 0},
         {text: this.$t('Trade.OpenPosition.OpenPage.Limit'), value: 1}
       ]
+    },
+    'user.trader':{
+      handler() {
+        this.loadPositionData();
+      },
     }
   },
   created () {

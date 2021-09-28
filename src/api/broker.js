@@ -18,6 +18,20 @@ export async function getBrokerIdByTrader(trader) {
 }
 
 /**
+ * get trader's brokerId
+ * @param trader
+ * @return {Promise<BrokerInfo>}
+ */
+export async function getBindBrokerByTrader(trader) {
+  const content =  await io.get("/api/broker_info_of_trader/" + trader)
+  if(content && content.data && content.data.length > 0) {
+    return content.data[0];
+  }
+
+  return null;
+}
+
+/**
  *
  * @param page
  * @param size

@@ -91,8 +91,8 @@ Vue.prototype.$loginWallet = function () {
     }
 
     this.$store.commit("user/updateState", walletInfo)
-  }).catch(() => {
-    console.log('init wallet failed')
+  }).catch((e) => {
+    console.error('init wallet failed',e);
   })
 }
 
@@ -145,8 +145,8 @@ function updateWallet (eventType = 0) {
 
     vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
 
-  }).catch(() => {
-    console.log('init wallet failed')
+  }).catch((e) => {
+    console.error('init wallet failed',e)
   })
 }
 

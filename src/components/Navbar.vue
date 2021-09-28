@@ -21,7 +21,12 @@
       </template>
 
       <template #right v-if="isLogin">
-        <div class="first-letter-wrap-inline" @click="changeRouter('account')">
+        <div class="first-letter-wrap-inline" @click="() => {
+
+          if(user.hasBroker){
+            changeRouter('account')
+          }
+        }">
           <img v-if="user.chainEnum"  :src="user.chainEnum ? user.chainEnum.logo : '#'"/>
           <template v-else>W</template>
         </div>

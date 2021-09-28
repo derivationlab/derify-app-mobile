@@ -1,6 +1,6 @@
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
-import { getBrokerIdByTrader } from '../../api/broker'
+import { getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
 
 export class ChainEnum {
   static values = []
@@ -127,7 +127,21 @@ export async function getWallet(){
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
+  let brokerId = "";
+  let brokerInfo = null;
+  let traderBroker = null;
+
+  try{
+    brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
+    traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
+    brokerId = traderBroker ? traderBroker.broker : "";
+  }catch (e){
+    console.error("getBrokerIdByTrader error", e)
+  }
+
+  const isLogin = wethereum.selectedAddress && isEthum;
+  const trader = isLogin ? wethereum.selectedAddress : "";
+
 
   return {
     selectedAddress: wethereum.selectedAddress,
@@ -138,7 +152,10 @@ export async function getWallet(){
     brokerId: brokerId,
     isEthum,
     networkVersion: wethereum.networkVersion,
-    isMetaMask: wethereum.isMetaMask
+    isMetaMask: wethereum.isMetaMask,
+    trader,
+    brokerInfo,
+    traderBroker
   }
 }
 
