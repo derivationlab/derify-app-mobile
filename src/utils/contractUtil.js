@@ -792,7 +792,7 @@ export default class Contract {
    * @param amount apply data
    * @return {Promise<*>}
    */
-  applyBroker(accountType,amount = toContractNum(60000)) {
+  applyBroker(accountType,amount = toContractUnit(60000)) {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
 
