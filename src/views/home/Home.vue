@@ -824,7 +824,7 @@ export default {
       this.$store.dispatch('contract/loadTradeRecords', {page: this.tradeRecordsPage}).then(r => {
         //@see TradeRecord
         this.loading = false
-        if (!r || r.length < 1) {
+        if (!r) {
           this.tradeRecordsFinished = true
           return
         }
@@ -1072,9 +1072,10 @@ export default {
         {text: this.$t('Trade.OpenPosition.OpenPage.Limit'), value: 1}
       ]
     },
-    'user.trader':{
+    user:{
       handler() {
         this.loadPositionData();
+        this.tradeRecords.splice(0);
       },
     }
   },
