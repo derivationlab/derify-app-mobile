@@ -81,35 +81,35 @@
           <div class="div1">
             <span class="ify-span">DRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
-              <span class="num">{{tokenData.current.drfPrice}}</span>
+              <span class="num">{{tokenData.current.drfPrice|fck(0,2)}}</span>
               <span class="unit fz-12">USDT</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">DRF{{$t('Data.Data.Token.TotalDestroyedVolume')}}</span>
             <div class="ify-div">
-              <span class="num">{{tokenData.current.drfBurnt}}</span>
+              <span class="num">{{tokenData.current.drfBurnt|fck(0,2)}}</span>
               <span class="unit fz-12">DRF</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">{{$t('Data.Data.Token.BuyBackFundBalance')}}(USDT)</span>
             <div class="ify-div">
-              <span class="num">{{tokenData.current.drfBuyBack}}</span>
+              <span class="num">{{tokenData.current.drfBuyBack|fck(0,2)}}</span>
               <span class="unit fz-12"> USDT</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">eDRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
-              <span class="num">{{tokenData.current.edrfPrice}}</span>
+              <span class="num">{{tokenData.current.edrfPrice|fck(0,2)}}</span>
               <span class="unit fz-12">USDT</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">bDRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
-              <span class="num">{{tokenData.current.bdrfPrice}}</span>
+              <span class="num">{{tokenData.current.bdrfPrice|fck(0,2)}}</span>
               <span class="unit fz-12">USDT</span>
             </div>
           </div>
@@ -314,11 +314,16 @@ export default {
       }
 
       if(this.mainOption === 3) {
-        this.$store.dispatch('data/loadTokenInfoData', this.subToken).then((data) => {
-          this.tradeData = data
-          //updare kcharts
-        }).catch(() => {
+        if(context.myChart !== null) {
+          context.myChart.dispose()
+          context.myChart = null
+        }
 
+        this.$store.dispatch('data/loadTokenInfoData', this.subToken).then((data) => {
+          this.tokenData = data
+          //updare kcharts
+        }).catch((e) => {
+          console.error("loadTokenInfoData", e)
         }).finally(() => {
 
         })
@@ -337,6 +342,9 @@ export default {
 }
 .data-filter-wrap{
   display: flex;
+  > :first-child{
+    margin-right: 3rem;
+  }
   .derify-dropmenus {
     .van-dropdown-menu__bar{
       padding-bottom: 0;
@@ -344,6 +352,15 @@ export default {
       margin-bottom: 0;
       background-color: transparent;
       border-bottom: none;
+      width: fit-content;
+    }
+
+    .van-dropdown-menu__title{
+      padding: 0;
+    }
+
+    .van-icon{
+      margin-left: 0.5rem;
     }
   }
   .derify-dropmenu-wrap{
@@ -412,6 +429,9 @@ export default {
     }
     .ify-div{
       margin-top: .9rem;
+      width: 5rem;
+      text-align: left;
+      color: @white;
       .num{
         font-size: 1.5rem;
         font-weight: 500;
@@ -426,4 +446,5 @@ export default {
     }
   }
 }
+
 </style>
