@@ -93,7 +93,7 @@
             </div>
           </div>
           <div class="div1">
-            <span class="ify-span">DRF{{$t('Data.Data.Token.BuyBackFundBalance')}}(USDT)</span>
+            <span class="ify-span">{{$t('Data.Data.Token.BuyBackFundBalance')}}(USDT)</span>
             <div class="ify-div">
               <span class="num">{{tokenData.current.drfBuyBack}}</span>
               <span class="unit fz-12"> USDT</span>
@@ -117,7 +117,10 @@
       </template>
     </div>
     <template v-if="mainOption !== 3">
-      <div id="myChart" :style="{width: '100%', height: '36.5rem'}"></div>
+      <div id="myChart" :style="{width: '100%', height: '100%'}"></div>
+    </template>
+    <template v-else>
+      <div :style="{height: '100%'}"><span>&nbsp;</span></div>
     </template>
   </div>
 </template>
@@ -187,8 +190,8 @@ export default {
     subOptions () {
       return [
         {value: 0, text: this.$t('Data.Data.Trade.All'), token: 'all'},
-        {value: 1, text: 'ETH/USDT', token: Token.ETH},
-        {value: 2, text: 'BTC/USDT', token: Token.BTC},
+        {value: 1, text: 'BTC/USDT', token: Token.BTC},
+        {value: 2, text: 'ETH/USDT', token: Token.ETH},
       ]
     },
     subToken () {
@@ -349,6 +352,13 @@ export default {
 }
 </style>
 <style lang="less" scoped>
+.home-container{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .page-container{
   padding: 0;
 }
