@@ -146,7 +146,7 @@ export async function getBrokerTodayReward(trader, start=(new Date()).Format('yy
 export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
   const content = await io.get(`/api/broker_reward_balance/${broker}/${page}/${size}`)
 
-  if(content && content.data && content.records) {
+  if(content && content.data && content.data.records) {
     return content.data.records
   }
 
