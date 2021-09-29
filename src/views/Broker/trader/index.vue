@@ -45,6 +45,9 @@ export default {
     }
   },
   methods: {
+    getUpdateType(type) {
+      return 'Rewards.Bond.History.Type' + type;
+    },
     onLoad () {
       this.$store.dispatch('broker/getBrokerRewardHistory',
         {broker: this.broker, page: this.page, size: this.size})
@@ -88,6 +91,13 @@ export default {
   }
   .color-type{
     color: rgba(255,255,255,0.85);
+  }
+  .fc-red {
+    color: @red;
+  }
+
+  .fc-green {
+    color: @green;
   }
 }
 
