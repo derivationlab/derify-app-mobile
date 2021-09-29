@@ -799,9 +799,9 @@ export default {
       const self = this;
 
       if(key === 'key3'){
-        self.loading = true
         self.loadTradeHistory(true)
       }else{
+        self.loading = true
         this.$store.dispatch('contract/loadPositionData').then(r => {
           self.loading = false
         }).catch(()=>{
@@ -821,25 +821,24 @@ export default {
         this.tradeRecordsFinished =  false
       }
 
+      self.loading = true
       this.$store.dispatch('contract/loadTradeRecords', {page: this.tradeRecordsPage}).then(r => {
         //@see TradeRecord
-        this.loading = false
-        if (!r) {
+        if(truncate) {
+          self.tradeRecords.splice(0)
+        }
+        if (!r || r.length < 1) {
           this.tradeRecordsFinished = true
           return
         }
 
         this.tradeRecordsPage++
-        if(truncate) {
-          self.tradeRecords.splice(0)
-        }
-
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             self.tradeRecords.push(item)
           }
         })
-
+      }).finally(() => {
         self.loading = false
       })
     },
@@ -848,14 +847,16 @@ export default {
       const self = this
       const {active} = this
       if(active === 'key3'){
-        self.loadTradeHistory(false)
+        self.loadTradeHistory(true)
       }else if(active === 'key1' || active === 'key2'){
         console.log(`${key} loadPositionData`)
         this.$store.dispatch('contract/loadPositionData').then(r => {
-          self.loading = false
+
         }).finally(() => {
           self.positionFinished = true
           self.positionOrdersFinished = true
+        }).finally(() => {
+          self.loading = false
         })
       }
     },
