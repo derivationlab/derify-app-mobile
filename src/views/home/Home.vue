@@ -847,7 +847,7 @@ export default {
       const self = this
       const {active} = this
       if(active === 'key3'){
-        self.loadTradeHistory(true)
+        self.loadTradeHistory(false)
       }else if(active === 'key1' || active === 'key2'){
         console.log(`${key} loadPositionData`)
         this.$store.dispatch('contract/loadPositionData').then(r => {
