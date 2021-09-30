@@ -57,7 +57,7 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.show) {
-        this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: BondAccountType.DerifyAccount})
+        this.$store.dispatch('broker/getTraderBrokerInfo', {trader: this.trader, accountType: BondAccountType.DerifyAccount})
           .then(() => {
             this.checkAmount()
           })
@@ -103,55 +103,16 @@ export default {
         return
       }
 
-      if(this.withdrawId === EarningType.MIN) {
-
-        this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        //position mining
-        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
-        }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
-          this.$store.dispatch('earnings/loadEarningData')
-        })
-
-        return
-      }
-
-      if(this.withdrawId === EarningType.EDRF) {
-        this.close()
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        //eDRF
-        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
-            this.showApplyPopup = !this.brokerApplied
-          }).finally(() => {
-            this.showLoading = false
-          });
-
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
-        }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
-          this.$store.dispatch('earnings/loadEarningData')
-        })
-
-        return
-      }
-
-      if(this.withdrawId === EarningType.BDRF) {
-        this.close()
-        //bDRF
-        this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
-          this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
-        }).catch(e => {
-          this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
-          this.$store.dispatch('earnings/loadEarningData')
-        })
-      }
+      this.close()
+      //bDRF
+      this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+      this.$store.dispatch("broker/withdrawBrokerReward", {trader: this.trader, amount: (this.amount)}).then( r => {
+        this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
+      }).catch(e => {
+        this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
+      }).finally( p => {
+        this.$store.dispatch('broker/loadEarningData')
+      })
 
     }
   }

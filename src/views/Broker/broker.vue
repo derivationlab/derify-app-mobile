@@ -256,16 +256,19 @@ export default {
       ]
     },
     loadTraderBrokerInfo(){
+
+      if(!this.trader){
+        this.showLoading = false;
+        this.showApplyPopup = true;
+        return;
+      }
+
       this.showLoading = !this.brokerApplied
 
-      if(this.showLoading) {
-        this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.Loading')})
-      }
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
       }).finally(() => {
         this.showLoading = false
-        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
       });
     },
     // close popup
