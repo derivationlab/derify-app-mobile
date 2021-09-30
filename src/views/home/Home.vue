@@ -491,6 +491,9 @@ export default {
     isLogin () {
       return this.$store.state.user.isLogin
     },
+    trader () {
+      return this.$store.state.user.selectedAddress
+    },
     finished () {
       if(this.active === 'key1') {
         return this.positionFinished
@@ -798,19 +801,7 @@ export default {
 
       const self = this;
 
-      if(key === 'key3'){
-        self.loadTradeHistory(true)
-      }else{
-        self.loading = true
-        this.$store.dispatch('contract/loadPositionData').then(r => {
-          self.loading = false
-        }).catch(()=>{
-            self.loading = false
-          })
-          .finally(() => {
-          self.loading = false
-        })
-      }
+      this.loadPositionData();
     },
 
     loadTradeHistory(truncate = false) {
@@ -819,14 +810,12 @@ export default {
       if(truncate) {
         this.tradeRecordsPage = 0
         this.tradeRecordsFinished =  false
+        self.tradeRecords.splice(0)
       }
 
       self.loading = true
       this.$store.dispatch('contract/loadTradeRecords', {page: this.tradeRecordsPage}).then(r => {
         //@see TradeRecord
-        if(truncate) {
-          self.tradeRecords.splice(0)
-        }
         if (!r || r.length < 1) {
           this.tradeRecordsFinished = true
           return
@@ -846,19 +835,7 @@ export default {
     onLoad () {
       const self = this
       const {active} = this
-      if(active === 'key3'){
-        self.loadTradeHistory(false)
-      }else if(active === 'key1' || active === 'key2'){
-        console.log(`${key} loadPositionData`)
-        this.$store.dispatch('contract/loadPositionData').then(r => {
-
-        }).finally(() => {
-          self.positionFinished = true
-          self.positionOrdersFinished = true
-        }).finally(() => {
-          self.loading = false
-        })
-      }
+      this.loadPositionData(false);
     },
 
     onOpenTypeChange () {
@@ -970,14 +947,19 @@ export default {
       this.updateTraderOpenUpperBound()
     },
 
-    loadPositionData () {
+    loadPositionData (init = true) {
       const self = this
       self.loading = true
 
-      this.$store.dispatch('contract/loadPositionData').then(r => {
-      }).finally(() => {
-        self.loading = false
-      })
+      if(this.active === 'key3'){
+        this.loadTradeHistory(init);
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {
+        }).finally(() => {
+          self.loading = false
+        })
+      }
+
     },
     getPairByAddress (token) {
       const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)
@@ -1076,8 +1058,9 @@ export default {
     user:{
       handler() {
         this.loadPositionData();
-        this.tradeRecords.splice(0);
       },
+      deep:true,
+      immediate:true
     }
   },
   created () {
