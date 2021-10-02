@@ -110,7 +110,7 @@ export function mergeNonNull(obj1, obj2){
   return resultObj;
 }
 
-function toChecksumAddress (address) {
+export function toChecksumAddress (address) {
   address = address.toLowerCase().replace('0x', '')
   var hash = createKeccakHash('keccak256').update(address).digest('hex')
   var ret = '0x'

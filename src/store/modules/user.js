@@ -1,6 +1,7 @@
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
 import { getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
+import { toChecksumAddress } from '@/utils/utils'
 
 export class ChainEnum {
   static values = []
