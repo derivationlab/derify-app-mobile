@@ -2,6 +2,7 @@ import { Token,SideEnum } from '@/utils/contractUtil'
 import * as web3Util from '@/utils/web3Utils'
 import { getCache } from '../../utils/cache'
 import { getTraderBondBalance, getTraderEDRFBalance, getTraderPMRBalance } from '../../api/trade'
+import { toChecksumAddress } from '@/utils/utils'
 
 export class EarningType {
   static get MIN () {
@@ -19,7 +20,7 @@ export class EarningType {
 
 const state = {
   get wallet_address () {
-     return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+     return window.ethereum !== undefined ? toChecksumAddress(ethereum.selectedAddress) :  undefined
   },
   account: getCache('account') || null,
   pairs: [

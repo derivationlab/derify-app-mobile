@@ -2,14 +2,14 @@ import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
 import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
-import { amountFormt, fck } from '@/utils/utils'
+import { amountFormt, fck, toChecksumAddress } from '@/utils/utils'
 import { createTokenPriceChangeEvenet } from '@/api/trade'
 
 const tokenPriceRateEnventMap = {};
 
 const state = {
   get wallet_address () {
-    return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+    return window.ethereum !== undefined ? toChecksumAddress(ethereum.selectedAddress) :  undefined
   },
   account: getCache('account') || null,
   pairs: [
