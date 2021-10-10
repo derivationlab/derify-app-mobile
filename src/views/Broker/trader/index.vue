@@ -14,7 +14,11 @@
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{$t(getUpdateType(data.update_type))}}</div>
+          <div>
+            <div class="color-type">{{$t(getUpdateType(data.update_type))}}</div>
+            <div class="unit-span mrt-5">{{data.trader}}</div>
+          </div>
+
           <div>
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">USDT</div>
