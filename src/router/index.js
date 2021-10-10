@@ -96,7 +96,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.name !== 'brokerApply' && to.name !== 'brokerAdd' && !store.state.user.hasBroker) {
     return next({path: '/broker/add'})
   } else if((to.name === 'brokerApply' || to.name === 'brokerAdd') && store.state.user.hasBroker){
-    return next({name: '/'})
+    return next({path: '/'})
   }else{
     next()
   }
