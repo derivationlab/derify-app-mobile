@@ -15,7 +15,7 @@
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Staking.History.Earning') : $t('Rewards.Staking.History.Withdraw')}}</div>
+          <div class="color-type">{{getType(data.update_type)}}</div>
           <div>
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">eDRF</div>
@@ -34,6 +34,12 @@
   </div>
 </template>
 <script>
+const typeMap = {
+  0: "Rewards.Staking.History.Earning",
+  1: "Rewards.Staking.History.Withdraw",
+  6: "Rewards.Staking.History.Burn",
+};
+
 export default {
   data () {
     return {
@@ -61,6 +67,9 @@ export default {
       }).finally(() => {
         self.loading = false
       })
+    },
+    getType(type){
+      return typeMap[type] ? this.$t(typeMap[type]) : "unknown";
     }
   },
   mounted () {
