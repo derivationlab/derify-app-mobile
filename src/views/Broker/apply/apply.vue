@@ -38,8 +38,10 @@
       </van-list>
     </div>
     <div class="home-last">
-      <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">{{$t("Trade.BrokerBind.BrokerBind.HaveBrokerCode")}}</span></p>
-      <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
+      <ButtonLoginWrap className="derify-big-btn btn-yellow">
+        <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">{{$t("Trade.BrokerBind.BrokerBind.HaveBrokerCode")}}</span></p>
+        <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
+      </ButtonLoginWrap>
     </div>
 
   </div>
@@ -106,7 +108,10 @@ export default {
       this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.selectedBroker.id})
         .then((data) => {
           if(data.success){
-            this.$router.push({name: 'home'})
+            this.$store.dispatch("user/initWallet").then(() => {
+              this.$router.push({name: 'home'})
+            });
+
           }else{
             this.errorNotice(data.msg)
           }

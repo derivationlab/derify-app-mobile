@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Fragment from 'vue-fragment'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -14,6 +15,9 @@ import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
+
+Vue.use(Fragment.Plugin)
+
 let locale = 'en'
 try {
   const curLngStr = sessionStorage.getItem('locale')
@@ -27,6 +31,8 @@ try {
   }
 } catch (err) {
 }
+
+
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({

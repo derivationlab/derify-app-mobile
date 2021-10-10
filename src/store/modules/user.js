@@ -122,7 +122,6 @@ export async function getWallet(){
     return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
 
-
   window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)

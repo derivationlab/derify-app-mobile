@@ -53,12 +53,16 @@ export async function getBrokerList(page = 0, size = 10) {
  * @return {Promise<{msg: string, success: boolean}>}
  */
 export async function bindBroker({trader,brokerId}) {
-  const content =  await io.post('/api/bind_broker', {brokerId,trader})
+  try{
+    const content =  await io.post('/api/bind_broker', {brokerId,trader})
 
-  if(content && content.msg) {
-    return {success: true, msg: content.msg}
-  }else if(content && content.error){
-    return {success: false, msg: content.error}
+    if(content && content.msg) {
+      return {success: true, msg: content.msg}
+    }else if(content && content.error){
+      return {success: false, msg: content.error}
+    }
+  }catch (e){
+    console.error("bindBroker error", e)
   }
 
   return {success: false, msg: 'unknown'};

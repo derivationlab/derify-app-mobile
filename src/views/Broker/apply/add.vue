@@ -13,8 +13,10 @@
         </div>
 
         <div class="btn-wrap">
-          <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerApply'})">{{ $t('Trade.BrokerBind.BrokerCodes.NoBrokerCode') }}</span></p>
-          <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Trade.BrokerBind.BrokerCodes.Submit') }}</div>
+          <ButtonLoginWrap className="derify-big-btn btn-yellow">
+              <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerApply'})">{{ $t('Trade.BrokerBind.BrokerCodes.NoBrokerCode') }}</span></p>
+              <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Trade.BrokerBind.BrokerCodes.Submit') }}</div>
+          </ButtonLoginWrap>
         </div>
       </div>
     </div>
@@ -25,9 +27,11 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
+import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 export default {
   name: 'Home',
   components: {
+    ButtonLoginWrap,
     DerifyErrorNotice,
     Navbar
   },
@@ -57,7 +61,9 @@ export default {
 
       this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
         if(data.success){
-          this.$router.push({name: 'home'})
+          this.$store.dispatch("user/initWallet").then(() => {
+            this.$router.push({name: 'home'})
+          });
         }else{
           this.errorNotice(data.msg)
         }

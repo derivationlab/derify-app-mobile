@@ -3,6 +3,12 @@ import VueRouter from 'vue-router'
 import store from '@/store'
 import { asyncInitWallet, getWallet } from '@/store/modules/user'
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
+  return originalPush.call(this, location).catch(err => err);
+};
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -83,10 +89,14 @@ router.beforeEach(async (to, from, next) => {
     await store.dispatch("user/initWallet");
   }
 
+  if(!store.state.user.isLogin){
+    return next()
+  }
+
   if (to.name !== 'brokerApply' && to.name !== 'brokerAdd' && !store.state.user.hasBroker) {
-    next({name: 'brokerAdd'})
+    return next({path: '/broker/add'})
   } else if((to.name === 'brokerApply' || to.name === 'brokerAdd') && store.state.user.hasBroker){
-    next({name: 'home'})
+    return next({name: '/'})
   }else{
     next()
   }
