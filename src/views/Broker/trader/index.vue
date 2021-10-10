@@ -16,7 +16,7 @@
         <div class="heard" :key="key">
           <div>
             <div class="color-type">{{$t(getUpdateType(data.update_type))}}</div>
-            <div class="unit-span mrt-5">{{data.trader}}</div>
+            <div class="unit-span mrt-5" v-if="data.update_type!==1">{{data.trader}}</div>
           </div>
 
           <div>
