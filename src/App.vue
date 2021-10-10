@@ -15,6 +15,7 @@
 <script>
 import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
 import { createDataEvenet } from '@/api/trade'
+let eventSource = null;
 export default {
   components: {DebugConsoleView},
   data() {
@@ -28,7 +29,13 @@ export default {
   },
   created () {
     const self = this;
-    createDataEvenet((datas) => {
+
+    if(eventSource){
+      eventSource.close();
+      eventSource = null;
+    }
+
+    eventSource = createDataEvenet((datas) => {
       datas.forEach((data) => {
         if(data.token === self.curPair.address){
           self.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: data.longPmrRate * 100, shortPmrRate: data.shortPmrRate * 100})
@@ -38,6 +45,12 @@ export default {
       })
 
     })
+  },
+  beforeDestroy () {
+    if(!eventSource){
+      eventSource.close();
+      eventSource = null;
+    }
   }
 }
 </script>
