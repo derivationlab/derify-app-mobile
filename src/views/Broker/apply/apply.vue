@@ -38,7 +38,7 @@
       </van-list>
     </div>
     <div class="home-last">
-      <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">I have a code ...</span></p>
+      <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">{{$t("Trade.BrokerBind.BrokerBind.HaveBrokerCode")}}</span></p>
       <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
     </div>
 

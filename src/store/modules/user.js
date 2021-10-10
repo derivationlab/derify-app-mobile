@@ -2,6 +2,7 @@ import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
 import { getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
 import { toChecksumAddress } from '@/utils/utils'
+import store from '@/store'
 
 export class ChainEnum {
   static values = []
@@ -107,7 +108,7 @@ export async function asyncInitWallet() {
   window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
 
   if(window.ethereum.ethAccounts.length > 0){
-    window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
+    window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
   }
 
   window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
@@ -122,10 +123,7 @@ export async function getWallet(){
   }
 
 
-  if(window.ethereum !== null){
-    window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
-  }
-
+  window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
 
@@ -146,7 +144,6 @@ export async function getWallet(){
 
   const isLogin = wethereum.selectedAddress && isEthum;
   const trader = isLogin ? wethereum.selectedAddress : "";
-
 
   return {
     selectedAddress: wethereum.selectedAddress,
@@ -188,6 +185,13 @@ const actions = {
       const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
       commit('updateState', {balanceOfDUSD : balanceOf})
       return balanceOf;
+    })();
+  },
+  initWallet({state, commit, dispatch}) {
+    return (async () => {
+      await asyncInitWallet();
+      const walletInfo = await getWallet()
+      commit("updateState", walletInfo)
     })();
   }
 }

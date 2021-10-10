@@ -392,7 +392,6 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
-import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '@/api/trade'
 import {
   fromContractUnit, numConvert,
   OpenType, OrderTypeEnum,
@@ -921,12 +920,6 @@ export default {
       }
 
       this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: '--', shortPmrRate: '--'})
-      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //update mining fee
-        //{"longPmrRate":0,"shortPmrRate":0}
-        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.shortPmrRate * 100})
-      })
-
       const self = this
 
       self.$store.dispatch('contract/getSpotPrice').then(() => {

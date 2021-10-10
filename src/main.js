@@ -137,6 +137,10 @@ function updateWallet (eventType = 0) {
       }else{
         return await vueApp.$router.push({name: 'brokerAdd'})
       }
+    }else if(walletInfo.isLogin && walletInfo.hasBroker){
+      if(vueApp.$route.name === 'brokerApply' || vueApp.$route.name === 'brokerAdd'){
+        return await vueApp.$router.push({name: 'home'})
+      }
     }
 
     if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {

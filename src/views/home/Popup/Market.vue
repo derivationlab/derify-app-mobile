@@ -41,7 +41,7 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.showPopup){
-        this.$store.dispatch('contract/updateAllPairPrice')
+        this.$store.dispatch('contract/updateAllPairPrice',{})
       }
     }
   },

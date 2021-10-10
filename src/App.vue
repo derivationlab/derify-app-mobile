@@ -14,10 +14,30 @@
 </style>
 <script>
 import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
+import { createDataEvenet } from '@/api/trade'
 export default {
   components: {DebugConsoleView},
   data() {
     return {}
+  },
+  computed:{
+    curPair () {
+      const {curPairKey, pairs} = this.$store.state.contract
+      return pairs.find(pair => pair.key === curPairKey)
+    },
+  },
+  created () {
+    const self = this;
+    createDataEvenet((datas) => {
+      datas.forEach((data) => {
+        if(data.token === self.curPair.address){
+          self.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: data.longPmrRate * 100, shortPmrRate: data.shortPmrRate * 100})
+        }
+
+        self.$store.dispatch('contract/updateAllPairPrice', {token: data.token, priceChangeRate: data.price_change_rate})
+      })
+
+    })
   }
 }
 </script>

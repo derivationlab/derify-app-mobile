@@ -20,7 +20,7 @@ export class EarningType {
 
 const state = {
   get wallet_address () {
-     return window.ethereum !== undefined ? toChecksumAddress(ethereum.selectedAddress) :  undefined
+     return window.ethereum && ethereum.selectedAddress ? toChecksumAddress(ethereum.selectedAddress) :  undefined
   },
   account: getCache('account') || null,
   pairs: [

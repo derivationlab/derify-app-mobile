@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import {getWallet} from "@/store/modules/user";
+import { asyncInitWallet, getWallet } from '@/store/modules/user'
 
 Vue.use(VueRouter)
 
@@ -77,5 +77,20 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  if(store.state.user.hasBroker === undefined){
+    await store.dispatch("user/initWallet");
+  }
+
+  if (to.name !== 'brokerApply' && to.name !== 'brokerAdd' && !store.state.user.hasBroker) {
+    next({name: 'brokerAdd'})
+  } else if((to.name === 'brokerApply' || to.name === 'brokerAdd') && store.state.user.hasBroker){
+    next({name: 'home'})
+  }else{
+    next()
+  }
+});
+
 
 export default router
