@@ -93,12 +93,13 @@ export default {
       this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: this.page}).then(r => {
         // Array<TradeBalanceDetail>
         self.loading = false
+        this.page++
         if (!r || r.length < 1) {
           this.finished = true
           return
         }
 
-        this.page++
+
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             list.push(item)

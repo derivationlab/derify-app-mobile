@@ -111,7 +111,7 @@ export async function asyncInitWallet() {
     window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
   }
 
-  window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
+  window.ethereum.networkVersion = await window.ethereum.request({method: 'net_version'})
 
   return window.ethereum
 }
