@@ -93,6 +93,11 @@ export default {
       this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: this.page}).then(r => {
         // Array<TradeBalanceDetail>
         self.loading = false
+
+        if(this.page <= 0){
+          list.splice(0);
+        }
+
         this.page++
         if (!r || r.length < 1) {
           this.finished = true
@@ -115,7 +120,10 @@ export default {
   },
   mounted() {
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
-      this.onLoad()
+      if(this.page < 1){
+        this.onLoad()
+      }
+
     })
   }
 }
