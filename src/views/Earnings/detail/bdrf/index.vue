@@ -54,6 +54,10 @@ export default {
           self.finished = true
           return
         }
+        if(this.page < 1){
+          this.list.splice(0);
+        }
+
         this.page++
         data.forEach((item) => self.list.push(item))
       }).catch(() => {

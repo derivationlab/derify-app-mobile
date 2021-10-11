@@ -62,6 +62,10 @@ export default {
           return
         }
 
+        if(this.page < 1){
+          this.list.splice(0);
+        }
+
         records.forEach((record) => {
           this.list.push(record)
         })
