@@ -799,6 +799,7 @@ export default {
     tabChange (key) {
 
       const self = this;
+      this.active = key;
 
       this.loadPositionData();
     },
@@ -909,16 +910,6 @@ export default {
       });
     },
     homeInit(){
-
-      if(!this.isLogin){
-        return
-      }
-
-      if(context.tokenMiningRateEvent !== null){
-        context.tokenMiningRateEvent.close()
-        context.tokenMiningRateEvent = null
-      }
-
       this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: '--', shortPmrRate: '--'})
       const self = this
 
