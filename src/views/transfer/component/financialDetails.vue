@@ -83,7 +83,7 @@ export default {
     },
     onLoad () {
 
-      if(!this.isLogin) {
+      if(!this.loading) {
         return
       }
 
@@ -122,7 +122,6 @@ export default {
       if(this.page < 1){
         this.onLoad()
       }
-
     })
   }
 }

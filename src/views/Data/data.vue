@@ -337,9 +337,6 @@ export default {
 .derify-dropmenus .van-dropdown-item__content{
  width: auto;
 }
-.home-top{
-  padding: 6.6rem 1.6rem 0 1.6rem;
-}
 .data-filter-wrap{
   display: flex;
   > :first-child{
@@ -369,6 +366,10 @@ export default {
 }
 </style>
 <style lang="less" scoped>
+.home-top{
+  padding: 6.6rem 1.6rem 0 1.6rem;
+}
+
 .home-container{
   height: 100vh;
   display: flex;
