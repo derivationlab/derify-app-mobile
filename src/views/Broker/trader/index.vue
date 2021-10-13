@@ -53,8 +53,9 @@ export default {
       return 'Rewards.Bond.History.Type' + type;
     },
     onLoad () {
+      const curpage = this.page++;
       this.$store.dispatch('broker/getBrokerRewardHistory',
-        {broker: this.broker, page: this.page, size: this.size})
+        {broker: this.broker, page: curpage, size: this.size})
       .then((records) => {
 
         if(!records || records.length < 1) {
@@ -62,14 +63,13 @@ export default {
           return
         }
 
-        if(this.page < 1){
+        if(curpage < 1){
           this.list.splice(0);
         }
 
         records.forEach((record) => {
           this.list.push(record)
         })
-        this.page++
 
       }).catch((e) => {
         console.warn(e)

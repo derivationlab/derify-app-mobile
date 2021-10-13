@@ -88,17 +88,16 @@ export default {
       }
 
       const self = this;
-      const list = this.list
-
-      this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: this.page}).then(r => {
+      const list = this.list;
+      const curpage = this.page++;
+      this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: curpage}).then(r => {
         // Array<TradeBalanceDetail>
         self.loading = false
 
-        if(this.page <= 0){
+        if(curpage < 1){
           list.splice(0);
         }
 
-        this.page++
         if (!r || r.length < 1) {
           this.finished = true
           return

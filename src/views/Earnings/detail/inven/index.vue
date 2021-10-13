@@ -47,17 +47,16 @@ export default {
     onLoad () {
       const self = this;
       self.loading = true
-      this.$store.dispatch("earnings/getTraderPMRBalance", {page: this.page}).then((data) => {
+      const curpage = this.page++;
+      this.$store.dispatch("earnings/getTraderPMRBalance", {page: curpage}).then((data) => {
         if(!data || data.length < 1) {
           self.finished = true
           return
         }
 
-        if(this.page < 1){
+        if(curpage < 1){
           this.list.splice(0);
         }
-
-        this.page++
         data.forEach((item) => self.list.push(item))
       }).catch(() => {
         self.finished = true
