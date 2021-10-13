@@ -40,12 +40,12 @@
         <div class="account-label system-popup-line">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
-                     type="text" v-model="broker.id"/>
+                     type="text" v-model="broker.id" @input="(val)=>{this.broker.id = val.toLowerCase()}"/>
         </div>
 
         <div class="system-popup-input derify-broker-url">
           <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/</span>
-          <span class="fc-85 fz-12">{{broker.id}}</span>
+          <span class="fc-85 fz-12">{{broker.id.toLowerCase()}}</span>
         </div>
 
         <div class="btn-wrap">
@@ -154,8 +154,13 @@ export default {
       }
 
       if(!this.broker.id) {
-        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'))
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'));
         return false
+      }
+
+      if(!/^[0-9a-zA-Z_@$]+$/.test(this.broker.id)){
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.FormatError'));
+        return false;
       }
 
       const resBroker = await this.$store.dispatch('broker/getBrokerByBrokerId', this.broker.id)
@@ -184,7 +189,7 @@ export default {
         param.logo = this.broker.logo
       }
 
-      this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
+      //this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
           this.$router.go(-1)
@@ -195,7 +200,7 @@ export default {
       }).catch(e => {
         this.errorNotice(this.$t('global.TradeFailedMsg'))
       }).finally(() => {
-        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
+        //this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
       });
 
 
