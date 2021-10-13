@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-list
-        v-model="loading"
+        :v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
         :finished-text="$t('global.NoMoreInfo')"

@@ -145,7 +145,7 @@
           <van-tabs v-model="active" @click="tabChange">
             <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
               <van-list
-                v-model="loading"
+                :v-model="loading"
                 :loading-text="$t('global.Loading')"
                 :finished="finished"
                 @load="onLoad"

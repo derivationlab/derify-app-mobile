@@ -6,7 +6,7 @@
         {{errorMsg}}
       </DerifyErrorNotice>
       <van-list class="brokers-wrap"
-                v-model="loading"
+                :v-model="loading"
                 @load="loadBrokers"
                 :finished="finished"
                 :loading-text="$t('global.Loading')"

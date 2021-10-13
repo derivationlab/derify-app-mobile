@@ -12,7 +12,7 @@
       </template>
     </van-nav-bar>
     <van-list
-        v-model="loading"
+        :v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
         @load="onLoad"
