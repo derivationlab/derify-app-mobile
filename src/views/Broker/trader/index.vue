@@ -14,20 +14,20 @@
       </div>
       <template v-for="(data,key) in list">
         <div class="heard" :key="key">
-          <div>
+          <div class="heard-col">
             <div class="color-type">{{$t(getUpdateType(data.update_type))}}</div>
-            <div class="unit-span mrt-5" v-if="data.update_type!==1">{{data.trader}}</div>
+            <div class="unit-span mrt-5" v-if="data.update_type!==1"><TextView :text="data.trader" show-pos="mid" len="10"/></div>
           </div>
 
-          <div>
+          <div class="heard-col center-span">
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
             <div class="unit-span mrt-5">USDT</div>
           </div>
-          <div class="center-span">
+          <div class="heard-col center-span">
             <div class="color-type">{{data.balance | amountFormt(2, false, '--')}}</div>
             <div class="unit-span mrt-5">USDT</div>
           </div>
-          <div class="center-span unit-span">
+          <div class="heard-col unit-span">
             {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
           </div>
         </div>
@@ -37,7 +37,9 @@
   </div>
 </template>
 <script>
+import TextView from '@/components/TextView'
 export default {
+  components: { TextView },
   props:['broker'],
   data () {
     return {
@@ -94,6 +96,7 @@ export default {
     color: rgba(255,255,255,0.45);
     font-size: 1.3rem;
   }
+
   .center-span{
     width: 10%;
     text-align:center;
