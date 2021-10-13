@@ -81,6 +81,11 @@ export default {
   },
   methods: {
     loadBrokers() {
+
+      if(this.loading){
+        return;
+      }
+
       this.loading = true
       this.$store.dispatch('broker/getBrokerList', {page: this.brokerPageNum, size: this.brokerPageSize})
         .then((brokers) => {

@@ -46,6 +46,10 @@ export default {
   },
   methods: {
     onLoad () {
+      if(this.loading){
+        return;
+      }
+
       const self = this;
       self.loading = true;
       const curpage = this.page++;

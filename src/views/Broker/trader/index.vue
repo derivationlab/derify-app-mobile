@@ -53,6 +53,11 @@ export default {
       return 'Rewards.Bond.History.Type' + type;
     },
     onLoad () {
+
+      if(this.loading){
+        return;
+      }
+
       const curpage = this.page++;
       this.$store.dispatch('broker/getBrokerRewardHistory',
         {broker: this.broker, page: curpage, size: this.size})

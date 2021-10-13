@@ -833,6 +833,9 @@ export default {
     },
 
     onLoad () {
+      if(this.loading){
+        return;
+      }
       const self = this
       const {active} = this
       this.loadPositionData(false);
