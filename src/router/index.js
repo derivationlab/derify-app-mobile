@@ -17,8 +17,13 @@ const routes = [
     redirect: '/home'
   },
   {
-    path: '/home/:id?',
+    path: '/home',
     name: 'home',
+    component: () => import('@/views/home/Home')
+  },
+  {
+    path: '/broker/:id?',
+    name: 'brokerBind',
     component: () => import('@/views/home/Home')
   },
   {
@@ -62,17 +67,17 @@ const routes = [
     component: () => import('@/views/transfer/component/financialDetails')
   },
   {
-    path: '/broker/apply',
+    path: '/broker-apply',
     name: 'brokerApply',
     component: () => import('@/views/Broker/apply/apply.vue')
   },
   {
-    path: '/broker/add',
+    path: '/broker-add',
     name: 'brokerAdd',
     component: () => import('@/views/Broker/apply/add.vue')
   },
   {
-    path: '/broker/info/:id?',
+    path: '/broker-info/:id?',
     name: 'brokerInfo',
     component: () => import('@/views/Broker/apply/info.vue')
   },
@@ -94,7 +99,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.name !== 'brokerApply' && to.name !== 'brokerAdd' && !store.state.user.hasBroker) {
-    return next({path: '/broker/add'})
+    return next({path: '/broker-add'})
   } else if((to.name === 'brokerApply' || to.name === 'brokerAdd') && store.state.user.hasBroker){
     return next({path: '/'})
   }else{

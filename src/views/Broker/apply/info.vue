@@ -80,7 +80,7 @@ export default {
     broker.broker = this.trader
     return {
       showLoading: false,
-      webroot: getWebroot() + "/home",
+      webroot: getWebroot() + "/broker",
       showError: false,
       errorMsg: '',
       broker: {...broker},

@@ -93,7 +93,7 @@ const actions = {
         const brokerInfo = await getBrokerByTrader(trader)
         brokerInfo.todayReward = await getBrokerTodayReward(trader)
 
-        brokerInfo.reference = getWebroot() + "/home/" + brokerInfo.id
+        brokerInfo.reference = getWebroot() + "/broker/" + brokerInfo.id
         payload.broker = Object.assign({}, accountInfo, brokerInfo)
         payload.broker = Object.assign({}, state.broker, payload.broker)
       }catch (e){
