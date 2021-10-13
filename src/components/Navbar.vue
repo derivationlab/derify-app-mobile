@@ -32,7 +32,9 @@
         </div>
       </template>
       <template #right v-else>
-        <div class="first-letter-wrap-inline" @click="$loginWallet()">C</div>
+        <div class="first-letter-wrap-inline" @click="$loginWallet()">
+          <span class="iconfont icon-link"></span>
+        </div>
       </template>
 
     </van-nav-bar>
@@ -53,7 +55,7 @@
           </div>
         </div>
         <div class="head-info-left"  v-else @click="$loginWallet()">
-          <div class="first-letter-wrap">C</div>
+          <div class="first-letter-wrap"><span class="iconfont icon-link"></span></div>
           <div class="info-div">
             <div class="info-name">{{$t('Trade.navbar.ClickToLogin')}}</div>
             <div>{{$t('Trade.navbar.ConnectWallet')}}</div>
@@ -304,6 +306,7 @@ export default {
 </script>
 
 <style lang="less">
+@import "../styles/iconfont.css";
 .first-letter-wrap-inline {
   width: 4rem;
   height: 4rem;
