@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="home-top-right">
-          <div class="home-top-icons" v-if="$route.name === 'home'">
+          <div class="home-top-icons" v-if="isHome()">
             <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
           </div>
           <div class="home-top-items">
@@ -38,7 +38,7 @@
           </div>
         </div>
       </div>
-      <template v-if="$route.name === 'home'">
+      <template v-if="isHome()">
         <div class="home-mid">
           <div class="home-mid-one">
             <van-dropdown-menu :overlay="false" class="derify-dropmenu">
@@ -113,7 +113,7 @@
           </div>
         </div>
       </template>
-      <div class="k-chart-wrap" :style="{display: $route.name === 'exchange' ? 'block' : 'none'}">
+      <div class="k-chart-wrap" :style="{display: isExchange() ? 'block' : 'none'}">
         <div class="k-chart-xtype-list">
           <template v-for="(gap,key) in kChartTimeMinGaps">
             <template v-if="key <= showTimeGapNum">
@@ -141,7 +141,7 @@
         <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
       </div>
       <div class="home-last">
-        <template v-if="$route.name === 'home'">
+        <template v-if="isHome()">
           <van-tabs v-model="active" @click="tabChange">
             <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
               <van-list
@@ -348,13 +348,13 @@
           </van-tabs>
         </template>
         <div class="home-last-btn-wrap">
-          <template v-if="$route.name === 'exchange'">
+          <template v-if="isExchange()">
             <template v-if="isLogin">
               <div class="home-last-four-btn green-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.OpenPage.BuyLong')}}</div>
               <div class="home-last-four-btn red-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.OpenPage.SellShort')}}</div>
             </template>
           </template>
-          <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
+          <template v-if="isHome() && (active === 'key1' || active === 'key2')">
             <template v-if="isLogin">
               <template v-if="active === 'key1' && positions.length > 0">
                 <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">{{$t('Trade.MyPosition.List.OneClickClose')}}</div>
@@ -988,6 +988,27 @@ export default {
         this.showError = true
         this.errorMsg = msg
       }
+    },
+    isHome(){
+      if(this.$route.name === 'home' || this.$route.name === 'brokerBind'){
+        return true;
+      }
+
+      return false;
+    },
+    isTrade(){
+      if(this.$route.name === 'home' || this.$route.name === 'brokerBind' || this.$route.name === 'exchange'){
+        return true;
+      }
+
+      return false;
+    },
+    isExchange(){
+      if(this.$route.name === 'exchange'){
+        return true;
+      }
+
+      return false;
     }
   },
   watch: {
@@ -1073,11 +1094,11 @@ export default {
 
     context.timer = setInterval(() => {
 
-      if(self.$route.name === 'home' || self.$route.name === 'exchange'){
+      if(self.isTrade()){
         self.$store.dispatch('contract/getSpotPrice')
       }
 
-      if(self.$route.name === 'home') {
+      if(self.isHome()) {
         self.$store.dispatch('contract/loadPositionData')
       }
     }, 15000)

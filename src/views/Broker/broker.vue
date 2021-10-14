@@ -15,7 +15,7 @@
               <p>{{broker.broker | textwrap(32)}}</p>
             </div>
           </div>
-          <div class="go-right-wrap"  @click="goPath(`/broker/info`)">
+          <div class="go-right-wrap"  @click="goPath(`/broker-info`)">
             <i class="go-right-icon">
               <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
             </i>
@@ -195,9 +195,7 @@ export default {
   },
   mounted () {
 
-    if(this.trader) {
-      this.loadTraderBrokerInfo()
-    }
+    this.loadTraderBrokerInfo()
 
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadTraderBrokerInfo()
@@ -314,12 +312,12 @@ export default {
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
-      this.goPath(`/broker/info/${this.broker.id}`)
+      this.goPath(`/broker-info/${this.broker.id}`)
     },
 
     goBorkerInfo () {
       this.succPopup = false
-      this.goPath(`/broker/info`)
+      this.goPath(`/broker-info`)
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
