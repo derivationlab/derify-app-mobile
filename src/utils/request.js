@@ -22,7 +22,6 @@ axios.defaults.timeout = 10000
 
 // post request header
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-axios.defaults.headers.get['Cache-Control'] = 'no-cache'
 
 // Request interceptor
 axios.interceptors.request.use(
