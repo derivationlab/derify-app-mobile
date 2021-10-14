@@ -83,7 +83,7 @@ export default {
     },
     onLoad () {
 
-      if(!this.loading) {
+      if(this.loading) {
         return
       }
 
