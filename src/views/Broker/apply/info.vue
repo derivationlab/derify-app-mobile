@@ -44,7 +44,7 @@
         </div>
 
         <div class="system-popup-input derify-broker-url">
-          <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/</span>
+          <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/broker/</span>
           <span class="fc-85 fz-12">{{broker.id.toLowerCase()}}</span>
         </div>
 
@@ -80,7 +80,7 @@ export default {
     broker.broker = this.trader
     return {
       showLoading: false,
-      webroot: getWebroot() + "/broker",
+      webroot: getWebroot(),
       showError: false,
       errorMsg: '',
       broker: {...broker},
