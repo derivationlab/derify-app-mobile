@@ -25,11 +25,11 @@
         </div>
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.Risk') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.RiskDetail') }}</div>
+          <div class="hint-item-info"><DerifyI18n text="Trade.MyPosition.Hint.RiskDetail" :params="RiskDetailLink"></DerifyI18n> </div>
         </div>
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.LiquidationPrice') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.MyPosition.Hint.LiquidationPriceDetail') }}</div>
+          <div class="hint-item-info"><DerifyI18n text="Trade.MyPosition.Hint.LiquidationPriceDetail" :params="LiquidationPriceDetailLink"></DerifyI18n></div>
         </div>
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.MyPosition.Hint.StopLossSetting') }}</div>
@@ -88,11 +88,11 @@
       <template v-if="hintType === 'key4'">
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.OpenPosition.Hint.PCFRate') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.OpenPosition.Hint.PCFRateDetail') }}</div>
+          <div class="hint-item-info"><DerifyI18n text="Trade.OpenPosition.Hint.PCFRateDetail" :params="PCFRateDetailLink"></DerifyI18n></div>
         </div>
         <div class="hint-item">
           <div class="hint-item-title">{{ $t('Trade.OpenPosition.Hint.PositionMiningAPY') }}</div>
-          <div class="hint-item-info">{{ $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail') }}</div>
+          <div class="hint-item-info"><DerifyI18n text="Trade.OpenPosition.Hint.PositionMiningAPYDetail" :params="PositionMiningAPYDetailLink"></DerifyI18n></div>
         </div>
       </template>
     </div>
@@ -100,7 +100,15 @@
 </template>
 
 <script>
+import DerifyI18n from '@/components/DerifyI18n'
+
+const PCFRateDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee">${chunks}</a>`}
+const PositionMiningAPYDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining">${chunks}</a>`}
+const RiskDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">${chunks}</a>`}
+const LiquidationPriceDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">${chunks}</a>`}
+
 export default {
+  components: { DerifyI18n },
   props: {
     show: {
       type: Boolean,
@@ -114,7 +122,11 @@ export default {
   data () {
     return {
       showPopup: this.show,
-      hintType: this.type
+      hintType: this.type,
+      PCFRateDetailLink,
+      PositionMiningAPYDetailLink,
+      RiskDetailLink,
+      LiquidationPriceDetailLink
     }
   },
   watch: {
@@ -144,6 +156,9 @@ export default {
     margin-top: .4rem;
     font-size: 1.2rem;
     color: rgba(255, 255, 255, .65);
+    & a {
+      color: @orange;
+    }
   }
 }
 </style>

@@ -94,9 +94,9 @@
 			},
 			"Hint":{
 				"PCFRate":"动仓费率",
-				"PCFRateDetail":"系统对扩大裸头寸的仓位变动（开仓/平仓）行为进行惩罚，对减少裸头寸的仓位变动行为进行奖励。该值为正，则代表开多/平空需要支付动仓费，开空/平多可以获得动仓费；该值为负，则代表开空/平多需要支付动仓费，开多/平空可以获得动仓费。具体规则点击查看>>",
+				"PCFRateDetail":"系统对扩大裸头寸的仓位变动（开仓/平仓）行为进行惩罚，对减少裸头寸的仓位变动行为进行奖励。该值为正，则代表开多/平空需要支付动仓费，开空/平多可以获得动仓费；该值为负，则代表开空/平多需要支付动仓费，开多/平空可以获得动仓费。具体规则<link>点击查看>> </link>",
 				"PositionMiningAPY":"持仓挖矿收益率",
-				"PositionMiningAPYDetail":"仓位杠杆越高，持仓挖矿的收益率越高。挖矿规则点击查看>>"
+				"PositionMiningAPYDetail":"仓位杠杆越高，持仓挖矿的收益率越高。挖矿规则<link>点击查看>> </link>"
 			},
 			"OpenPage":{
 				"Market":"市价委托",
@@ -164,9 +164,9 @@
 				"PositionMargin":"持仓保证金：",
 				"PositionMarginDetail":"仓位占用的保证金=持仓额/杠杆",
 				"Risk":"保证金率：",
-				"RiskDetail":"保证金比例越小，风险越大。当保证金率小于维持保证金率3%时开始触发强制减仓。具体规则点击查看>>",
+				"RiskDetail":"保证金比例越小，风险越大。当保证金率小于维持保证金率3%时开始触发强制减仓。具体规则<link>点击查看>> </link>",
 				"LiquidationPrice":"强平价格：",
-				"LiquidationPriceDetail":"此价格为预估的强平价格。如果该合约的价格低于该价格(多仓)或高于该价格(空仓)，您可能会被强制平仓。了解更多>>",
+				"LiquidationPriceDetail":"此价格为预估的强平价格。如果该合约的价格低于该价格(多仓)或高于该价格(空仓)，您可能会被强制平仓。<link>了解更多>></link>",
 				"StopLossSetting":"止损：",
 				"StopLossSettingDetail":"当价格达到止损设置的价格时，将自动平仓，此时仓位属于亏损状态，平仓防止继续亏损",
 				"TakeProfitSetting":"止盈：",
@@ -501,7 +501,7 @@
 				"Title":"经济商信息",
 				"Commit":"提交",
 				"InfoRequired":"信息填写不完整，请重新填写",
-				"FormatError`":"只能输入字母、数字和符号\"_\",\"@\",\"$\"",
+				"FormatError":"只能输入字母、数字和符号\"_\",\"@\",\"$\"",
 				"Edit":"编辑",
 				"Upload":"上传头像"
 			},
@@ -596,7 +596,7 @@
 	},
 	"Faucet":{
 		"Faucet":"水龙头",
-		"Address":"地址",
+		"Address":"测试USDT合约地址",
 		"GetUSDT":"领取{0}测试USDT",
 		"GetETH":"领取测试ETH",
 		"GetUSDTError":"测试USDT已被领取，不可重复领取"
