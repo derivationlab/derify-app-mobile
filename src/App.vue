@@ -15,6 +15,7 @@
 <script>
 import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
 import { createDataEvenet } from '@/api/trade'
+import DerifyI18n from "@/components/DerifyI18n";
 let eventSource = null;
 export default {
   components: {DebugConsoleView},
