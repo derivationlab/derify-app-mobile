@@ -1,6 +1,6 @@
 <template>
-  <p :is="component">
-  </p>
+  <fragment :is="component">
+  </fragment>
 </template>
 <script>
 import Vue from "vue";
