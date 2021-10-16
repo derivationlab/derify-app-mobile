@@ -90,21 +90,20 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if(store.state.user.hasBroker === undefined){
-    await store.dispatch("user/initWallet");
-  }
-
-  if(!store.state.user.isLogin){
-    return next()
-  }
-
-  if (to.name !== 'brokerApply' && to.name !== 'brokerAdd' && !store.state.user.hasBroker) {
-    return next({path: '/bind'})
-  } else if((to.name === 'brokerApply' || to.name === 'brokerAdd') && store.state.user.hasBroker){
-    return next({path: '/'})
-  }else{
-    next()
-  }
+  // const isBindBrokerPath = to.name === 'brokerApply' || to.name === 'brokerAdd';
+  //
+  // if(!store.state.user.isLogin){
+  //   return next()
+  // }
+  //
+  // if (!isBindBrokerPath && !store.state.user.hasBroker) {
+  //   //return next({path: '/bind'})
+  // } else if(isBindBrokerPath && store.state.user.hasBroker){
+  //   //return next({path: '/trade'})
+  // }else{
+  //   next()
+  // }
+  return next();
 });
 
 

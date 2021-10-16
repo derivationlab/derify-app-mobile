@@ -48,15 +48,6 @@ const actions = {
       return await getBrokerList(page, size)
     })()
   },
-  bindBroker ({state, commit, dispatch}, {trader, brokerId}) {
-    return (async () => {
-      const data = await bindBroker({
-        brokerId,
-        trader
-      });
-      return data;
-    })();
-  },
   getBrokerByBrokerId({state, commit, dispatch}, brokerId) {
     return (async () => {
       return await getBrokerByBrokerId(brokerId)

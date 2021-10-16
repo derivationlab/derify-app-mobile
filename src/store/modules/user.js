@@ -1,6 +1,6 @@
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
-import { getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
+import { bindBroker, getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
 import { toChecksumAddress } from '@/utils/utils'
 import store from '@/store'
 
@@ -96,6 +96,7 @@ const state = {
   processStatus: UserProcessStatus.finished,
   processStatusMsg: '',
   balanceOfDUSD: 0,
+  brokerInfo: null,
   brokerId: null
 };
 
@@ -119,7 +120,7 @@ export async function asyncInitWallet() {
 export async function getWallet(){
 
   if(!window.ethereum){
-    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
+    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: wethereum.isMetaMask, isLogin: false}
   }
 
   window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
@@ -133,13 +134,16 @@ export async function getWallet(){
   let brokerInfo = null;
   let traderBroker = null;
 
-  try{
-    brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
-    traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
-    brokerId = traderBroker ? traderBroker.broker : "";
-  }catch (e){
-    console.error("getBrokerIdByTrader error", e)
+  if(window.ethereum.selectedAddress){
+    try{
+      brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
+      traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
+      brokerId = traderBroker ? traderBroker.broker : "";
+    }catch (e){
+      console.error("getBrokerIdByTrader error", e)
+    }
   }
+
 
   const isLogin = wethereum.selectedAddress && isEthum;
   const trader = isLogin ? wethereum.selectedAddress : "";
@@ -191,8 +195,23 @@ const actions = {
       await asyncInitWallet();
       const walletInfo = await getWallet()
       commit("updateState", walletInfo)
+      return walletInfo;
     })();
-  }
+  },
+  bindBroker ({state, commit, dispatch}, {trader, brokerId}) {
+    return (async () => {
+      const data = await bindBroker({
+        brokerId,
+        trader
+      });
+
+      if(data.success) {
+        commit('updateState', {hasBroker: true, brokerId})
+      }
+
+      return data;
+    })();
+  },
 }
 
 export default {
