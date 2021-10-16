@@ -22,7 +22,7 @@ const actions = {
       const history = await getHistoryTradingData(token)
 
       if(history && history.length > 0) {
-        current = history[0]
+        current = history[history.length-1]
       }
 
       return {current,history}
