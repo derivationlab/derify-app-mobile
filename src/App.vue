@@ -82,7 +82,6 @@ export default {
           self.$store.dispatch('user/bindBroker', {trader: self.trader, brokerId: pathBrokerId}).then((data) => {
             if(data.success){
               self.container = Trade;
-              self.$router.push({name: 'home'});
             }
           }).catch(e => {
             console.log('bindBroker error', e);
