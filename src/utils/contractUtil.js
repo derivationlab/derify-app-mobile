@@ -454,17 +454,18 @@ export default class Contract {
    * @private
    */
   __tryWithPromoise(ret, defaultVal){
-  return async() => {
+    return (async() => {
       let data = defaultVal;
 
       try{
         data = await ret;
       }catch (e){
         console.error('__tryWithPromoise', e);
+        data = defaultVal;
       }
 
       return data;
-    }
+    })()
   }
 
   /**
