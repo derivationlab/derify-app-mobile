@@ -120,7 +120,7 @@ export async function asyncInitWallet() {
 export async function getWallet(){
 
   if(!window.ethereum){
-    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: wethereum.isMetaMask, isLogin: false}
+    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
 
   window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
