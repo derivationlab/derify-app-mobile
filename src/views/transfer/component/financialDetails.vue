@@ -12,7 +12,7 @@
       </template>
     </van-nav-bar>
     <van-list
-        v-model="loading"
+        :v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
         @load="onLoad"
@@ -83,22 +83,27 @@ export default {
     },
     onLoad () {
 
-      if(!this.isLogin) {
+      if(this.loading) {
         return
       }
 
       const self = this;
-      const list = this.list
-
-      this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: this.page}).then(r => {
+      const list = this.list;
+      const curpage = this.page++;
+      this.$store.dispatch('contract/getTraderTradeBalanceDetail', {page: curpage}).then(r => {
         // Array<TradeBalanceDetail>
         self.loading = false
+
+        if(curpage < 1){
+          list.splice(0);
+        }
+
         if (!r || r.length < 1) {
           this.finished = true
           return
         }
 
-        this.page++
+
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             list.push(item)
@@ -114,7 +119,9 @@ export default {
   },
   mounted() {
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
-      this.onLoad()
+      if(this.page < 1){
+        this.onLoad()
+      }
     })
   }
 }

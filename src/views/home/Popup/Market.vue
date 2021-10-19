@@ -41,7 +41,7 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.showPopup){
-        this.$store.dispatch('contract/updateAllPairPrice')
+        this.$store.dispatch('contract/updateAllPairPrice',{})
       }
     }
   },
@@ -54,6 +54,7 @@ export default {
         this.$toast(`${pair.name} does not support`)
         return false
       }
+
       this.$store.commit('contract/SET_CURPAIRKEY', pair.key)
 
       this.close()

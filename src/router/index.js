@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import {getWallet} from "@/store/modules/user";
+import { asyncInitWallet, getWallet } from '@/store/modules/user'
+
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
+  return originalPush.call(this, location).catch(err => err);
+};
 
 Vue.use(VueRouter)
 
@@ -11,8 +17,13 @@ const routes = [
     redirect: '/home'
   },
   {
-    path: '/home/:id?',
+    path: '/home',
     name: 'home',
+    component: () => import('@/views/home/Home')
+  },
+  {
+    path: '/broker/:id',
+    name: 'brokerBind',
     component: () => import('@/views/home/Home')
   },
   {
@@ -56,17 +67,17 @@ const routes = [
     component: () => import('@/views/transfer/component/financialDetails')
   },
   {
-    path: '/broker/apply',
+    path: '/bind/list',
     name: 'brokerApply',
     component: () => import('@/views/Broker/apply/apply.vue')
   },
   {
-    path: '/broker/add',
+    path: '/bind',
     name: 'brokerAdd',
     component: () => import('@/views/Broker/apply/add.vue')
   },
   {
-    path: '/broker/info/:id?',
+    path: '/broker-info/:id?',
     name: 'brokerInfo',
     component: () => import('@/views/Broker/apply/info.vue')
   },
@@ -77,5 +88,23 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  // const isBindBrokerPath = to.name === 'brokerApply' || to.name === 'brokerAdd';
+  //
+  // if(!store.state.user.isLogin){
+  //   return next()
+  // }
+  //
+  // if (!isBindBrokerPath && !store.state.user.hasBroker) {
+  //   //return next({path: '/bind'})
+  // } else if(isBindBrokerPath && store.state.user.hasBroker){
+  //   //return next({path: '/trade'})
+  // }else{
+  //   next()
+  // }
+  return next();
+});
+
 
 export default router

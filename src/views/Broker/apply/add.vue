@@ -1,5 +1,6 @@
 <template>
-  <div class="home-container page-container">
+  <BindList v-if="bindList" @onSwitch="() => this.bindList = false"></BindList>
+  <div v-else class="home-container page-container">
     <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="true"/>
     <div class="home-mid">
       <div class="market-popup system-popup">
@@ -13,8 +14,10 @@
         </div>
 
         <div class="btn-wrap">
-          <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerApply'})">{{ $t('Trade.BrokerBind.BrokerCodes.NoBrokerCode') }}</span></p>
-          <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Trade.BrokerBind.BrokerCodes.Submit') }}</div>
+          <ButtonLoginWrap className="derify-big-btn btn-yellow">
+              <p class="code-wrap"><span class="fc-yellow" @click="() => this.bindList=true">{{ $t('Trade.BrokerBind.BrokerCodes.NoBrokerCode') }}</span></p>
+              <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Trade.BrokerBind.BrokerCodes.Submit') }}</div>
+          </ButtonLoginWrap>
         </div>
       </div>
     </div>
@@ -25,17 +28,23 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
+import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
+import BindList from './apply'
+
 export default {
-  name: 'Home',
+  name: 'bind',
   components: {
+    ButtonLoginWrap,
     DerifyErrorNotice,
-    Navbar
+    Navbar,
+    BindList
   },
   data () {
     return {
       showError: false,
       errorMsg: '',
-      brokerCode: ''
+      brokerCode: '',
+      bindList: false
     }
   },
   created () {
@@ -55,9 +64,11 @@ export default {
         return false
       }
 
-      this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
+      this.$store.dispatch('user/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
         if(data.success){
-          this.$router.push({name: 'home'})
+          this.$store.dispatch("user/initWallet").then(() => {
+            this.$router.push({name: 'home'})
+          });
         }else{
           this.errorNotice(data.msg)
         }

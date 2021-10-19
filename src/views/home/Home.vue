@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="home-top-right">
-          <div class="home-top-icons" v-if="$route.name === 'home'">
+          <div class="home-top-icons" v-if="isHome()">
             <img src="@/assets/icons/icon-k.png" alt="" class="home-top-icon" @click="changeRouter('exchange')">
           </div>
           <div class="home-top-items">
@@ -38,7 +38,7 @@
           </div>
         </div>
       </div>
-      <template v-if="$route.name === 'home'">
+      <template v-if="isHome()">
         <div class="home-mid">
           <div class="home-mid-one">
             <van-dropdown-menu :overlay="false" class="derify-dropmenu">
@@ -113,7 +113,7 @@
           </div>
         </div>
       </template>
-      <div class="k-chart-wrap" :style="{display: $route.name === 'exchange' ? 'block' : 'none'}">
+      <div class="k-chart-wrap" :style="{display: isExchange() ? 'block' : 'none'}">
         <div class="k-chart-xtype-list">
           <template v-for="(gap,key) in kChartTimeMinGaps">
             <template v-if="key <= showTimeGapNum">
@@ -141,11 +141,11 @@
         <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
       </div>
       <div class="home-last">
-        <template v-if="$route.name === 'home'">
+        <template v-if="isHome()">
           <van-tabs v-model="active" @click="tabChange">
             <van-tab v-for="(value, key) in tabs" :key="key" :name="key" :title="value">
               <van-list
-                v-model="loading"
+                :v-model="loading"
                 :loading-text="$t('global.Loading')"
                 :finished="finished"
                 @load="onLoad"
@@ -348,13 +348,13 @@
           </van-tabs>
         </template>
         <div class="home-last-btn-wrap">
-          <template v-if="$route.name === 'exchange'">
+          <template v-if="isExchange()">
             <template v-if="isLogin">
               <div class="home-last-four-btn green-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.OpenPage.BuyLong')}}</div>
               <div class="home-last-four-btn red-gra" @click="changeRouter('home')">{{$t('Trade.OpenPosition.OpenPage.SellShort')}}</div>
             </template>
           </template>
-          <template v-if="$route.name === 'home' && (active === 'key1' || active === 'key2')">
+          <template v-if="isHome() && (active === 'key1' || active === 'key2')">
             <template v-if="isLogin">
               <template v-if="active === 'key1' && positions.length > 0">
                 <div class="home-last-batch-btn base-bg-color" @click="changeShowOneKeyUnwind(true)">{{$t('Trade.MyPosition.List.OneClickClose')}}</div>
@@ -392,7 +392,6 @@ import Unwind from './Popup/Unwind'
 import OneKeyUnwind from './Popup/OneKeyUnwind'
 import Open from './Popup/Open'
 import OpenStatus from '../../components/UserProcessBox/OpenStatus'
-import { createTokenMiningFeeEvenet, createTokenPriceChangeEvenet } from '@/api/trade'
 import {
   fromContractUnit, numConvert,
   OpenType, OrderTypeEnum,
@@ -490,6 +489,9 @@ export default {
     },
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    trader () {
+      return this.$store.state.user.selectedAddress
     },
     finished () {
       if(this.active === 'key1') {
@@ -797,20 +799,9 @@ export default {
     tabChange (key) {
 
       const self = this;
+      this.active = key;
 
-      if(key === 'key3'){
-        self.loading = true
-        self.loadTradeHistory(true)
-      }else{
-        this.$store.dispatch('contract/loadPositionData').then(r => {
-          self.loading = false
-        }).catch(()=>{
-            self.loading = false
-          })
-          .finally(() => {
-          self.loading = false
-        })
-      }
+      this.loadPositionData();
     },
 
     loadTradeHistory(truncate = false) {
@@ -819,45 +810,35 @@ export default {
       if(truncate) {
         this.tradeRecordsPage = 0
         this.tradeRecordsFinished =  false
+        self.tradeRecords.splice(0)
       }
 
+      self.loading = true
       this.$store.dispatch('contract/loadTradeRecords', {page: this.tradeRecordsPage}).then(r => {
         //@see TradeRecord
-        this.loading = false
         if (!r || r.length < 1) {
           this.tradeRecordsFinished = true
           return
         }
 
         this.tradeRecordsPage++
-        if(truncate) {
-          self.tradeRecords.splice(0)
-        }
-
         r.forEach((item) => {
           if (item !== undefined || !isNaN(item)) {
             self.tradeRecords.push(item)
           }
         })
-
+      }).finally(() => {
         self.loading = false
       })
     },
 
     onLoad () {
+      if(this.loading){
+        return;
+      }
       const self = this
       const {active} = this
-      if(active === 'key3'){
-        self.loadTradeHistory(false)
-      }else if(active === 'key1' || active === 'key2'){
-        console.log(`${key} loadPositionData`)
-        this.$store.dispatch('contract/loadPositionData').then(r => {
-          self.loading = false
-        }).finally(() => {
-          self.positionFinished = true
-          self.positionOrdersFinished = true
-        })
-      }
+      this.loadPositionData(false);
     },
 
     onOpenTypeChange () {
@@ -932,23 +913,7 @@ export default {
       });
     },
     homeInit(){
-
-      if(!this.isLogin){
-        return
-      }
-
-      if(context.tokenMiningRateEvent !== null){
-        context.tokenMiningRateEvent.close()
-        context.tokenMiningRateEvent = null
-      }
-
       this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: '--', shortPmrRate: '--'})
-      context.tokenMiningRateEvent = createTokenMiningFeeEvenet(this.curPair.address, (tokenAddr, positionMiniRate) => {
-        //update mining fee
-        //{"longPmrRate":0,"shortPmrRate":0}
-        this.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: positionMiniRate.longPmrRate * 100, shortPmrRate: positionMiniRate.shortPmrRate * 100})
-      })
-
       const self = this
 
       self.$store.dispatch('contract/getSpotPrice').then(() => {
@@ -969,14 +934,19 @@ export default {
       this.updateTraderOpenUpperBound()
     },
 
-    loadPositionData () {
+    loadPositionData (init = true) {
       const self = this
       self.loading = true
 
-      this.$store.dispatch('contract/loadPositionData').then(r => {
-      }).finally(() => {
-        self.loading = false
-      })
+      if(this.active === 'key3'){
+        this.loadTradeHistory(init);
+      }else{
+        this.$store.dispatch('contract/loadPositionData').then(r => {
+        }).finally(() => {
+          self.loading = false
+        })
+      }
+
     },
     getPairByAddress (token) {
       const pair = this.$store.state.contract.pairs.find((pair) => pair.address === token)
@@ -1018,6 +988,27 @@ export default {
         this.showError = true
         this.errorMsg = msg
       }
+    },
+    isHome(){
+      if(this.$route.name === 'home' || this.$route.name === 'brokerBind'){
+        return true;
+      }
+
+      return false;
+    },
+    isTrade(){
+      if(this.$route.name === 'home' || this.$route.name === 'brokerBind' || this.$route.name === 'exchange'){
+        return true;
+      }
+
+      return false;
+    },
+    isExchange(){
+      if(this.$route.name === 'exchange'){
+        return true;
+      }
+
+      return false;
     }
   },
   watch: {
@@ -1071,6 +1062,13 @@ export default {
         {text:  this.$t('Trade.OpenPosition.OpenPage.Market'), value: 0},
         {text: this.$t('Trade.OpenPosition.OpenPage.Limit'), value: 1}
       ]
+    },
+    user:{
+      handler() {
+        this.loadPositionData();
+      },
+      deep:true,
+      immediate:true
     }
   },
   created () {
@@ -1096,11 +1094,11 @@ export default {
 
     context.timer = setInterval(() => {
 
-      if(self.$route.name === 'home' || self.$route.name === 'exchange'){
+      if(self.isTrade()){
         self.$store.dispatch('contract/getSpotPrice')
       }
 
-      if(self.$route.name === 'home') {
+      if(self.isHome()) {
         self.$store.dispatch('contract/loadPositionData')
       }
     }, 15000)
@@ -1134,7 +1132,6 @@ export default {
 </style>
 <style lang="less" scoped>
 .home-container{
-  background-color: #0C071E;
   padding-top: 6.6rem;
   padding-left: 0;
   padding-right: 0;

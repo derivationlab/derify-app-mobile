@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Fragment from 'vue-fragment'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -14,6 +15,9 @@ import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
+
+Vue.use(Fragment.Plugin)
+
 let locale = 'en'
 try {
   const curLngStr = sessionStorage.getItem('locale')
@@ -27,6 +31,8 @@ try {
   }
 } catch (err) {
 }
+
+
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
@@ -81,8 +87,8 @@ Vue.prototype.$userProcessBox = function (param) {
 Vue.prototype.$eventBus = vueApp
 
 Vue.prototype.$loginWallet = function () {
-  asyncInitWallet().then(() => {
-    const walletInfo = getWallet()
+  asyncInitWallet().then(async () => {
+    const walletInfo = await getWallet()
 
     if(!walletInfo.isLogin){
       walletInfo.showWallet = true
@@ -91,63 +97,12 @@ Vue.prototype.$loginWallet = function () {
     }
 
     this.$store.commit("user/updateState", walletInfo)
-  }).catch(() => {
-    console.log('init wallet failed')
+  }).catch((e) => {
+    console.error('init wallet failed',e);
   })
-}
-
-window.onload = function (){
-  if(window.ethereum){
-    window.ethereum.on('accountsChanged', function () {
-      updateWallet(1)
-    })
-
-    window.ethereum.on('chainChanged', function () {
-      updateWallet(2)
-    })
-
-    updateWallet()
-  }else{
-    window.addEventListener('ethereum#initialized', updateWallet, {
-      once: true,
-    });
-
-    // If the event is not dispatched by the end of the timeout,
-    // the user probably doesn't have MetaMask installed.
-    setTimeout(updateWallet, 3000); // 3 seconds
-  }
 }
 
 window.vexstore = store
 window.vuexApp = vueApp
-
-function updateWallet (eventType = 0) {
-
-  asyncInitWallet().then(async () => {
-    const walletInfo = await getWallet()
-    store.commit("user/updateState", walletInfo)
-
-    if(walletInfo.isLogin && !walletInfo.hasBroker) {
-      if(vueApp.$route.name === 'home' && vueApp.$route.params.id){
-        await store.dispatch('broker/bindBroker', {trader: walletInfo.selectedAddress, brokerId: vueApp.$route.params.id}).then((data) => {
-          this.$toast(data.msg)
-        }).catch(e => {
-          this.$toast(e)
-        })
-      }else{
-        return await vueApp.$router.push({name: 'brokerAdd'})
-      }
-    }
-
-    if(store.state.user.selectedAddress !== walletInfo.selectedAddress) {
-      eventType = 1
-    }
-
-    vueApp.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
-
-  }).catch(() => {
-    console.log('init wallet failed')
-  })
-}
 
 

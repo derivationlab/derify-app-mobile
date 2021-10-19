@@ -36,13 +36,32 @@ export default {
       UserProcessStatus: UserProcessStatus
     }
   },
+  watch:{
+    show(){
+      if(this.show && this.status === UserProcessStatus.success){
+        setTimeout(() => {
+          this.status = UserProcessStatus.finished;
+          this.msg = '';
+          this.close();
+        }, 3000);
+      }
+    },
+    status() {
+      if(this.show && this.status === UserProcessStatus.success){
+        setTimeout(() => {
+          this.status = UserProcessStatus.finished;
+          this.msg = '';
+          this.close();
+        }, 3000);
+      }
+    }
+  },
   methods: {
     close () {
       this.show = false
       this.$emit('closeOpenStatusPopup', false, this.status)
     },
     updateData(data) {
-      console.log(this.$i18n)
       this.show = data.show
       this.msg = data.msg
       this.status = data.status

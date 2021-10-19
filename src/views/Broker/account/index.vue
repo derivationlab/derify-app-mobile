@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-list
-        v-model="loading"
+        :v-model="loading"
         :finished="finished"
         :loading-text="$t('global.Loading')"
         @load="onLoad"
@@ -37,10 +37,17 @@ export default {
   },
   methods: {
     onLoad () {
+      if(this.loading){
+        return;
+      }
+
       this.loading = true
       this.finished = false
+
+      const curpage = this.page++;
+
       this.$store.dispatch('broker/getBrokerBindTraders',
-        {broker: this.broker, page: this.page, size: this.size})
+        {broker: this.broker, page: curpage, size: this.size})
         .then((records) => {
 
           console.log(records)
@@ -50,10 +57,14 @@ export default {
             return
           }
 
+          if(curpage < 1){
+            this.list.splice(0);
+          }
+
           records.forEach((record) => {
             this.list.push(record)
           })
-          this.page++
+
 
         }).catch((e) => {
         console.warn(e)

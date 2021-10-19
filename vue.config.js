@@ -1,11 +1,17 @@
 module.exports = {
+  runtimeCompiler:true,
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title= 'Derify Protocol'
+        return args
+      })
+  },
   css: {
     loaderOptions: {
       less: {
         modifyVars: {
-          // 直接覆盖变量
-          // '@green': 'red',
-          // 或者可以通过 less 文件覆盖（文件路径为绝对路径）
           hack: 'true; @import "~@/styles/var.less";'
         }
       }

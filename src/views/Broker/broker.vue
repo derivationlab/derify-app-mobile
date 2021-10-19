@@ -15,7 +15,7 @@
               <p>{{broker.broker | textwrap(32)}}</p>
             </div>
           </div>
-          <div class="go-right-wrap"  @click="goPath(`/broker/info`)">
+          <div class="go-right-wrap"  @click="goPath(`/broker-info`)">
             <i class="go-right-icon">
               <img src="@/assets/icons/go-right.png" style="height:2.6rem; width: 2.6rem;" alt=""/>
             </i>
@@ -71,7 +71,7 @@
         <div class="broker-tab-wrap">
           <van-tabs v-model="active">
             <van-tab :title="$t('Broker.Broker.History.AccountHistory')">
-              <trader  :broker="this.broker.id" ></trader>
+              <trader  :broker="this.broker.broker" ></trader>
             </van-tab>
             <van-tab :title="$t('Broker.Broker.TraderInfo.TraderInfo')">
               <account  :broker="this.broker.broker" ></account>
@@ -195,9 +195,7 @@ export default {
   },
   mounted () {
 
-    if(this.trader) {
-      this.loadTraderBrokerInfo()
-    }
+    this.loadTraderBrokerInfo()
 
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadTraderBrokerInfo()
@@ -256,17 +254,19 @@ export default {
       ]
     },
     loadTraderBrokerInfo(){
-      this.showLoading = !this.brokerApplied
 
-      if(this.showLoading) {
-        this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.Loading')})
+      if(!this.trader){
+        this.showLoading = false;
+        this.showApplyPopup = true;
+        return;
       }
+
+      this.showLoading = !this.brokerApplied
 
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
       }).finally(() => {
         this.showLoading = false
-        this.$userProcessBox({show: false, status: UserProcessStatus.finished, msg: ''})
       });
     },
     // close popup
@@ -312,12 +312,12 @@ export default {
     // close apply success popup
     closesuccPopup () {
       this.succPopup = false
-      this.goPath(`/broker/info/${this.broker.id}`)
+      this.goPath(`/broker-info/${this.broker.id}`)
     },
 
     goBorkerInfo () {
       this.succPopup = false
-      this.goPath(`/broker/info`)
+      this.goPath(`/broker-info`)
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
@@ -472,7 +472,8 @@ export default {
     ul{
       font-size: 1.2rem;
       color: rgba(255,255,255,0.65);
-      // list-style: initial
+      list-style: initial;
+      padding-left: 2rem;
       li{
         line-height: 2rem;
       }

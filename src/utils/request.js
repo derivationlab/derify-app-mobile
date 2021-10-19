@@ -6,16 +6,10 @@ import QS from 'qs'
 import { Toast } from 'vant'
 import router from '../router/index'
 import store from '../store/index'
-import cfg from '../config'
+import cfg, { getCurrentServerEndPoint } from '../config'
 
 // Environment switch
-if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = cfg.server.development
-} else if (process.env.NODE_ENV === 'debug') {
-  axios.defaults.baseURL = cfg.server.debug
-} else if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = cfg.server.production
-}
+axios.defaults.baseURL = getCurrentServerEndPoint();
 
 // Request timeout
 axios.defaults.timeout = 10000
@@ -39,7 +33,7 @@ axios.interceptors.request.use(
 // Response interceptor
 axios.interceptors.response.use(
   response => {
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response)
     } else {
       return Promise.reject(response)
@@ -48,55 +42,6 @@ axios.interceptors.response.use(
   // When the server status code is not 200
   error => {
     if (error.response.status) {
-      switch (error.response.status) {
-        // 401: Not logged in
-        // Jump to the login page if you are not logged in, and carry the path of the current page
-        // Return to the current page after successful login, this step needs to be operated on the login page.
-        case 401:
-          router.replace({
-            path: '/login',
-            query: { redirect: router.currentRoute.fullPath }
-          })
-          break
-          // 403 token expired
-          // Prompt the user after login expiration
-          // Clear the local token and empty the token object in vuex
-          // Jump to login page
-        case 403:
-          Toast({
-            message: 'Login expired, please log in again\n',
-            duration: 1000,
-            forbidClick: true
-          })
-          // Clear token
-          localStorage.removeItem('token')
-          store.commit('loginSuccess', null)
-          // Jump to the login page, and pass the fullPath of the page to be browsed, after successful login, jump to the page that needs to be visited
-          setTimeout(() => {
-            router.replace({
-              path: '/login',
-              query: {
-                redirect: router.currentRoute.fullPath
-              }
-            })
-          }, 1000)
-          break
-          // 404 request does not exist
-        case 404:
-          Toast({
-            message: 'Network request does not exist\n',
-            duration: 1500,
-            forbidClick: true
-          })
-          break
-          // Other errors, throw an error prompt directly
-        default:
-          Toast({
-            message: error.response.data.message,
-            duration: 1500,
-            forbidClick: true
-          })
-      }
       return Promise.reject(error.response)
     }
   }

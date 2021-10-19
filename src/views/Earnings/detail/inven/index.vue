@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-list
-        v-model="loading"
+        :v-model="loading"
         :finished="finished"
         :finished-text="$t('global.NoMoreInfo')"
         :loading-text="$t('global.Loading')"
@@ -45,15 +45,22 @@ export default {
   },
   methods: {
     onLoad () {
+      if(this.loading){
+        return;
+      }
+
       const self = this;
       self.loading = true
-      this.$store.dispatch("earnings/getTraderPMRBalance", {page: this.page}).then((data) => {
-
+      const curpage = this.page++;
+      this.$store.dispatch("earnings/getTraderPMRBalance", {page: curpage}).then((data) => {
         if(!data || data.length < 1) {
           self.finished = true
           return
         }
-        this.page++
+
+        if(curpage < 1){
+          this.list.splice(0);
+        }
         data.forEach((item) => self.list.push(item))
       }).catch(() => {
         self.finished = true

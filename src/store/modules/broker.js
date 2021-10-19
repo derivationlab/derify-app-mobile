@@ -48,14 +48,6 @@ const actions = {
       return await getBrokerList(page, size)
     })()
   },
-  bindBroker ({state, commit, dispatch}, {trader, brokerId}) {
-    return (async () => {
-      return await bindBroker({
-        brokerId,
-        trader
-      })
-    })()
-  },
   getBrokerByBrokerId({state, commit, dispatch}, brokerId) {
     return (async () => {
       return await getBrokerByBrokerId(brokerId)
@@ -92,7 +84,7 @@ const actions = {
         const brokerInfo = await getBrokerByTrader(trader)
         brokerInfo.todayReward = await getBrokerTodayReward(trader)
 
-        brokerInfo.reference = getWebroot() + "/home/" + brokerInfo.id
+        brokerInfo.reference = getWebroot() + "/broker/" + brokerInfo.id
         payload.broker = Object.assign({}, accountInfo, brokerInfo)
         payload.broker = Object.assign({}, state.broker, payload.broker)
       }catch (e){

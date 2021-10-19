@@ -94,9 +94,9 @@
 			},
 			"Hint":{
 				"PCFRate":"PCF Rate",
-				"PCFRateDetail":"Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules click here.",
+				"PCFRateDetail":"Transactions that increase system risk have to reward transactions that decrease system risk. Positive rate means PCF payment is required for opening long/closing short, and opening short/closing long gets the PCF reward, vice versa. Detailed rules <link>click here</link>.",
 				"PositionMiningAPY":"Position Mining APY",
-				"PositionMiningAPYDetail":"The higher the leverage of positions, the higher the APY of position mining will be. Mining rules click here."
+				"PositionMiningAPYDetail":"The higher the leverage of positions, the higher the APY of position mining will be. Mining rules <link>click here</link>."
 			},
 			"OpenPage":{
 				"Market":"Market",
@@ -148,7 +148,8 @@
 				"SetTPSL":"Set TP / SL",
 				"Close":"Close",
 				"NoMoreInfo":"No more info",
-				"OneClickClose":"One-Click Close"
+				"OneClickClose":"One-Click Close",
+				"Position":"Position"
 			},
 			"Hint":{
 				"UnrealizedPnL":"Unrealized PnL",
@@ -163,9 +164,9 @@
 				"PositionMargin":"Position Margin",
 				"PositionMarginDetail":"Used Position Margin = Position Held/Leverage",
 				"Risk":"Risk",
-				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules click here>>",
+				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules <link>click here>></link>",
 				"LiquidationPrice":"Liquidation Price",
-				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. Know more>>",
+				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. <link>Know more>></link>",
 				"StopLossSetting":"Stop Loss Setting",
 				"StopLossSettingDetail":"When the SL price is reached, system will be automatically close your position to prevent further loss.",
 				"TakeProfitSetting":"Take Profit Setting",
@@ -216,7 +217,8 @@
 				"Time":"Time",
 				"Cancel":"Cancel",
 				"CancelAll":"Cancel All",
-				"NoMoreInfo":"No more info"
+				"NoMoreInfo":"No more info",
+				"Position":"Position"
 			},
 			"Hint":{
 				"OrderPrice":"Order Price",
@@ -269,7 +271,9 @@
 				"CloseLiquidate":"Close / Liquidate",
 				"CloseLiquidate1":"Close",
 				"CloseLiquidate2":"/ Liquidate",
-				"NoMoreInfo":"No more info"
+				"NoMoreInfo":"No more info",
+				"Position":"Position",
+				"Time":"Time"
 			},
 			"Hint":{
 				"PnL":"PnL",
@@ -307,7 +311,8 @@
 				"NumberError":"Error, please retry",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Error, please retry.",
+				"title":"Withdraw USDT"
 			},
 			"History":{
 				"PositionMining":"Position Mining",
@@ -591,7 +596,7 @@
 	},
 	"Faucet":{
 		"Faucet":"Faucet",
-		"Address":"Address",
+		"Address":"Test USDT Contract Address",
 		"GetUSDT":"Get {0} Test USDT",
 		"GetETH":"Get Test ETH",
 		"GetUSDTError":"You have already claimed Test USDT"

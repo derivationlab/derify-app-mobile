@@ -1,12 +1,12 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="true"/>
+    <navbar :title="$t('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')" :logo="false" :showGoback="false"/>
     <div class="home-mid">
       <DerifyErrorNotice :show="showError" @close="errorNotice">
         {{errorMsg}}
       </DerifyErrorNotice>
       <van-list class="brokers-wrap"
-                v-model="loading"
+                :v-model="loading"
                 @load="loadBrokers"
                 :finished="finished"
                 :loading-text="$t('global.Loading')"
@@ -38,8 +38,10 @@
       </van-list>
     </div>
     <div class="home-last">
-      <p class="code-wrap"><span class="fc-yellow" @click="() => this.$router.push({name:'brokerAdd'})">I have a code ...</span></p>
-      <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
+      <ButtonLoginWrap className="derify-big-btn btn-yellow">
+        <p class="code-wrap"><span class="fc-yellow" @click="() => this.$emit('onSwitch')">{{$t("Trade.BrokerBind.BrokerBind.HaveBrokerCode")}}</span></p>
+        <div class="derify-big-btn btn-yellow" @click="bindBroker">{{ $t('Broker.Broker.InfoEdit.Commit') }}</div>
+      </ButtonLoginWrap>
     </div>
 
   </div>
@@ -48,10 +50,12 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 export default {
   name: 'Home',
   components: {
     DerifyErrorNotice,
+    ButtonLoginWrap,
     Navbar
   },
   data () {
@@ -79,6 +83,11 @@ export default {
   },
   methods: {
     loadBrokers() {
+
+      if(this.loading){
+        return;
+      }
+
       this.loading = true
       this.$store.dispatch('broker/getBrokerList', {page: this.brokerPageNum, size: this.brokerPageSize})
         .then((brokers) => {
@@ -103,10 +112,13 @@ export default {
         return
       }
 
-      this.$store.dispatch('broker/bindBroker', {trader: this.trader, brokerId: this.selectedBroker.id})
+      this.$store.dispatch('user/bindBroker', {trader: this.trader, brokerId: this.selectedBroker.id})
         .then((data) => {
           if(data.success){
-            this.$router.push({name: 'home'})
+            this.$store.dispatch("user/initWallet").then(() => {
+              this.$router.push({name: 'home'})
+            });
+
           }else{
             this.errorNotice(data.msg)
           }

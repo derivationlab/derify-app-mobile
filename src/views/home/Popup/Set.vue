@@ -30,7 +30,7 @@
         <div class="system-popup-input-hint">
           <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceProfitNotice">
             <template #0>
-              <span class="fc-85">{{position.stopProfitPrice | amountFormt(2, false, '--', -8)}}</span>
+              <span class="fc-85">{{position.stopProfitPriceInput ? position.stopProfitPriceInput : '--'}}</span>
             </template>
             <template #1>
               <span :class="position.profitAmount > 0 ? 'fc-green' : 'fc-red'">{{ position.profitAmount  | amountFormt(2, true, '--', -8)}}</span>
@@ -47,7 +47,7 @@
         <div class="system-popup-input-hint">
           <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceLossNotice">
             <template #0>
-              <span class="fc-85">{{position.stopLossPrice | amountFormt(2, false, '--', -8)}}</span>
+              <span class="fc-85">{{position.stopLossPriceInput ? position.stopLossPriceInput : ''}}</span>
             </template>
             <template #1>
               <span :class="position.lostAmount > 0 ? 'fc-green' : 'fc-red'">{{ position.lostAmount  | amountFormt(2, true, '--', -8)}}</span>
@@ -64,8 +64,15 @@
 </template>
 
 <script>
-import {fck} from "@/utils/utils";
-import { fromContractUnit, OrderTypeEnum, SideEnum, toContractNum, toHexString } from '@/utils/contractUtil'
+import { amountFormt, fck } from '@/utils/utils'
+import {
+  fromContractUnit,
+  OrderTypeEnum,
+  SideEnum,
+  toContractNum,
+  toContractUnit,
+  toHexString
+} from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
@@ -123,10 +130,6 @@ export default {
 
       this.position.stopProfitPriceInput = price;
 
-      if(price === '') {
-        return
-      }
-
       if(price < 0){
         price = 0
       }
@@ -136,9 +139,6 @@ export default {
     onInputLossPrice (price) {
       const {position} = this;
       this.position.stopLossPriceInput = price;
-      if(price === '') {
-        return
-      }
 
       if(price < 0){
         price = 0
@@ -189,15 +189,19 @@ export default {
       return true
     },
     calLossAndProfit(){
-      if(this.position.stopProfitPriceInput > 0) {
+      if(this.position.stopProfitPriceInput) {
         this.position.profitAmount = toContractNum((this.position.stopProfitPriceInput - fromContractUnit(this.position.averagePrice))
           * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
 
+      }else{
+        this.position.profitAmount = '--';
       }
 
-      if(this.position.stopLossPriceInput > 0) {
+      if(this.position.stopLossPriceInput) {
         this.position.lostAmount = toContractNum((this.position.stopLossPriceInput - fromContractUnit(this.position.averagePrice))
           * fromContractUnit(this.position.size) * (this.position.side === SideEnum.LONG ? 1 : -1))
+      }else{
+        this.position.lostAmount = '--';
       }
 
     },
@@ -207,30 +211,26 @@ export default {
 
       let profitPrice = null
       let lossPrice = null
-      if(this.position.stopProfitPriceInput !== ''){
+      if(amountFormt(this.position.stopProfitPriceInput,-1,false,"") === amountFormt(this.position.stopProfitPrice,-1,false,"",-8)){
+        profitPrice = 0;
+      }else if(this.position.stopProfitPriceInput){
         if(!this.checkProfitPrice(this.position, this.position.stopProfitPriceInput)){
           this.errorNotice(this.$t('global.NumberError'))
           return
         }
-
-        profitPrice = toContractNum(this.position.stopProfitPriceInput) + ""
-        if(profitPrice === this.position.stopProfitPrice) {
-          profitPrice = 0
-        }
+        profitPrice = toContractUnit(this.position.stopProfitPriceInput)
       }else{
         profitPrice = -1
       }
 
-      if(this.position.stopLossPriceInput !== ''){
+      if(amountFormt(this.position.stopLossPriceInput,-1,false,"") === amountFormt(this.position.stopLossPrice,-1,false,"",-8)){
+        lossPrice = 0;
+      }else if(this.position.stopLossPriceInput !== ''){
         if(!this.checkLossPrice(this.position, this.position.stopLossPriceInput)){
           this.errorNotice(this.$t('global.NumberError'))
           return
         }
-
-        lossPrice = toContractNum(this.position.stopLossPriceInput)+""
-        if(lossPrice === this.position.stopLossPrice) {
-          lossPrice = 0
-        }
+        lossPrice = toContractUnit(this.position.stopLossPriceInput)
       }else{
         lossPrice = -1
       }

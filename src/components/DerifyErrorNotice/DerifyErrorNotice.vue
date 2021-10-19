@@ -27,6 +27,11 @@ export default {
   watch:{
     show() {
       this.showError = this.show
+      if(this.show) {
+        setTimeout(() => {
+          this.closeError();
+        },3000)
+      }
     }
   }
 }

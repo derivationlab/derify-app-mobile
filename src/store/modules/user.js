@@ -1,6 +1,8 @@
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
-import { getBrokerIdByTrader } from '../../api/broker'
+import { bindBroker, getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader } from '../../api/broker'
+import { toChecksumAddress } from '@/utils/utils'
+import store from '@/store'
 
 export class ChainEnum {
   static values = []
@@ -94,6 +96,7 @@ const state = {
   processStatus: UserProcessStatus.finished,
   processStatusMsg: '',
   balanceOfDUSD: 0,
+  brokerInfo: null,
   brokerId: null
 };
 
@@ -106,10 +109,10 @@ export async function asyncInitWallet() {
   window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
 
   if(window.ethereum.ethAccounts.length > 0){
-    window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
+    window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
   }
 
-  window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
+  window.ethereum.networkVersion = await window.ethereum.request({method: 'net_version'})
 
   return window.ethereum
 }
@@ -120,14 +123,30 @@ export async function getWallet(){
     return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
 
-
+  window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
   let wethereum = window.ethereum
   const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
 
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
+  let brokerId = "";
+  let brokerInfo = null;
+  let traderBroker = null;
+
+  if(window.ethereum.selectedAddress){
+    try{
+      brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
+      traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
+      brokerId = traderBroker ? traderBroker.broker : "";
+    }catch (e){
+      console.error("getBrokerIdByTrader error", e)
+    }
+  }
+
+
+  const isLogin = wethereum.selectedAddress && isEthum;
+  const trader = isLogin ? wethereum.selectedAddress : "";
 
   return {
     selectedAddress: wethereum.selectedAddress,
@@ -138,7 +157,10 @@ export async function getWallet(){
     brokerId: brokerId,
     isEthum,
     networkVersion: wethereum.networkVersion,
-    isMetaMask: wethereum.isMetaMask
+    isMetaMask: wethereum.isMetaMask,
+    trader,
+    brokerInfo,
+    traderBroker
   }
 }
 
@@ -167,7 +189,29 @@ const actions = {
       commit('updateState', {balanceOfDUSD : balanceOf})
       return balanceOf;
     })();
-  }
+  },
+  initWallet({state, commit, dispatch}) {
+    return (async () => {
+      await asyncInitWallet();
+      const walletInfo = await getWallet()
+      commit("updateState", walletInfo)
+      return walletInfo;
+    })();
+  },
+  bindBroker ({state, commit, dispatch}, {trader, brokerId}) {
+    return (async () => {
+      const data = await bindBroker({
+        brokerId,
+        trader
+      });
+
+      if(data.success) {
+        commit('updateState', {hasBroker: true, brokerId})
+      }
+
+      return data;
+    })();
+  },
 }
 
 export default {

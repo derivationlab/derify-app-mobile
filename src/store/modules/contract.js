@@ -2,14 +2,11 @@ import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
 import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
 import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
-import { amountFormt, fck } from '@/utils/utils'
-import { createTokenPriceChangeEvenet } from '@/api/trade'
-
-const tokenPriceRateEnventMap = {};
+import { amountFormt, fck, toChecksumAddress } from '@/utils/utils'
 
 const state = {
   get wallet_address () {
-    return window.ethereum !== undefined ? ethereum.selectedAddress :  undefined
+    return window.ethereum !== undefined && window.ethereum.selectedAddress ? toChecksumAddress(ethereum.selectedAddress) :  undefined
   },
   account: getCache('account') || null,
   pairs: [
@@ -18,7 +15,7 @@ const state = {
     {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
-  curPairKey: 'BTC',
+  curPairKey:  window.localStorage.getItem('curPairKey') || 'BTC',
   contractData: {
     positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
@@ -62,6 +59,7 @@ const mutations = {
     setCache('account', account)
   },
   SET_CURPAIRKEY (state, key) {
+    window.localStorage.setItem("curPairKey", key);
     state.curPairKey = key
   },
   SET_CURSPOTPRICE (state, price) {
@@ -346,7 +344,7 @@ const actions = {
       commit('SET_CONTRACT_DATA', data)
 
       //4.update all token price
-      dispatch('updateAllPairPrice')
+      dispatch('updateAllPairPrice',{})
 
       // 4.get sysOpenUpperBound
       data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
@@ -397,7 +395,7 @@ const actions = {
       return sysCloseUpperBound
   })
   },
-  updateAllPairPrice ({state, commit}) {
+  updateAllPairPrice ({state, commit}, {token,priceChangeRate}) {
     const contract = web3Utils.contract(state.wallet_address)
 
     if(!state.wallet_address){
@@ -405,34 +403,21 @@ const actions = {
     }
 
     state.pairs.forEach((pair) => {
-
       if(!pair.enable){
         return
       }
 
-      contract.getSpotPrice(pair.address).then((spotPrice) => {
+      contract.getSpotPrice(pair.token).then((spotPrice) => {
         commit('UPDATE_PAIRS', [{num: fromContractUnit(spotPrice), key: pair.key}])
       })
 
-      if(!tokenPriceRateEnventMap[pair.key]){
-        tokenPriceRateEnventMap[pair.key] = createTokenPriceChangeEvenet(pair.key, (pairKey, priceChangeRate) => {
-          //Update token price change
+      if(pair.address === token){
+        if(pair.key === state.curPairKey) {
+          commit('SET_CONTRACT_DATA', {tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)})
+        }
 
-          if(pair.key === state.curPairKey) {
-            commit('SET_CONTRACT_DATA', {tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)})
-          }
-
-          commit('UPDATE_PAIRS', [{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pairKey}])
-
-          const matchPair = state.pairs.find((item) => item.key === pairKey)
-
-          contract.getSpotPrice(matchPair.address).then((spotPrice) => {
-            commit('UPDATE_PAIRS', [{num: fromContractUnit(spotPrice), key: matchPair.key}])
-          })
-        })
+        commit('UPDATE_PAIRS', [{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pair.key}])
       }
-
-
     })
 
   },
@@ -462,6 +447,7 @@ const actions = {
   loadPositionData ({state, commit}) {
     return (async () => {
       if(!state.wallet_address){
+        commit('RESET_POSITION_DATA');
         return {}
       }
 
@@ -474,10 +460,14 @@ const actions = {
           continue
         }
 
-        positionDatas.push({positionData: await contract.getTraderAllPosition(state.wallet_address, pairItem.address), pair: pairItem})
-      }
+        try{
+          positionDatas.push({positionData: await contract.getTraderAllPosition(state.wallet_address, pairItem.address), pair: pairItem})
+        }catch (e){
+          console.error("getTraderAllPosition exception:", e)
+        }
 
-      commit('RESET_POSITION_DATA')
+      }
+      commit('RESET_POSITION_DATA');
       positionDatas.forEach((positionData) => {
         commit('ADD_POSITION_DATA', {...positionData})
       })

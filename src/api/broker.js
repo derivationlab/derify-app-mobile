@@ -18,6 +18,20 @@ export async function getBrokerIdByTrader(trader) {
 }
 
 /**
+ * get trader's brokerId
+ * @param trader
+ * @return {Promise<BrokerInfo>}
+ */
+export async function getBindBrokerByTrader(trader) {
+  const content =  await io.get("/api/broker_info_of_trader/" + trader)
+  if(content && content.data && content.data.length > 0) {
+    return content.data[0];
+  }
+
+  return null;
+}
+
+/**
  *
  * @param page
  * @param size
@@ -39,12 +53,16 @@ export async function getBrokerList(page = 0, size = 10) {
  * @return {Promise<{msg: string, success: boolean}>}
  */
 export async function bindBroker({trader,brokerId}) {
-  const content =  await io.post('/api/bind_broker', {brokerId,trader})
+  try{
+    const content =  await io.post('/api/bind_broker', {brokerId,trader})
 
-  if(content && content.msg) {
-    return {success: true, msg: content.msg}
-  }else if(content && content.error){
-    return {success: false, msg: content.error}
+    if(content && content.msg) {
+      return {success: true, msg: content.msg}
+    }else if(content && content.error){
+      return {success: false, msg: content.error}
+    }
+  }catch (e){
+    console.error("bindBroker error", e)
   }
 
   return {success: false, msg: 'unknown'};
@@ -132,7 +150,7 @@ export async function getBrokerTodayReward(trader, start=(new Date()).Format('yy
 export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
   const content = await io.get(`/api/broker_reward_balance/${broker}/${page}/${size}`)
 
-  if(content && content.data && content.records) {
+  if(content && content.data && content.data.records) {
     return content.data.records
   }
 
