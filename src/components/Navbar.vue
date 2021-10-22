@@ -344,7 +344,7 @@ export default {
   }
 }
 .head-info {
-  padding: 10rem 2rem 2.4rem 2rem;
+  padding: 2rem 2rem 2.4rem 2rem;
   border-bottom: 0.1rem solid rgba(255, 255, 255, 0.15);
   display: flex;
   justify-content: space-between;
