@@ -117,7 +117,6 @@ export default {
       const self = this;
 
       const walletInfo = await this.$store.dispatch('user/initWallet');
-      console.log(walletInfo, this.$store.state.user);
 
       self.resetRoute();
 
@@ -128,8 +127,16 @@ export default {
       this.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
     }
   },
+  events:{
+    afterInitWallet(){
+      this.resetRoute()
+    }
+  },
   created () {
     const self = this;
+
+    this.$events.$on('afterInitWallet', () => this.resetRoute());
+    console.log(vuexApp === this);
 
     //bind chain event
     (async() => {

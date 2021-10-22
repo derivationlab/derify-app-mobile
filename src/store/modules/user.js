@@ -4,6 +4,8 @@ import { bindBroker, getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrad
 import { toChecksumAddress } from '@/utils/utils'
 import store from '@/store'
 
+let walletChangeVersion = 0;
+
 export class ChainEnum {
   static values = []
   constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true){
@@ -193,8 +195,10 @@ const actions = {
   initWallet({state, commit, dispatch}) {
     return (async () => {
       await asyncInitWallet();
-      const walletInfo = await getWallet()
-      commit("updateState", walletInfo)
+      const walletInfo = await getWallet();
+      walletInfo.walletChangeVersion = ++walletChangeVersion;
+      commit("updateState", walletInfo);
+
       return walletInfo;
     })();
   },

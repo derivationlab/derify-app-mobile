@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Fragment from 'vue-fragment'
+import VueEvents from 'vue-events'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -16,6 +17,7 @@ import UserProcessBox from './components/UserProcessBox'
 import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
 
+Vue.use(VueEvents)
 Vue.use(Fragment.Plugin)
 
 let locale = 'en'
@@ -75,6 +77,7 @@ const vueApp = new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+window.vuexApp = vueApp
 
 /**
  *
@@ -103,6 +106,5 @@ Vue.prototype.$loginWallet = function () {
 }
 
 window.vexstore = store
-window.vuexApp = vueApp
 
 
