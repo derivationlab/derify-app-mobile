@@ -22,6 +22,9 @@
       </div>
     </div>
 
+    <van-overlay :show="loading" @click="loading = false" class-name="derify-loading-wrap">
+      <van-loading size="2.4rem" v-show="loading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
+    </van-overlay>
   </div>
 </template>
 
@@ -86,6 +89,11 @@ export default {
   },
   methods: {
     async submitThenClose () {
+
+      if(this.loading){
+        return;
+      }
+
       this.loading = true;
       if(!this.trader){
         this.loading = false;
@@ -132,6 +140,12 @@ export default {
 
 .page-container{
   background: #140B32;
+
+  .van-loading--vertical{
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .home-mid{
