@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <van-overlay :show="loading" @click="loading = false" class-name="derify-loading-wrap">
+    <van-overlay :show="loading" class-name="derify-loading-wrap">
       <van-loading size="2.4rem" v-show="loading" vertical>{{ $t('global.TradePendingMsg') }}</van-loading>
     </van-overlay>
   </div>
