@@ -118,12 +118,11 @@ export default {
 
       const walletInfo = await this.$store.dispatch('user/initWallet');
 
-      self.resetRoute();
 
       if(self.$store.state.user.selectedAddress !== walletInfo.selectedAddress) {
         eventType = 1
       }
-
+      this.$events.$emit('afterInitWallet');
       this.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
     }
   },
