@@ -84,7 +84,7 @@ export default {
     height: 12rem;
   }
   .open-status-text {
-    font-size: 1.7rem;
+    font-size: 1.2rem;
     font-weight: 500;
     margin-top: 4rem;
   }
