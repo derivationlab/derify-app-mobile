@@ -136,7 +136,6 @@ export default {
     const self = this;
 
     this.$events.$on('afterInitWallet', () => this.resetRoute());
-    console.log(vuexApp === this);
 
     //bind chain event
     (async() => {
