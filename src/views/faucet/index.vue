@@ -108,11 +108,11 @@ export default {
           this.$userProcessBox({show: true, status: UserProcessStatus.success, msg: 'success'});
           addTestTokentoWallet();
         }else{
-          this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: data.msg});
+          this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('Faucet.GetUSDTError')});
         }
 
       }).catch(e => {
-        this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: !e ? 'failed' :  e.msg});
+        this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('Faucet.GetUSDTError')});
       }).finally(() => {
         this.loading = false;
       });
