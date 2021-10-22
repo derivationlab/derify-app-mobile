@@ -100,6 +100,8 @@ export default {
       if(isBrokerBindPath){
         self.$router.push({name: 'home'});
       }
+
+
     },
     bindEthrumEvent(){
       const self = this;

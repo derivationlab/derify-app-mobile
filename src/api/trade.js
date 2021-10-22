@@ -124,6 +124,19 @@ export function createDataEvenet (callback){
 }
 
 /**
+ *
+ * @param trader
+ * @param amount
+ * @return {Promise<{code:number, msg:string}>}
+ */
+export async function sendUSDT (trader, amount) {
+  const content =  await io.post(`${serverEndPoint}/api/send_usdt`, {trader, amount});
+
+  return content;
+
+}
+
+/**
  * Get mining profitability
  * @param tokenAddr
  * @param callback param PositionMiningRate

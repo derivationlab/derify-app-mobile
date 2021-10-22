@@ -177,6 +177,28 @@
           </van-icon>
           <div class="menu-list-item-name">{{ $t("Trade.navbar.Data") }}</div>
         </div>
+        <div
+          class="menu-list-item"
+          @click="changeRouter('faucet')"
+          :class="$route.name === 'faucet' ? 'active' : ''"
+        >
+          <img
+            class="menu-list-item-icon"
+            src="@/assets/icons/icon-menu-active.png"
+            alt=""
+          />
+          <van-icon
+            class-prefix="iconfont"
+            class="menu-list-item-van-icon icon-shuilongtou"
+            name="extra"
+            :color="
+              $route.name === 'faucet' ? '#FAE247' : 'rgba(255, 255, 255, .85)'
+            "
+            size="2.0rem"
+          >
+          </van-icon>
+          <div class="menu-list-item-name">{{ $t("Faucet.Faucet") }}</div>
+        </div>
       </div>
       <div class="language-wrap">
         <div
