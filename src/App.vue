@@ -2,7 +2,6 @@
   <div id="app">
     <fragment :is="container">
     </fragment>
-    <debug-console-view/>
   </div>
 </template>
 
@@ -100,6 +99,8 @@ export default {
       if(isBrokerBindPath){
         self.$router.push({name: 'home'});
       }
+
+
     },
     bindEthrumEvent(){
       const self = this;
@@ -115,19 +116,24 @@ export default {
       const self = this;
 
       const walletInfo = await this.$store.dispatch('user/initWallet');
-      console.log(walletInfo, this.$store.state.user);
 
-      self.resetRoute();
 
       if(self.$store.state.user.selectedAddress !== walletInfo.selectedAddress) {
         eventType = 1
       }
-
+      this.$events.$emit('afterInitWallet');
       this.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
+    }
+  },
+  events:{
+    afterInitWallet(){
+      this.resetRoute()
     }
   },
   created () {
     const self = this;
+
+    this.$events.$on('afterInitWallet', () => this.resetRoute());
 
     //bind chain event
     (async() => {

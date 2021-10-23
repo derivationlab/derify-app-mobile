@@ -67,7 +67,7 @@ export default {
       this.$store.dispatch('user/bindBroker', {trader: this.trader, brokerId: this.brokerCode}).then((data) => {
         if(data.success){
           this.$store.dispatch("user/initWallet").then(() => {
-            this.$router.push({name: 'home'})
+            this.$events.$emit('afterInitWallet');
           });
         }else{
           this.errorNotice(data.msg)

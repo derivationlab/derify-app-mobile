@@ -116,7 +116,7 @@ export default {
         .then((data) => {
           if(data.success){
             this.$store.dispatch("user/initWallet").then(() => {
-              this.$router.push({name: 'home'})
+              this.$events.$emit('afterInitWallet');
             });
 
           }else{

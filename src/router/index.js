@@ -13,11 +13,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    redirect: '/home'
+    path: '*',
+    redirect: '/trade'
   },
   {
-    path: '/home',
+    path: '/trade',
     name: 'home',
     component: () => import('@/views/home/Home')
   },
@@ -42,7 +42,7 @@ const routes = [
     component: () => import('@/views/Data/data')
   },
   {
-    path: '/earnings',
+    path: '/reward',
     name: 'earnings',
     component: () => import('@/views/Earnings/earnings')
   },
@@ -69,17 +69,22 @@ const routes = [
   {
     path: '/bind/list',
     name: 'brokerApply',
-    component: () => import('@/views/Broker/apply/apply.vue')
+    component: () => import('@/views/Broker/apply/apply')
   },
   {
     path: '/bind',
     name: 'brokerAdd',
-    component: () => import('@/views/Broker/apply/add.vue')
+    component: () => import('@/views/Broker/apply/add')
   },
   {
     path: '/broker-info/:id?',
     name: 'brokerInfo',
-    component: () => import('@/views/Broker/apply/info.vue')
+    component: () => import('@/views/Broker/apply/info')
+  },
+  {
+    path: '/faucet',
+    name: 'faucet',
+    component: () => import('@/views/faucet/index')
   },
 ]
 

@@ -407,11 +407,11 @@ const actions = {
         return
       }
 
-      contract.getSpotPrice(pair.token).then((spotPrice) => {
-        commit('UPDATE_PAIRS', [{num: fromContractUnit(spotPrice), key: pair.key}])
-      })
-
       if(pair.address === token){
+        contract.getSpotPrice(pair.address).then((spotPrice) => {
+          commit('UPDATE_PAIRS', [{num: fromContractUnit(spotPrice), key: pair.key}])
+        })
+
         if(pair.key === state.curPairKey) {
           commit('SET_CONTRACT_DATA', {tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)})
         }
