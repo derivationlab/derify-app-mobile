@@ -16,6 +16,14 @@ import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
 import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
+import Vconsole from 'vconsole';
+import {isDebug} from '@/config';
+
+if(isDebug()){
+  const vConsole = new Vconsole();
+  Vue.use(vConsole)
+}
+
 
 Vue.use(VueEvents)
 Vue.use(Fragment.Plugin)

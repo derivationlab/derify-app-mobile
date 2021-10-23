@@ -2,7 +2,6 @@
   <div id="app">
     <fragment :is="container">
     </fragment>
-    <debug-console-view/>
   </div>
 </template>
 
