@@ -1,6 +1,6 @@
 <template>
   <div class="home-container page-container">
-    <navbar :title="$t('Faucet.Faucet')" :logo="false" :showGoback="true"/>
+    <navbar :title="$t('Faucet.Faucet')" :logo="false"/>
     <div class="home-mid">
       <div class="market-popup system-popup">
         <DerifyErrorNotice :show="showError" @close="errorNotice(null)">
