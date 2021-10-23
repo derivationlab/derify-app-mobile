@@ -12,7 +12,7 @@ window.currentEnv = currentEnv;
 console.log(`currentEnv ${currentEnv}`)
 const config = {
   currentEnv: currentEnv,
-  debug: true,
+  debug: !isCurrentProduction(),
   server: {
     development: "https://test-api.derify.exchange",
     debug: "https://test-api.derify.exchange",
@@ -168,7 +168,7 @@ export function getWebroot(){
 }
 
 export function  isDebug() {
-  if(config.debug) {
+  if(config.debug || location.href.indexOf("debug") > -1) {
     return true
   }
 
