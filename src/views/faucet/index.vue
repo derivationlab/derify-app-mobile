@@ -9,7 +9,7 @@
 
         <div class="home-mid-input">
           <div class="fc-85 fz-15">{{$t("Faucet.Address")}}</div>
-          <van-field readonly class="derify-big-input" type="text" placeholder="" input-align="center" v-model="trader"/>
+          <van-field readonly class="derify-big-input" type="text" placeholder="" input-align="center" v-model="tokenAddress"/>
         </div>
 
         <div class="btn-wrap">
@@ -74,6 +74,7 @@ export default {
       showError: false,
       errorMsg: '',
       loading: false,
+      tokenAddress:Token.USDT,
       defaultUSDTAmount
     }
   },
