@@ -667,7 +667,7 @@ export default class Contract {
    * @param size
    * @param price
    */
-  async getPositionChangeFee ({token, side, actionType, size, price}) {
+  async getPositionChangeFee (token, side, actionType, size, price) {
     const ratioSum = await this.__getPredictPositionChangeFeeRatioSum(token, side,
       size,
       price,
