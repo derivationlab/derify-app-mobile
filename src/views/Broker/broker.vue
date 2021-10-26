@@ -322,7 +322,7 @@ export default {
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
-      if(!bool) {
+      if(bool) {
         this.loadTraderBrokerInfo()
       }
     },

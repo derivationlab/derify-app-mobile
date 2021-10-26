@@ -102,6 +102,12 @@ export default {
   watch: {
     show() {
       this.showPopup = this.show
+      if(this.show){
+        this.$store.dispatch('broker/getBrokerBalance', {trader: this.trader, accountType: this.accountType})
+          .then(() => {
+            this.checkAmount()
+          });
+      }
     },
     '$i18n.locale':{
       handler(){
