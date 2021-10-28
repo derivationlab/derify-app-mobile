@@ -181,7 +181,7 @@ export const Token = {
 }
 
 
-const cache = {gasPrice: 1.5*1e9}
+const cache = {gasPrice: 1.5*1e9, gas: 21000, gasLimit: 21009}
 
 export const contractDecimals = 8
 
@@ -243,6 +243,10 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
 }
 
 
+async function getGasPrice(){
+
+}
+
 /**
  *
  * @param abi
@@ -257,11 +261,11 @@ export default class Contract {
     const web3 = new Web3(window.ethereum)
 
     //update gas price
-    // web3.eth.getGasPrice().then((gasPrice) => {
-    //   if(gasPrice) {
-    //     cache.gasPrice = gasPrice
-    //   }
-    // });
+    web3.eth.getGasPrice().then((gasPrice) => {
+      if(gasPrice) {
+        cache.gasPrice = gasPrice
+      }
+    });
 
     this.web3 = web3
     this.from = from
