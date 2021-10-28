@@ -5,18 +5,18 @@
 			"Rewards":"Rewards",
 			"Broker":"Broker",
 			"Data":"Data",
-			"ClickToLogin":"Click To Login",
-			"ClickToConnectYourWallet":"Click to connect your wallet",
+			"ClickToLogin":"Login",
+			"ClickToConnectYourWallet":"Connect Wallet",
 			"ConnectWallet":"Connect Wallet",
 			"Home":"Home",
-			"WalletAddress":"Wallet Address"
+			"WalletAddress":"Wallet"
 		},
 		"Wallet":{
 			"ConnectWallet":"Connect Wallet",
 			"ChooseNetwork":"Choose Network",
 			"ChooseWallet":"Choose Wallet",
-			"NoWalletErrorMsg":"No wallet detected, please install Metamask first.",
-			"MainChainUnmatch":"Your wallet network does not match the network you choose. Please switch to {0} Testnet of Ethereum and retry.",
+			"NoWalletErrorMsg":"Can't detect wallet, please install a web wallet first.",
+			"MainChainUnmatch":"Wallet's network does not match the network you choose. Please switch to {0} Testnet of Ethereum and retry.",
 			"Disconnect":"Disconnect"
 		},
 		"Account":{
@@ -36,15 +36,15 @@
 				"To":"To",
 				"MyWallet":"My Wallet",
 				"MarginAccount":"Margin Account",
-				"Size":"Size",
-				"NumberError":"Error, please retry",
+				"Size":"Amount",
+				"NumberError":"Number error, please retry...",
 				"Max":"Max",
 				"All":"All",
 				"Deposit":"Deposit",
 				"Withdraw":"Withdraw",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"FinanceDetail":{
 				"BalanceHistory":"Balance History",
@@ -63,32 +63,32 @@
 				"SysLoss":"Sys. Loss",
 				"Withdraw":"Withdraw",
 				"Deposit":"Deposit",
-				"NoMoreInfo":"No more info"
+				"NoMoreInfo":"there's nothing below"
 			}
 		},
 		"BrokerBind":{
 			"BrokerCodes":{
-				"BindBrokerPrivilege":"Bind Your Broker Privilege",
+				"BindBrokerPrivilege":"Confirm Broker",
 				"BrokerCode":"Broker Code",
-				"NoBrokerCode":"No Broker Code",
-				"BrokerCodeNoExistError":"The Broker Code you submit does not exist",
+				"NoBrokerCode":"I don't have a code...",
+				"BrokerCodeNoExistError":"Broker Code does not exist",
 				"Submit":"Submit",
-				"SelectOrInputBrokerId":"Select Or Input Broker Code"
+				"SelectOrInputBrokerId":"Select a Broker or type Broker Code"
 			},
 			"BrokerBind":{
 				"ChooseBroker":"Choose Broker",
-				"HaveBrokerCode":"Have Broker Code",
-				"NoMoreInfo":"No more info.",
+				"HaveBrokerCode":"I have a code...",
+				"NoMoreInfo":"there's nothing below",
 				"Submit":"Submit"
 			}
 		},
 		"OpenPosition":{
 			"Market":{
-				"Market":"Market"
+				"Market":"Choose Market"
 			},
 			"Kline":{
 				"PCFRate":"PCF Rate",
-				"PMAPY":"PM APY",
+				"PMAPY":"Position Mining APY",
 				"Long":"Long",
 				"Short":"Short"
 			},
@@ -103,7 +103,7 @@
 				"Limit":"Limit",
 				"Price":"Price",
 				"MarketPrice":"Market Price",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"Amount":"Amount",
 				"Max":"Max",
 				"Transfer":"Transfer",
@@ -127,8 +127,8 @@
 				"Confirm":"Confirm",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry.",
-				"LiqLimitMsg":"Liquidity limit reached, maximum order"
+				"TradeFailedMsg":"Trade failed, please retry...",
+				"LiqLimitMsg":"Liquidity limit reached, maximum order is"
 			}
 		},
 		"MyPosition":{
@@ -143,11 +143,11 @@
 				"StopLoss":"SL",
 				"TP":"TP",
 				"Margin":"Margin",
-				"Risk":"Risk",
+				"Risk":"Margin Rate",
 				"LiqPrice":"Liq. Price",
 				"SetTPSL":"Set TP / SL",
 				"Close":"Close",
-				"NoMoreInfo":"No more info",
+				"NoMoreInfo":"there's nothing below",
 				"OneClickClose":"One-Click Close",
 				"Position":"Position"
 			},
@@ -163,7 +163,7 @@
 				"AveragePriceDetail":"Average Opening Price for this Position",
 				"PositionMargin":"Position Margin",
 				"PositionMarginDetail":"Used Position Margin = Position Held/Leverage",
-				"Risk":"Risk",
+				"Risk":"Margin Rate",
 				"RiskDetail":"Risk increases as the margin rate decreases. When the margin rate is smaller than the maintenance margin 3%, the auto deleveraging will be triggered. Detailed rules <link>click here>></link>",
 				"LiquidationPrice":"Liquidation Price",
 				"LiquidationPriceDetail":"This price is the expected mandatory liquidation price. If the derivative price is lower than this price (long position) or higher than this price (short position), your position may be liquidated automatically. <link>Know more>></link>",
@@ -180,12 +180,12 @@
 				"StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} USDT.",
 				"StopLoss":"Stop Loss",
 				"StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} USDT.",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"Cancel":"Cancel",
 				"Confirm":"Confirm",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"ClosePositionPopup":{
 				"Close":"Close",
@@ -193,14 +193,14 @@
 				"AveragePrice":"Average Price",
 				"CurrentPrice":"Current Price",
 				"Amount":"Amount",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"Cancel":"Cancel",
 				"Confirm":"Confirm",
 				"OneClickClose":"One-Click Close",
 				"ClosePositionPopupInfo":"Click to close all positions at Market Price",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry...."
 			}
 		},
 		"CurrentOrder":{
@@ -222,22 +222,22 @@
 			},
 			"Hint":{
 				"OrderPrice":"Order Price",
-				"OrderPriceDetail":"Target execution price of this order.",
+				"OrderPriceDetail":"Target price of this order that will excute.",
 				"OrderVolume":"Order Volume",
-				"OrderVolumeDetail":"The volume of asset this order will be trading.",
+				"OrderVolumeDetail":"The volume of asset that this order will be trading.",
 				"OrderTime":"Order Time",
-				"OrderTimeDetail":"The moment this order is placed."
+				"OrderTimeDetail":"The time this order is placed."
 			},
 			"CancelOrderPopup":{
 				"CancelOneOrder":"Cancel",
-				"CancelOneOrderInfo":"Click to CANCEL the order",
+				"CancelOneOrderInfo":"Click to CANCEL this order",
 				"CancelAllOrder":"Cancel All",
 				"CloseAllOrderInfo":"Click to CANCEL ALL orders",
 				"Cancel":"Cancel",
 				"Confirm":"Confirm",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			}
 		},
 		"TradeHistory":{
@@ -271,7 +271,7 @@
 				"CloseLiquidate":"Close / Liquidate",
 				"CloseLiquidate1":"Close",
 				"CloseLiquidate2":"/ Liquidate",
-				"NoMoreInfo":"No more info",
+				"NoMoreInfo":"there's nothing below",
 				"Position":"Position",
 				"Time":"Time"
 			},
@@ -282,13 +282,13 @@
 				"OrderPrice":"Price",
 				"OrderPriceDetail":"The price when you open/close your position.",
 				"OrderVolume":"Volume",
-				"OrderVolumeDetail":"The volume of asset this order be opened/closed",
+				"OrderVolumeDetail":"The volume of asset that this order was opened/closed",
 				"OrderAmount":"Amount",
 				"OrderAmountDetail":"Amount = Price * Volume",
 				"TradingFee":"Trading Fees",
-				"TradingFeeDetail":"Trading Fees when you open/close position.",
+				"TradingFeeDetail":"Trading Fees of your position.",
 				"PCF":"PCF",
-				"PCFDetail":"PCF rewards (positive) or payment (negative) when you open/close your position.",
+				"PCFDetail":"PCF rewards (positive) or payment (negative) of your position.",
 				"Compensation":"Compensation",
 				"CompensationDetail":"Your profit paid in bDRF."
 			}
@@ -297,7 +297,7 @@
 	"Rewards":{
 		"Mining":{
 			"Card":{
-				"PositionMining":"Position Mining",
+				"PositionMining":"Unclaimed Rewards",
 				"PositionHeld":"Position Held",
 				"AccumulatedReward":"Accumulated Reward",
 				"TransactionHistory":"Transaction History",
@@ -310,10 +310,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Withdraw":"Withdraw",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry.",
+				"TradeFailedMsg":"Trade failed, please retry...",
 				"title":"Withdraw USDT"
 			},
 			"History":{
@@ -332,7 +332,7 @@
 				"eDRFAccount":"eDRF Account",
 				"TransactionHistory":"Transaction History",
 				"StakAmount(DRF)":"Stak. Amount (DRF)",
-				"DailyYield(eDRF)":"Daily Yield (eDRF)",
+				"DailyYield(eDRF)":"Daily Production (eDRF)",
 				"Withdraw":"Withdraw",
 				"Redeem":"Redeem",
 				"Staking":"Staking"
@@ -344,10 +344,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Withdraw":"Withdraw",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"RedeemPopup":{
 				"title":"Redeem DRF",
@@ -358,13 +358,13 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Redeem":"Redeem",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"PledgePopup":{
-				"title":"Staking DRF",
+				"title":"Stake DRF",
 				"DRFAccount":"DRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -372,10 +372,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Staking":"Staking",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"History":{
 				"eDRF":"eDRF",
@@ -393,11 +393,11 @@
 			"Card":{
 				"bDRFAccount":"bDRF Account",
 				"TransactionHistory":"Transaction History",
-				"StakingAmount(bDRF)":"Staking Amount (bDRF)",
+				"StakingAmount(bDRF)":"Deposited Amount (bDRF)",
 				"Withdraw":"Withdraw",
 				"Exchange":"Exchange",
 				"Redeem":"Redeem",
-				"Staking":"Staking"
+				"Staking":"Deposit"
 			},
 			"WithdrawPopup":{
 				"title":"Withdraw bDRF",
@@ -406,10 +406,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Withdraw":"Withdraw",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"ExchangePopup":{
 				"title":"Exchange bDRF",
@@ -420,10 +420,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Exchange":"Exchange",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"RedeemPopup":{
 				"title":"Redeem bDRF",
@@ -434,13 +434,13 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Redeem":"Redeem",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"PledgePopup":{
-				"title":"Staking bDRF",
+				"title":"Stake bDRF",
 				"bDRFAccount":"bDRF Account",
 				"MyWallet":"My Wallet",
 				"Amount":"Amount",
@@ -448,10 +448,10 @@
 				"All":"All",
 				"Cancel":"Cancel",
 				"Staking":"Staking",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry."
+				"TradeFailedMsg":"Trade failed, please retry..."
 			},
 			"History":{
 				"bDRF":"bDRF",
@@ -459,14 +459,14 @@
 				"Type0":"Income",
 				"Type1":"Withdraw",
 				"Type2":"Exchange",
-				"Type3":"TransferFromBank",
-				"Type4":"TransferToBank",
+				"Type3":"Redeem",
+				"Type4":"Deposit",
 				"Type5":"Interest",
 				"Amount":"Amount",
 				"Balance":"Balance",
 				"Time":"Time",
-				"SystemCompensation":"System compensation",
-				"Stakinginterest":"Staking interest",
+				"SystemCompensation":"Compensation",
+				"Stakinginterest":"Interest",
 				"Withdraw":"Withdraw",
 				"Exchange":"Exchange",
 				"Staking":"Staking",
@@ -479,17 +479,17 @@
 		"Apply":{
 			"Brokers":"Brokers",
 			"NotBrokerMessage":"You are not a Broker",
-			"ApplyBroker":"Apply to be Broker",
-			"GetBrokersPrivilege":"Burn {0} eDRF to get Brokers Privilege",
+			"ApplyBroker":"Apply to be a Broker",
+			"GetBrokersPrivilege":"Burn {0} eDRF to get Brokers Privilege.",
 			"eDRFAccount":"eDRF Account",
 			"MyWallet":"My Wallet",
 			"AccountBalance":"Account Balance",
 			"Cancel":"Cancel",
 			"Confirm":"Confirm",
-			"InsufficientAccountBalanceError":"Insufficient Account Balance, choose another account",
+			"InsufficientAccountBalanceError":"Insufficient account balance, choose another account.",
 			"TradePendingMsg":"Pending ……",
-			"TradeFailedMsg":"Error, please retry.",
-			"ApplySuccessMsg":"You Purchased Broker Privilege!",
+			"TradeFailedMsg":"Error, please retry...",
+			"ApplySuccessMsg":"You Successfully Purchased Broker Privilege!",
 			"AddInfo":"Add Info"
 		},
 		"Broker":{
@@ -498,12 +498,12 @@
 				"Name":"Name",
 				"Avatar":"Avatar",
 				"BrokerCode":"Broker Code",
-				"PhotoSizeError":"Photo size shall not be larger than 2m, please retry",
-				"CodeOccuError":"Your Code is occupied, choose another one",
+				"PhotoSizeError":"Image file size should be less than 2M, please retry.",
+				"CodeOccuError":"Your Code is occupied, choose another one.",
 				"Title":"Broker Info",
 				"Commit":"Commit",
-				"InfoRequired":"Information is incomplete, please re-filled",
-				"FormatError":"You can only input letters, numbers and symbols '_ ',' @ ',' $'",
+				"InfoRequired":"Information is incomplete, please re-check.",
+				"FormatError":"Only support letters, numbers and symbols '_ ',' @ ',' $'",
 				"Edit":"Edit",
 				"Upload":"Upload"
 			},
@@ -516,7 +516,7 @@
 				"Myreferralpage":"My referral page",
 				"Days":"Days",
 				"ExpireDate":"Until {0}/{1}/{2}",
-				"Burn":"Burn",
+				"Burn":"Extend Privilege",
 				"BrokerHint":"Note:",
 				"BrokerHintDetail1":"Derify has Broker system, traders will be trading on our Broker’s page, Derify does not directly provide service.",
 				"BrokerHintDetail2":"Brokers will receive trading fee rewards and potential DRF rewards.",
@@ -539,11 +539,11 @@
 				"MyWallet":"My Wallet",
 				"BurnAmount":"Burn Amount",
 				"ValidPeriod":"Valid Period + {0} days",
-				"NumberError":"Error, please retry",
+				"NumberError":"Number error, please retry...",
 				"Cancel":"Cancel",
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
-				"TradeFailedMsg":"Error, please retry.",
+				"TradeFailedMsg":"Trade failed, please retry...",
 				"MinAmountError":"Minimum burning {0} eDRF"
 			},
 			"History":{
