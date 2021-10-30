@@ -57,7 +57,7 @@ export default {
     show () {
       this.showPopup = this.show
       if(this.show) {
-        this.$store.dispatch('broker/getTraderBrokerInfo', {trader: this.trader, accountType: BondAccountType.DerifyAccount})
+        this.$store.dispatch('broker/getTraderBrokerInfo', this.trader)
           .then(() => {
             this.checkAmount()
           })

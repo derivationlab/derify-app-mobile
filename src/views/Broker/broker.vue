@@ -12,7 +12,7 @@
             <div class="broker-name">{{broker.name}}</div>
             <div class="broker-addr">
               <p>{{broker.id}}</p>
-              <p>{{broker.broker | textwrap(32)}}</p>
+              <p><TextView :text="broker.broker" show-pos="mid" len="32"/></p>
             </div>
           </div>
           <div class="go-right-wrap"  @click="goPath(`/broker-info`)">
@@ -160,6 +160,7 @@ import DecimalView from "@/components/DecimalView/DecimalView";
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import { BondAccountType, fromContractUnit } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
+import TextView from '@/components/TextView'
 
 export default {
   name: 'Home',
@@ -168,7 +169,7 @@ export default {
     BrokerWithdrawPopup,
     BrokerDepositPopup,
     DerifyErrorNotice,
-    // DerifyPageNation,
+    TextView,
     Navbar,
     trader,
     account
@@ -321,7 +322,7 @@ export default {
     },
     setShowDepositPopup(bool) {
       this.showDepositPopup = bool
-      if(!bool) {
+      if(bool) {
         this.loadTraderBrokerInfo()
       }
     },

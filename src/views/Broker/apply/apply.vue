@@ -30,7 +30,7 @@
               <div class="broker-name">{{broker.name}}</div>
               <div class="broker-addr">
                 <p>@{{broker.id}}</p>
-                <p>{{broker.broker | textwrap(29)}}</p>
+                <p><TextView :text="broker.broker" show-pos="mid" len="29"/></p>
               </div>
             </div>
           </div>
@@ -51,12 +51,14 @@
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
+import TextView from '@/components/TextView'
 export default {
   name: 'Home',
   components: {
     DerifyErrorNotice,
     ButtonLoginWrap,
-    Navbar
+    Navbar,
+    TextView
   },
   data () {
     return {

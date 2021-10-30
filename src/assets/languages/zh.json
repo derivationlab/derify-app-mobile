@@ -279,10 +279,12 @@
 				"PnL":"已实现盈亏：",
 				"PnLDetail1":"多仓已实现盈亏 = (平仓价格 - 开仓均价) * 持仓量",
 				"PnLDetail2":"空仓已实现盈亏 = (开仓均价 - 平仓价格) * 持仓量",
-				"OrderPrice":"成交金额：",
-				"OrderPriceDetail":"开/平仓成交金额 = 成交价格 * 成交数量",
+				"OrderPrice":"成交价格：",
+				"OrderPriceDetail":"开/平仓时成交的价格",
 				"OrderVolume":"成交数量：",
 				"OrderVolumeDetail":"开/平仓时成交的仓位数量",
+				"OrderAmount":"成交金额：",
+				"OrderAmountDetail":"开/平仓成交金额 = 成交价格 * 成交数量",
 				"TradingFee":"手续费：",
 				"TradingFeeDetail":"开/平仓时支付的手续费金额",
 				"PCF":"动仓费：",
@@ -391,11 +393,11 @@
 			"Card":{
 				"bDRFAccount":"bDRF账户",
 				"TransactionHistory":"流水明细",
-				"StakingAmount(bDRF)":"质押量（bDRF）",
+				"StakingAmount(bDRF)":"存入量（bDRF）",
 				"Withdraw":"提现",
 				"Exchange":"兑换",
 				"Redeem":"赎回",
-				"Staking":"质押"
+				"Staking":"存入"
 			},
 			"WithdrawPopup":{
 				"title":"提现 bDRF",
@@ -464,7 +466,7 @@
 				"Balance":"余额",
 				"Time":"时间",
 				"SystemCompensation":"系统补偿",
-				"Stakinginterest":"质押利息",
+				"Stakinginterest":"存入利息",
 				"Withdraw":"提现",
 				"Exchange":"兑换",
 				"Staking":"质押",
