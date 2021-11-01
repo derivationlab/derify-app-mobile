@@ -397,7 +397,8 @@
 				"Withdraw":"Withdraw",
 				"Exchange":"Exchange",
 				"Redeem":"Redeem",
-				"Staking":"Deposit"
+				"Staking":"Deposit",
+				"APY":"Annualized Bond Yield"
 			},
 			"WithdrawPopup":{
 				"title":"Withdraw bDRF",

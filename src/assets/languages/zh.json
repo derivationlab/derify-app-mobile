@@ -397,7 +397,8 @@
 				"Withdraw":"提现",
 				"Exchange":"兑换",
 				"Redeem":"赎回",
-				"Staking":"存入"
+				"Staking":"存入",
+				"APY":"债券APY"
 			},
 			"WithdrawPopup":{
 				"title":"提现 bDRF",
