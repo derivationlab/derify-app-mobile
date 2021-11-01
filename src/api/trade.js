@@ -137,6 +137,23 @@ export async function sendUSDT (trader, amount) {
 }
 
 /**
+ *
+ * @param trader
+ * @param amount
+ * @return {Promise<boolean>}
+ */
+export async function isUSDTClaimed (trader) {
+  const content =  await io.get(`${serverEndPoint}/api/is_usdt_claimed/${trader}`);
+
+  if(content.data){
+    return content.data;
+  }
+
+  return false;
+
+}
+
+/**
  * Get mining profitability
  * @param tokenAddr
  * @param callback param PositionMiningRate

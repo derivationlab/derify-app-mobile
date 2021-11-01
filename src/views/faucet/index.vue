@@ -14,7 +14,7 @@
 
         <div class="btn-wrap">
           <ButtonLoginWrap className="derify-big-btn btn-yellow">
-            <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Faucet.GetUSDT', [defaultUSDTAmount]) }}</div>
+            <div :class="usdtClaimed ? 'derify-big-btn disabled-btn' : 'derify-big-btn btn-yellow'" @click="submitThenClose">{{ $t('Faucet.GetUSDT', [defaultUSDTAmount]) }}</div>
             <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
 
           </ButtonLoginWrap>
@@ -74,6 +74,7 @@ export default {
       showError: false,
       errorMsg: '',
       loading: false,
+      usdtClaimed: true,
       tokenAddress:Token.USDT,
       defaultUSDTAmount
     }
@@ -90,6 +91,10 @@ export default {
   },
   methods: {
     async submitThenClose () {
+
+      if(this.usdtClaimed){
+        return;
+      }
 
       if(this.loading){
         return;
