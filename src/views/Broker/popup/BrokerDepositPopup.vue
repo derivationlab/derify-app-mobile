@@ -92,7 +92,7 @@ export default {
     return {
       showError: false,
       errorMsg: '',
-      accountType: 0,
+      accountType: BondAccountType.WalletAccount,
       unitAmount: 600,
       amount: null,
       accountOptions: this.getAccountOptions(),
