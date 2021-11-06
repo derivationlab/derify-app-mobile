@@ -39,13 +39,14 @@ function renderMap(treeMapArr, values){
     let item = treeMapArr[i];
     if(typeof item === 'object'){
       const name = item.name;
-      const chunks = renderVar(item.children, values);
+      const chunks = item.children;
       const renderVal =  values[name];
 
       if(renderVal){
         resultArr.push(renderVal(renderMap(chunks, values)));
       }else{
-        resultArr.push(`<${name}>${chunks}</${name}>`);
+
+        resultArr.push(`<${name}>${renderVar(chunks, values)}</${name}>`);
       }
 
     }else{
@@ -57,6 +58,7 @@ function renderMap(treeMapArr, values){
 }
 
 function renderVar(html, params){
+  console.log(html)
   const arr = html.split(/({.+?})/)
   const retArr = [];
 
