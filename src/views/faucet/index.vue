@@ -34,7 +34,7 @@
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
-import { sendUSDT } from '@/api/trade'
+import {isUSDTClaimed, sendUSDT} from '@/api/trade'
 import { UserProcessStatus } from '@/store/modules/user'
 import { Token } from '@/utils/contractUtil'
 import DerifyI18n from "@/components/DerifyI18n";
@@ -84,8 +84,7 @@ export default {
       defaultUSDTAmount
     }
   },
-  created () {
-  },
+
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
@@ -93,6 +92,15 @@ export default {
     trader () {
       return this.$store.state.user.selectedAddress;
     }
+  },
+  created() {
+    this.$events.$on('afterInitWallet', () => {
+      isUSDTClaimed(this.trader).then((res) => {
+        this.usdtClaimed = res;
+      }).catch(e => {
+        console.log('error', e);
+      })
+    });
   },
   methods: {
     async submitThenClose () {
