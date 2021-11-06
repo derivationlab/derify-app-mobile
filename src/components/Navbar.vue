@@ -404,11 +404,16 @@ export default {
     display: flex;
     height: 6.4rem;
     align-items: center;
-    &-name {
+    &-name{
       font-size: 1.7rem;
       color: rgba(255, 255, 255, 0.85);
       margin-left: 1.6rem;
     }
+
+    a{
+      color: rgba(255, 255, 255, 0.85);
+    }
+
     &-icon {
       width: 0.8rem;
       height: 6.4rem;
