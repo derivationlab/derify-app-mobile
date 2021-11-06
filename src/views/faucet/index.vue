@@ -94,15 +94,19 @@ export default {
     }
   },
   created() {
+    this.updateUsdtCalainmState();
     this.$events.$on('afterInitWallet', () => {
+      this.updateUsdtCalainmState();
+    });
+  },
+  methods: {
+    updateUsdtCalainmState(){
       isUSDTClaimed(this.trader).then((res) => {
         this.usdtClaimed = res;
       }).catch(e => {
         console.log('error', e);
       })
-    });
-  },
-  methods: {
+    },
     async submitThenClose () {
 
       if(this.usdtClaimed){
