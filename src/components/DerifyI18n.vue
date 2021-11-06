@@ -4,6 +4,7 @@
 </template>
 <script>
 import Vue from "vue";
+import DecimalView from "@/components/DecimalView/DecimalView";
 
 function convertToMap(text){
   var arr = text.split(/(<.+?>)/);
@@ -33,13 +34,13 @@ function convertToMap(text){
 
 
 function renderMap(treeMapArr, values){
-  var resultArr = [];
+  const resultArr = [];
   for(let i = 0; i < treeMapArr.length; i++){
     let item = treeMapArr[i];
     if(typeof item === 'object'){
-      var name = item.name;
-      var chunks = item.children;
-      var renderVal =  values[name];
+      const name = item.name;
+      const chunks = renderVar(item.children, values);
+      const renderVal =  values[name];
 
       if(renderVal){
         resultArr.push(renderVal(renderMap(chunks, values)));
@@ -48,18 +49,40 @@ function renderMap(treeMapArr, values){
       }
 
     }else{
-      resultArr.push(item);
+      resultArr.push(renderVar(item,values));
     }
   }
 
   return resultArr.join('');
 }
 
+function renderVar(html, params){
+  const arr = html.split(/({.+?})/)
+  const retArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    const subHtml = arr[i];
+    const matches = subHtml.match(/^{(.+?)}$/);
+    if(matches){
+      if(params && params.hasOwnProperty(matches[1])){
+        retArr.push(params[matches[1]]);
+      }else{
+        retArr.push(subHtml);
+      }
+    }else{
+      retArr.push(subHtml);
+    }
+  }
+
+  return retArr.join('')
+}
+
 export default {
   props:['text', 'params'],
   data() {
-    const html = renderMap(convertToMap(this.$t(this.text, this.params)), this.params);
-    const Component = Vue.extend({template: `<fragment> ${html}</fragment>`});
+    const html = renderMap(convertToMap(this.$t(this.text)), this.params);
+    console.log(html)
+    const Component = Vue.extend({template: `<fragment> ${html}</fragment>`, components:{DecimalView}});
     return {component: Component}
   }
 }
