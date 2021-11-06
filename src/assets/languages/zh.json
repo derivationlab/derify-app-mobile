@@ -9,7 +9,8 @@
 			"ClickToConnectYourWallet":"点击连接钱包",
 			"ConnectWallet":"连接钱包",
 			"Home":"首页",
-			"WalletAddress":"钱包地址"
+			"WalletAddress":"钱包地址",
+			"Feedback":"使用反馈"
 		},
 		"Wallet":{
 			"ConnectWallet":"连接钱包",

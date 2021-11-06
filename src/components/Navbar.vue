@@ -17,7 +17,7 @@
       </template>
 
       <template #title v-if="logo">
-        <img src="@/assets/images/logo.png" alt="" srcset="" style="height: 3rem"/>
+        <a href="https://derify.finance/" target="_blank"><img src="@/assets/images/logo.png" alt="" srcset="" style="height: 3rem"/></a>
       </template>
 
       <template #right v-if="isLogin">
@@ -198,6 +198,24 @@
           >
           </van-icon>
           <div class="menu-list-item-name">{{ $t("Faucet.Faucet") }}</div>
+        </div>
+        <div
+          class="menu-list-item"
+        >
+          <img
+            class="menu-list-item-icon"
+            src="@/assets/icons/icon-menu-active.png"
+            alt=""
+          />
+          <van-icon
+            class-prefix="iconfont"
+            class="menu-list-item-van-icon icon-feedback"
+            name="extra"
+            color="rgba(255, 255, 255, .85)"
+            size="2.0rem"
+          >
+          </van-icon>
+          <div class="menu-list-item-name"><a href="https://derify.canny.io/" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">

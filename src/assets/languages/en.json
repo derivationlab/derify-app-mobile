@@ -9,7 +9,8 @@
 			"ClickToConnectYourWallet":"Connect Wallet",
 			"ConnectWallet":"Connect Wallet",
 			"Home":"Home",
-			"WalletAddress":"Wallet"
+			"WalletAddress":"Wallet",
+			"Feedback":"Feedback"
 		},
 		"Wallet":{
 			"ConnectWallet":"Connect Wallet",
