@@ -129,6 +129,7 @@ export default {
       sendUSDT(this.trader, this.defaultUSDTAmount).then((data) => {
 
         if(data.code === 0){
+          this.usdtClaimed = true
           this.$userProcessBox({show: true, status: UserProcessStatus.success, msg: 'success'});
           addTestTokentoWallet();
         }else{
