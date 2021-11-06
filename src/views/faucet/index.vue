@@ -98,6 +98,7 @@ export default {
     async submitThenClose () {
 
       if(this.usdtClaimed){
+        this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('Faucet.GetUSDTError')});
         return;
       }
 
