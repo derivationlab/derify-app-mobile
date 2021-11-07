@@ -215,7 +215,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name"><a href="https://derify.canny.io/" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
+          <div class="menu-list-item-name"><a href="https://derify.canny.io/test-net-feedback" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">
@@ -402,7 +402,7 @@ export default {
   margin-top: 2.4rem;
   &-item {
     display: flex;
-    height: 6.4rem;
+    height: 6.0rem;
     align-items: center;
     &-name{
       font-size: 1.7rem;
@@ -416,7 +416,7 @@ export default {
 
     &-icon {
       width: 0.8rem;
-      height: 6.4rem;
+      height: 6.0rem;
       display: none;
     }
     &-van-icon {
