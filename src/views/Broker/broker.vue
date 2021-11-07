@@ -182,7 +182,7 @@ export default {
       succPopup: false,
       showCompleteInfo: false,
       active: '1',
-      accountType: 0,
+      accountType: BondAccountType.WalletAccount,
       showDepositPopup: false,
       showWithdrawPopup: false,
       applyBurnAmount: 60000,

@@ -91,7 +91,7 @@
           </div>
           <div class="div1">
             <span class="span1">{{bondInfo.bondAnnualInterestRatio | fck(-6,2)}}%</span>
-            <span class="span2 fz-11">APY</span>
+            <span class="span2 fz-11">{{$t('Rewards.Bond.Card.APY')}}</span>
           </div>
         </div>
         <div class="earnings-item">

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2720060 */
-  src: url('../assets/font/iconfont.woff2') format('woff2'),
-        url('../assets/font/iconfont.woff') format('woff'),
-        url('../assets/font/iconfont.ttf') format('truetype');
+  src: url('../assets/font/iconfont.woff2?t=1636209929789') format('woff2'),
+       url('../assets/font/iconfont.woff?t=1636209929789') format('woff'),
+       url('../assets/font/iconfont.ttf?t=1636209929789') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-feedback:before {
+  content: "\e618";
 }
 
 .icon-shuilongtou:before {

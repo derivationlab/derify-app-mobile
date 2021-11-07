@@ -9,7 +9,8 @@
 			"ClickToConnectYourWallet":"Connect Wallet",
 			"ConnectWallet":"Connect Wallet",
 			"Home":"Home",
-			"WalletAddress":"Wallet"
+			"WalletAddress":"Wallet",
+			"Feedback":"Feedback"
 		},
 		"Wallet":{
 			"ConnectWallet":"Connect Wallet",
@@ -397,7 +398,8 @@
 				"Withdraw":"Withdraw",
 				"Exchange":"Exchange",
 				"Redeem":"Redeem",
-				"Staking":"Deposit"
+				"Staking":"Deposit",
+				"APY":"Annualized Bond Yield"
 			},
 			"WithdrawPopup":{
 				"title":"Withdraw bDRF",

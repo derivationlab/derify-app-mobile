@@ -977,6 +977,8 @@ export default {
     },
     updateKLine(token, gap) {
       const self = this
+      //TODO zoom by adjust limit
+      //TODO move by adjsut after/berfore
       getEchartsOptions({token,
         bar: gap.value,
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {

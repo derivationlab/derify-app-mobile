@@ -14,7 +14,9 @@
 
         <div class="btn-wrap">
           <ButtonLoginWrap className="derify-big-btn btn-yellow">
-            <div class="derify-big-btn btn-yellow" @click="submitThenClose">{{ $t('Faucet.GetUSDT', [defaultUSDTAmount]) }}</div>
+            <div :class="usdtClaimed ? 'derify-big-btn disabled-btn' : 'derify-big-btn btn-yellow'" @click="submitThenClose">
+              <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
+            </div>
             <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
 
           </ButtonLoginWrap>
@@ -32,9 +34,10 @@
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
-import { sendUSDT } from '@/api/trade'
+import {isUSDTClaimed, sendUSDT} from '@/api/trade'
 import { UserProcessStatus } from '@/store/modules/user'
 import { Token } from '@/utils/contractUtil'
+import DerifyI18n from "@/components/DerifyI18n";
 
 const addTestTokentoWallet = async() => {
   const tokenAddress = Token.USDT;
@@ -64,6 +67,7 @@ const addTestTokentoWallet = async() => {
 export default {
   name: 'faucet',
   components: {
+    DerifyI18n,
     ButtonLoginWrap,
     DerifyErrorNotice,
     Navbar
@@ -74,12 +78,13 @@ export default {
       showError: false,
       errorMsg: '',
       loading: false,
+      usdtClaimed: true,
+      getUSDTDesc: {0: `<DecimalView value="${defaultUSDTAmount}" digitSplit=","/>`},
       tokenAddress:Token.USDT,
       defaultUSDTAmount
     }
   },
-  created () {
-  },
+
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
@@ -88,8 +93,26 @@ export default {
       return this.$store.state.user.selectedAddress;
     }
   },
+  created() {
+    this.updateUsdtCalainmState();
+    this.$events.$on('afterInitWallet', () => {
+      this.updateUsdtCalainmState();
+    });
+  },
   methods: {
+    updateUsdtCalainmState(){
+      isUSDTClaimed(this.trader).then((res) => {
+        this.usdtClaimed = res;
+      }).catch(e => {
+        console.log('error', e);
+      })
+    },
     async submitThenClose () {
+
+      if(this.usdtClaimed){
+        this.$userProcessBox({show: true, status: UserProcessStatus.failed, msg: this.$t('Faucet.GetUSDTError')});
+        return;
+      }
 
       if(this.loading){
         return;
@@ -106,6 +129,7 @@ export default {
       sendUSDT(this.trader, this.defaultUSDTAmount).then((data) => {
 
         if(data.code === 0){
+          this.usdtClaimed = true
           this.$userProcessBox({show: true, status: UserProcessStatus.success, msg: 'success'});
           addTestTokentoWallet();
         }else{

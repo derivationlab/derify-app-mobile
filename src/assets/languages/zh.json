@@ -9,7 +9,8 @@
 			"ClickToConnectYourWallet":"点击连接钱包",
 			"ConnectWallet":"连接钱包",
 			"Home":"首页",
-			"WalletAddress":"钱包地址"
+			"WalletAddress":"钱包地址",
+			"Feedback":"使用反馈"
 		},
 		"Wallet":{
 			"ConnectWallet":"连接钱包",
@@ -397,7 +398,8 @@
 				"Withdraw":"提现",
 				"Exchange":"兑换",
 				"Redeem":"赎回",
-				"Staking":"存入"
+				"Staking":"存入",
+				"APY":"债券APY"
 			},
 			"WithdrawPopup":{
 				"title":"提现 bDRF",
