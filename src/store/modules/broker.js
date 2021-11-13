@@ -96,9 +96,9 @@ const actions = {
       return payload
     })()
   },
-  updateBroker({state, commit, dispatch}, {broker, id, name, logo}) {
+  updateBroker({state, commit, dispatch}, {broker, id, name, logo,introduction}) {
     return (async () => {
-      return await updateBroker({broker, id, name, logo})
+      return await updateBroker({broker, id, name, logo,introduction})
     })()
   },
   applyBroker ({state, commit, dispatch}, {trader, accountType, amount}) {

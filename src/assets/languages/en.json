@@ -80,7 +80,9 @@
 				"ChooseBroker":"Choose Broker",
 				"HaveBrokerCode":"I have a code...",
 				"NoMoreInfo":"there's nothing below",
-				"Submit":"Submit"
+				"Submit":"Submit",
+				"SeeMore":"see more",
+				"PackUp":"pack up"
 			}
 		},
 		"OpenPosition":{
@@ -507,7 +509,10 @@
 				"InfoRequired":"Information is incomplete, please re-check.",
 				"FormatError":"Only support letters, numbers and symbols '_ ',' @ ',' $'",
 				"Edit":"Edit",
-				"Upload":"Upload"
+				"Upload":"Upload",
+				"Introduction":"Introduction",
+				"SeeMore":"see more",
+				"PackUp":"pack up"
 			},
 			"Account":{
 				"AccBalance":"Acc. Balance",

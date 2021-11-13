@@ -21,6 +21,10 @@
             </i>
           </div>
         </div>
+        <div class="intr-wrapper">
+          <TextView show-pos="right" :text='broker.introduction||""' :len='showAllIntrudct ? (broker.introduction || "").length : 50'></TextView>
+          <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+        </div>
 
         <div class="market-popup">
           <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
@@ -176,6 +180,7 @@ export default {
   },
   data () {
     return {
+      showAllIntrudct: false,
       showLoading: true,
       showApplyPopup: false,
       termPopup: false,
@@ -359,6 +364,9 @@ export default {
 }
 
 .home-top{
+  .intr-wrapper{
+    margin-bottom: 10px;
+  }
   .broker-info{
     display: flex;
     justify-content: space-between;
