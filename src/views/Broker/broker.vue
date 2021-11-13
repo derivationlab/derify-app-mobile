@@ -23,7 +23,7 @@
         </div>
         <div class="intr-wrapper">
           <TextView show-pos="right" :text='broker.introduction||""' :len='showAllIntrudct ? (broker.introduction || "").length : 50'></TextView>
-          <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+          <span v-if="broker.introduction" class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
         </div>
 
         <div class="market-popup">

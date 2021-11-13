@@ -30,7 +30,12 @@
               <div class="broker-name">{{broker.name}}</div>
               <div class="broker-addr">
                 <p>@{{broker.id}}</p>
-                <p><TextView :text="broker.broker" show-pos="mid" len="29"/></p>
+              </div>
+              <div>
+                <p>
+                  <TextView show-pos="right" :text='broker.introduction||""' :len='broker.showAllIntrudct ? (broker.introduction || "").length : 40'></TextView>
+                  <span v-if="broker.introduction" class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+                </p>
               </div>
             </div>
           </div>
@@ -97,7 +102,7 @@ export default {
           this.finished = true
         }else{
           brokers.forEach(broker => {
-            this.brokers.push(Object.assign({selected: false}, broker))
+            this.brokers.push(Object.assign({selected: false, showAllIntr: false}, broker))
           })
           this.finished = false
         }
