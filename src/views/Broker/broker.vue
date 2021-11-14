@@ -14,9 +14,9 @@
               <p>@{{broker.id}}</p>
             </div>
             <div class="intr-wrapper">
-              <template v-if="countLength(broker.introduction) > 80">
+              <template v-if="countLength(broker.introduction) > 74">
                 {{
-                  showAllIntrudct ? broker.introduction : (cutLength(broker.introduction,80)+"...")
+                  showAllIntrudct ? broker.introduction : (cutLength(broker.introduction,74)+"...")
                 }}
                 <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
               </template>
