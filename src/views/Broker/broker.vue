@@ -11,7 +11,18 @@
           <div class="broker-contact">
             <div class="broker-name">{{broker.name}}</div>
             <div class="broker-addr">
-              <p>{{broker.id}}</p>
+              <p>@{{broker.id}}</p>
+            </div>
+            <div class="intr-wrapper">
+              <template v-if="countLength(broker.introduction) > 80">
+                {{
+                  showAllIntrudct ? broker.introduction : (cutLength(broker.introduction,80)+"...")
+                }}
+                <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+              </template>
+              <template v-else>
+                {{broker.introduction}}
+              </template>
             </div>
           </div>
           <div class="go-right-wrap"  @click="goPath(`/broker-info`)">
@@ -20,18 +31,6 @@
             </i>
           </div>
         </div>
-        <div class="intr-wrapper">
-          <template v-if="countLength(broker.introduction) > 100">
-            {{
-              showAllIntrudct ? broker.introduction : (cutLength(broker.introduction,100)+"...")
-            }}
-            <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
-          </template>
-          <template v-else>
-            {{broker.introduction}}
-          </template>
-        </div>
-
         <div class="market-popup">
           <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
           <div class="num-div">
