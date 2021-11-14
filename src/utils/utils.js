@@ -166,7 +166,7 @@ export function cutLength(str, length){
       r += 2;
     }
 
-    if(r >= length){
+    if(r > length){
       return str.substr(0,i);
     }
   }

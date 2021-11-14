@@ -50,12 +50,15 @@
 
         <div class="account-label system-popup-line">
           <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Introduction') }}</span></span>
-          <van-field class="derify-input no-padding-hor fz-15 fc-85"
-                     rows="4"
-                     placeholder=""
-                     type="textarea" v-model="broker.introduction" @input="(val)=>{
+          <div class="text-area-input" :data-count="countLength(broker.introduction) +'/800'">
+            <van-field class="derify-input no-padding-hor fz-15 fc-85"
+                       rows="4"
+                       placeholder=""
+                       type="textarea" v-model="broker.introduction" @input="(val)=>{
                        this.broker.introduction = cutLength(val, 800)
-                     }"/>
+                     }">
+            </van-field>
+          </div>
         </div>
 
         <div class="btn-wrap">
@@ -298,6 +301,14 @@ export default {
 
   textarea.van-field__control{
     text-align: left;
+    width: 22rem;
+  }
+  .text-area-input:after{
+    float: right;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    content: attr(data-count);
+    pointer-events: none;
   }
 
   .fc-85 .van-field__control{
