@@ -34,7 +34,7 @@
               <div>
                 <p>
                   <template v-if="countLength(broker.introduction) > 70">
-                    <TextView show-pos="right" :text='broker.introduction||""' :len='broker.showAllIntrudct ? (broker.introduction || "").length : 70'></TextView>
+                    <span>{{cutLength(broker.introduction, 70)}}...</span>
                     <span  class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
                   </template>
                   <template v-else>
