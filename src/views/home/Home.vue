@@ -15,7 +15,7 @@
             </span>
           </div>
           <div :class="curPair.percent >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
-          {{curPair.percent | fck(0, 2)}}%</span>
+          {{curPair.percent | amountFormt(2, true, "--", 0)}}%</span>
           </div>
         </div>
         <div class="home-top-right">
