@@ -179,7 +179,7 @@ export function updateTraderAccess(trader){
 
 
 /**
- * 交易记录
+ * trade record doamin
  */
 export class TradeRecord {
   id;// uuid
