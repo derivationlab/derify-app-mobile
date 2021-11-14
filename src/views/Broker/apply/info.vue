@@ -305,7 +305,7 @@ export default {
   }
   .text-area-input:after{
     float: right;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.45);
     white-space: nowrap;
     content: attr(data-count);
     pointer-events: none;
