@@ -131,6 +131,7 @@ export default {
     }
   },
   methods: {
+    countLength,cutLength,
     loadBrokerInfo() {
       this.$store.dispatch("broker/getBrokerByTrader", this.trader).then(broker => {
         if(!broker.broker) {

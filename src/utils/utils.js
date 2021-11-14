@@ -132,6 +132,10 @@ export function toChecksumAddress (address) {
 
 
 export function countLength(str) {
+  if(!str){
+    return 0;
+  }
+
   var r = 0;
   for (var i = 0; i < str.length; i++) {
     var c = str.charCodeAt(i);
@@ -147,6 +151,10 @@ export function countLength(str) {
 }
 
 export function cutLength(str, length){
+  if(!str){
+    return "";
+  }
+
   var r = 0;
   for (var i = 0; i < str.length; i++) {
     var c = str.charCodeAt(i);
