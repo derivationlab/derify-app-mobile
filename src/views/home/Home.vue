@@ -10,7 +10,7 @@
             <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
           </div>
           <div class="home-top-num">
-            <span :class="curContractData.tokenPriceRate >= 0 ? 'fc-green' : 'fc-red'">
+            <span :class="curPair.percent >= 0 ? 'fc-green' : 'fc-red'">
               <DecimalView :value="curPair.num | fck(0,2)" last-style="font-size: 1.5rem"/>
             </span>
           </div>
