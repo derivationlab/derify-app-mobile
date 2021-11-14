@@ -10,12 +10,12 @@
             <van-icon color="rgba(255, 255, 255, .85)" name="arrow" size="1.6rem"></van-icon>
           </div>
           <div class="home-top-num">
-            <span :class="curContractData.tokenPriceRate >= 0 ? 'fc-green' : 'fc-red'">
-              <DecimalView :value="curSpotPrice | fck(-8,2)" last-style="font-size: 1.5rem"/>
+            <span :class="curPair.percent >= 0 ? 'fc-green' : 'fc-red'">
+              <DecimalView :value="curPair.num | fck(0,2)" last-style="font-size: 1.5rem"/>
             </span>
           </div>
-          <div :class="curContractData.tokenPriceRate >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
-          {{curContractData.tokenPriceRate}}%</span>
+          <div :class="curPair.percent >= 0 ? 'home-top-percent up' : 'home-top-percent down'"><span>
+          {{curPair.percent | amountFormt(2, true, "--", 0)}}%</span>
           </div>
         </div>
         <div class="home-top-right">
@@ -31,10 +31,10 @@
             <span class="fc-65">{{$t('Trade.OpenPosition.Kline.PMAPY')}}</span>
             <img @click="changeShowHint(true, 'key4')" class="left-help-icon" src="@/assets/icons/icon-help.png" alt="">:
             <span class="fc-green">{{$t('Trade.OpenPosition.Kline.Long')}}</span>
-            <span>{{curContractData.longPmrRate | fck(0,2)}}%</span>
+            <span>{{curPair.longPmrRate | fck(0,2)}}%</span>
             <span class="fc-65 margin">/</span>
             <span class="fc-red">{{$t('Trade.OpenPosition.Kline.Short')}}</span>
-            <span>{{curContractData.shortPmrRate | fck(0,2)}}%</span>
+            <span>{{curPair.shortPmrRate | fck(0,2)}}%</span>
           </div>
         </div>
       </div>
@@ -464,7 +464,13 @@ export default {
   computed: {
     curPair () {
       const {curPairKey, pairs} = this.$store.state.contract
-      return pairs.find(pair => pair.key === curPairKey)
+      let curPair = pairs.find(pair => pair.key === curPairKey)
+
+      if(!curPair){
+        curPair = pairs[0];
+      }
+
+      return curPair;
     },
     curSpotPrice () {
       return this.$store.state.contract.contractData.curSpotPrice

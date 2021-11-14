@@ -10,10 +10,10 @@ const state = {
   },
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC},
-    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
+    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
+    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
+    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
+    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
   ],
   curPairKey:  window.localStorage.getItem('curPairKey') || 'BTC',
   contractData: {
@@ -395,28 +395,38 @@ const actions = {
       return sysCloseUpperBound
   })
   },
-  updateAllPairPrice ({state, commit}, {token,priceChangeRate}) {
+  updateAllPairPrice ({state, commit}, {token,priceChangeRate, longPmrRate, shortPmrRate}) {
     const contract = web3Utils.contract(state.wallet_address)
 
     if(!state.wallet_address){
       return {}
     }
 
-    state.pairs.forEach((pair) => {
-      if(!pair.enable){
+    state.pairs.forEach(async (pair) => {
+      if(!pair.enable || pair.address !== token){
         return
       }
 
       if(pair.address === token){
-        contract.getSpotPrice(pair.address).then((spotPrice) => {
-          commit('UPDATE_PAIRS', [{num: fromContractUnit(spotPrice), key: pair.key}])
-        })
+        const spotPrice = await contract.getSpotPrice(pair.address);
 
-        if(pair.key === state.curPairKey) {
-          commit('SET_CONTRACT_DATA', {tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)})
+        if(spotPrice || spotPrice === 0){
+          pair.num = fromContractUnit(spotPrice);
         }
 
-        commit('UPDATE_PAIRS', [{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pair.key}])
+        if(priceChangeRate || priceChangeRate === 0){
+          pair.percent = priceChangeRate * 100;
+        }
+
+        if(longPmrRate || longPmrRate === 0){
+          pair.longPmrRate = longPmrRate * 100;
+        }
+
+        if(shortPmrRate || shortPmrRate === 0){
+          pair.shortPmrRate = shortPmrRate * 100;
+        }
+
+        commit('UPDATE_PAIRS', [pair])
       }
     })
 

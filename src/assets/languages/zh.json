@@ -80,7 +80,9 @@
 				"ChooseBroker":"选择经纪商",
 				"HaveBrokerCode":"有经纪商编码",
 				"NoMoreInfo":"没有更多了",
-				"Submit":"提交"
+				"Submit":"提交",
+				"SeeMore":"展开",
+				"PackUp":"收起"
 			}
 		},
 		"OpenPosition":{
@@ -507,7 +509,10 @@
 				"InfoRequired":"信息填写不完整，请重新填写",
 				"FormatError":"只能输入字母、数字和符号\"_\",\"@\",\"$\"",
 				"Edit":"编辑",
-				"Upload":"上传头像"
+				"Upload":"上传头像",
+				"Introduction":"简介",
+				"SeeMore":"展开",
+				"PackUp":"收起"
 			},
 			"Account":{
 				"AccBalance":"账户余额",

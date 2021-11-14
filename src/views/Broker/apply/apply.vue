@@ -30,7 +30,17 @@
               <div class="broker-name">{{broker.name}}</div>
               <div class="broker-addr">
                 <p>@{{broker.id}}</p>
-                <p><TextView :text="broker.broker" show-pos="mid" len="29"/></p>
+              </div>
+              <div>
+                <p>
+                  <template v-if="countLength(broker.introduction) > 72">
+                    <span>{{broker.showAllIntrudct ? broker.introduction : (cutLength(broker.introduction, 72)+"...")}}</span>
+                    <span  class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+                  </template>
+                  <template v-else>
+                    {{broker.introduction}}
+                  </template>
+                </p>
               </div>
             </div>
           </div>
@@ -52,13 +62,14 @@ import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 import TextView from '@/components/TextView'
+import {countLength,cutLength} from '@/utils/utils'
+
 export default {
   name: 'Home',
   components: {
     DerifyErrorNotice,
     ButtonLoginWrap,
-    Navbar,
-    TextView
+    Navbar
   },
   data () {
     return {
@@ -84,6 +95,7 @@ export default {
     }
   },
   methods: {
+    countLength,cutLength,
     loadBrokers() {
 
       if(this.loading){
@@ -97,7 +109,7 @@ export default {
           this.finished = true
         }else{
           brokers.forEach(broker => {
-            this.brokers.push(Object.assign({selected: false}, broker))
+            this.brokers.push(Object.assign({selected: false, showAllIntr: false}, broker))
           })
           this.finished = false
         }

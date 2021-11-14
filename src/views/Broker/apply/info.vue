@@ -8,7 +8,7 @@
           {{errorMsg}}
         </DerifyErrorNotice>
 
-        <div class="system-popup-line system-popup-input">
+        <div class="system-popup-line system-popup-input" style="display: none;">
           <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.WalletAddress') }}</span></span>
           <van-field readonly class="derify-input no-padding-hor fz-15  fc-45" placeholder=""
                      :formatter="(value) => value.replace(/-/g, '')"
@@ -16,13 +16,13 @@
         </div>
 
         <div class="system-popup-line system-popup-input">
-          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
+          <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Name') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
                      type="text" v-model="broker.name"/>
         </div>
 
         <div class="system-popup-line system-popup-input">
-          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
+          <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
             <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
 
@@ -38,14 +38,27 @@
         </div>
 
         <div class="account-label system-popup-line">
-          <span class="fz-15"><span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
+          <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.BrokerCode') }}</span></span>
           <van-field class="derify-input no-padding-hor fz-15 fc-85" placeholder=""
                      type="text" v-model="broker.id" @input="(val)=>{this.broker.id = val.toLowerCase()}"/>
         </div>
 
         <div class="system-popup-input derify-broker-url">
           <span class="derify-input no-padding-hor fz-15 fc-45">{{webroot}}/broker/</span>
-          <span class="fc-85 fz-12">{{broker.id.toLowerCase()}}</span>
+          <span class="fc-85 fz-12">{{(broker.id || "").toLowerCase()}}</span>
+        </div>
+
+        <div class="account-label system-popup-line">
+          <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Introduction') }}</span></span>
+          <div class="text-area-input" :data-count="countLength(broker.introduction) +'/800'">
+            <van-field class="derify-input no-padding-hor fz-15 fc-85"
+                       rows="4"
+                       placeholder=""
+                       type="textarea" v-model="broker.introduction" @input="(val)=>{
+                       this.broker.introduction = cutLength(val, 800)
+                     }">
+            </van-field>
+          </div>
         </div>
 
         <div class="btn-wrap">
@@ -69,6 +82,8 @@ import { BrokerInfo } from '@/api/broker'
 import { getWebroot } from '@/config'
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import { UserProcessStatus } from '@/store/modules/user'
+import { countLength,cutLength } from '@/utils/utils'
+
 export default {
   name: 'Home',
   components: {
@@ -119,6 +134,7 @@ export default {
     }
   },
   methods: {
+    countLength,cutLength,
     loadBrokerInfo() {
       this.$store.dispatch("broker/getBrokerByTrader", this.trader).then(broker => {
         if(!broker.broker) {
@@ -158,6 +174,11 @@ export default {
         return false
       }
 
+      if(!this.broker.introduction || this.broker.introduction.length < 1) {
+        this.errorNotice(this.$t('Broker.Broker.InfoEdit.InfoRequired'));
+        return false;
+      }
+
       if(!/^[0-9a-zA-Z_@$]+$/.test(this.broker.id)){
         this.errorNotice(this.$t('Broker.Broker.InfoEdit.FormatError'));
         return false;
@@ -181,7 +202,7 @@ export default {
         return
       }
 
-      const param = {broker: this.broker.broker, id: this.broker.id, name: this.broker.name}
+      const param = {...this.broker}
 
       if(this.$refs.logo.files.length > 0){
         param.logo = this.$refs.logo.files[0]
@@ -277,6 +298,20 @@ export default {
     text-align: right;
     color: rgba(255,255,255,0.45);
   }
+
+  textarea.van-field__control{
+    text-align: left;
+    width: 22rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.45);;
+  }
+  .text-area-input:after{
+    float: right;
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+    content: attr(data-count);
+    pointer-events: none;
+  }
+
   .fc-85 .van-field__control{
     color: rgba(255,255,255,0.85);
   }

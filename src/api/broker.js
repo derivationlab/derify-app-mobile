@@ -209,6 +209,7 @@ export class BrokerInfo {
   name;
   logo;
   update_time;
+  introduction;
 }
 
 

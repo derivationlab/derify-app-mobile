@@ -11,8 +11,18 @@
           <div class="broker-contact">
             <div class="broker-name">{{broker.name}}</div>
             <div class="broker-addr">
-              <p>{{broker.id}}</p>
-              <p><TextView :text="broker.broker" show-pos="mid" len="32"/></p>
+              <p>@{{broker.id}}</p>
+            </div>
+            <div class="intr-wrapper">
+              <template v-if="countLength(broker.introduction) > 74">
+                {{
+                  showAllIntrudct ? broker.introduction : (cutLength(broker.introduction,74)+"...")
+                }}
+                <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+              </template>
+              <template v-else>
+                {{broker.introduction}}
+              </template>
             </div>
           </div>
           <div class="go-right-wrap"  @click="goPath(`/broker-info`)">
@@ -21,7 +31,6 @@
             </i>
           </div>
         </div>
-
         <div class="market-popup">
           <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
           <div class="num-div">
@@ -161,6 +170,7 @@ import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import { BondAccountType, fromContractUnit } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import TextView from '@/components/TextView'
+import {countLength,cutLength} from '@/utils/utils'
 
 export default {
   name: 'Home',
@@ -169,13 +179,13 @@ export default {
     BrokerWithdrawPopup,
     BrokerDepositPopup,
     DerifyErrorNotice,
-    TextView,
     Navbar,
     trader,
     account
   },
   data () {
     return {
+      showAllIntrudct: false,
       showLoading: true,
       showApplyPopup: false,
       termPopup: false,
@@ -242,6 +252,8 @@ export default {
     }
   },
   methods: {
+    countLength,
+    cutLength,
     getAccountOptions() {
       return [
         {
@@ -359,6 +371,9 @@ export default {
 }
 
 .home-top{
+  .intr-wrapper{
+    margin-bottom: 10px;
+  }
   .broker-info{
     display: flex;
     justify-content: space-between;
