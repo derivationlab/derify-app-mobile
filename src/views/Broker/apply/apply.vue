@@ -33,8 +33,8 @@
               </div>
               <div>
                 <p>
-                  <template v-if="countLength(broker.introduction) > 70">
-                    <span>{{cutLength(broker.introduction, 70)}}...</span>
+                  <template v-if="countLength(broker.introduction) > 80">
+                    <span>{{cutLength(broker.introduction, 80)}}...</span>
                     <span  class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
                   </template>
                   <template v-else>
@@ -69,8 +69,7 @@ export default {
   components: {
     DerifyErrorNotice,
     ButtonLoginWrap,
-    Navbar,
-    TextView
+    Navbar
   },
   data () {
     return {
