@@ -170,11 +170,7 @@ export default {
 
     eventSource = createDataEvenet((datas) => {
       datas.forEach((data) => {
-        if(data.token === self.curPair.address){
-          self.$store.commit('contract/SET_CONTRACT_DATA', {longPmrRate: data.longPmrRate * 100, shortPmrRate: data.shortPmrRate * 100})
-        }
-
-        self.$store.dispatch('contract/updateAllPairPrice', {token: data.token, priceChangeRate: data.price_change_rate})
+        self.$store.dispatch('contract/updateAllPairPrice', {token: data.token, priceChangeRate: data.price_change_rate,longPmrRate: data.longPmrRate, shortPmrRate: data.shortPmrRate})
       });
     });
   },

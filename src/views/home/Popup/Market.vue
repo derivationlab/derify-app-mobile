@@ -9,7 +9,7 @@
         <div class="market-item-left">{{pair.name}}</div>
         <div class="market-item-right">
           <div>{{parseFloat(pair.num).toFixed(2)}}</div>
-          <div :class="pair.percent >= 0 ? 'fc-green' : 'fc-red'">{{pair.percent >= 0 ? '+' : '-'}}{{Math.abs(pair.percent)}}%</div>
+          <div :class="pair.percent >= 0 ? 'fc-green' : 'fc-red'">{{pair.percent | amountFormt(2,true,'--',0)}}%</div>
         </div>
       </div>
     </div>

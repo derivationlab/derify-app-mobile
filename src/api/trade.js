@@ -98,30 +98,6 @@ export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) 
 
   return [];
 }
-/**
- * get event data
- * @param callback {(data:{
-          "token": string,
-          "price_change_rate": number,
-          "longPmrRate":number,
-          "shortPmrRate":number
-        }) -> void}
- */
-export function createDataEvenet (callback){
-  if(isNotCallEvent){
-    return null
-  }
-
-
-  const events = new EventSource(DATA_EVENT_URL);
-
-  events.onmessage = (event) => {
-    const parsedData = JSON.parse(event.data)
-    callback(parsedData)
-  }
-
-  return events
-}
 
 /**
  *
@@ -153,46 +129,48 @@ export async function isUSDTClaimed (trader) {
 
 }
 
+
+const eventDataKey = 'eventData';
 /**
- * Get mining profitability
- * @param tokenAddr
- * @param callback param PositionMiningRate
+ * get event data
+ * @param callback {(data:{
+          "token": string,
+          "price_change_rate": number,
+          "longPmrRate":number,
+          "shortPmrRate":number
+        }[]) => void}
  */
-export function createTokenMiningFeeEvenet (tokenAddr, callback){
+export function createDataEvenet (callback){
   if(isNotCallEvent){
     return null
   }
 
+  getEventData(callback);
 
-  const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
+  const events = new EventSource(DATA_EVENT_URL);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
-    callback(tokenAddr, parsedData)
+    window.localStorage.setItem(eventDataKey, event.data);
+    callback(parsedData)
   }
 
   return events
 }
 
-/**
- * Get token increase
- * @param tokenKey
- * @param callback tokenKey
- * @return {EventSource}
+/** get event data
+ * @param callback {(data:{
+  "token": string,
+  "price_change_rate": number,
+  "longPmrRate":number,
+  "shortPmrRate":number
+}[]) => void}
  */
-export function createTokenPriceChangeEvenet (tokenKey, callback){
-  if(isNotCallEvent){
-    return null
+export function getEventData(callback){
+  const localData = window.localStorage.getItem(eventDataKey);
+  if(localData){
+    callback(JSON.parse(localData))
   }
-
-  const events = new EventSource(TOKEN_PRICE_EVENT_URL + tokenKey);
-
-  events.onmessage = (event) => {
-    const parsedData = JSON.parse(event.data)
-    callback(tokenKey, parsedData)
-  }
-
-  return events
 }
 
 export function updateTraderAccess(trader){
