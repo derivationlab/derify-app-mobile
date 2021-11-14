@@ -302,6 +302,7 @@ export default {
   textarea.van-field__control{
     text-align: left;
     width: 22rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.45);;
   }
   .text-area-input:after{
     float: right;
