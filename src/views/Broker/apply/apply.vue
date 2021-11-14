@@ -34,7 +34,7 @@
               <div>
                 <p>
                   <template v-if="countLength(broker.introduction) > 80">
-                    <span>{{cutLength(broker.introduction, 80)}}...</span>
+                    <span>{{broker.showAllIntrudct ? broker.introduction : cutLength(broker.introduction, 80)}}...</span>
                     <span  class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
                   </template>
                   <template v-else>
