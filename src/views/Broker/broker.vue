@@ -22,8 +22,13 @@
           </div>
         </div>
         <div class="intr-wrapper">
-          <TextView show-pos="right" :text='broker.introduction||""' :len='showAllIntrudct ? (broker.introduction || "").length : 50'></TextView>
-          <span v-if="broker.introduction" class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+          <template v-if="countLength(broker.introduction) > 50">
+            <TextView show-pos="right" :text='broker.introduction||""' :len='showAllIntrudct ? (broker.introduction||"").length : 45'></TextView>
+            <span class="fc-yellow" @click='() => {this.showAllIntrudct = !showAllIntrudct}'>{{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+          </template>
+          <template v-else>
+            {{broker.introduction}}
+          </template>
         </div>
 
         <div class="market-popup">
@@ -165,6 +170,7 @@ import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import { BondAccountType, fromContractUnit } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import TextView from '@/components/TextView'
+import {countLength} from '@/utils/utils'
 
 export default {
   name: 'Home',
@@ -247,6 +253,7 @@ export default {
     }
   },
   methods: {
+    countLength,
     getAccountOptions() {
       return [
         {

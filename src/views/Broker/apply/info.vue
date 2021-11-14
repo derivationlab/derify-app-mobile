@@ -53,7 +53,9 @@
           <van-field class="derify-input no-padding-hor fz-15 fc-85"
                      rows="4"
                      placeholder=""
-                     type="textarea" v-model="broker.introduction" @input="(val)=>{this.broker.introduction = val}"/>
+                     type="textarea" v-model="broker.introduction" @input="(val)=>{
+                       this.broker.introduction = cutLength(val, 800)
+                     }"/>
         </div>
 
         <div class="btn-wrap">
@@ -77,6 +79,8 @@ import { BrokerInfo } from '@/api/broker'
 import { getWebroot } from '@/config'
 import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
 import { UserProcessStatus } from '@/store/modules/user'
+import { countLength,cutLength } from '@/utils/utils'
+
 export default {
   name: 'Home',
   components: {

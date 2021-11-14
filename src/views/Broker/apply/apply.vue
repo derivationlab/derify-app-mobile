@@ -33,8 +33,13 @@
               </div>
               <div>
                 <p>
-                  <TextView show-pos="right" :text='broker.introduction||""' :len='broker.showAllIntrudct ? (broker.introduction || "").length : 40'></TextView>
-                  <span v-if="broker.introduction" class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+                  <template v-if="countLength(broker.introduction) > 40">
+                    <TextView show-pos="right" :text='broker.introduction||""' :len='broker.showAllIntrudct ? (broker.introduction || "").length : 40'></TextView>
+                    <span  class="fc-yellow" @click='() => {broker.showAllIntrudct = !broker.showAllIntrudct}'>{{broker.showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}}</span>
+                  </template>
+                  <template v-else>
+                    {{broker.introduction}}
+                  </template>
                 </p>
               </div>
             </div>
@@ -57,6 +62,7 @@ import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 import TextView from '@/components/TextView'
+
 export default {
   name: 'Home',
   components: {
