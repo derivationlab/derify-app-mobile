@@ -13,7 +13,7 @@
 </style>
 <script>
 import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
-import { createDataEvenet } from '@/api/trade'
+import { createDataEvenet, updateTraderAccess } from '@/api/trade'
 import Bind from '@/views/Broker/apply/add'
 import Trade from '@/views/home/Home'
 import { asyncInitWallet, getWallet } from '@/store/modules/user'
@@ -121,12 +121,15 @@ export default {
       if(self.$store.state.user.selectedAddress !== walletInfo.selectedAddress) {
         eventType = 1
       }
-      this.$events.$emit('afterInitWallet');
+      this.$events.$emit('afterInitWallet',walletInfo);
       this.$eventBus.$emit(EVENT_WALLET_CHANGE, eventType)
     }
   },
   events:{
-    afterInitWallet(){
+    afterInitWallet(walletInfo){
+      if(walletInfo.trader){
+        updateTraderAccess(walletInfo.trader)
+      }
       this.resetRoute()
     }
   },
