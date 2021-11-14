@@ -395,6 +395,7 @@ export default {
       font-size: 1.3rem;
       line-height: 1.8rem;
       padding-left: 1rem;
+      width: 100%;
       .broker-name{
         font-size: 1.7rem;
         text-align: LEFT;
