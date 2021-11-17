@@ -1166,6 +1166,7 @@ export default {
   &-coin {
     display: flex;
     align-items: center;
+    min-width: 10rem;
     &-name {
       margin-right: 0.4rem;
     }
