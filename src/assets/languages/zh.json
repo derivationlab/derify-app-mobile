@@ -10,7 +10,8 @@
 			"ConnectWallet":"连接钱包",
 			"Home":"首页",
 			"WalletAddress":"钱包地址",
-			"Feedback":"使用反馈"
+			"Feedback":"使用反馈",
+			"Guide":"使用教程"
 		},
 		"Wallet":{
 			"ConnectWallet":"连接钱包",
@@ -494,7 +495,9 @@
 			"TradePendingMsg":"正在执行，请稍候",
 			"TradeFailedMsg":"执行失败，请重试",
 			"ApplySuccessMsg":"您已成功开通经纪商身份",
-			"AddInfo":"完善信息"
+			"AddInfo":"完善信息",
+			"GetTestEDRF":"获取测试网eDRF",
+			"ImageFormatError":"图片格式不正确，请上传jpg、png、gif、bmp等格式图片"
 		},
 		"Broker":{
 			"InfoEdit":{
@@ -504,7 +507,7 @@
 				"BrokerCode":"经纪商编码",
 				"PhotoSizeError":"图片不得大于2M，请重新上传",
 				"CodeOccuError":"您的编码已被占用，请重新设置",
-				"Title":"经济商信息",
+				"Title":"经纪商信息",
 				"Commit":"提交",
 				"InfoRequired":"信息填写不完整，请重新填写",
 				"FormatError":"只能输入字母、数字和符号\"_\",\"@\",\"$\"",

@@ -10,7 +10,8 @@
 			"ConnectWallet":"Connect Wallet",
 			"Home":"Home",
 			"WalletAddress":"Wallet",
-			"Feedback":"Feedback"
+			"Feedback":"Feedback",
+			"Guide":"Guide"
 		},
 		"Wallet":{
 			"ConnectWallet":"Connect Wallet",
@@ -494,7 +495,9 @@
 			"TradePendingMsg":"Pending ……",
 			"TradeFailedMsg":"Error, please retry...",
 			"ApplySuccessMsg":"You Successfully Purchased Broker Privilege!",
-			"AddInfo":"Add Info"
+			"AddInfo":"Add Info",
+			"GetTestEDRF":"Get testnet eDRF",
+			"ImageFormatError":"The picture format is incorrect. Please upload pictures in JPG, PNG, GIF, BMP and other format"
 		},
 		"Broker":{
 			"InfoEdit":{
