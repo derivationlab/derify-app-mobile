@@ -215,7 +215,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name"><a href="https://derify.canny.io/test-net-feedback" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
+          <div class="menu-list-item-name"><a href="https://docs.derify.finance/tutorial/connect-wallet" target="_blank">{{ $t("Trade.navbar.Guide") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">
