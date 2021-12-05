@@ -235,7 +235,7 @@ export default {
       handler(){
 
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
-          || !this.broker.name || !this.broker.id
+          || !this.broker.name || !this.broker.id || !this.broker.introduction
 
         this.succPopup = this.brokerApplied && this.showCompleteInfo
       },
@@ -337,7 +337,10 @@ export default {
     },
     // close apply success popup
     closesuccPopup () {
-      this.succPopup = false
+      if(!this.showCompleteInfo){
+        this.succPopup = false
+      }
+
       this.goPath(`/broker-info/${this.broker.id}`)
     },
 
