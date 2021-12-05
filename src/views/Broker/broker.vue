@@ -99,7 +99,20 @@
             <img src="@/assets/images/Frame.png" alt="" srcset="">
           </div>
           <div class="hintTitle">{{$t('Broker.Apply.NotBrokerMessage')}}</div>
-          <div v-if="isLogin" class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
+          <div class="hintTitle">
+            <i18n path="Broker.Apply.GetBrokersPrivilege">
+              <DecimalView :value="applyBurnAmount+''" digit-split=",">
+                <template #first="{first}">&nbsp;<span class="fz-15 fc-yellow">{{first}}</span>&nbsp;</template>
+                <template #last></template>
+              </DecimalView>
+            </i18n>
+          </div>
+          <template v-if="isLogin">
+            <div class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
+            <div class="derify-big-btn">
+              <a class="fc-yellow fz-15" href="https://form.jotform.com/213133802570042" target="_blank">{{$t("Broker.Apply.GetTestEDRF")}}</a>
+            </div>
+          </template>
           <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
         </div>
       </div>
@@ -222,7 +235,7 @@ export default {
       handler(){
 
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
-          || !this.broker.name || !this.broker.id
+          || !this.broker.name || !this.broker.id || !this.broker.introduction
 
         this.succPopup = this.brokerApplied && this.showCompleteInfo
       },
@@ -251,6 +264,7 @@ export default {
       }
     }
   },
+
   methods: {
     countLength,
     cutLength,
@@ -278,6 +292,13 @@ export default {
 
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
+
+        const showComplete = !this.broker.logo || !this.broker.broker
+        || !this.broker.name || !this.broker.id || !this.broker.introduction;
+
+        if(!this.showApplyPopup && showComplete){
+          this.goPath(`/broker-info/${this.broker.id}`);
+        }
       }).finally(() => {
         this.showLoading = false
       });
@@ -324,7 +345,10 @@ export default {
     },
     // close apply success popup
     closesuccPopup () {
-      this.succPopup = false
+      if(!this.showCompleteInfo){
+        this.succPopup = false
+      }
+
       this.goPath(`/broker-info/${this.broker.id}`)
     },
 

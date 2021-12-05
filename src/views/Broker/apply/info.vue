@@ -24,7 +24,7 @@
         <div class="system-popup-line system-popup-input">
           <span class="fz-15"><span class="fc-red">*</span>&nbsp;<span class="fc-85">{{ $t('Broker.Broker.InfoEdit.Avatar') }}</span></span>
           <div class="broker-avatar">
-            <input type="file" class="broker-avatar-file" ref="logo" accept="image/gif,image/jpeg,image/jpg,image/png"/>
+            <input type="file" class="broker-avatar-file" ref="logo" accept="image/*"/>
 
             <template v-if="broker.logo">
               <van-image fit="cover" :round="true" lazy-load :src="broker.logo" width="5.5rem" height="5.5rem" alt=""/>
@@ -107,6 +107,9 @@ export default {
       this.loadBrokerInfo()
     }
 
+    if(!this.brokerApplied){
+      this.$router.push({name: 'broker'})
+    }
 
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadBrokerInfo()
@@ -131,6 +134,9 @@ export default {
     },
     trader () {
       return this.$store.state.user.selectedAddress
+    },
+    brokerApplied(){
+      return this.$store.state.broker.isBroker
     }
   },
   methods: {
@@ -213,7 +219,10 @@ export default {
       //this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
-          this.$router.go(-1)
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.$router.push({name: 'broker'})
+          });
+
         }else{
           this.errorNotice(data.msg)
         }
