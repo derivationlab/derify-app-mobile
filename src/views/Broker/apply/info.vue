@@ -107,6 +107,9 @@ export default {
       this.loadBrokerInfo()
     }
 
+    if(!this.brokerApplied){
+      this.$router.push({name: 'broker'})
+    }
 
     this.$eventBus.$on(EVENT_WALLET_CHANGE, () => {
       this.loadBrokerInfo()
@@ -131,6 +134,9 @@ export default {
     },
     trader () {
       return this.$store.state.user.selectedAddress
+    },
+    brokerApplied(){
+      return this.$store.state.broker.isBroker
     }
   },
   methods: {

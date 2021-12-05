@@ -296,7 +296,7 @@ export default {
         const showComplete = !this.broker.logo || !this.broker.broker
         || !this.broker.name || !this.broker.id || !this.broker.introduction;
 
-        if(showComplete){
+        if(!this.showApplyPopup && showComplete){
           this.goPath(`/broker-info/${this.broker.id}`);
         }
       }).finally(() => {
