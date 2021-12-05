@@ -237,6 +237,10 @@ export default {
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
           || !this.broker.name || !this.broker.id || !this.broker.introduction
 
+        if(this.showCompleteInfo){
+          this.goPath(`/broker-info/${this.broker.id}`);
+        }
+
         this.succPopup = this.brokerApplied && this.showCompleteInfo
       },
       deep:true,
