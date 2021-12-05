@@ -237,10 +237,6 @@ export default {
         this.showCompleteInfo = !this.broker.logo || !this.broker.broker
           || !this.broker.name || !this.broker.id || !this.broker.introduction
 
-        if(this.showCompleteInfo){
-          this.goPath(`/broker-info/${this.broker.id}`);
-        }
-
         this.succPopup = this.brokerApplied && this.showCompleteInfo
       },
       deep:true,
@@ -268,6 +264,7 @@ export default {
       }
     }
   },
+
   methods: {
     countLength,
     cutLength,
@@ -295,6 +292,13 @@ export default {
 
       this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
         this.showApplyPopup = !this.brokerApplied
+
+        const showComplete = !this.broker.logo || !this.broker.broker
+        || !this.broker.name || !this.broker.id || !this.broker.introduction;
+
+        if(showComplete){
+          this.goPath(`/broker-info/${this.broker.id}`);
+        }
       }).finally(() => {
         this.showLoading = false
       });

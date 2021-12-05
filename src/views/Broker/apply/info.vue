@@ -213,7 +213,10 @@ export default {
       //this.$userProcessBox({show: true, status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
       this.$store.dispatch('broker/updateBroker', param, {}).then((data) => {
         if(data.success) {
-          this.$router.go(-1)
+          this.$store.dispatch('broker/getTraderBrokerInfo', this.trader).then(() => {
+            this.$router.push({name: 'broker'})
+          });
+
         }else{
           this.errorNotice(data.msg)
         }
