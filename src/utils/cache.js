@@ -35,3 +35,23 @@ export function removeCache (key, isTemp = false) {
     localStorage.removeItem(key)
   }
 }
+
+export async function callWithCache(key, call){
+  let value = getCache(key);
+
+  if(!value){
+    return value;
+  }
+
+  if(call instanceof Function){
+    value = call(key);
+    if(value instanceof Promise){
+      value = await value;
+      setCache(key, value);
+    }else{
+      setCache(key, value);
+    }
+  }
+
+  return value;
+}

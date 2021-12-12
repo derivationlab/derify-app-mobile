@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
+import { callWithCache, getCache, setCache } from '@/utils/cache'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -642,7 +643,10 @@ export default class Contract {
    * @return {*}
    */
   getPositionChangeFeeRatio (token) {
-    return this.__getDerifyDerivativeContract(token).methods.getPositionChangeFeeRatio().call()
+    const key = token + ".getPositionChangeFeeRatio";
+    return callWithCache(key, async () => {
+      return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFeeRatio().call()
+    });
   }
 
   /**
@@ -1167,8 +1171,12 @@ export default class Contract {
     }
 
     const ratioBefore = await this.getPositionChangeFeeRatio(token)
-    const kRatio = await this.__getDerifyDerivativeContract(token).methods.kRatio().call();
-    const gRatio = await this.__getDerifyDerivativeContract(token).methods.gRatio().call();
+    const kRatioKey = token+'.kRatio';
+    const gRatioKey = token+'.gRatio';
+
+
+    const kRatio = await callWithCache(kRatioKey, async () => await this.__getDerifyDerivativeContract(token).methods.kRatio().call());
+    const gRatio = await callWithCache(gRatioKey, async () => this.__getDerifyDerivativeContract(token).methods.gRatio().call());
 
     const amounts = await this.__getDerifyDerivativeContract(token).methods.getSideTotalAmount().call();
 
@@ -1199,6 +1207,10 @@ export default class Contract {
     }
 
     return Math.ceil(ratioBefore * 1.0 + ratioAfter);
+  }
+
+  async getKRatio(){
+
   }
 }
 
