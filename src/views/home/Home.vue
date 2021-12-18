@@ -138,7 +138,9 @@
             </template>
           </template>
         </div>
-        <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
+        <div id="myChart" ref="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"
+          v-drag="onChartDrag" v-zoomin="onChartZoomIn" v-zoomout="onChartZoomOut"
+        ></div>
       </div>
       <div class="home-last">
         <template v-if="isHome()">
@@ -568,15 +570,17 @@ export default {
       showTimeGapDropDown: false,
       showTimeGapNum: 9,
       kChartTimeGap: {value: '15m', text: '15m'},
+      kChartLimit: 35,
+      kChartStart: (new Date()).getTime(),
       kChartTimeMinGaps: [
-        {value: '1m', text: '1m'},
-        {value: '5m', text: '5m'},
-        {value: '15m', text: '15m'},
-        {value: '1H', text: '1h'},
-        {value: '4H', text: '4h'},
-        {value: '1D', text: 'D'},
-        {value: '1W', text: 'W'},
-        {value: '1M', text: 'M'},
+        {value: '1m', text: '1m', time: 60 * 1000},
+        {value: '5m', text: '5m', time: 5 * 60 * 1000},
+        {value: '15m', text: '15m', time: 15 * 60 * 1000},
+        {value: '1H', text: '1h', time: 60 * 60 * 1000},
+        {value: '4H', text: '4h', time: 4 * 60 * 60 * 1000},
+        {value: '1D', text: 'D', time: 24 * 60 * 60 * 1000},
+        {value: '1W', text: 'W', time: 7 * 24 * 60 * 60 * 1000},
+        {value: '1M', text: 'M', time: 30 * 24 * 60 * 60 * 1000},
       ],
       positions: [],
       positionOrders: [],
@@ -983,10 +987,10 @@ export default {
     },
     updateKLine(token, gap) {
       const self = this
-      //TODO zoom by adjust limit
-      //TODO move by adjsut after/berfore
       getEchartsOptions({token,
         bar: gap.value,
+        after: this.kChartStart,
+        limit: this.kChartLimit,
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
         self.drawKline(options)
       })
@@ -1017,7 +1021,36 @@ export default {
       }
 
       return false;
-    }
+    },
+    onChartDrag(endEvent, startEvent, distance){
+
+      var endPos = endEvent.changedTouches[0];
+      var startPos = startEvent.changedTouches[0];
+      var distnaceX = endPos.pageX - startPos.pageX;
+
+      var movePercent = distnaceX / this.$refs.myChart.clientWidth;
+
+      var timeGapVal = this.kChartTimeMinGaps.find((item) => item.value === this.kChartTimeGap.value);
+      console.log(`onChartDrag, ${timeGapVal.time}`)
+
+      if(!timeGapVal){
+        return;
+      }
+
+      this.kChartStart = this.kChartStart - Math.ceil(this.kChartLimit * movePercent * timeGapVal.time);
+      //drag performance
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
+      console.log(`onChartDrag, ${this.kChartStart}`)
+    },
+    onChartZoomIn(endEvent, startEvent, disgtance){
+      this.kChartLimit++;
+
+      console.log(`onChartZoomIn, ${distance}`)
+    },
+    onChartZoomOut(endEvent, startEvent, disgtance){
+      this.kChartLimit--;
+      console.log(`onChartZoomOut, ${distance}`)
+    },
   },
   watch: {
     '$store.state.contract.contractData':{

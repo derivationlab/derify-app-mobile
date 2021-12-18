@@ -4,6 +4,7 @@ import VueEvents from 'vue-events'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueTouchEvents from './components/TouchEvents/index'
 import Vant from 'vant'
 import { Lazyload } from 'vant';
 import 'vant/lib/index.less'
@@ -27,6 +28,7 @@ if(isDebug()){
 
 Vue.use(VueEvents)
 Vue.use(Fragment.Plugin)
+Vue.use(VueTouchEvents)
 
 let locale = 'en'
 try {
