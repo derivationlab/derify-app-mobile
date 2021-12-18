@@ -557,7 +557,7 @@ export default {
       unitConfig: [
         {text: 'USDT', value: 0},
         {text: this.$store.state.contract.curPairKey, value: 1},
-        {text: '%', value: 2}
+        // {text: '%', value: 2}
       ],
       active: 'key1',
       tabs: {
@@ -713,10 +713,10 @@ export default {
 
         }
 
-        if(UnitTypeEnum.Percent === unit) {
-          unit = UnitTypeEnum.CurPair
-          size = this.calculatePositionSize(unit, this.sliderValue)
-        }
+        // if(UnitTypeEnum.Percent === unit) {
+        //   unit = UnitTypeEnum.CurPair
+        //   size = this.calculatePositionSize(unit, this.sliderValue)
+        // }
 
         this.openExtraData = Object.assign(this.openExtraData, {
           entrustType,
@@ -864,8 +864,8 @@ export default {
     },
     onSliderValueChange() {
       const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
-      this.unit = UnitTypeEnum.Percent
-      this.size = sliderValue
+      // this.unit = UnitTypeEnum.Percent
+      this.size = this.calculatePositionSize(unit,sliderValue);
     },
     calculatePositionSize (unit, sliderValue) {
 
