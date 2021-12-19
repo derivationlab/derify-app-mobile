@@ -85,12 +85,12 @@ export default {
     },
     isCanLogin () {
       const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId
-      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
+      //const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
 
       const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
       const walletMetaMask = this.$store.state.user.isMetaMask
 
-      return isSelectMain && walletMain && isSelectMetaMask && walletMetaMask;
+      return isSelectMain && isSelectMetaMask && walletMetaMask;
     }
   },
   watch: {
@@ -127,9 +127,9 @@ export default {
       this.selectedWallet = wallet
     },
     async handleLogin () {
-      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId;
+      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId;
 
-      if(!isSelectMain){
+      if(!walletMain){
         const ret = await this.switchNetwork(mainChain);
         if(!ret){
           this.showNetworkError = true;
