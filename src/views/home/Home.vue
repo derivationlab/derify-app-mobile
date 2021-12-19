@@ -138,7 +138,9 @@
             </template>
           </template>
         </div>
-        <div id="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"></div>
+        <div id="myChart" ref="myChart" class="k-chart-ctn" :style="{width: '100%', height: '36.5rem'}"
+          v-drag="onChartDrag" v-zoomin="onChartZoomIn" v-zoomout="onChartZoomOut"
+        ></div>
       </div>
       <div class="home-last">
         <template v-if="isHome()">
@@ -400,7 +402,7 @@ import {
   stringFromContractUnit,
   toContractUnit
 } from '@/utils/contractUtil'
-import {fck} from "@/utils/utils";
+import { amountFormt, fck } from '@/utils/utils'
 import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
@@ -519,7 +521,7 @@ export default {
       if (unit ===  UnitTypeEnum.USDT) {
         return fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
       }else{
-        return fromContractUnit(this.curTraderOpenUpperBound.size, 2)
+        return fromContractUnit(this.curTraderOpenUpperBound.size, 4)
       }
     }
   },
@@ -557,7 +559,7 @@ export default {
       unitConfig: [
         {text: 'USDT', value: 0},
         {text: this.$store.state.contract.curPairKey, value: 1},
-        {text: '%', value: 2}
+        // {text: '%', value: 2}
       ],
       active: 'key1',
       tabs: {
@@ -568,15 +570,17 @@ export default {
       showTimeGapDropDown: false,
       showTimeGapNum: 9,
       kChartTimeGap: {value: '15m', text: '15m'},
+      kChartLimit: 35,
+      kChartStart: (new Date()).getTime(),
       kChartTimeMinGaps: [
-        {value: '1m', text: '1m'},
-        {value: '5m', text: '5m'},
-        {value: '15m', text: '15m'},
-        {value: '1H', text: '1h'},
-        {value: '4H', text: '4h'},
-        {value: '1D', text: 'D'},
-        {value: '1W', text: 'W'},
-        {value: '1M', text: 'M'},
+        {value: '1m', text: '1m', time: 60 * 1000},
+        {value: '5m', text: '5m', time: 5 * 60 * 1000},
+        {value: '15m', text: '15m', time: 15 * 60 * 1000},
+        {value: '1H', text: '1h', time: 60 * 60 * 1000},
+        {value: '4H', text: '4h', time: 4 * 60 * 60 * 1000},
+        {value: '1D', text: 'D', time: 24 * 60 * 60 * 1000},
+        {value: '1W', text: 'W', time: 7 * 24 * 60 * 60 * 1000},
+        {value: '1M', text: 'M', time: 30 * 24 * 60 * 60 * 1000},
       ],
       positions: [],
       positionOrders: [],
@@ -713,10 +717,10 @@ export default {
 
         }
 
-        if(UnitTypeEnum.Percent === unit) {
-          unit = UnitTypeEnum.CurPair
-          size = this.calculatePositionSize(unit, this.sliderValue)
-        }
+        // if(UnitTypeEnum.Percent === unit) {
+        //   unit = UnitTypeEnum.CurPair
+        //   size = this.calculatePositionSize(unit, this.sliderValue)
+        // }
 
         this.openExtraData = Object.assign(this.openExtraData, {
           entrustType,
@@ -864,15 +868,15 @@ export default {
     },
     onSliderValueChange() {
       const {unit, sliderValue} = this// 0 ETH，1 USDT 2 %
-      this.unit = UnitTypeEnum.Percent
-      this.size = sliderValue
+      // this.unit = UnitTypeEnum.Percent
+      this.size = this.calculatePositionSize(unit,sliderValue);
     },
     calculatePositionSize (unit, sliderValue) {
 
       let {size} = this
       const maxSize = this.getMaxSize(unit)
       if(maxSize > 0){
-        size =  numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
+        size =  amountFormt(sliderValue * 1.0 / 100 * this.getMaxSize(unit), 4, false, '0', 0);
       }
 
       return size
@@ -983,10 +987,10 @@ export default {
     },
     updateKLine(token, gap) {
       const self = this
-      //TODO zoom by adjust limit
-      //TODO move by adjsut after/berfore
       getEchartsOptions({token,
         bar: gap.value,
+        after: this.kChartStart,
+        limit: this.kChartLimit,
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
         self.drawKline(options)
       })
@@ -1017,7 +1021,44 @@ export default {
       }
 
       return false;
-    }
+    },
+    onChartDrag(endEvent, startEvent, distance){
+
+      var endPos = endEvent.changedTouches[0];
+      var startPos = startEvent.changedTouches[0];
+      var distnaceX = endPos.pageX - startPos.pageX;
+
+      var movePercent = distnaceX / this.$refs.myChart.clientWidth;
+
+      var timeGapVal = this.kChartTimeMinGaps.find((item) => item.value === this.kChartTimeGap.value);
+      console.log(`onChartDrag, ${timeGapVal.time}`)
+
+      if(!timeGapVal){
+        return;
+      }
+
+      this.kChartStart = this.kChartStart - Math.ceil(this.kChartLimit * movePercent * timeGapVal.time);
+      //drag performance
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
+      console.log(`onChartDrag, ${this.kChartStart}`)
+    },
+    onChartZoomIn(endEvent, startEvent, distance){
+      if(this.kChartLimit > 300){
+        return;
+      }
+
+      this.kChartLimit++;
+
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
+    },
+    onChartZoomOut(endEvent, startEvent, distance){
+      if(this.kChartLimit < 10){
+        return;
+      }
+      this.kChartLimit--;
+
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
+    },
   },
   watch: {
     '$store.state.contract.contractData':{

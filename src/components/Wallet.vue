@@ -54,22 +54,26 @@
         <div class="wallet-item no-border"></div>
       </div>
     </div>
+    <div class="btn-wrap">
+      <div class="derify-mid-btn derify-big-btn btn-yellow" @click="handleLogin">{{$t("global.Confirm")}}</div>
+    </div>
   </van-popup>
 </template>
 
 <script>
 
-  import { ChainEnum, mainChain, WalletEnum } from '../store/modules/user'
+import { ChainEnum, mainChain, WalletEnum } from '../store/modules/user'
 
 export default {
   props: ['show'],
   data () {
     return {
       showPopup: this.show,
-      selectedWalletNetwork: {},
-      ChainEnum, WalletEnum, mainChain,
+      selectedWalletNetwork: mainChain,
+      ChainEnum, WalletEnum,
+      mainChain,
       chainNetWorks: ChainEnum.values,
-      selectedWallet: null,
+      selectedWallet: WalletEnum.MetaMask,
       showMetaMaskInstallError: false,
       showNetworkError: false,
     }
@@ -77,6 +81,15 @@ export default {
   computed: {
     user () {
       return this.$store.state.user
+    },
+    isCanLogin () {
+      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId
+      //const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
+
+      const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
+      const walletMetaMask = this.$store.state.user.isMetaMask
+
+      return isSelectMain && isSelectMetaMask && walletMetaMask;
     }
   },
   watch: {
@@ -90,35 +103,48 @@ export default {
     },
     changeNetwork(chainEnum) {
 
-      this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId
-      if(this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === chainEnum.chainId){
-        this.selectedWalletNetwork = {}
-      }else{
-        this.selectedWalletNetwork = chainEnum
-      }
-
-      this.handleLogin()
+      this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId;
+      this.selectedWalletNetwork = chainEnum
     },
+
+    async switchNetwork(chainEnum){
+      try {
+        // check if the chain to connect to is installed
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: '0x'+(chainEnum.chainId).toString(16)}], // chainId must be in hexadecimal numbers
+        });
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+
     changeWallet(wallet) {
       this.showMetaMaskInstallError = !this.$store.state.user.isMetaMask
-      if(this.selectedWallet === wallet) {
-        this.selectedWallet = {}
-      }else{
-        this.selectedWallet = wallet
-      }
-
-      this.handleLogin()
+      this.selectedWallet = wallet
     },
-    handleLogin () {
-
-
-      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId
-      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
+    async handleLogin () {
+      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId;
 
       const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
       const walletMetaMask = this.$store.state.user.isMetaMask
 
-      if(isSelectMain && walletMain && isSelectMetaMask && walletMetaMask) {
+      if(!walletMetaMask || !isSelectMetaMask){
+        this.showMetaMaskInstallError = true;
+        return false;
+      }
+
+      if(!walletMain){
+        const ret = await this.switchNetwork(mainChain);
+        if(!ret){
+          this.showNetworkError = true;
+          return;
+        }
+      }
+
+      if(this.isCanLogin) {
 
         this.$store
           .dispatch('contract/loginWallet')
@@ -155,8 +181,20 @@ export default {
     left: 1.5rem;
   }
 }
+.btn-wrap{
+  display: flex;
+  justify-content: center;
+  .derify-mid-btn{
+    &.derify-big-btn{
+      width: 20rem;
+    }
+  }
+}
+
+
 .wallet-wrap {
   padding: 2rem 1.5rem 2rem 1.5rem;
+
   &-title {
     color: rgba(255, 255, 255, .65);
     font-size: 1.4rem;

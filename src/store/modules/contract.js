@@ -4,6 +4,13 @@ import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api
 import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
 import { amountFormt, fck, toChecksumAddress } from '@/utils/utils'
 
+const openPositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
+const closePositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
+
+
+const priceChangeListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
+
+
 const state = {
   get wallet_address () {
     return window.ethereum !== undefined && window.ethereum.selectedAddress ? toChecksumAddress(ethereum.selectedAddress) :  undefined
@@ -36,100 +43,6 @@ const state = {
   positionData: {positions: [], orderPositions: []},
   limitPositionData: [],
   curSpotPrice: 0
-}
-
-const mutations = {
-  UPDATE_PAIRS (state, pairs) {
-    const pairMap = {};
-    state.pairs.forEach((item, index) => {
-      pairMap[item.key] = {item, index};
-    })
-
-    pairs.forEach((item) => {
-      const oldItem = pairMap[item.key]
-      if(!oldItem) {
-        return
-      }
-
-      state.pairs[oldItem.index] = Object.assign(oldItem.item, item)
-    })
-  },
-  SET_ACCOUNT (state, account) {
-    state.account = account
-    setCache('account', account)
-  },
-  SET_CURPAIRKEY (state, key) {
-    window.localStorage.setItem("curPairKey", key);
-    state.curPairKey = key
-  },
-  SET_CURSPOTPRICE (state, price) {
-    state.curSpotPrice = price
-  },
-  SET_CONTRACT_DATA (state, updates) {
-    state.contractData = Object.assign({}, state.contractData, {...updates})
-  },
-  SET_ACCOUNT_DATA (state, accountData) {
-    state.accountData = Object.assign(state.accountData, accountData)
-  },
-  RESET_POSITION_DATA (state) {
-    state.positionData.positions.splice(0)
-    state.positionData.orderPositions.splice(0)
-  },
-  ADD_POSITION_DATA (state, {positionData, pair}) {
-    if(!positionData) {
-      return
-    }
-
-    if(positionData.positions) {
-      const positionsMap = {};
-
-      state.positionData.positions.forEach((position, index) => {
-        const key = position.token + '.' + position.side
-        positionsMap[key] = position
-      })
-
-
-      positionData.positions.forEach((position) => {
-        const key = position.token + '.' + position.side
-        positionsMap[key] = position
-      })
-
-      state.positionData.positions.splice(0)
-
-      for(var key in positionsMap) {
-        state.positionData.positions.push(positionsMap[key])
-      }
-
-
-    }
-
-    if(positionData.orderPositions) {
-      const positionsMap = {};
-
-      state.positionData.orderPositions.forEach((position, index) => {
-        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
-        positionsMap[key] = position
-      })
-
-      positionData.orderPositions.forEach((position, index) => {
-        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
-        positionsMap[key] = position
-      })
-
-      state.positionData.orderPositions.splice(0)
-
-      for(key in positionsMap) {
-        state.positionData.orderPositions.push(positionsMap[key])
-      }
-    }
-  },
-  SET_LIMIT_POSITION_DATA (state, positionData) {
-    state.limitPositionData = positionData
-  },
-  SET_POSITION_DATA (state, positionData) {
-    state.positionData = positionData
-  }
-
 }
 
 const actions = {
@@ -197,7 +110,7 @@ const actions = {
       return closeUpperBound
     })()
   },
-  openPosition ({state}, {side, size, openType, price, leverage, brokerId}) {
+  openPosition ({state,dispatch}, {side, size, openType, price, leverage, brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -217,11 +130,12 @@ const actions = {
 
       web3Utils.contract(state.wallet_address, brokerId)
         .openPosition(params).then(r => {
-          resolve(r)
-        }).catch(e => reject(e))
+        resolve(r);
+        dispatch("loadHomeData");
+      }).catch(e => reject(e))
     })
   },
-  closePosition ({state}, {token, side, size, brokerId}) {
+  closePosition ({state,dispatch}, {token, side, size, brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -230,11 +144,12 @@ const actions = {
 
       web3Utils.contract(state.wallet_address, brokerId)
         .closePosition(token, side, size).then(r => {
-        resolve(r)
+        resolve(r);
+        dispatch("loadHomeData");
       }).catch(e => reject(e))
     })
   },
-  orderStopPosition ({state}, {token, side, takeProfitPrice, stopLossPrice}) {
+  orderStopPosition ({state,dispatch}, {token, side, takeProfitPrice, stopLossPrice}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -250,11 +165,12 @@ const actions = {
 
       web3Utils.contract(state.wallet_address)
         .orderStopPosition(params).then(r => {
-        resolve(r)
+        resolve(r);
+        dispatch("loadHomeData");
       }).catch(e => reject(e))
     })
   },
-  closeAllPositions ({state}, {brokerId}) {
+  closeAllPositions ({state,dispatch}, {brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -264,7 +180,8 @@ const actions = {
 
       web3Utils.contract(state.wallet_address, brokerId)
         .closeAllPositions().then(r => {
-        resolve(r)
+        resolve(r);
+        dispatch("loadHomeData");
       }).catch(e => reject(e))
     })
   },
@@ -277,7 +194,7 @@ const actions = {
    * @param timestamp
    * @returns {Promise<void>}
    */
-  cancleOrderedPosition ({state}, {token, closeType, side, timestamp}) {
+  cancleOrderedPosition ({state,dispatch}, {token, closeType, side, timestamp}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -294,11 +211,12 @@ const actions = {
 
       web3Utils.contract(state.wallet_address)
         .cancleOrderedPosition(params).then(r => {
-        resolve(r)
+        resolve(r);
+        dispatch("loadHomeData");
       }).catch(e => reject(e))
     })
   },
-  cancleAllOrderedPositions ({state}, {token}) {
+  cancleAllOrderedPositions ({state,dispatch}, {token}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -309,6 +227,7 @@ const actions = {
       web3Utils.contract(state.wallet_address)
         .cancleAllOrderedPositions(token, state.wallet_address).then(r => {
         resolve(r)
+        dispatch("loadHomeData");
       }).catch(e => reject(e))
     })
   },
@@ -393,7 +312,7 @@ const actions = {
 
       commit('SET_CONTRACT_DATA', {sysCloseUpperBound})
       return sysCloseUpperBound
-  })
+    })
   },
   updateAllPairPrice ({state, commit}, {token,priceChangeRate, longPmrRate, shortPmrRate}) {
     const contract = web3Utils.contract(state.wallet_address)
@@ -549,7 +468,7 @@ const actions = {
 
     const self = this;
     web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
-      dispatch("loadAccountData")
+      dispatch("loadHomeData")
     })
   },
   onWithDraw ({state, commit, dispatch}) {
@@ -559,9 +478,111 @@ const actions = {
 
     const self = this;
     web3Utils.contract(state.wallet_address).onDeposit(state.wallet_address, function (){
-      dispatch("loadAccountData")
+      dispatch("loadHomeData")
     })
+  },
+  onOpenPosition({state, commit, dispatch}, callback){
+    openPositionListener.push({state, commit, dispatch, callback});
+  },
+
+  onClosePosition({state, commit, dispatch}){
+    openPositionListener.push({state, commit, dispatch, callback});
   }
+}
+
+
+const mutations = {
+  UPDATE_PAIRS (state, pairs) {
+    const pairMap = {};
+    state.pairs.forEach((item, index) => {
+      pairMap[item.key] = {item, index};
+    })
+
+    pairs.forEach((item) => {
+      const oldItem = pairMap[item.key]
+      if(!oldItem) {
+        return
+      }
+
+      state.pairs[oldItem.index] = Object.assign(oldItem.item, item)
+    })
+  },
+  SET_ACCOUNT (state, account) {
+    state.account = account
+    setCache('account', account)
+  },
+  SET_CURPAIRKEY (state, key) {
+    window.localStorage.setItem("curPairKey", key);
+    state.curPairKey = key
+  },
+  SET_CURSPOTPRICE (state, price) {
+    state.curSpotPrice = price
+  },
+  SET_CONTRACT_DATA (state, updates) {
+    state.contractData = Object.assign({}, state.contractData, {...updates})
+  },
+  SET_ACCOUNT_DATA (state, accountData) {
+    state.accountData = Object.assign(state.accountData, accountData)
+  },
+  RESET_POSITION_DATA (state) {
+    state.positionData.positions.splice(0)
+    state.positionData.orderPositions.splice(0)
+  },
+  ADD_POSITION_DATA (state, {positionData, pair}) {
+    if(!positionData) {
+      return
+    }
+
+    if(positionData.positions) {
+      const positionsMap = {};
+
+      state.positionData.positions.forEach((position, index) => {
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
+      })
+
+
+      positionData.positions.forEach((position) => {
+        const key = position.token + '.' + position.side
+        positionsMap[key] = position
+      })
+
+      state.positionData.positions.splice(0)
+
+      for(var key in positionsMap) {
+        state.positionData.positions.push(positionsMap[key])
+      }
+
+
+    }
+
+    if(positionData.orderPositions) {
+      const positionsMap = {};
+
+      state.positionData.orderPositions.forEach((position, index) => {
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
+      })
+
+      positionData.orderPositions.forEach((position, index) => {
+        const key = position.timestamp + '.' + position.token + '.' + position.side + '.' + position.orderType
+        positionsMap[key] = position
+      })
+
+      state.positionData.orderPositions.splice(0)
+
+      for(key in positionsMap) {
+        state.positionData.orderPositions.push(positionsMap[key])
+      }
+    }
+  },
+  SET_LIMIT_POSITION_DATA (state, positionData) {
+    state.limitPositionData = positionData
+  },
+  SET_POSITION_DATA (state, positionData) {
+    state.positionData = positionData
+  }
+
 }
 
 export default {
