@@ -104,14 +104,39 @@ export default {
     },
     changeNetwork(chainEnum) {
 
-      this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId
+      this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId;
       this.selectedWalletNetwork = chainEnum
     },
+
+    async switchNetwork(chainEnum){
+      try {
+        // check if the chain to connect to is installed
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: '0x'+(chainEnum.chainId).toString(16)}], // chainId must be in hexadecimal numbers
+        });
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    },
+
     changeWallet(wallet) {
       this.showMetaMaskInstallError = !this.$store.state.user.isMetaMask
       this.selectedWallet = wallet
     },
-    handleLogin () {
+    async handleLogin () {
+      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId;
+
+      if(!isSelectMain){
+        const ret = await this.switchNetwork(mainChain);
+        if(!ret){
+          this.showNetworkError = true;
+          return;
+        }
+      }
+
       if(this.isCanLogin) {
 
         this.$store
