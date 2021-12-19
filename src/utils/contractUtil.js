@@ -2,7 +2,6 @@ import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
-import { callWithCache, getCache, setCache } from '@/utils/cache'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -245,6 +244,10 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
 
 
 async function updateGasPrice(web3){
+  if(!web3 || !web3.eth){
+    return;
+  }
+
   const currentTime = (new Date()).getTime();
   if((currentTime - lastCacheTime) > 1000 * 60 * 60){
     //lastCacheTime = currentTime;
@@ -270,7 +273,9 @@ export default class Contract {
     const web3 = new Web3(window.ethereum)
 
     //update gas price
-    updateGasPrice(web3);
+    if(window.ethereum){
+      updateGasPrice(web3);
+    }
 
     this.web3 = web3
     this.from = from
@@ -643,10 +648,7 @@ export default class Contract {
    * @return {*}
    */
   getPositionChangeFeeRatio (token) {
-    const key = token + ".getPositionChangeFeeRatio";
-    return callWithCache(key, async () => {
-      return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFeeRatio().call()
-    });
+    return this.__getDerifyDerivativeContract(token).methods.getPositionChangeFeeRatio().call()
   }
 
   /**
@@ -1171,12 +1173,8 @@ export default class Contract {
     }
 
     const ratioBefore = await this.getPositionChangeFeeRatio(token)
-    const kRatioKey = token+'.kRatio';
-    const gRatioKey = token+'.gRatio';
-
-
-    const kRatio = await callWithCache(kRatioKey, async () => await this.__getDerifyDerivativeContract(token).methods.kRatio().call());
-    const gRatio = await callWithCache(gRatioKey, async () => this.__getDerifyDerivativeContract(token).methods.gRatio().call());
+    const kRatio = await this.__getDerifyDerivativeContract(token).methods.kRatio().call();
+    const gRatio = await this.__getDerifyDerivativeContract(token).methods.gRatio().call();
 
     const amounts = await this.__getDerifyDerivativeContract(token).methods.getSideTotalAmount().call();
 
@@ -1207,10 +1205,6 @@ export default class Contract {
     }
 
     return Math.ceil(ratioBefore * 1.0 + ratioAfter);
-  }
-
-  async getKRatio(){
-
   }
 }
 
