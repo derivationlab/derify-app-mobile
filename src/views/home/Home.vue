@@ -1042,14 +1042,22 @@ export default {
       this.updateKLine(this.curPair.key, this.kChartTimeGap)
       console.log(`onChartDrag, ${this.kChartStart}`)
     },
-    onChartZoomIn(endEvent, startEvent, disgtance){
+    onChartZoomIn(endEvent, startEvent, distance){
+      if(this.kChartLimit > 300){
+        return;
+      }
+
       this.kChartLimit++;
 
-      console.log(`onChartZoomIn, ${distance}`)
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
     },
-    onChartZoomOut(endEvent, startEvent, disgtance){
+    onChartZoomOut(endEvent, startEvent, distance){
+      if(this.kChartLimit < 10){
+        return;
+      }
       this.kChartLimit--;
-      console.log(`onChartZoomOut, ${distance}`)
+
+      this.updateKLine(this.curPair.key, this.kChartTimeGap)
     },
   },
   watch: {

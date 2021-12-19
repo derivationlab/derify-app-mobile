@@ -33,6 +33,10 @@ function vueTouch(el,binding,type,vnode){
   this.obj.addEventListener("touchmove",(e)=>{
     this.move(e);
   },false);
+
+  this.obj.addEventListener("mousewheel",(e)=>{
+    this.wheel(e);
+  },false);
   // vnode.key = this.randomString()
 
 }
@@ -107,6 +111,14 @@ vueTouch.prototype={
     this.moveToucheEvent=e;
 
     this.moveTouches=endTouches;
+  },
+  wheel:function(e){
+    if(e.wheelDelta < 0){
+      this.touchType=="zoomin" && this.vueCallBack(e, this.moveToucheEvent, e.wheelDelta);
+    }else if(e.wheelDelta > 0){
+      this.touchType=="zoomout" && this.vueCallBack(e, this.moveToucheEvent, e.wheelDelta);
+    }
+    e.preventDefault();
   },
   randomString:function(){
     var len = 10;
