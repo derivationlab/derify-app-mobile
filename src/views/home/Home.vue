@@ -876,8 +876,7 @@ export default {
       let {size} = this
       const maxSize = this.getMaxSize(unit)
       if(maxSize > 0){
-        size =  sliderValue * 1.0 / 100 * this.getMaxSize(unit)
-        size = parseFloat(size.toString().match(/^(\d+\.[0]*?[1-9][0-9]{0,3}).*?$/)[1]);
+        size =  amountFormt(sliderValue * 1.0 / 100 * this.getMaxSize(unit), 4, false, '0', 0);
       }
 
       return size
