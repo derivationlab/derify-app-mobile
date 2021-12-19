@@ -876,7 +876,7 @@ export default {
       let {size} = this
       const maxSize = this.getMaxSize(unit)
       if(maxSize > 0){
-        size =  numConvert(sliderValue / 100 * this.getMaxSize(unit), 0, 2)
+        size =  sliderValue / 100 * this.getMaxSize(unit)
       }
 
       return size
