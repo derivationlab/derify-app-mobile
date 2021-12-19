@@ -402,7 +402,7 @@ import {
   stringFromContractUnit,
   toContractUnit
 } from '@/utils/contractUtil'
-import {fck} from "@/utils/utils";
+import { amountFormt, fck } from '@/utils/utils'
 import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/utils/contractUtil'
 import { UserProcessStatus } from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
