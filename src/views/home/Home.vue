@@ -519,9 +519,9 @@ export default {
     maxSize () {
       const {unit} = this
       if (unit ===  UnitTypeEnum.USDT) {
-        return fromContractUnit(this.curTraderOpenUpperBound.amount, 2)
+        return fromContractUnit(this.curTraderOpenUpperBound.amount, 4)
       }else{
-        return fromContractUnit(this.curTraderOpenUpperBound.size, 2)
+        return fromContractUnit(this.curTraderOpenUpperBound.size, 4)
       }
     }
   },
