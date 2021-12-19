@@ -103,6 +103,9 @@ export default {
 
     },
     bindEthrumEvent(){
+      if(!window.ethereum){
+        return;
+      }
       const self = this;
       window.ethereum.on('accountsChanged', function () {
         self.updateWallet(1);

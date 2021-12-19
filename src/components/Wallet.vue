@@ -55,8 +55,7 @@
       </div>
     </div>
     <div class="btn-wrap">
-      <div :class="'derify-mid-btn derify-big-btn '
-        + (isCanLogin ? 'btn-yellow':'disabled-btn')" @click="handleLogin">{{$t("global.Confirm")}}</div>
+      <div class="derify-mid-btn derify-big-btn btn-yellow" @click="handleLogin">{{$t("global.Confirm")}}</div>
     </div>
   </van-popup>
 </template>
@@ -128,6 +127,14 @@ export default {
     },
     async handleLogin () {
       const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId;
+
+      const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
+      const walletMetaMask = this.$store.state.user.isMetaMask
+
+      if(!walletMetaMask || !isSelectMetaMask){
+        this.showMetaMaskInstallError = true;
+        return false;
+      }
 
       if(!walletMain){
         const ret = await this.switchNetwork(mainChain);
