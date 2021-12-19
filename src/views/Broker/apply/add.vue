@@ -8,7 +8,7 @@
           {{errorMsg}}
         </DerifyErrorNotice>
 
-        <div class="home-mid-input">
+        <div class="home-mid-input" v-if="isLogin">
           <div class="fc-85 fz-15">{{ $t('Trade.BrokerBind.BrokerCodes.BrokerCode') }}</div>
           <van-field class="derify-big-input" type="text" placeholder="" input-align="center" v-model="brokerCode"/>
         </div>
