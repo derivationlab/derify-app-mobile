@@ -1,4 +1,5 @@
 import createKeccakHash from "keccak";
+import { numConvert } from '@/utils/contractUtil'
 /* eslint-disable */
 export function dateFormat  (date, fmt) {
   var o = {
