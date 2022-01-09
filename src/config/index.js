@@ -29,8 +29,8 @@ export function isCurrentProduction() {
   return currentEnv === 'production'
 }
 
-export function getWebroot(){
-  return config.webroot[currentEnv]
+export function getWebroot(chain = 'rinkeby'){
+  return MulChainConfig[chain].webroot[currentEnv]
 }
 
 export function  isDebug() {
