@@ -1,7 +1,8 @@
 import Web3 from 'web3'
-import ABIData from './contract'
 import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
+import * as configUtil from '@/config'
+import { ChainEnum } from '@/store/modules/user'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -276,6 +277,12 @@ export default class Contract {
     if(window.ethereum){
       updateGasPrice(web3);
     }
+    const curChain = ChainEnum.values.find((chain) => window.ethereum.chainId === chain.chainId);
+    let chainKey = 'rinkeby';
+    if(curChain.chainId === ChainEnum.BSC.chainId){
+      chainKey = 'bsc';
+    }
+    const ABIData = configUtil.getCurrentContractConfig(chainKey);
 
     this.web3 = web3
     this.from = from

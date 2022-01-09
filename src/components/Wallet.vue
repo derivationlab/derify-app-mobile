@@ -29,7 +29,7 @@
           <div class="wallet-item-name">HECO</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
-        <div :class="'wallet-item  disabled-item' + (selectedWalletNetwork.chainId === 99 ? 'active' : '')">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.BSC.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.BSC)">
           <img class="wallet-item-image" src="@/assets/images/wallet/bnb-logo.png" alt="">
           <div class="wallet-item-name">Binance</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
@@ -83,7 +83,8 @@ export default {
       return this.$store.state.user
     },
     isCanLogin () {
-      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === mainChain.chainId
+      const walletChainNet = this.$store.state.user.chainEnum.chainId;
+      const isSelectMain = this.selectedWalletNetwork && this.selectedWalletNetwork.chainId === walletChainNet
       //const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId
 
       const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
@@ -116,6 +117,22 @@ export default {
         });
         return true;
       } catch (error) {
+
+        if (error.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0x'+(chainEnum.chainId).toString(16),
+                  rpcUrl: chainEnum.rpc,
+                },
+              ],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        }
         console.error(error);
         return false;
       }
@@ -126,7 +143,11 @@ export default {
       this.selectedWallet = wallet
     },
     async handleLogin () {
-      const walletMain = this.$store.state.user.chainEnum.chainId === mainChain.chainId;
+      //page network
+      const selectedWalletNetwork = this.selectedWalletNetwork;
+
+      //wallet nework
+      const walletMain = this.$store.state.user.chainEnum.chainId === selectedWalletNetwork.chainId;
 
       const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
       const walletMetaMask = this.$store.state.user.isMetaMask
@@ -137,7 +158,7 @@ export default {
       }
 
       if(!walletMain){
-        const ret = await this.switchNetwork(mainChain);
+        const ret = await this.switchNetwork(selectedWalletNetwork);
         if(!ret){
           this.showNetworkError = true;
           return;

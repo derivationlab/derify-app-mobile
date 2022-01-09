@@ -8,11 +8,13 @@ let walletChangeVersion = 0;
 
 export class ChainEnum {
   static values = []
-  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true){
+  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true, rpcUrl= '', explorerUrl=''){
     this.chainId = chainId
     this.name = name
     this.logo = logo
     this.disabled = disabled
+    this.rpc = rpcUrl;
+    this.explorer = explorerUrl;
     ChainEnum.values.push(this)
   }
 
@@ -40,6 +42,14 @@ export class ChainEnum {
     return new ChainEnum(2, "Morden")
   }
 
+  static get BSC() {
+    return new ChainEnum(0x38, "BNB", '', false, 'https://bsc-dataseed.binance.org', 'https://bscscan.com')
+  }
+
+  /**
+   *
+   * @return {ChainEnum[]}
+   */
   static get values() {
     return ChainEnum.values
   }
@@ -52,6 +62,7 @@ const networkMap = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
+  0x38: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
