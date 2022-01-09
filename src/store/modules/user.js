@@ -43,7 +43,7 @@ export class ChainEnum {
   }
 
   static get BSC() {
-    return new ChainEnum(0x38, "BNB", '', false, 'https://bsc-dataseed.binance.org', 'https://bscscan.com')
+    return new ChainEnum(0x61, "BSC-TEST", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://bscscan.com')
   }
 
   /**
