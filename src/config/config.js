@@ -9,8 +9,8 @@ import eDRF from '../utils/contract/eDRF'
 export default {
   "rinkeby": {
     "server": {
-      "development": "https://test-api.derify.exchange",
-      "debug": "https://test-api.derify.exchange",
+      "development": "https://test-api.derify.exchange/eth",
+      "debug": "https://test-api.derify.exchange/eth",
       "production": "https://api.derify.exchange"
     },
     "kdata":{
@@ -139,9 +139,9 @@ export default {
   },
   "bsc": {
     "server": {
-      "development": "https://test-api.derify.exchange",
-      "debug": "https://test-api.derify.exchange",
-      "production": "https://api.derify.exchange"
+      "development": "https://test-api.derify.exchange/bsc",
+      "debug": "https://test-api.derify.exchange/bsc",
+      "production": "https://api.derify.exchange/bsc"
     },
     "kdata":{
       "development": "https://test-api.derify.exchange",
