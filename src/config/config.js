@@ -11,7 +11,7 @@ export default {
     "server": {
       "development": "https://test-api.derify.exchange/eth",
       "debug": "https://test-api.derify.exchange/eth",
-      "production": "https://api.derify.exchange"
+      "production": "https://api.derify.exchange/eth"
     },
     "kdata":{
       "development": "https://test-api.derify.exchange",
@@ -166,7 +166,7 @@ export default {
             "token": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e"
           },
           "ETH": {
-            "address": "0x77208aC1DF97179f5A5d95DCc532ac25D935F74B",
+            "address": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e",
             "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
           }
         },
@@ -203,7 +203,7 @@ export default {
             "token": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e"
           },
           "ETH": {
-            "address": "0x77208aC1DF97179f5A5d95DCc532ac25D935F74B",
+            "address": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e",
             "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
           }
         },
@@ -240,7 +240,7 @@ export default {
             "token": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e"
           },
           "ETH": {
-            "address": "0x77208aC1DF97179f5A5d95DCc532ac25D935F74B",
+            "address": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e",
             "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
           }
         },

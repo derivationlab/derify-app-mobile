@@ -124,8 +124,26 @@ export default {
               method: 'wallet_addEthereumChain',
               params: [
                 {
+                  // chainId: string; // A 0x-prefixed hexadecimal string
+                  // chainName: string;
+                  // nativeCurrency: {
+                  //   name: string;
+                  //   symbol: string; // 2-6 characters long
+                  //   decimals: 18;
+                  // };
+                  // rpcUrls: string[];
+                  // blockExplorerUrls?: string[];
+                  // iconUrls?: string[]; // Currently ignored.
+
                   chainId: '0x'+(chainEnum.chainId).toString(16),
-                  rpcUrl: chainEnum.rpc,
+                  rpcUrls: [chainEnum.rpc],
+                  chainName: chainEnum.name,
+                  blockExplorerUrls: [chainEnum.explorer],
+                  nativeCurrency:{
+                    name:"BNB",
+                    symbol: "BNB",
+                    decimals: 18
+                  }
                 },
               ],
             });
