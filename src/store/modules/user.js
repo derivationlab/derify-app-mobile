@@ -138,7 +138,7 @@ export async function getWallet(){
 
   window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
   let wethereum = window.ethereum
-  const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+  const isEthum = true
 
   const chainId = parseInt(wethereum.chainId)
 
