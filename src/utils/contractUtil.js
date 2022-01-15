@@ -388,6 +388,7 @@ export default class Contract {
    * @param token Current contract token address
    * @param side LONG，SHORT，HEDGE
    * @param openType 0-MarketOrder，1-LimitOrder
+   * @param quantityType 0-Size,1-Amount
    * @param size Open position volume (based on currency, precision is 8 digits)
    * @param price Opening price (precision is 8 digits)
    * @param leverage（precision is 8 digits）
