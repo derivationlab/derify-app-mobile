@@ -62,7 +62,7 @@ const networkMap = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
-  0x31: ChainEnum.BSC,
+  0x61: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
@@ -140,7 +140,7 @@ export async function getWallet(){
   let wethereum = window.ethereum
   const isEthum = true
 
-  const chainId = parseInt(wethereum.chainId)
+  const chainId = parseInt(wethereum.chainId, 16)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
   let brokerId = "";
