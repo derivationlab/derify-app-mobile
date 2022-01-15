@@ -67,7 +67,7 @@ export function getWebroot(chain){
 }
 
 export function  isDebug() {
-  if(location.href.indexOf("debug") > -1) {
+  if(window.location.href.indexOf("debug") > -1) {
     return true
   }
 
