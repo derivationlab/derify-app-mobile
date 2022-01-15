@@ -19,6 +19,7 @@
 			"ChooseWallet":"Choose Wallet",
 			"NoWalletErrorMsg":"Can't detect wallet, please install a web wallet first.",
 			"MainChainUnmatch":"Wallet's network does not match the network you choose. Please switch to {0} Testnet of Ethereum and retry.",
+			"Confirm":"Confirm",
 			"Disconnect":"Disconnect"
 		},
 		"Account":{
@@ -611,7 +612,8 @@
 		"Address":"Test USDT Contract Address",
 		"GetUSDT":"Get {0} Test USDT",
 		"GetETH":"Get Test ETH",
-		"GetUSDTError":"You have already claimed Test USDT"
+		"GetUSDTError":"You have already claimed Test USDT",
+		"GetBNB":"Get Test BNB"
 	},
 	"global":{
 		"ClickConnectWallet":"click connect wallet",
