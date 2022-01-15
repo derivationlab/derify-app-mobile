@@ -24,9 +24,9 @@
           <div class="wallet-item-name">{{ChainEnum.BSC.name}}</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
-        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === mainChain.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.Rinkeby.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
-          <div class="wallet-item-name">Ethereum ({{mainChain.name}})</div>
+          <div class="wallet-item-name">Ethereum ({{ChainEnum.Rinkeby.name}})</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
         <div :class="'wallet-item disabled-item' + (selectedWalletNetwork.chainId === 99 ? 'active' : '')">
@@ -103,8 +103,7 @@ export default {
       this.$emit('closeWalletPopup', false)
     },
     changeNetwork(chainEnum) {
-
-      this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId;
+      //this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId;
       this.selectedWalletNetwork = chainEnum
     },
 
@@ -124,17 +123,6 @@ export default {
               method: 'wallet_addEthereumChain',
               params: [
                 {
-                  // chainId: string; // A 0x-prefixed hexadecimal string
-                  // chainName: string;
-                  // nativeCurrency: {
-                  //   name: string;
-                  //   symbol: string; // 2-6 characters long
-                  //   decimals: 18;
-                  // };
-                  // rpcUrls: string[];
-                  // blockExplorerUrls?: string[];
-                  // iconUrls?: string[]; // Currently ignored.
-
                   chainId: '0x'+(chainEnum.chainId).toString(16),
                   rpcUrls: [chainEnum.rpc],
                   chainName: chainEnum.name,

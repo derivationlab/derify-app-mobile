@@ -43,7 +43,7 @@ export class ChainEnum {
   }
 
   static get BSC() {
-    return new ChainEnum(0x61, "BSC testnet", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
+    return new ChainEnum(0x61, "BSC testnet", require('@/assets/images/wallet/bnb-logo.png'), false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
   }
 
   /**
@@ -62,7 +62,7 @@ const networkMap = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
-  0x38: ChainEnum.BSC,
+  0x31: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
@@ -96,7 +96,7 @@ export class UserProcessStatus {
   }
 }
 
-export const mainChain = ChainEnum.Rinkeby
+export const mainChain = ChainEnum.BSC
 
 const state = {
   selectedAddress: "",
