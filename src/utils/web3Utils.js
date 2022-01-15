@@ -74,6 +74,7 @@ export function enable () {
       reject(new Error('please install Metamask'))
     })
   }
+
   return new Promise((resolve, reject) => {
     window.ethereum.request({
       method: 'eth_requestAccounts'
