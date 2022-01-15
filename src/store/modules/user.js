@@ -158,7 +158,7 @@ export async function getWallet(){
   }
 
 
-  const isLogin = wethereum.selectedAddress && isEthum;
+  const isLogin = wethereum.selectedAddress && isEthum && !chainEnum.disabled;
   const trader = isLogin ? wethereum.selectedAddress : "";
 
   return {
