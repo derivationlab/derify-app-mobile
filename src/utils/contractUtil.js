@@ -393,9 +393,9 @@ export default class Contract {
    * @param leverage（precision is 8 digits）
    * @return {*}
    */
-  openPosition ({token, side, openType, size, price, leverage}) {
+  openPosition ({token, side, openType, quantityType, size, price, leverage}) {
     return this.DerifyExchange.methods
-      .openPosition(this.broker, token, side, openType, size, price, leverage)
+      .openPosition(this.broker, token, side, openType, quantityType, size, price, leverage)
       .send(cache)
   }
   /**
@@ -689,8 +689,13 @@ export default class Contract {
    * @param price
    */
   getTradingFee (token, size, price) {
-    return this.__getDerifyDerivativeContract(token).methods.getTradingFee(size, price).call()
+    const self = this;
+    return async() => {
+      const ratio = await self.__getDerifyDerivativeContract(token).methods.tradingFeeRatio().call()
+      return toContractUnit(fromContractUnit(ratio) * fromContractUnit(size) * fromContractUnit(price));
+    }
   }
+
   getCloseUpperBound ({token, trader, side}) {
     return this.DerifyExchange.methods.getCloseUpperBound(token, trader, side).call()
   }
@@ -708,7 +713,14 @@ export default class Contract {
       size,
       price,
       actionType)
-    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
+
+    //TODO trading naked position cal
+    // const longTotalSize = await this.__getDerifyDerivativeContract(token).methods.longTotalSize().call();
+    // const shortTotalSize = await this.__getDerifyDerivativeContract(token).methods.shortTotalSize().call();
+
+
+    const nakedPositionDiff = 0;
+    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(nakedPositionDiff, ratioSum).call()
   }
 
   /**
