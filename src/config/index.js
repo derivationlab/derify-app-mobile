@@ -13,8 +13,6 @@ const config = {
 
 export function getCurChain(){
   const curChain = ChainEnum.values.find((chain) => {
-    console.log(window.ethereum.chainId);
-    console.log(chain.chainId);
     return parseInt(window.ethereum.chainId, 16) === chain.chainId
   });
   let chainKey = 'rinkeby';
