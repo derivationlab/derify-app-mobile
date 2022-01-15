@@ -90,7 +90,7 @@ export default {
       const isSelectMetaMask = this.selectedWallet === WalletEnum.MetaMask
       const walletMetaMask = this.$store.state.user.isMetaMask
 
-      return isSelectMain && isSelectMetaMask && walletMetaMask;
+      return isSelectMetaMask && walletMetaMask;
     }
   },
   watch: {
@@ -135,6 +135,8 @@ export default {
                 },
               ],
             });
+
+            return true;
           } catch (addError) {
             console.error(addError);
           }
