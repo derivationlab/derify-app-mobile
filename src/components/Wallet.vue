@@ -24,7 +24,7 @@
           <div class="wallet-item-name">{{ChainEnum.BSC.name}}</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
-        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.Rinkeby.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.Rinkeby.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.Rinkeby)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
           <div class="wallet-item-name">Ethereum ({{ChainEnum.Rinkeby.name}})</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
