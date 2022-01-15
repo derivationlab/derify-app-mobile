@@ -19,6 +19,11 @@
     <div class="wallet-wrap">
       <div class="wallet-wrap-title">{{$t('Trade.Wallet.ChooseNetwork')}}</div>
       <div class="wallet-select-area">
+        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.BSC.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.BSC)">
+          <img class="wallet-item-image" src="@/assets/images/wallet/bnb-logo.png" alt="">
+          <div class="wallet-item-name">{{ChainEnum.BSC.name}}</div>
+          <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
+        </div>
         <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === mainChain.chainId ? 'active' : '')" @click="changeNetwork(mainChain)">
           <img class="wallet-item-image" src="@/assets/images/wallet/eth-logo.png" alt="">
           <div class="wallet-item-name">Ethereum ({{mainChain.name}})</div>
@@ -27,11 +32,6 @@
         <div :class="'wallet-item disabled-item' + (selectedWalletNetwork.chainId === 99 ? 'active' : '')">
           <img class="wallet-item-image" src="@/assets/images/wallet/ht-logo.png" alt="">
           <div class="wallet-item-name">HECO</div>
-          <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
-        </div>
-        <div :class="'wallet-item ' + (selectedWalletNetwork.chainId === ChainEnum.BSC.chainId ? 'active' : '')" @click="changeNetwork(ChainEnum.BSC)">
-          <img class="wallet-item-image" src="@/assets/images/wallet/bnb-logo.png" alt="">
-          <div class="wallet-item-name">Binance</div>
           <img class="wallet-item-select" src="@/assets/images/wallet/select.png" alt="">
         </div>
         <div :class="'wallet-item  disabled-item' + (selectedWalletNetwork.chainId === 99 ? 'active' : '')">
@@ -69,7 +69,7 @@ export default {
   data () {
     return {
       showPopup: this.show,
-      selectedWalletNetwork: mainChain,
+      selectedWalletNetwork: ChainEnum.BSC,
       ChainEnum, WalletEnum,
       mainChain,
       chainNetWorks: ChainEnum.values,
