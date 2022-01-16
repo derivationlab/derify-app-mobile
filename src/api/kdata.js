@@ -28,6 +28,21 @@ const timeGapArr = [
  * @returns {Promise<*[]|*>} [0 open, 1 highest,2 lowest,3 close]
  */
 export async function getKLineData ({instId, after, before, bar = '15m', limit= 35}) {
+
+  if(!before && !after){
+    after = (new Date()).getTime();
+  }
+
+  const timeGap = timeGapArr.find((item) => item.value === bar);
+
+  if(!after){
+    after = before + timeGap.time * limit;
+  }
+
+  if(!before){
+    before = after - timeGap.time * limit;
+  }
+
   const param = {
     token: instId,
     endTime: Math.ceil(after / 1000),
