@@ -569,7 +569,7 @@ export default {
       },
       showTimeGapDropDown: false,
       showTimeGapNum: 9,
-      kChartTimeGap: {value: '15m', text: '15m'},
+      kChartTimeGap: {value: '1D', text: 'D', time: 24 * 60 * 60 * 1000},
       kChartLimit: 35,
       kChartStart: (new Date()).getTime(),
       kChartTimeMinGaps: [
@@ -989,6 +989,7 @@ export default {
       const self = this
       getEchartsOptions({token,
         bar: gap.value,
+        before: this.kChartStart - gap.time * this.kChartLimit,
         after: this.kChartStart,
         limit: this.kChartLimit,
         curPrice: fromContractUnit(this.curSpotPrice)}).then((options) => {
@@ -1031,7 +1032,6 @@ export default {
       var movePercent = distnaceX / this.$refs.myChart.clientWidth;
 
       var timeGapVal = this.kChartTimeMinGaps.find((item) => item.value === this.kChartTimeGap.value);
-      console.log(`onChartDrag, ${timeGapVal.time}`)
 
       if(!timeGapVal){
         return;
@@ -1040,7 +1040,6 @@ export default {
       this.kChartStart = this.kChartStart - Math.ceil(this.kChartLimit * movePercent * timeGapVal.time);
       //drag performance
       this.updateKLine(this.curPair.key, this.kChartTimeGap)
-      console.log(`onChartDrag, ${this.kChartStart}`)
     },
     onChartZoomIn(endEvent, startEvent, distance){
       if(this.kChartLimit > 300){

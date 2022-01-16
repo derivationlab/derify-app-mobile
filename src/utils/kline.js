@@ -1,4 +1,5 @@
 import { getKLineData } from '../api/kdata'
+import { Token } from '@/utils/contractUtil'
 
 export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
                                        , values = [[0,0,0,0]], curPrice = 0
@@ -139,11 +140,7 @@ const tokenInstIdMap = {
 }
 
 function getTokenInstIdByToken(token) {
-  if(tokenInstIdMap.hasOwnProperty(token)){
-    return tokenInstIdMap[token]
-  }
-
-  return tokenInstIdMap.ETH
+  return Token[token]
 }
 
 export default async function getEchartsOptions({token, bar, after, before, limit, curPrice}) {
@@ -167,7 +164,7 @@ function splitData (rawData, bar) {
   const values = []
   rawData.reverse()
   for (let i = 0; i < rawData.length; i++) {
-    const date = new Date(parseInt(rawData[i].splice(0, 1)[0]));
+    const date = new Date(parseInt(rawData[i].splice(0, 1)[0]) * 1000);
     categoryData.push(date.Format(barDateFmtMap[bar]))
     //[open, highest, lowest, close]
     //convert to
