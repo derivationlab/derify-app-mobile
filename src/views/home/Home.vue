@@ -569,7 +569,7 @@ export default {
       },
       showTimeGapDropDown: false,
       showTimeGapNum: 9,
-      kChartTimeGap: {value: '1D', text: 'D', time: 24 * 60 * 60 * 1000},
+      kChartTimeGap: {value: '1h', text: '1h', time: 60 * 60 * 1000},
       kChartLimit: 35,
       kChartStart: (new Date()).getTime(),
       kChartTimeMinGaps: [
