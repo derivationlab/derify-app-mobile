@@ -103,6 +103,9 @@ export default {
       this.$emit('closeWalletPopup', false)
     },
     changeNetwork(chainEnum) {
+      if(chainEnum.disabled){
+        return;
+      }
       //this.showNetworkError = chainEnum.chainId !== this.user.chainEnum.chainId;
       this.selectedWalletNetwork = chainEnum
     },
