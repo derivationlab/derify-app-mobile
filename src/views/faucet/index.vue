@@ -47,7 +47,7 @@ import DerifyI18n from "@/components/DerifyI18n";
 
 const addTestTokentoWallet = async() => {
   const tokenAddress = Token.USDT;
-  const tokenSymbol = 'BUSD';
+  const tokenSymbol = 'USDT';
   const tokenDecimals = 18;
   const tokenImage = null;
 

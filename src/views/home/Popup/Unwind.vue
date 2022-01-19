@@ -17,14 +17,14 @@
             <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.AveragePrice') }}</div>
             <div>
               <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
-              <span class="fc-45">BUSD</span>
+              <span class="fc-45">USDT</span>
             </div>
           </div>
           <div class="system-popup-price">
             <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.CurrentPrice') }}</div>
             <div>
               <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
-              <span class="fc-45">BUSD</span>
+              <span class="fc-45">USDT</span>
             </div>
           </div>
       </div>

@@ -21,11 +21,11 @@
 
           <div class="heard-col center-span">
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
-            <div class="unit-span mrt-5">BUSD</div>
+            <div class="unit-span mrt-5">USDT</div>
           </div>
           <div class="heard-col center-span">
             <div class="color-type">{{data.balance | amountFormt(2, false, '--')}}</div>
-            <div class="unit-span mrt-5">BUSD</div>
+            <div class="unit-span mrt-5">USDT</div>
           </div>
           <div class="heard-col unit-span">
             {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}

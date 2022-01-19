@@ -27,11 +27,11 @@
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
         <div>
           <div :class="data.amount < 0 ? 'fc-red' : 'fc-green'">{{data.amount | amountFormt(2, true)}}</div>
-          <div class="unit-span mrt-5">BUSD</div>
+          <div class="unit-span mrt-5">USDT</div>
         </div>
         <div class="center-span">
           <div class="color-type">{{data.balance | amountFormt(2, false)}}</div>
-          <div class="unit-span mrt-5">BUSD</div>
+          <div class="unit-span mrt-5">USDT</div>
         </div>
         <div class="center-span unit-span">
           {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}

@@ -14,7 +14,7 @@
         <div class="center-span">{{$t('Data.TradeHitory.List.Time')}}</div>
       </div>
       <div class="heard">
-        <div class="color-type">ETH / BUSD</div>
+        <div class="color-type">ETH / USDT</div>
         <div>
           <div class="color-type">{{$t('Data.Data.Token.Price')}}</div>
           <div class="unit-span mrt-5">{{$t('Data.Data.Token.TokenInfo')}}</div>

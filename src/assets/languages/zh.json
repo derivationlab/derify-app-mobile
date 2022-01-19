@@ -182,9 +182,9 @@
 				"AveragePrice":"开仓价格",
 				"CurrentPrice":"当前价格",
 				"TakeProfit":"止盈设置",
-				"StopPriceProfitNotice":"当合约价格到达 {0} 时，将会触发市价平仓当前仓位。预计盈利为 {1} BUSD",
+				"StopPriceProfitNotice":"当合约价格到达 {0} 时，将会触发市价平仓当前仓位。预计盈利为 {1} USDT",
 				"StopLoss":"止损设置",
-				"StopPriceLossNotice":"当合约价格到达 {0} 时，将会触发市价平仓当前仓位。预计亏损为 {1} BUSD",
+				"StopPriceLossNotice":"当合约价格到达 {0} 时，将会触发市价平仓当前仓位。预计亏损为 {1} USDT",
 				"NumberError":"数值有误，请重新输入",
 				"Cancel":"取消",
 				"Confirm":"确定",
@@ -319,7 +319,7 @@
 				"TradePendingMsg":"正在执行，请稍候",
 				"TradeSuccessMsg":"执行成功",
 				"TradeFailedMsg":"执行失败，请重试",
-				"title":"提现BUSD"
+				"title":"提现USDT"
 			},
 			"History":{
 				"PositionMining":"持仓挖矿",
@@ -609,10 +609,10 @@
 	},
 	"Faucet":{
 		"Faucet":"水龙头",
-		"Address":"测试BUSD合约地址",
-		"GetUSDT":"领取{0}测试BUSD",
+		"Address":"测试USDT合约地址",
+		"GetUSDT":"领取{0}测试USDT",
 		"GetETH":"领取测试ETH",
-		"GetUSDTError":"测试BUSD已被领取，不可重复领取",
+		"GetUSDTError":"测试USDT已被领取，不可重复领取",
 		"GetBNB":"领取测试BNB"
 	},
 	"global":{
