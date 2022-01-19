@@ -106,7 +106,7 @@ export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) 
  * @return {Promise<{code:number, msg:string}>}
  */
 export async function sendUSDT (trader, amount) {
-  const content =  await io.post(`${serverEndPoint}/api/send_usdt`, {trader, amount});
+  const content =  await io.post(`/api/send_usdt`, {trader, amount});
 
   return content;
 
@@ -119,7 +119,7 @@ export async function sendUSDT (trader, amount) {
  * @return {Promise<boolean>}
  */
 export async function isUSDTClaimed (trader) {
-  const content =  await io.get(`${serverEndPoint}/api/is_usdt_claimed/${trader}`);
+  const content =  await io.get(`/api/is_usdt_claimed/${trader}`);
 
   if(content.data){
     return content.data;
@@ -147,7 +147,9 @@ export function createDataEvenet (callback){
 
   getEventData(callback);
 
-  const events = new EventSource(DATA_EVENT_URL);
+  const sererEndpoint = configUtil.getCurrentServerEndPoint();
+
+  const events = new EventSource(`${sererEndpoint}/api/events_data/`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
@@ -174,7 +176,7 @@ export function getEventData(callback){
 }
 
 export function updateTraderAccess(trader){
-  return io.post(`${serverEndPoint}/api/trader_info_updates`,{trader});
+  return io.post(`/api/trader_info_updates`,{trader});
 }
 
 
