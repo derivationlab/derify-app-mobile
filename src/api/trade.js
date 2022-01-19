@@ -1,21 +1,6 @@
 import * as io from "@/utils/request";
 import * as configUtil from '../config'
 
-const serverEndPoint = configUtil.getCurrentServerEndPoint()
-
-const TRADE_LIST_URL = serverEndPoint + "/api/trade_records/"
-const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
-//User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
-//User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
-//edrf balance
-const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
-
-const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
-const DATA_EVENT_URL = serverEndPoint + "/api/events_data/"
-const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
-
 const isNotCallEvent = false;
 /**
  *
@@ -106,7 +91,7 @@ export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) 
  * @return {Promise<{code:number, msg:string}>}
  */
 export async function sendUSDT (trader, amount) {
-  const content =  await io.post(`${serverEndPoint}/api/send_usdt`, {trader, amount});
+  const content =  await io.post(`/api/send_usdt`, {trader, amount});
 
   return content;
 
@@ -119,7 +104,7 @@ export async function sendUSDT (trader, amount) {
  * @return {Promise<boolean>}
  */
 export async function isUSDTClaimed (trader) {
-  const content =  await io.get(`${serverEndPoint}/api/is_usdt_claimed/${trader}`);
+  const content =  await io.get(`/api/is_usdt_claimed/${trader}`);
 
   if(content.data){
     return content.data;
@@ -147,7 +132,9 @@ export function createDataEvenet (callback){
 
   getEventData(callback);
 
-  const events = new EventSource(DATA_EVENT_URL);
+  const sererEndpoint = configUtil.getCurrentServerEndPoint();
+
+  const events = new EventSource(`${sererEndpoint}/api/events_data/`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
@@ -174,7 +161,7 @@ export function getEventData(callback){
 }
 
 export function updateTraderAccess(trader){
-  return io.post(`${serverEndPoint}/api/trader_info_updates`,{trader});
+  return io.post(`/api/trader_info_updates`,{trader});
 }
 
 
