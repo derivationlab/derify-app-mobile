@@ -110,7 +110,7 @@ const actions = {
       return closeUpperBound
     })()
   },
-  openPosition ({state,dispatch}, {side, size, openType, price, leverage, brokerId}) {
+  openPosition ({state,dispatch}, {side, quantityType, size, openType, price, leverage, brokerId}) {
     return new Promise((resolve, reject) => {
 
       if(!state.wallet_address){
@@ -125,7 +125,7 @@ const actions = {
       }
 
       const params = {
-        token: token.address, side, openType, size, price, leverage
+        token: token.address, side, openType, size, price, leverage,quantityType
       }
 
       web3Utils.contract(state.wallet_address, brokerId)

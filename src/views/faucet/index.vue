@@ -17,7 +17,13 @@
             <div :class="usdtClaimed ? 'derify-big-btn disabled-btn' : 'derify-big-btn btn-yellow'" @click="submitThenClose">
               <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
             </div>
-            <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
+            <template v-if="curChain.chainId === ChainEnum.Rinkeby.chainId">
+              <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
+            </template>
+            <template v-if="curChain.chainId === ChainEnum.BSC.chainId">
+              <p class="code-wrap"><a class="fc-yellow" href="https://testnet.binance.org/faucet-smart" target="_blank">{{ $t('Faucet.GetBNB') }}</a></p>
+            </template>
+
 
           </ButtonLoginWrap>
         </div>
@@ -35,7 +41,7 @@ import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 import {isUSDTClaimed, sendUSDT} from '@/api/trade'
-import { UserProcessStatus } from '@/store/modules/user'
+import { ChainEnum, UserProcessStatus } from '@/store/modules/user'
 import { Token } from '@/utils/contractUtil'
 import DerifyI18n from "@/components/DerifyI18n";
 
@@ -75,6 +81,7 @@ export default {
   data () {
     const defaultUSDTAmount = 100000;
     return {
+      ChainEnum,
       showError: false,
       errorMsg: '',
       loading: false,
@@ -91,6 +98,9 @@ export default {
     },
     trader () {
       return this.$store.state.user.selectedAddress;
+    },
+    curChain(){
+      return this.$store.state.user.chainEnum;
     }
   },
   created() {

@@ -19,6 +19,7 @@
 			"ChooseWallet":"选择钱包",
 			"NoWalletErrorMsg":"未检测到钱包，请先安装Metamask钱包",
 			"MainChainUnmatch":"您选择的主网与钱包的主网不一致，请将钱包主网切换至以太坊（{0}）后重新登录",
+			"Confirm":"确定",
 			"Disconnect":"断开连接"
 		},
 		"Account":{
@@ -611,7 +612,8 @@
 		"Address":"测试USDT合约地址",
 		"GetUSDT":"领取{0}测试USDT",
 		"GetETH":"领取测试ETH",
-		"GetUSDTError":"测试USDT已被领取，不可重复领取"
+		"GetUSDTError":"测试USDT已被领取，不可重复领取",
+		"GetBNB":"领取测试BNB"
 	},
 	"global":{
 		"ClickConnectWallet":"连接钱包",

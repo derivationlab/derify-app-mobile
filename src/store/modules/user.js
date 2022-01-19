@@ -8,11 +8,13 @@ let walletChangeVersion = 0;
 
 export class ChainEnum {
   static values = []
-  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true){
+  constructor(chainId, name, logo = require('@/assets/images/wallet/eth-logo.png'), disabled = true, rpcUrl= '', explorerUrl=''){
     this.chainId = chainId
     this.name = name
     this.logo = logo
     this.disabled = disabled
+    this.rpc = rpcUrl;
+    this.explorer = explorerUrl;
     ChainEnum.values.push(this)
   }
 
@@ -29,7 +31,7 @@ export class ChainEnum {
   }
 
   static get Rinkeby() {
-    return new ChainEnum(4, "Rinkeby")
+    return new ChainEnum(4, "Rinkeby", require('@/assets/images/wallet/eth-logo.png'), true)
   }
 
   static get Ropsten() {
@@ -40,6 +42,14 @@ export class ChainEnum {
     return new ChainEnum(2, "Morden")
   }
 
+  static get BSC() {
+    return new ChainEnum(0x61, "BSC testnet", require('@/assets/images/wallet/bnb-logo.png'), false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
+  }
+
+  /**
+   *
+   * @return {ChainEnum[]}
+   */
   static get values() {
     return ChainEnum.values
   }
@@ -52,6 +62,7 @@ const networkMap = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
+  0x61: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
@@ -85,7 +96,7 @@ export class UserProcessStatus {
   }
 }
 
-export const mainChain = ChainEnum.Rinkeby
+export const mainChain = ChainEnum.BSC
 
 const state = {
   selectedAddress: "",
@@ -127,9 +138,9 @@ export async function getWallet(){
 
   window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.selectedAddress);
   let wethereum = window.ethereum
-  const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+  const isEthum = true
 
-  const chainId = parseInt(wethereum.chainId)
+  const chainId = parseInt(wethereum.chainId, 16)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
   let brokerId = "";
@@ -152,7 +163,7 @@ export async function getWallet(){
 
   return {
     selectedAddress: wethereum.selectedAddress,
-    isLogin: wethereum.selectedAddress && isEthum,
+    isLogin: wethereum.selectedAddress && isEthum && !chainEnum.disabled,
     hasBroker: !!brokerId,
     showWallet: false,
     chainEnum: chainEnum,

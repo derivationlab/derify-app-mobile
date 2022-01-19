@@ -179,12 +179,11 @@ export default {
 
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
 
-      let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price))
-
       const brokerId = this.$store.state.user.brokerId
       this.$store.dispatch('contract/openPosition', {
         side: this.openData.side,
-        size: toContractNum(tokenSize),
+        quantityType: unit === UnitTypeEnum.USDT ? 0 : 1,
+        size: toContractNum(size),
         openType: this.openData.entrustType,
         price: toContractNum(price),
         leverage: toContractNum(leverage),
