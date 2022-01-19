@@ -1,21 +1,6 @@
 import * as io from "@/utils/request";
 import * as configUtil from '../config'
 
-const serverEndPoint = configUtil.getCurrentServerEndPoint()
-
-const TRADE_LIST_URL = serverEndPoint + "/api/trade_records/"
-const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
-//User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
-//User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
-//edrf balance
-const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
-
-const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
-const DATA_EVENT_URL = serverEndPoint + "/api/events_data/"
-const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
-
 const isNotCallEvent = false;
 /**
  *
