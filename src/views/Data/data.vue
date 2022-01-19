@@ -34,14 +34,14 @@
             <span class="ify-span"><span class="colory"></span> {{$t('Data.Data.Trade.TradingVolume')}}（24h）</span>
             <div class="ify-div">
               <span class="num">{{tradeData.current.trading_amount}}</span>
-              <span class="unit">USDT</span>
+              <span class="unit">BUSD</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span"><span class="colorb"></span>{{$t('Data.Data.Trade.TradFeeEarning')}}（24h）</span>
             <div class="ify-div">
               <span class="num">{{tradeData.current.trading_fee}}</span>
-              <span class="unit">USDT</span>
+              <span class="unit">BUSD</span>
             </div>
           </div>
         </div>
@@ -52,14 +52,14 @@
             <span class="ify-span"><span class="color-green"></span> {{$t('Data.Data.Held.TotalLong')}}</span>
             <div class="ify-div">
               <span class="fc-green">{{heldData.current.long_position_amount}}</span>
-              <span class="unit">USDT</span>
+              <span class="unit">BUSD</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span"><span class="color-red"></span>{{$t('Data.Data.Held.TotalShort')}}</span>
             <div class="ify-div">
               <span class="fc-red">{{heldData.current.short_position_amount}}</span>
-              <span class="unit">USDT</span>
+              <span class="unit">BUSD</span>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
               <span class="ify-span fz-12">{{$t('Data.Data.Insurance.InsurancePoolBalance')}}</span>
               <div class="ify-div">
                 <span class="num fc-yellow fz-20">{{insuranceData.current.insurance_pool}}</span>
-                <span class="unit">USDT</span>
+                <span class="unit">BUSD</span>
               </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
             <span class="ify-span">DRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
               <span class="num">{{tokenData.current.drfPrice|fck(0,2)}}</span>
-              <span class="unit fz-12">USDT</span>
+              <span class="unit fz-12">BUSD</span>
             </div>
           </div>
           <div class="div1">
@@ -93,24 +93,24 @@
             </div>
           </div>
           <div class="div1">
-            <span class="ify-span">{{$t('Data.Data.Token.BuyBackFundBalance')}}(USDT)</span>
+            <span class="ify-span">{{$t('Data.Data.Token.BuyBackFundBalance')}}(BUSD)</span>
             <div class="ify-div">
               <span class="num">{{tokenData.current.drfBuyBack|fck(0,2)}}</span>
-              <span class="unit fz-12"> USDT</span>
+              <span class="unit fz-12"> BUSD</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">eDRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
               <span class="num">{{tokenData.current.edrfPrice|fck(0,2)}}</span>
-              <span class="unit fz-12">USDT</span>
+              <span class="unit fz-12">BUSD</span>
             </div>
           </div>
           <div class="div1">
             <span class="ify-span">bDRF{{$t('Data.Data.Token.Price')}}</span>
             <div class="ify-div">
               <span class="num">{{tokenData.current.bdrfPrice|fck(0,2)}}</span>
-              <span class="unit fz-12">USDT</span>
+              <span class="unit fz-12">BUSD</span>
             </div>
           </div>
         </div>
@@ -190,8 +190,8 @@ export default {
     subOptions () {
       return [
         {value: 0, text: this.$t('Data.Data.Trade.All'), token: 'all'},
-        {value: 1, text: 'BTC/USDT', token: Token.BTC},
-        {value: 2, text: 'ETH/USDT', token: Token.ETH},
+        {value: 1, text: 'BTC/BUSD', token: Token.BTC},
+        {value: 2, text: 'ETH/BUSD', token: Token.ETH},
       ]
     },
     subToken () {

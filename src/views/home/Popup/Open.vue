@@ -7,7 +7,7 @@
         <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.Price')}}</div>
         <div v-if="openData.entrustType === OpenType.LimitOrder && sideType !== SideEnum.HEDGE">
           <span class="fc-85">{{openData.amount}}</span>
-          <span class="fc-45">USDT</span>
+          <span class="fc-45">BUSD</span>
         </div>
         <div v-else>
           <span class="fc-85">{{$t('Trade.OpenPosition.OpenPopup.Market')}}</span>
@@ -39,14 +39,14 @@
         <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.PCF')}}</div>
         <div>
           <span :class="'fc-85 ' + (-openData.positionChangeFee >= 0 ? 'fc-green' : 'fc-red')">{{-openData.positionChangeFee | amountFormt(4, true, 0)}}</span>
-          <span class="fc-45">USDT</span>
+          <span class="fc-45">BUSD</span>
         </div>
       </div>
       <div class="system-popup-price">
         <div class="fc-45">{{$t('Trade.OpenPosition.OpenPopup.TradFee')}}</div>
         <div>
           <span class="fc-85">{{-openData.tradingFee | amountFormt(4, true, 0)}}</span>
-          <span class="fc-45">USDT</span>
+          <span class="fc-45">BUSD</span>
         </div>
       </div>
       <div class="system-popup-buttons">
@@ -97,7 +97,7 @@ export default {
       sideType: this.type, // 0 1
       openData: Object.assign({}, this.extraData),
       unitConfig: [
-        {text: 'USDT', value: 0},
+        {text: 'BUSD', value: 0},
         {text: 'BTC', value: 1}
       ]
     }
@@ -216,7 +216,7 @@ export default {
         if (size > fromContractUnit(this.sysOpenUpperBound.size)) {
 
           self.showError = true
-          self.errorMsg = `${this.$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)} USDT`
+          self.errorMsg = `${this.$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(this.sysOpenUpperBound.size, -8)} BUSD`
           return fromContractUnit(this.sysOpenUpperBound.size)
         }
       } else {

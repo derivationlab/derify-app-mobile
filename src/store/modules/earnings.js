@@ -24,10 +24,10 @@ const state = {
   },
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
-    {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: Token.ETH},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
+    {key: 'BTC', name: 'BTC / BUSD', num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
+    {key: 'ETH', name: 'ETH / BUSD', num: 2930.79, percent: -1.23, enable: true, address: Token.ETH},
+    {key: 'BNB', name: 'BNB / BUSD', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'UNI', name: 'UNI / BUSD', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
   curPairKey: 'ETH',
   accountData: {

@@ -8,16 +8,16 @@
         </div>
         <div class="earnings-num">
           <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
-          <span class="span2">USDT</span>
+          <span class="span2">BUSD</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{accountData.totalPositionAmount | fck(-8)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.PositionHeld') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.PositionHeld') }}（BUSD）</span>
           </div>
           <div class="div1">
             <span class="span1">{{pmrAccumulatedBalance | fck(-8, 2)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.AccumulatedReward') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.AccumulatedReward') }}（BUSD）</span>
           </div>
         </div>
         <div class="earnings-item">

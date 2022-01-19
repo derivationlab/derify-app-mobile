@@ -37,10 +37,10 @@
         type="number"
       >
       </van-field>
-      <span class="unit">USDT</span>
+      <span class="unit">BUSD</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Transfer.Size')}}
-      {{maxAmount}} USDT</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
+      {{maxAmount}} BUSD</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
     <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Transfer.Deposit')}}</div>
     <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Transfer.Withdraw')}}</div>
   </div>

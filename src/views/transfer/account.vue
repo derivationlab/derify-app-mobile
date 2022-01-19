@@ -18,11 +18,11 @@
     <div class="unit-tr">
       <div>
         <DecimalView wrapStyle="color: rgba(255,255,255,1)" digit-split="," :value="accountData.marginBalance | fck(-8,2)"/>
-        <span> USDT</span>
+        <span> BUSD</span>
       </div>
       <div>
         <DecimalView wrapStyle="color: rgba(255,255,255,1)" digit-split="," :value="accountData.totalMargin | fck(-8)"/>
-        <span> USDT</span>
+        <span> BUSD</span>
       </div>
     </div>
     <template v-if="isLogin">

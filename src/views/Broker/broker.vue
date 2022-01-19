@@ -35,7 +35,7 @@
           <div class="account-div">{{$t('Broker.Broker.Account.AccBalance')}}</div>
           <div class="num-div">
             <DecimalView :value="broker.rewardBalance | fck(-8,2)" className="num"></DecimalView>
-            <span class="unit">USDT</span>
+            <span class="unit">BUSD</span>
           </div>
 
           <div class="tbtm-div fz-17" @click="setShowWidthdrawPopup(true)">{{$t('Broker.Broker.Account.Withdraw')}}</div>
@@ -43,11 +43,11 @@
           <div class="income-div">
             <div class="taday-div">
               <DecimalView :value="broker.todayReward | fck(0,2)" className="span1"></DecimalView>
-              <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( USDT )</span>
+              <span class="span2 fz-11">{{$t('Broker.Broker.Account.DailyEarning')}} ( BUSD )</span>
             </div>
             <div class="taday-div">
               <DecimalView :value="broker.accumulatedReward | fck(-8,2)" className="span1"></DecimalView>
-              <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( USDT )</span>
+              <span class="span2 fz-11">{{$t('Broker.Broker.Account.AccumulatedEarning')}} ( BUSD )</span>
             </div>
           </div>
 

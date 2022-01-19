@@ -99,7 +99,7 @@ export default {
     },
     depositId () {
       if (this.depositId === EarningType.MIN) {
-        this.tokenName = 'USDT'
+        this.tokenName = 'BUSD'
       } else if (this.depositId === EarningType.EDRF) {
         this.tokenName = 'DRF'
       } else {

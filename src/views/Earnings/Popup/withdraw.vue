@@ -58,7 +58,7 @@ export default {
     },
     withdrawName () {
       if (this.withdrawId === EarningType.MIN) {
-        return 'USDT'
+        return 'BUSD'
       } else if (this.withdrawId === EarningType.EDRF) {
         return 'eDRF'
       } else if(this.withdrawId === EarningType.BDRF){

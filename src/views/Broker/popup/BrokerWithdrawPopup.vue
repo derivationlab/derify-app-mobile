@@ -42,7 +42,7 @@ export default {
       showPopup: this.show,
       amount: null,
       curPercent: 25,
-      withdrawName: 'USDT'
+      withdrawName: 'BUSD'
     }
   },
   computed: {

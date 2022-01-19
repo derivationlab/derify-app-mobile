@@ -182,9 +182,9 @@
 				"AveragePrice":"Average Price",
 				"CurrentPrice":"Current Price",
 				"TakeProfit":"Take Profit",
-				"StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} USDT.",
+				"StopPriceProfitNotice":"When Market Price reaches {0}, it will trigger Take Profit Market order to close this position, Estimated profit will be {1} BUSD.",
 				"StopLoss":"Stop Loss",
-				"StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} USDT.",
+				"StopPriceLossNotice":"When Market Price reaches {0}, it will trigger Stop Loss Market order to close this position, Estimated loss will be {1} BUSD.",
 				"NumberError":"Number error, please retry...",
 				"Cancel":"Cancel",
 				"Confirm":"Confirm",
@@ -319,7 +319,7 @@
 				"TradePendingMsg":"Pending ……",
 				"TradeSuccessMsg":"Successful",
 				"TradeFailedMsg":"Trade failed, please retry...",
-				"title":"Withdraw USDT"
+				"title":"Withdraw BUSD"
 			},
 			"History":{
 				"PositionMining":"Position Mining",
@@ -609,10 +609,10 @@
 	},
 	"Faucet":{
 		"Faucet":"Faucet",
-		"Address":"Test USDT Contract Address",
-		"GetUSDT":"Get {0} Test USDT",
+		"Address":"Test BUSD Contract Address",
+		"GetUSDT":"Get {0} Test BUSD",
 		"GetETH":"Get Test ETH",
-		"GetUSDTError":"You have already claimed Test USDT",
+		"GetUSDTError":"You have already claimed Test BUSD",
 		"GetBNB":"Get Test BNB"
 	},
 	"global":{

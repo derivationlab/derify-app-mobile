@@ -16,9 +16,9 @@
         placeholder="1.23456789"
       >
       </van-field>
-      <span class="unit">USDT</span>
+      <span class="unit">BUSD</span>
     </van-cell-group>
-    <div class="transfer-div"><span class="span1">可划转：1234567.00000000 USDT</span><span class="span2">全部划转</span></div>
+    <div class="transfer-div"><span class="span1">可划转：1234567.00000000 BUSD</span><span class="span2">全部划转</span></div>
     <div class="pay-div">充值</div>
   </div>
 </template>
