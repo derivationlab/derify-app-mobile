@@ -1,20 +1,6 @@
 import * as io from "@/utils/request";
 import * as configUtil from '../config'
-
-const serverEndPoint = configUtil.getCurrentServerEndPoint()
-
-const TRADE_LIST_URL = serverEndPoint + "/api/trade_records/"
-const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
-//User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
-//User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
-//edrf balance
-const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
-
-const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
-const DATA_EVENT_URL = serverEndPoint + "/api/events_data/"
-const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
+import {Pagenation} from "@/api/types";
 
 const isNotCallEvent = false;
 /**
@@ -22,16 +8,25 @@ const isNotCallEvent = false;
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<Array<TradeRecord>>}
+ * @returns {Promise<Pagenation<TradeRecord>>}
  */
-export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
-  const content = await io.get(`/api/trade_records/${trader}/${pageNum}/${pageSize}`)
+export async function getTradeList (trader, pageNum = 1, pageSize = 10) {
+  const content = await io.get(`/api/trade_records/${trader}/${pageNum - 1}/${pageSize}`)
 
-  if(content) {
-    return content.data.records;
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -39,16 +34,25 @@ export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<Array<TradeBalanceDetail>>}
+ * @returns {Promise<Pagenation<TradeBalanceDetail>>}
  */
-export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_balance/${trader}/${pageNum}/${pageSize}`)
+export async function getTradeBalanceDetail (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_balance/${trader}/${pageNum - 1}/${pageSize}`)
 
-  if(content) {
-    return content.data.records;
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -56,47 +60,25 @@ export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10)
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<*[]|TraderBondBalance>}
+ * @returns {Promise<Pagenation<TraderBondBalance>>}
  */
-export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
+export async function getTraderBondBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum - 1}/${pageSize}`)
+
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
-}
-
-/**
- *
- * @param trader
- * @param pageNum
- * @param pageSize
- * @returns {Promise<*[]|TradePMRBalance>}
- */
-export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
-  }
-
-  return [];
-}
-
-/**
- *
- * @param trader
- * @param pageNum
- * @param pageSize
- * @returns {Promise<*[]|TraderEDRFBalance>}
- */
-export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
-  }
-
-  return [];
+  return pagenation;
 }
 
 /**
@@ -106,7 +88,7 @@ export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) 
  * @return {Promise<{code:number, msg:string}>}
  */
 export async function sendUSDT (trader, amount) {
-  const content =  await io.post(`${serverEndPoint}/api/send_usdt`, {trader, amount});
+  const content =  await io.post(`/api/send_usdt`, {trader, amount});
 
   return content;
 
@@ -119,7 +101,7 @@ export async function sendUSDT (trader, amount) {
  * @return {Promise<boolean>}
  */
 export async function isUSDTClaimed (trader) {
-  const content =  await io.get(`${serverEndPoint}/api/is_usdt_claimed/${trader}`);
+  const content =  await io.get(`/api/is_usdt_claimed/${trader}`);
 
   if(content.data){
     return content.data;
@@ -129,7 +111,57 @@ export async function isUSDTClaimed (trader) {
 
 }
 
+/**
+ *
+ * @param trader
+ * @param pageNum
+ * @param pageSize
+ * @returns {Promise<Pagenation<TradePMRBalance>>}
+ */
+export async function getTraderPMRBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum - 1}/${pageSize}`)
 
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
+  }
+
+  return pagenation;
+}
+
+/**
+ *
+ * @param trader
+ * @param pageNum
+ * @param pageSize
+ * @returns {Promise<Pagenation<TraderEDRFBalance>>}
+ */
+export async function getTraderEDRFBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum-1}/${pageSize}`)
+
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
+  }
+
+  return pagenation;
+}
 const eventDataKey = 'eventData';
 /**
  * get event data
@@ -147,7 +179,8 @@ export function createDataEvenet (callback){
 
   getEventData(callback);
 
-  const events = new EventSource(DATA_EVENT_URL);
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
+  const events = new EventSource(`${serverEndPoint}/api/events_data/`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
@@ -173,13 +206,57 @@ export function getEventData(callback){
   }
 }
 
+/**
+ * Get mining profitability
+ * @param tokenAddr
+ * @param callback param PositionMiningRate
+ */
+export function createTokenMiningFeeEvenet (tokenAddr, callback){
+  if(isNotCallEvent){
+    return null
+  }
+
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
+
+  const events = new EventSource(`${serverEndPoint}/api/position_mining_events/${tokenAddr}`);
+
+  events.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data)
+    callback(tokenAddr, parsedData)
+  }
+
+  return events
+}
+
+/**
+ * Get token increase
+ * @param tokenKey
+ * @param callback tokenKey
+ * @return {EventSource}
+ */
+export function createTokenPriceChangeEvenet (tokenKey, callback){
+  if(isNotCallEvent){
+    return null
+  }
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
+
+  const events = new EventSource(`${serverEndPoint}/api/token_price_events/tokenKey`);
+
+  events.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data)
+    callback(tokenKey, parsedData)
+  }
+
+  return events
+}
+
 export function updateTraderAccess(trader){
-  return io.post(`${serverEndPoint}/api/trader_info_updates`,{trader});
+  return io.post('/api/trader_info_updates',{trader});
 }
 
 
 /**
- * trade record doamin
+ * trade record domain
  */
 export class TradeRecord {
   id;// uuid
