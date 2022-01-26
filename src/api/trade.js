@@ -90,8 +90,8 @@ export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) 
  * @param amount
  * @return {Promise<{code:number, msg:string}>}
  */
-export async function sendUSDT (trader, amount) {
-  const content =  await io.post(`/api/send_usdt`, {trader, amount});
+export async function sendUSDT (trader, amount, userToken) {
+  const content =  await io.post(`/api/send_usdt`, {trader, amount,'g-recaptcha-response': userToken});
 
   return content;
 

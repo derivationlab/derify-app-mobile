@@ -12,11 +12,24 @@
           <van-field readonly class="derify-big-input" type="text" placeholder="" input-align="center" v-model="tokenAddress"/>
         </div>
 
+        <div style="display:flex;justify-content: center;margin-top: 2rem;">
+          <VueRecaptcha sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" v-bind:callback="(res) =>{
+            this.userToken = res;
+          }"></VueRecaptcha>
+        </div>
+
         <div class="btn-wrap">
           <ButtonLoginWrap className="derify-big-btn btn-yellow">
-            <div :class="usdtClaimed ? 'derify-big-btn disabled-btn' : 'derify-big-btn btn-yellow'" @click="submitThenClose">
+            <div v-if="usdtClaimed" class="derify-big-btn disabled-btn">
               <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
             </div>
+
+            <template v-else>
+              <div :class="userToken ? 'derify-big-btn btn-yellow' : 'derify-big-btn btn-black'" @click="submitThenClose">
+                <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
+              </div>
+            </template>
+
             <template v-if="curChain.chainId === ChainEnum.Rinkeby.chainId">
               <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
             </template>
@@ -44,6 +57,7 @@ import {isUSDTClaimed, sendUSDT} from '@/api/trade'
 import { ChainEnum, UserProcessStatus } from '@/store/modules/user'
 import { Token } from '@/utils/contractUtil'
 import DerifyI18n from "@/components/DerifyI18n";
+import {VueRecaptcha} from 'vue-recaptcha';
 
 const addTestTokentoWallet = async() => {
   const tokenAddress = Token.USDT;
@@ -76,6 +90,7 @@ export default {
     DerifyI18n,
     ButtonLoginWrap,
     DerifyErrorNotice,
+    VueRecaptcha,
     Navbar
   },
   data () {
@@ -88,6 +103,7 @@ export default {
       usdtClaimed: true,
       getUSDTDesc: {0: `<DecimalView value="${defaultUSDTAmount}" digitSplit=","/>`},
       tokenAddress:Token.USDT,
+      userToken: null,
       defaultUSDTAmount
     }
   },
@@ -124,6 +140,10 @@ export default {
         return;
       }
 
+      if(!this.userToken){
+        return;
+      }
+
       if(this.loading){
         return;
       }
@@ -136,7 +156,7 @@ export default {
         return;
       }
 
-      sendUSDT(this.trader, this.defaultUSDTAmount).then((data) => {
+      sendUSDT(this.trader, this.defaultUSDTAmount, this.userToken).then((data) => {
 
         if(data.code === 0){
           this.usdtClaimed = true
