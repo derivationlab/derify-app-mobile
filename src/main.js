@@ -4,6 +4,7 @@ import VueEvents from 'vue-events'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import {VueRecaptcha} from 'vue-recaptcha';
 import VueTouchEvents from './components/TouchEvents/index'
 import Vant from 'vant'
 import { Lazyload } from 'vant';
@@ -29,6 +30,7 @@ if(isDebug()){
 Vue.use(VueEvents)
 Vue.use(Fragment.Plugin)
 Vue.use(VueTouchEvents)
+Vue.use(VueRecaptcha)
 
 let locale = 'en'
 try {
