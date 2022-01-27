@@ -12,7 +12,7 @@
           <van-field readonly class="derify-big-input" type="text" placeholder="" input-align="center" v-model="tokenAddress"/>
         </div>
 
-        <div style="display:flex;justify-content: center;margin-top: 2rem;">
+        <div v-if="!usdtClaimed" style="display:flex;justify-content: center;margin-top: 2rem;">
           <vue-recaptcha sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{
             this.userToken = res;
           }" @expired="() => {
