@@ -13,9 +13,11 @@
         </div>
 
         <div style="display:flex;justify-content: center;margin-top: 2rem;">
-          <VueRecaptcha sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" v-bind:callback="(res) =>{
+          <vue-recaptcha sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{
             this.userToken = res;
-          }"></VueRecaptcha>
+          }" @expired="() => {
+            this.userToken = null;
+          }"></vue-recaptcha>
         </div>
 
         <div class="btn-wrap">

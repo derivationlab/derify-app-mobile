@@ -47,10 +47,6 @@ axios.interceptors.response.use(
         // Jump to the login page if you are not logged in, and carry the path of the current page
         // Return to the current page after successful login, this step needs to be operated on the login page.
         case 401:
-          router.replace({
-            path: '/login',
-            query: { redirect: router.currentRoute.fullPath }
-          })
           break
           // 403 token expired
           // Prompt the user after login expiration
