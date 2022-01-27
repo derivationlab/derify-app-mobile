@@ -13,7 +13,7 @@
         </div>
 
         <div v-if="!usdtClaimed" style="display:flex;justify-content: center;margin-top: 2rem;">
-          <vue-recaptcha sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{
+          <vue-recaptcha language="en" sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{
             this.userToken = res;
           }" @expired="() => {
             this.userToken = null;
