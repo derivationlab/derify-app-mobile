@@ -12,25 +12,32 @@
           <van-field readonly class="derify-big-input" type="text" placeholder="" input-align="center" v-model="tokenAddress"/>
         </div>
 
-        <div v-if="!usdtClaimed" style="display:flex;justify-content: center;margin-top: 2rem;">
-          <vue-recaptcha language="en" sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{
-            this.userToken = res;
-          }" @expired="() => {
-            this.userToken = null;
-          }"></vue-recaptcha>
-        </div>
+<!--        <div v-if="!usdtClaimed" style="display:flex;justify-content: center;margin-top: 2rem;">-->
+<!--          <vue-recaptcha language="en" sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd" @verify="(res) =>{-->
+<!--            this.userToken = res;-->
+<!--          }" @expired="() => {-->
+<!--            this.userToken = null;-->
+<!--          }"></vue-recaptcha>-->
+<!--        </div>-->
 
         <div class="btn-wrap">
-          <ButtonLoginWrap className="derify-big-btn btn-yellow">
-            <div v-if="usdtClaimed" class="derify-big-btn disabled-btn">
+          <a href="https://form.jotform.com/220268814408052" target="_blank">
+            <div class="derify-big-btn btn-yellow">
               <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
             </div>
+          </a>
+          <ButtonLoginWrap className="derify-big-btn btn-yellow">
+<!--            <div v-if="usdtClaimed" class="derify-big-btn disabled-btn">-->
+<!--              <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>-->
+<!--            </div>-->
 
-            <template v-else>
-              <div :class="userToken ? 'derify-big-btn btn-yellow' : 'derify-big-btn btn-black'" @click="submitThenClose">
-                <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
-              </div>
-            </template>
+<!--            <template v-else>-->
+<!--              <a href="https://form.jotform.com/220268814408052" target="_blank">-->
+<!--                <div :class="userToken ? 'derify-big-btn btn-yellow' : 'derify-big-btn btn-black'">-->
+<!--                  <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>-->
+<!--                </div>-->
+<!--              </a>-->
+<!--            </template>-->
 
             <template v-if="curChain.chainId === ChainEnum.Rinkeby.chainId">
               <p class="code-wrap"><a class="fc-yellow" href="https://www.rinkeby.io/#faucet" target="_blank">{{ $t('Faucet.GetETH') }}</a></p>
@@ -38,8 +45,6 @@
             <template v-if="curChain.chainId === ChainEnum.BSC.chainId">
               <p class="code-wrap"><a class="fc-yellow" href="https://testnet.binance.org/faucet-smart" target="_blank">{{ $t('Faucet.GetBNB') }}</a></p>
             </template>
-
-
           </ButtonLoginWrap>
         </div>
       </div>
