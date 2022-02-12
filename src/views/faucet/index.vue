@@ -97,7 +97,7 @@ export default {
     DerifyI18n,
     ButtonLoginWrap,
     DerifyErrorNotice,
-    VueRecaptcha,
+    // VueRecaptcha,
     Navbar
   },
   data () {

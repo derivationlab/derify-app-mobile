@@ -209,13 +209,32 @@
           />
           <van-icon
             class-prefix="iconfont"
-            class="menu-list-item-van-icon icon-feedback"
+            class="menu-list-item-van-icon icon-wenhao"
             name="extra"
             color="rgba(255, 255, 255, .85)"
             size="2.0rem"
           >
           </van-icon>
           <div class="menu-list-item-name"><a href="https://docs.derify.finance/tutorial/connect-wallet" target="_blank">{{ $t("Trade.navbar.Guide") }}</a></div>
+        </div>
+
+        <div
+          class="menu-list-item"
+        >
+          <img
+            class="menu-list-item-icon"
+            src="@/assets/icons/icon-menu-active.png"
+            alt=""
+          />
+          <van-icon
+            class-prefix="iconfont"
+            class="menu-list-item-van-icon icon-feedback"
+            name="extra"
+            color="rgba(255, 255, 255, .85)"
+            size="2.0rem"
+          >
+          </van-icon>
+          <div class="menu-list-item-name"><a href="https://form.jotform.com/220383773757061" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">
