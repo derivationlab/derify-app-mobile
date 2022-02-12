@@ -37,10 +37,10 @@
         type="number"
       >
       </van-field>
-      <span class="unit">USDT</span>
+      <span class="unit">{{ usdTokenName }}</span>
     </van-cell-group>
     <div class="transfer-div"><span class="span1">{{$t('Trade.Account.Transfer.Size')}}
-      {{maxAmount}} USDT</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
+      {{maxAmount}} {{ usdTokenName }}</span><span class="span2" @click="transferAll">{{$t('Trade.Account.Transfer.All')}}</span></div>
     <div class="pay-div" v-if="type === 'deposit'" @click="deposit">{{$t('Trade.Account.Transfer.Deposit')}}</div>
     <div class="pay-div" v-if="type === 'withdraw'" @click="withdraw">{{$t('Trade.Account.Transfer.Withdraw')}}</div>
   </div>
@@ -51,6 +51,7 @@ import { UserProcessStatus } from '../../../store/modules/user'
 import {toContractNum} from "@/utils/contractUtil";
   import DerifyIcon from '../../../components/DerifyIcon/DerifyIcon'
   import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+  import { getUSDTokenName } from '@/config'
 
 export default {
   name: 'transfer',
@@ -81,6 +82,9 @@ export default {
       }else{
         return fromContractUnit(this.balanceOfDerify)
       }
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   mounted () {

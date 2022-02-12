@@ -17,14 +17,14 @@
             <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.AveragePrice') }}</div>
             <div>
               <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
-              <span class="fc-45">USDT</span>
+              <span class="fc-45">{{usdTokenName }}</span>
             </div>
           </div>
           <div class="system-popup-price">
             <div class="fc-45">{{ $t('Trade.MyPosition.ClosePositionPopup.CurrentPrice') }}</div>
             <div>
               <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
-              <span class="fc-45">USDT</span>
+              <span class="fc-45">{{usdTokenName }}</span>
             </div>
           </div>
       </div>
@@ -51,6 +51,7 @@
   import { fromContractUnit, toContractUnit } from '@/utils/contractUtil'
   import { UserProcessStatus } from '@/store/modules/user'
   import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+  import { getUSDTokenName } from '@/config'
 
 export default {
   components: { DerifyErrorNotice },
@@ -91,6 +92,9 @@ export default {
   computed: {
     closeUpperBound () {
       return this.$store.state.contract.contractData.closeUpperBound
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   watch: {

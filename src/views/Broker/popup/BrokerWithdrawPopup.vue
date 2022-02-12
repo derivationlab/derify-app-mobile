@@ -31,6 +31,7 @@ import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
 import { EarningType } from '../../../store/modules/earnings'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+import { getUSDTokenName } from '@/config'
 
 export default {
   components: { DerifyErrorNotice },
@@ -42,7 +43,7 @@ export default {
       showPopup: this.show,
       amount: null,
       curPercent: 25,
-      withdrawName: 'USDT'
+      withdrawName: getUSDTokenName()
     }
   },
   computed: {
