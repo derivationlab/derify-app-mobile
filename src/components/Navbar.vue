@@ -460,9 +460,10 @@ export default {
   padding-left: 3.2rem;
   display: flex;
   align-items: center;
+  justify-content: right;
   position: absolute;
   bottom: 4rem;
-  left: 0;
+  right: 1rem;
   .language-item {
     height: 2.9rem;
     padding: 0 1.4rem;

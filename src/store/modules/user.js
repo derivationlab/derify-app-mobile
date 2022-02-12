@@ -31,7 +31,7 @@ export class ChainEnum {
   }
 
   static get Rinkeby() {
-    return new ChainEnum(4, "Rinkeby", require('@/assets/images/wallet/eth-logo.png'), false)
+    return new ChainEnum(4, "Rinkeby", require('@/assets/images/wallet/eth-logo.png'), true)
   }
 
   static get Ropsten() {
