@@ -206,7 +206,7 @@ export function toContractUnit (number) {
 }
 
 export function toShiftedHexString (number, decimals = 0) {
-  return "0x" + (new BigNumber(number)).shiftedBy(decimals).toString(16)
+  return "0x" + (new BigNumber(number)).shiftedBy(decimals).integerValue(BigNumber.ROUND_DOWN).toString(16)
 }
 
 export function toShiftedString (number, decimals = 0, bit = 2) {
@@ -255,7 +255,7 @@ export function stringFromContractUnit (unit, bit = 2) {
 }
 
 export function convertTokenNumToContractNum (amount, tokenDecimals) {
-  return (new BigNumber(amount)).shiftedBy(tokenDecimals).toNumber()
+  return (new BigNumber(amount)).shiftedBy(tokenDecimals).integerValue(BigNumber.ROUND_DOWN).toNumber()
 }
 
 
