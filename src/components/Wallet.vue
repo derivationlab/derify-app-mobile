@@ -120,7 +120,7 @@ export default {
         return true;
       } catch (error) {
 
-        if (error.code === 4902) {
+        if (error.code === 4902 || error.code === -32603) {
           try {
             await window.ethereum.request({
               method: 'wallet_addEthereumChain',
