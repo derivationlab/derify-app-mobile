@@ -21,11 +21,11 @@
 
           <div class="heard-col center-span">
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
-            <div class="unit-span mrt-5">USDT</div>
+            <div class="unit-span mrt-5">{{ usdTokenName }}</div>
           </div>
           <div class="heard-col center-span">
             <div class="color-type">{{data.balance | amountFormt(2, false, '--')}}</div>
-            <div class="unit-span mrt-5">USDT</div>
+            <div class="unit-span mrt-5">{{ usdTokenName }}</div>
           </div>
           <div class="heard-col unit-span">
             {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
@@ -38,6 +38,7 @@
 </template>
 <script>
 import TextView from '@/components/TextView'
+import { getUSDTokenName } from '@/config'
 export default {
   components: { TextView },
   props:['broker'],
@@ -48,6 +49,11 @@ export default {
       size: 10,
       loading: false,
       finished: false
+    }
+  },
+  computed:{
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   methods: {

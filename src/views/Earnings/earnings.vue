@@ -8,16 +8,16 @@
         </div>
         <div class="earnings-num">
           <span class="span1">{{pmrBalance | fck(-8, 2)}}</span>
-          <span class="span2">USDT</span>
+          <span class="span2">{{ usdTokenName }}</span>
         </div>
         <div class="earnings-info">
           <div class="div1">
             <span class="span1">{{accountData.totalPositionAmount | fck(-8)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.PositionHeld') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.PositionHeld') }}（{{ usdTokenName }}）</span>
           </div>
           <div class="div1">
             <span class="span1">{{pmrAccumulatedBalance | fck(-8, 2)}}</span>
-            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.AccumulatedReward') }}（USDT）</span>
+            <span class="span2 fz-11">{{ $t('Rewards.Mining.Card.AccumulatedReward') }}（{{ usdTokenName }}）</span>
           </div>
         </div>
         <div class="earnings-item">
@@ -138,6 +138,7 @@ import pledge from './Popup/pledge.vue'
 import deposit from './Popup/deposit.vue'
 import { EarningType } from '../../store/modules/earnings'
 import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
+import { getUSDTokenName } from '@/config'
 
 export default {
   name: 'earnings',
@@ -192,6 +193,9 @@ export default {
     },
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   methods: {

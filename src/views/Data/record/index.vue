@@ -14,7 +14,7 @@
         <div class="center-span">{{$t('Data.TradeHitory.List.Time')}}</div>
       </div>
       <div class="heard">
-        <div class="color-type">ETH / USDT</div>
+        <div class="color-type">ETH / {{ usdTokenName }}</div>
         <div>
           <div class="color-type">{{$t('Data.Data.Token.Price')}}</div>
           <div class="unit-span mrt-5">{{$t('Data.Data.Token.TokenInfo')}}</div>
@@ -32,12 +32,19 @@
   </div>
 </template>
 <script>
+import { getUSDTokenName } from '@/config'
+
 export default {
   data () {
     return {
       list: [],
       loading: false,
       finished: false
+    }
+  },
+  computed:{
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   methods: {

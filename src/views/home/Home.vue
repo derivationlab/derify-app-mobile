@@ -68,7 +68,7 @@
                 value = value.replace(/-/g, '')
                 return value
               }" @change="updateTraderOpenUpperBound"/>
-              <div class="fc-30">USDT</div>
+              <div class="fc-30">{{ usdTokenName }}</div>
             </div>
           </div>
           <div class="home-mid-two">
@@ -77,7 +77,7 @@
               <div class="fz-12">
             <span class="fc-65">{{$t('Trade.OpenPosition.OpenPage.Max')}}：
               <!-- USDT -->
-              <template v-if="unit === UnitTypeEnum.USDT">{{maxSize}} USDT</template>
+              <template v-if="unit === UnitTypeEnum.USDT">{{maxSize}} {{ usdTokenName }}</template>
               <!-- curToken -->
               <template v-if="unit === UnitTypeEnum.CurPair">{{maxSize}} {{curPair.key}}</template>
               <!-- percent -->
@@ -181,7 +181,7 @@
                           <div :class="data.unrealizedPnl > 0 ? 'fc-green' : 'fc-red'">
                             {{data.unrealizedPnl | amountFormt(2, true, '--', -8)}}
                           </div>
-                          <div>USDT<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -6)}}%)</span></template></div>
+                          <div>{{ usdTokenName }}<template><span :class="data.returnRate > 0 ? 'fc-green' : 'fc-red'">({{data.returnRate|amountFormt(2, true, '--', -6)}}%)</span></template></div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.PositionHeld')}}：</div>
@@ -191,11 +191,11 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.CurrentPrice')}}：</div>
-                          <div>{{data.spotPrice | fck(-8)}} USDT</div>
+                          <div>{{data.spotPrice | fck(-8)}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.AveragePrice')}}：</div>
-                          <div>{{data.averagePrice | fck(-8)}} USDT</div>
+                          <div>{{data.averagePrice | fck(-8)}} {{ usdTokenName }}</div>
                         </div>
                       </div>
                       <div class="exchange-item">
@@ -214,7 +214,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.Margin')}}：</div>
-                          <div>{{data.margin | amountFormt(2, false, '--', -8)}} USDT</div>
+                          <div>{{data.margin | amountFormt(2, false, '--', -8)}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.Risk')}}：</div>
@@ -224,7 +224,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.MyPosition.List.LiqPrice')}}：</div>
-                          <div>{{data.liquidatePrice | amountFormt(2, false, '--', -8)}} USDT</div>
+                          <div>{{data.liquidatePrice | amountFormt(2, false, '--', -8)}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right" @click="changeShowSet(true, data)">
                           <div class="fc-yellow">{{$t('Trade.MyPosition.List.SetTPSL')}}</div>
@@ -255,8 +255,8 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.CurrentOrder.List.Price')}}：</div>
-                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} USDT</div></template>
-                          <template v-else><div>{{data.stopPrice | fck(-8)}} USDT</div></template>
+                          <template v-if="data.orderType === OrderTypeEnum.LimitOrder"><div>{{data.price | fck(-8)}} {{ usdTokenName }}</div></template>
+                          <template v-else><div>{{data.stopPrice | fck(-8)}} {{ usdTokenName }}</div></template>
 
 
                         </div>
@@ -302,7 +302,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.RealizedPnL')}}：</div>
-                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}} USDT</div>
+                          <div :class="data.pnl_usdt > 0 ? 'fc-green' : 'fc-red'">{{data.pnl_usdt | amountFormt(2, true, '--')}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Type')}}：</div>
@@ -314,7 +314,7 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Price')}}：</div>
-                          <div>{{data.price | amountFormt(2, false, '--')}} USDT</div>
+                          <div>{{data.price | amountFormt(2, false, '--')}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Volume')}}：</div>
@@ -324,17 +324,17 @@
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Amount')}}：</div>
-                          <div>{{data.amount | amountFormt(2, false, '--')}} USDT</div>
+                          <div>{{data.amount | amountFormt(2, false, '--')}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.TradFee')}}：</div>
-                          <div>{{-data.trading_fee | amountFormt(2, false, '--')}} USDT</div>
+                          <div>{{-data.trading_fee | amountFormt(2, false, '--')}} {{ usdTokenName }}</div>
                         </div>
                       </div>
                       <div class="exchange-item">
                         <div class="exchange-item-left">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.PCF')}}：</div>
-                          <div>{{-data.position_change_fee  | amountFormt(2, false, '--')}} USDT</div>
+                          <div>{{-data.position_change_fee  | amountFormt(2, false, '--')}} {{ usdTokenName }}</div>
                         </div>
                         <div class="exchange-item-right">
                           <div class="fc-45">{{$t('Trade.TradeHistory.List.Compensation')}}：</div>
@@ -411,6 +411,7 @@ import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
 import DecimalView from '../../components/DecimalView/DecimalView'
 import { convertAmount2TokenSize, toContractNum } from '../../utils/contractUtil'
 import DerifyErrorNotice from '../../components/DerifyErrorNotice/DerifyErrorNotice'
+import { getUSDTokenName } from '@/config'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType
@@ -523,6 +524,9 @@ export default {
       }else{
         return fromContractUnit(this.curTraderOpenUpperBound.size, 4)
       }
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
 
@@ -557,7 +561,7 @@ export default {
         {text: '1x', value: 4, val: 1}
       ],
       unitConfig: [
-        {text: 'USDT', value: 0},
+        {text: getUSDTokenName(), value: 0},
         {text: this.$store.state.contract.curPairKey, value: 1},
         // {text: '%', value: 2}
       ],

@@ -31,6 +31,7 @@ import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
 import { EarningType } from '../../../store/modules/earnings'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+import { getUSDTokenName } from '@/config'
 
 export default {
   components: { DerifyErrorNotice },
@@ -58,7 +59,7 @@ export default {
     },
     withdrawName () {
       if (this.withdrawId === EarningType.MIN) {
-        return 'USDT'
+        return getUSDTokenName()
       } else if (this.withdrawId === EarningType.EDRF) {
         return 'eDRF'
       } else if(this.withdrawId === EarningType.BDRF){

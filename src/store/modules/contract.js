@@ -3,6 +3,7 @@ import * as web3Utils from '@/utils/web3Utils'
 import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
 import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
 import { amountFormt, fck, toChecksumAddress } from '@/utils/utils'
+import { getUSDTokenName } from '@/config'
 
 const openPositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
 const closePositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
@@ -17,10 +18,10 @@ const state = {
   },
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
-    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
+    {key: 'BTC', name: `BTC / ${getUSDTokenName()}`, num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
+    {key: 'ETH', name: `ETH / ${getUSDTokenName()}`, num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
+    {key: 'BNB', name: `BNB / ${getUSDTokenName()}`, num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
+    {key: 'UNI', name: `UNI / ${getUSDTokenName()}`, num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
   ],
   curPairKey:  window.localStorage.getItem('curPairKey') || 'BTC',
   contractData: {

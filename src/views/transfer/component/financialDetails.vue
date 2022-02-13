@@ -27,11 +27,11 @@
         <div class="color-type">{{getFeeType(data.fee_type)}}</div>
         <div>
           <div :class="data.amount < 0 ? 'fc-red' : 'fc-green'">{{data.amount | amountFormt(2, true)}}</div>
-          <div class="unit-span mrt-5">USDT</div>
+          <div class="unit-span mrt-5">{{ usdTokenName }}</div>
         </div>
         <div class="center-span">
           <div class="color-type">{{data.balance | amountFormt(2, false)}}</div>
-          <div class="unit-span mrt-5">USDT</div>
+          <div class="unit-span mrt-5">{{ usdTokenName }}</div>
         </div>
         <div class="center-span unit-span">
           {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
@@ -45,6 +45,7 @@
 
   import { amountFormt } from '../../../utils/utils'
   import { EVENT_WALLET_CHANGE } from '../../../utils/web3Utils'
+  import { getUSDTokenName } from '@/config'
 
   const feeTypeMap = {
     0: "Trade.Account.FinanceDetail.TradFee", //-TradingFee,
@@ -71,6 +72,9 @@ export default {
   computed: {
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   methods: {

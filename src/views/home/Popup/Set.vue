@@ -10,14 +10,14 @@
           <div class="fc-45">{{ $t('Trade.MyPosition.SetStopPricePopup.AveragePrice') }}</div>
           <div>
             <span class="fc-85">{{position.averagePrice | fck(-8)}}</span>
-            <span class="fc-45">USDT</span>
+            <span class="fc-45">{{ usdTokenName }}</span>
           </div>
         </div>
         <div class="system-popup-price">
           <div class="fc-45">{{ $t('Trade.MyPosition.SetStopPricePopup.CurrentPrice') }}</div>
           <div>
             <span class="fc-green">{{position.spotPrice | fck(-8)}}</span>
-            <span class="fc-45">USDT</span>
+            <span class="fc-45">{{ usdTokenName }}</span>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
         <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.TakeProfit') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" placeholder="" :formatter="(value) => value.replace(/-/g, '')" @change="checkPrice" @input="onInputProfitPrice" type="number" v-model="position.stopProfitPriceInput" />
-          <div class="unit">USDT</div>
+          <div class="unit">{{ usdTokenName }}</div>
         </div>
         <div class="system-popup-input-hint">
           <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceProfitNotice">
@@ -42,7 +42,7 @@
         <div class="system-popup-input-title">{{ $t('Trade.MyPosition.SetStopPricePopup.StopLoss') }}</div>
         <div class="system-popup-input">
           <van-field class="derify-input no-padding-hor" :formatter="(value) => value.replace(/-/g, '')" @change="checkPrice" @input="onInputLossPrice" placeholder="" type="number" v-model="position.stopLossPriceInput" />
-          <div class="unit">USDT</div>
+          <div class="unit">{{ usdTokenName }}</div>
         </div>
         <div class="system-popup-input-hint">
           <i18n path="Trade.MyPosition.SetStopPricePopup.StopPriceLossNotice">
@@ -76,6 +76,7 @@ import {
 import { UserProcessStatus } from '@/store/modules/user'
 import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
+import { getUSDTokenName } from '@/config'
 
 export default {
   components: { DerifyErrorNotice },
@@ -95,6 +96,11 @@ export default {
       errorMsg: '',
       showError: false,
       position: {}
+    }
+  },
+  computed: {
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   watch: {

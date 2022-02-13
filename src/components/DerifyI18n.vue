@@ -83,7 +83,6 @@ export default {
   props:['text', 'params'],
   data() {
     const html = renderMap(convertToMap(this.$t(this.text)), this.params);
-    console.log(html)
     const Component = Vue.extend({template: `<fragment> ${html}</fragment>`, components:{DecimalView}});
     return {component: Component}
   }

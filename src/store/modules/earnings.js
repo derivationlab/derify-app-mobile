@@ -3,6 +3,7 @@ import * as web3Util from '@/utils/web3Utils'
 import { getCache } from '../../utils/cache'
 import { getTraderBondBalance, getTraderEDRFBalance, getTraderPMRBalance } from '../../api/trade'
 import { toChecksumAddress } from '@/utils/utils'
+import { getUSDTokenName } from '@/config'
 
 export class EarningType {
   static get MIN () {
@@ -24,10 +25,10 @@ const state = {
   },
   account: getCache('account') || null,
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
-    {key: 'ETH', name: 'ETH / USDT', num: 2930.79, percent: -1.23, enable: true, address: Token.ETH},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
+    {key: 'BTC', name: `BTC / ${getUSDTokenName()}`, num: 2030.23, percent: 1.23, enable: true, address: Token.BTC},
+    {key: 'ETH', name: `ETH / ${getUSDTokenName()}`, num: 2930.79, percent: -1.23, enable: true, address: Token.ETH},
+    {key: 'BNB', name: `BNB / ${getUSDTokenName()}`, num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
+    {key: 'UNI', name: `UNI / ${getUSDTokenName()}`, num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
   curPairKey: 'ETH',
   accountData: {

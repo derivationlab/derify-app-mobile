@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="error-notice" v-if="showNetworkError">
-      <span>{{$t('Trade.Wallet.MainChainUnmatch', [mainChain.name])}}</span>
+      <span>{{$t('Trade.Wallet.MainChainUnmatch', [selectedWalletNetwork.name])}}</span>
       <div class="error-right">
         <van-icon name="cross" class="van-icon-close" color="#EA446B" @click="()=>{this.showNetworkError=false}"></van-icon>
       </div>
@@ -120,7 +120,7 @@ export default {
         return true;
       } catch (error) {
 
-        if (error.code === 4902) {
+        if (error.code === 4902 || error.code === -32603) {
           try {
             await window.ethereum.request({
               method: 'wallet_addEthereumChain',

@@ -18,11 +18,11 @@
     <div class="unit-tr">
       <div>
         <DecimalView wrapStyle="color: rgba(255,255,255,1)" digit-split="," :value="accountData.marginBalance | fck(-8,2)"/>
-        <span> USDT</span>
+        <span> {{ usdTokenName }}</span>
       </div>
       <div>
         <DecimalView wrapStyle="color: rgba(255,255,255,1)" digit-split="," :value="accountData.totalMargin | fck(-8)"/>
-        <span> USDT</span>
+        <span> {{ usdTokenName }}</span>
       </div>
     </div>
     <template v-if="isLogin">
@@ -39,6 +39,7 @@ import Navbar from '@/components/Navbar'
 import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
 import DecimalView from '../../components/DecimalView/DecimalView'
 import {fck} from '../../utils/utils'
+import { getUSDTokenName } from '@/config'
 
 const state = {
   marginBalance: 0,
@@ -61,6 +62,9 @@ export default {
     },
     isLogin () {
       return this.$store.state.user.isLogin
+    },
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   watch: {

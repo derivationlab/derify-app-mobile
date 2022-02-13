@@ -18,11 +18,11 @@
           <div class="color-type">{{data.pmr_update_type === 0 ? $t('Rewards.Mining.History.Earning') : $t('Rewards.Mining.History.Withdraw')}}</div>
           <div>
             <div :class="data.amount > 0 ? 'fc-green' : 'fc-red'">{{data.amount | amountFormt(2, true, '--')}}</div>
-            <div class="unit-span mrt-5">USDT</div>
+            <div class="unit-span mrt-5">{{ usdTokenName }}</div>
           </div>
           <div class="center-span">
             <div class="color-type">{{data.balance | amountFormt(2, true, '-')}}</div>
-            <div class="unit-span mrt-5">USDT</div>
+            <div class="unit-span mrt-5">{{ usdTokenName }}</div>
           </div>
           <div class="center-span unit-span">
             {{new Date(data.event_time).Format("yyyy-MM-dd hh:mm:ss")}}
@@ -34,6 +34,8 @@
   </div>
 </template>
 <script>
+import { getUSDTokenName } from '@/config'
+
 export default {
   data () {
     return {
@@ -41,6 +43,11 @@ export default {
       loading: false,
       page: 0,
       finished: false
+    }
+  },
+  computed:{
+    usdTokenName(){
+      return getUSDTokenName();
     }
   },
   methods: {
