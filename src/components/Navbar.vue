@@ -460,7 +460,7 @@ export default {
   padding-left: 3.2rem;
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: flex-end;
   position: absolute;
   bottom: 4rem;
   right: 1rem;
