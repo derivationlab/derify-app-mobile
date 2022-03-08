@@ -18,6 +18,6 @@ echo "start building"
 npm run build-$buildEnv
 
 echo "start rsync file"
-# rsync -azPv --delete --progress ./build/ $theServer:$theFolder
+rsync -azPv --delete --progress ./build/ $theServer:$theFolder
 
 echo "deploy to ${theFolder} finished"
