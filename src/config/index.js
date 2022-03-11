@@ -11,13 +11,16 @@ const config = {
 }
 
 
-export function getCurChain(){
+export function getCurChain() {
+  if (!window.ethereum) {
+    return 'rinkeby'
+  }
   const curChain = ChainEnum.values.find((chain) => {
     return parseInt(window.ethereum.chainId, 16) === chain.chainId
   });
   let chainKey = 'bsc';
 
-  if(curChain && curChain.chainId === ChainEnum.Rinkeby.chainId){
+  if (curChain && curChain.chainId === ChainEnum.Rinkeby.chainId) {
     chainKey = 'rinkeby';
   }
 
@@ -26,7 +29,7 @@ export function getCurChain(){
 
 export function getCurrentContractConfig(chain) {
 
-  if(!chain){
+  if (!chain) {
     chain = getCurChain();
   }
 
@@ -35,7 +38,7 @@ export function getCurrentContractConfig(chain) {
 
 export function getCurrentServerEndPoint(chain) {
 
-  if(!chain){
+  if (!chain) {
     chain = getCurChain();
   }
 
@@ -43,7 +46,7 @@ export function getCurrentServerEndPoint(chain) {
 }
 
 export function getCurrentKdataEndPoint(chain) {
-  if(!chain){
+  if (!chain) {
     chain = getCurChain();
   }
 
@@ -58,38 +61,41 @@ export function isCurrentProduction() {
   return currentEnv === 'production'
 }
 
-export function getWebroot(chain){
-  if(!chain){
+export function getWebroot(chain) {
+  if (!chain) {
     chain = getCurChain();
   }
 
   return MulChainConfig[chain].webroot[currentEnv]
 }
 
-export function  isDebug() {
-  if(window.location.href.indexOf("debug") > -1) {
+export function isDebug() {
+  if (window.location.href.indexOf("debug") > -1) {
     return true
   }
 
   return !isCurrentProduction()
 }
 
-export function getABIData(){
+export function getABIData() {
+  if (!window.ethereum) {
+    return getCurrentContractConfig('rinkeby');
+  }
   const curChain = ChainEnum.values.find((chain) => parseInt(window.ethereum.chainId, 16) === chain.chainId);
   let chainKey = 'rinkeby';
 
-  if(curChain && curChain.chainId === ChainEnum.BSC.chainId){
+  if (curChain && curChain.chainId === ChainEnum.BSC.chainId) {
     chainKey = 'bsc';
   }
   return getCurrentContractConfig(chainKey);
 }
 
-export function getShowVars(){
+export function getShowVars() {
   let chainKey = getCurChain();
   return MulChainConfig[chainKey].showVar;
 }
 
-export function getUSDTokenName(){
+export function getUSDTokenName() {
   return getShowVars().usdTokenName;
 }
 
