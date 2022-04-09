@@ -39,13 +39,13 @@
 </template>
 
 <script>
-import { BondAccountType, fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
-import { UserProcessStatus } from '../../../store/modules/user'
-import { fck } from '../../../utils/utils'
-import { EarningType } from '../../../store/modules/earnings'
+import {BondAccountType, fromContractUnit, toContractUnit} from '../../../utils/contractUtil'
+import {UserProcessStatus} from '../../../store/modules/user'
+import {fck} from '../../../utils/utils'
+import {EarningType} from '../../../store/modules/earnings'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: ['show', 'redeemId'],
   data () {
 
@@ -179,21 +179,21 @@ export default {
       if (this.redeemId === EarningType.EDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        this.$store.dispatch("earnings/redeemDrf", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
+        this.$store.dispatch("earnings/redeemDrf", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then(r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
+        }).finally(p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
       } else if(this.redeemId === EarningType.BDRF) {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        this.$store.dispatch("earnings/redeemBondFromBank", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then( r => {
+        this.$store.dispatch("earnings/redeemBondFromBank", {amount: toContractUnit(this.amount), bondAccountType: this.accountType}).then(r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
+        }).finally(p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
       }
@@ -202,15 +202,15 @@ export default {
     onDropDowOpen () {
     },
     getAccountOptions() {
-      let accoutOptions = [{ text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 1 }]
+      let accoutOptions = [{text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 1}]
 
       if(this.redeemId === EarningType.EDRF) {
         accoutOptions = [
           // { text: this.$t('Rewards.Staking.RedeemPopup.DRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.RedeemPopup.MyWallet'), value: 1 }]
+          {text: this.$t('Rewards.Staking.RedeemPopup.MyWallet'), value: 1}]
       }else if(this.redeemId === EarningType.BDRF){
-        accoutOptions = [      { text: this.$t('Rewards.Bond.RedeemPopup.bDRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.RedeemPopup.MyWallet'), value: 1 }]
+        accoutOptions = [      {text: this.$t('Rewards.Bond.RedeemPopup.bDRFAccount'), value: 0},
+          {text: this.$t('Rewards.Bond.RedeemPopup.MyWallet'), value: 1}]
       }
 
       return accoutOptions

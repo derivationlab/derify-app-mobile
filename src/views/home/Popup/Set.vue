@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { amountFormt, fck } from '@/utils/utils'
+import {amountFormt, fck} from '@/utils/utils'
 import {
   fromContractUnit,
   OrderTypeEnum,
@@ -73,13 +73,13 @@ import {
   toContractUnit,
   toHexString
 } from '@/utils/contractUtil'
-import { UserProcessStatus } from '@/store/modules/user'
-import { CancelOrderedPositionTypeEnum } from '../../../store/modules/contract'
+import {UserProcessStatus} from '@/store/modules/user'
+import {CancelOrderedPositionTypeEnum} from '../../../store/modules/contract'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: {
     show: {
       type: Boolean,
@@ -172,7 +172,7 @@ export default {
         return false
       }
 
-      if(position.profitAmount  <= 0 ){
+      if(position.profitAmount  <= 0){
         return false
       }
 
@@ -188,7 +188,7 @@ export default {
         return false
       }
 
-      if(position.lostAmount  >0 ){
+      if(position.lostAmount  >0){
         return false
       }
 

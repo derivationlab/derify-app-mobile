@@ -1,9 +1,9 @@
 import {getCache, setCache} from '@/utils/cache'
 import * as web3Utils from '@/utils/web3Utils'
-import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
-import { Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum } from '@/utils/contractUtil'
-import { amountFormt, fck, toChecksumAddress } from '@/utils/utils'
-import { getUSDTokenName } from '@/config'
+import {getTradeList, getTradeBalanceDetail, getTraderEDRFBalance} from '@/api/trade'
+import {Token, SideEnum, toHexString, toContractUnit, fromContractUnit, UnitTypeEnum} from '@/utils/contractUtil'
+import {amountFormt, fck, toChecksumAddress} from '@/utils/utils'
+import {getUSDTokenName} from '@/config'
 
 const openPositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
 const closePositionListener/*:{callback:Function, commit:Dispatch}[]*/ = [];
@@ -102,7 +102,7 @@ const actions = {
       if(!state.wallet_address || token === undefined || side === undefined){
         return
       }
-      let closeUpperBound = { size: Infinity}
+      let closeUpperBound = {size: Infinity}
       if(side !== SideEnum.HEDGE) {
         closeUpperBound = await web3Utils.contract(state.wallet_address).getCloseUpperBound({token, trader: state.wallet_address, side})
       }

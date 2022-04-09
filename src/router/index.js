@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import { asyncInitWallet, getWallet } from '@/store/modules/user'
+import {asyncInitWallet, getWallet} from '@/store/modules/user'
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location, onResolve, onReject) {

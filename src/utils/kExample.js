@@ -149,8 +149,8 @@ export default {
       margin: '10',
       color: 'rgba(255,255,255,0.3)'
     },
-    axisLine: { onZero: false },
-    splitLine: { show: false },
+    axisLine: {onZero: false},
+    splitLine: {show: false},
     splitNumber: 5
     //min: 'dataMin',
     //max: 'dataMax'

@@ -129,9 +129,9 @@
 import Navbar from '@/components/Navbar'
 import {options,data0} from '@/utils/kExample'
 import getEchartsOptions from "@/utils/kline";
-import { fromContractUnit, Token } from '@/utils/contractUtil'
+import {fromContractUnit, Token} from '@/utils/contractUtil'
 import generateDataEchartsOptions from '@/utils/data-chart'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 window.data0 = data0;
 const context = {

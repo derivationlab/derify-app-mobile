@@ -36,10 +36,10 @@
 </template>
 <script>
 import Navbar from '@/components/Navbar'
-import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
+import {EVENT_WALLET_CHANGE} from '../../utils/web3Utils'
 import DecimalView from '../../components/DecimalView/DecimalView'
 import {fck} from '../../utils/utils'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 const state = {
   marginBalance: 0,
@@ -87,10 +87,10 @@ export default {
   },
   methods: {
     lookFinDetail () {
-      this.$router.push({ path: '/financialDetails' })
+      this.$router.push({path: '/financialDetails'})
     },
     goTransfer (type) {
-      this.$router.push({ path: '/transfer', query: { type } })
+      this.$router.push({path: '/transfer', query: {type}})
     },
     loadAccountData () {
       this.$store.dispatch('contract/loadAccountData').then(r => {

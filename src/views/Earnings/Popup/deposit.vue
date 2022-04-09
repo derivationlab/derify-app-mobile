@@ -38,15 +38,15 @@
 </template>
 
 <script>
-import { toContractUnit,fromContractUnit } from '@/utils/contractUtil'
+import {toContractUnit,fromContractUnit} from '@/utils/contractUtil'
 import {UserProcessStatus} from "@/store/modules/user"
 import {fck} from '@/utils/utils';
-import { BondAccountType } from '../../../utils/contractUtil'
+import {BondAccountType} from '../../../utils/contractUtil'
 import {EarningType} from "@/store/modules/earnings";
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: ['show', 'depositId'],
   data () {
 
@@ -133,11 +133,11 @@ export default {
 
       this.close()
       this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-      this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then( r => {
+      this.$store.dispatch("earnings/exchangeBond", {bondAccountType: this.accountType ,amount: toContractUnit(this.amount)}).then(r => {
         this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
       }).catch(e => {
         this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-      }).finally( p => {
+      }).finally(p => {
         this.$store.dispatch('earnings/loadEarningData')
       })
     },
@@ -172,16 +172,16 @@ export default {
     },
 
     getAccountOptions() {
-      let accoutOptions = [{ text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
-        { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
+      let accoutOptions = [{text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0},
+        {text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1}]
 
       if (this.depositId === EarningType.MIN) {
         accoutOptions = []
       } else if (this.depositId === EarningType.EDRF) {
         accoutOptions = []
       } else {
-        accoutOptions = [      { text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1 }]
+        accoutOptions = [      {text: this.$t('Rewards.Bond.ExchangePopup.bDRFAccount'), value: 0},
+          {text: this.$t('Rewards.Bond.ExchangePopup.MyWallet'), value: 1}]
       }
 
       return accoutOptions

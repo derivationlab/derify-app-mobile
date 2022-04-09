@@ -26,15 +26,15 @@
 </template>
 
 <script>
-import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
+import {fromContractUnit, toContractUnit} from '../../../utils/contractUtil'
 import {fck} from '@/utils/utils'
 import {UserProcessStatus} from "@/store/modules/user";
-import { EarningType } from '../../../store/modules/earnings'
+import {EarningType} from '../../../store/modules/earnings'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: ['show', 'withdrawId'],
   data () {
     return {
@@ -150,11 +150,11 @@ export default {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //position mining
-        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then( r => {
+        this.$store.dispatch("earnings/withdrawPMReward", {amount: toContractUnit(this.amount)}).then(r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
+        }).finally(p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
 
@@ -165,11 +165,11 @@ export default {
         this.close()
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
         //eDRF
-        this.$store.dispatch("earnings/withdrawEdrf", {amount: toContractUnit(this.amount)}).then( r => {
+        this.$store.dispatch("earnings/withdrawEdrf", {amount: toContractUnit(this.amount)}).then(r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
+        }).finally(p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
 
@@ -180,11 +180,11 @@ export default {
         this.close()
         //bDRF
         this.$userProcessBox({status: UserProcessStatus.waiting, msg: this.$t('global.TradePendingMsg')})
-        this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then( r => {
+        this.$store.dispatch("earnings/withdrawBond", {amount: toContractUnit(this.amount)}).then(r => {
           this.$userProcessBox({status: UserProcessStatus.success, msg: this.$t('global.TradeSuccessMsg')})
         }).catch(e => {
           this.$userProcessBox({status: UserProcessStatus.failed, msg: this.$t('global.TradeFailedMsg')})
-        }).finally( p => {
+        }).finally(p => {
           this.$store.dispatch('earnings/loadEarningData')
         })
       }

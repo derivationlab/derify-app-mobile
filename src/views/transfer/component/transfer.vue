@@ -46,16 +46,16 @@
   </div>
 </template>
 <script>
-  import { fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
-import { UserProcessStatus } from '../../../store/modules/user'
+  import {fromContractUnit, toContractUnit} from '../../../utils/contractUtil'
+import {UserProcessStatus} from '../../../store/modules/user'
 import {toContractNum} from "@/utils/contractUtil";
   import DerifyIcon from '../../../components/DerifyIcon/DerifyIcon'
   import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
-  import { getUSDTokenName } from '@/config'
+  import {getUSDTokenName} from '@/config'
 
 export default {
   name: 'transfer',
-  components: { DerifyErrorNotice, DerifyIcon },
+  components: {DerifyErrorNotice, DerifyIcon},
   data () {
     return {
       errorMsg: '',

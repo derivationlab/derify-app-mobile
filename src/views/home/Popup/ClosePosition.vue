@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import { PositionView, toContractUnit,CancelOrderedPositionTypeEnum } from '@/utils/contractUtil'
-import { UserProcessStatus } from '@/store/modules/user'
+import {PositionView, toContractUnit,CancelOrderedPositionTypeEnum} from '@/utils/contractUtil'
+import {UserProcessStatus} from '@/store/modules/user'
 
 export default {
   props: {

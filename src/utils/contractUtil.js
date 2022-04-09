@@ -1,9 +1,9 @@
 import Web3 from 'web3'
-import BigNumber, { RoundingMode } from 'bignumber.js'
+import BigNumber, {RoundingMode} from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
 import * as configUtil from '@/config'
-import { ChainEnum } from '@/store/modules/user'
-import { getABIData } from '@/config'
+import {ChainEnum} from '@/store/modules/user'
+import {getABIData} from '@/config'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -829,7 +829,7 @@ export default class Contract {
    * @param bondAccountType
    * @return {*}
    */
-  redeemBondFromBank ({amount, bondAccountType }) {
+  redeemBondFromBank ({amount, bondAccountType}) {
     return this.DerifyRewards.methods.redeemBondFromBank(amount, bondAccountType).send(cache);
   }
 

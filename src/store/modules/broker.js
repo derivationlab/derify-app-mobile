@@ -8,8 +8,8 @@ import {
   updateBroker
 } from '@/api/broker'
 import * as web3Utils from '@/utils/web3Utils'
-import { BondAccountType, fromContractUnit, toContractNum, Token } from '@/utils/contractUtil'
-import { getWebroot } from '@/config'
+import {BondAccountType, fromContractUnit, toContractNum, Token} from '@/utils/contractUtil'
+import {getWebroot} from '@/config'
 
 const brokerInfo = new BrokerInfo()
 const state = {

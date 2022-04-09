@@ -61,8 +61,8 @@ import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 import ButtonLoginWrap from '@/components/ButtonLoginWrap/ButtonLoginWrap'
 import {isUSDTClaimed, sendUSDT} from '@/api/trade'
-import { ChainEnum, UserProcessStatus } from '@/store/modules/user'
-import { Token } from '@/utils/contractUtil'
+import {ChainEnum, UserProcessStatus} from '@/store/modules/user'
+import {Token} from '@/utils/contractUtil'
 import DerifyI18n from "@/components/DerifyI18n";
 import {VueRecaptcha} from 'vue-recaptcha';
 

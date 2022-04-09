@@ -73,9 +73,9 @@ import {
   OpenType,
   convertAmount2TokenSize, toContractNum, BondAccountType
 } from '../../../utils/contractUtil'
-import { fck } from '../../../utils/utils'
-import { UnitTypeEnum } from '../../../store/modules/contract'
-import { UserProcessStatus } from '../../../store/modules/user'
+import {fck} from '../../../utils/utils'
+import {UnitTypeEnum} from '../../../store/modules/contract'
+import {UserProcessStatus} from '../../../store/modules/user'
 import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
 
@@ -191,8 +191,8 @@ export default {
     },
     getAccountOptions() {
       return [
-        { text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0 },
-        { text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1 }
+        {text: this.$t('Broker.Broker.DepositPopup.eDRFAccount'), value: 0},
+        {text: this.$t('Broker.Broker.DepositPopup.MyWallet'), value: 1}
       ]
     },
     accountTypeChange() {

@@ -108,7 +108,7 @@ const RiskDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" 
 const LiquidationPriceDetailLink = {link: (chunks) => `<a class="fc-yellow" target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">${chunks}</a>`}
 
 export default {
-  components: { DerifyI18n },
+  components: {DerifyI18n},
   props: {
     show: {
       type: Boolean,

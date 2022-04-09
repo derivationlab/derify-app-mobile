@@ -36,14 +36,14 @@
 </template>
 
 <script>
-import { BondAccountType, fromContractUnit, toContractUnit } from '../../../utils/contractUtil'
-import { UserProcessStatus } from '../../../store/modules/user'
-import { fck } from '../../../utils/utils'
-import { EarningType } from '../../../store/modules/earnings'
+import {BondAccountType, fromContractUnit, toContractUnit} from '../../../utils/contractUtil'
+import {UserProcessStatus} from '../../../store/modules/user'
+import {fck} from '../../../utils/utils'
+import {EarningType} from '../../../store/modules/earnings'
 import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
 
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: ['show', 'pledgeId'],
   data () {
 
@@ -213,17 +213,17 @@ export default {
 
     getAccountOptions() {
       let accoutOptions = [
-        { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }
+        {text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1}
       ]
 
       if(this.pledgeId === EarningType.EDRF) {
         accoutOptions = [
           //{ text: this.$t('Rewards.Staking.PledgePopup.DRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1 }]
+          {text: this.$t('Rewards.Staking.PledgePopup.MyWallet'), value: 1}]
       }else if(this.pledgeId === EarningType.BDRF){
         accoutOptions = [
-          { text: this.$t('Rewards.Bond.PledgePopup.bDRFAccount'), value: 0 },
-          { text: this.$t('Rewards.Bond.PledgePopup.MyWallet'), value: 1 }]
+          {text: this.$t('Rewards.Bond.PledgePopup.bDRFAccount'), value: 0},
+          {text: this.$t('Rewards.Bond.PledgePopup.MyWallet'), value: 1}]
       }
 
       return accoutOptions

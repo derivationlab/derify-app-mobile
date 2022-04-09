@@ -402,16 +402,16 @@ import {
   stringFromContractUnit,
   toContractUnit
 } from '@/utils/contractUtil'
-import { amountFormt, fck } from '@/utils/utils'
-import { CancelOrderedPositionTypeEnum, UnitTypeEnum } from '@/utils/contractUtil'
-import { UserProcessStatus } from '@/store/modules/user'
+import {amountFormt, fck} from '@/utils/utils'
+import {CancelOrderedPositionTypeEnum, UnitTypeEnum} from '@/utils/contractUtil'
+import {UserProcessStatus} from '@/store/modules/user'
 import ClosePosition from './Popup/ClosePosition'
-import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
-import getEchartsOptions, { buildEchartsOptions } from '../../utils/kline'
+import {EVENT_WALLET_CHANGE} from '@/utils/web3Utils'
+import getEchartsOptions, {buildEchartsOptions} from '../../utils/kline'
 import DecimalView from '../../components/DecimalView/DecimalView'
-import { convertAmount2TokenSize, toContractNum } from '../../utils/contractUtil'
+import {convertAmount2TokenSize, toContractNum} from '../../utils/contractUtil'
 import DerifyErrorNotice from '../../components/DerifyErrorNotice/DerifyErrorNotice'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 class OpTypeEnum {
   constructor(opType, opTypeDesc) {
     this.opType = opType

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { UserProcessStatus } from '@/store/modules/user'
+import {UserProcessStatus} from '@/store/modules/user'
 
 export default {
   data () {

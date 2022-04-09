@@ -13,12 +13,12 @@
 </style>
 <script>
 import DebugConsoleView from "@/components/DebugConsoleView/DebugConsoleView";
-import { createDataEvenet, updateTraderAccess } from '@/api/trade'
+import {createDataEvenet, updateTraderAccess} from '@/api/trade'
 import Bind from '@/views/Broker/apply/add'
 import Trade from '@/views/home/Home'
-import { asyncInitWallet, getWallet } from '@/store/modules/user'
+import {asyncInitWallet, getWallet} from '@/store/modules/user'
 import store from '@/store'
-import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
+import {EVENT_WALLET_CHANGE} from '@/utils/web3Utils'
 import Vue from 'vue'
 
 const brokerBindPath = "/bind";

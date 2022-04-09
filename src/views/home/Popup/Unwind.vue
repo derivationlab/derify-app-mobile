@@ -48,13 +48,13 @@
 </template>
 
 <script>
-  import { fromContractUnit, toContractUnit } from '@/utils/contractUtil'
-  import { UserProcessStatus } from '@/store/modules/user'
+  import {fromContractUnit, toContractUnit} from '@/utils/contractUtil'
+  import {UserProcessStatus} from '@/store/modules/user'
   import DerifyErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
-  import { getUSDTokenName } from '@/config'
+  import {getUSDTokenName} from '@/config'
 
 export default {
-  components: { DerifyErrorNotice },
+  components: {DerifyErrorNotice},
   props: {
     show: {
       type: Boolean,

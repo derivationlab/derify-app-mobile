@@ -1,7 +1,7 @@
 import MulChainConfig from './config.js'
 import { ChainEnum } from '@/utils/types'
 
-const nodeEnv = process.env.REACT_APP_NODE_ENV ? process.env.REACT_APP_NODE_ENV : process.env.NODE_ENV;
+const nodeEnv = process.env.VUE_APP_NODE_ENV;
 const currentEnv = "production,development,debug".indexOf(nodeEnv) > -1 ? nodeEnv : "production"
 window.currentEnv = currentEnv;
 console.log(`currentEnv ${currentEnv}`)
@@ -9,7 +9,6 @@ const config = {
   currentEnv: currentEnv,
   debug: !isCurrentProduction()
 }
-
 
 export function getCurChain() {
   if (!window.ethereum) {

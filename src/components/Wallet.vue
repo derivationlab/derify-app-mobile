@@ -62,7 +62,7 @@
 
 <script>
 
-import { ChainEnum, mainChain, WalletEnum } from '../store/modules/user'
+import {ChainEnum, mainChain, WalletEnum} from '../store/modules/user'
 
 export default {
   props: ['show'],
