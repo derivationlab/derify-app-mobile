@@ -7,7 +7,7 @@ import store from './store'
 import {VueRecaptcha} from 'vue-recaptcha';
 import VueTouchEvents from './components/TouchEvents/index'
 import Vant from 'vant'
-import { Lazyload } from 'vant';
+import {Lazyload} from 'vant';
 import 'vant/lib/index.less'
 import './styles/index.less'
 import * as echarts from 'echarts'
@@ -17,7 +17,7 @@ import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
 import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
-import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
+import {EVENT_WALLET_CHANGE} from './utils/web3Utils'
 import Vconsole from 'vconsole';
 import {isDebug} from '@/config';
 

@@ -179,12 +179,12 @@ import DerifyErrorNotice from '@/components/DerifyErrorNotice/DerifyErrorNotice'
 import BrokerDepositPopup from '@/views/Broker/popup/BrokerDepositPopup'
 import BrokerWithdrawPopup from '@/views/Broker/popup/BrokerWithdrawPopup'
 import DecimalView from "@/components/DecimalView/DecimalView";
-import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
-import { BondAccountType, fromContractUnit } from '@/utils/contractUtil'
-import { UserProcessStatus } from '@/store/modules/user'
+import {EVENT_WALLET_CHANGE} from '@/utils/web3Utils'
+import {BondAccountType, fromContractUnit} from '@/utils/contractUtil'
+import {UserProcessStatus} from '@/store/modules/user'
 import TextView from '@/components/TextView'
 import {countLength,cutLength} from '@/utils/utils'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 export default {
   name: 'Home',

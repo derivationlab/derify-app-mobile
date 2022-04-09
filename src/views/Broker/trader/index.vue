@@ -38,9 +38,9 @@
 </template>
 <script>
 import TextView from '@/components/TextView'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 export default {
-  components: { TextView },
+  components: {TextView},
   props:['broker'],
   data () {
     return {

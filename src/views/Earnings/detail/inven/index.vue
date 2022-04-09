@@ -34,7 +34,7 @@
   </div>
 </template>
 <script>
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 export default {
   data () {

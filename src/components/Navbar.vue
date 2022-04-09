@@ -337,7 +337,7 @@ export default {
         return
       }
       this.changeShowMenu(false)
-      this.$router.push({ name })
+      this.$router.push({name})
     },
     handleLogin () {
       if (!this.walletAddress) {

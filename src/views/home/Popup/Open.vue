@@ -66,14 +66,14 @@ import {
   OpenType,
   convertAmount2TokenSize, toContractNum
 } from '../../../utils/contractUtil'
-  import { fck } from '../../../utils/utils'
-  import { UnitTypeEnum } from '../../../utils/contractUtil'
-  import { UserProcessStatus } from '../../../store/modules/user'
+  import {fck} from '../../../utils/utils'
+  import {UnitTypeEnum} from '../../../utils/contractUtil'
+  import {UserProcessStatus} from '../../../store/modules/user'
 import ErrorNotice from '../../../components/DerifyErrorNotice/DerifyErrorNotice'
-import { getUSDTokenName } from '@/config'
+import {getUSDTokenName} from '@/config'
 
 export default {
-  components: { ErrorNotice },
+  components: {ErrorNotice},
   props: {
     show: {
       type: Boolean,

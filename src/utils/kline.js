@@ -1,4 +1,4 @@
-import { getKLineData } from '../api/kdata'
+import {getKLineData} from '../api/kdata'
 import {numConvert, Token} from '@/utils/contractUtil'
 
 export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
@@ -63,8 +63,8 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
         margin: '10',
         color: 'rgba(255,255,255,0.3)'
       },
-      axisLine: { onZero: false },
-      splitLine: { show: false },
+      axisLine: {onZero: false},
+      splitLine: {show: false},
       splitNumber: 5
     },
     yAxis: {

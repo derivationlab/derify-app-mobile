@@ -1,5 +1,5 @@
 import MulChainConfig from './config.js'
-import { ChainEnum } from '@/utils/types'
+import {ChainEnum} from '@/utils/types'
 
 const nodeEnv = process.env.REACT_APP_NODE_ENV ? process.env.REACT_APP_NODE_ENV : process.env.NODE_ENV;
 const currentEnv = "production,development,debug".indexOf(nodeEnv) > -1 ? nodeEnv : "production"

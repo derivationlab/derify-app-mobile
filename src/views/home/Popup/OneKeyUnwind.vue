@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import { toContractUnit } from '../../../utils/contractUtil'
-import { UserProcessStatus } from '../../../store/modules/user'
+import {toContractUnit} from '../../../utils/contractUtil'
+import {UserProcessStatus} from '../../../store/modules/user'
 
 export default {
   props: {

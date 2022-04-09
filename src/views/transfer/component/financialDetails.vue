@@ -43,9 +43,9 @@
 </template>
 <script>
 
-  import { amountFormt } from '../../../utils/utils'
-  import { EVENT_WALLET_CHANGE } from '../../../utils/web3Utils'
-  import { getUSDTokenName } from '@/config'
+  import {amountFormt} from '../../../utils/utils'
+  import {EVENT_WALLET_CHANGE} from '../../../utils/web3Utils'
+  import {getUSDTokenName} from '@/config'
 
   const feeTypeMap = {
     0: "Trade.Account.FinanceDetail.TradFee", //-TradingFee,

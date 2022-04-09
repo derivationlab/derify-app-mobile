@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { fck, dfv, amountFormt, countLength, cutLength } from './utils'
+import {fck, dfv, amountFormt, countLength, cutLength} from './utils'
 
 Vue.filter('fck', (value, pow, bit) => {
   return fck(value, pow, bit)

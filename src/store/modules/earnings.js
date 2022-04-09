@@ -1,9 +1,9 @@
-import { Token,SideEnum } from '@/utils/contractUtil'
+import {Token,SideEnum} from '@/utils/contractUtil'
 import * as web3Util from '@/utils/web3Utils'
-import { getCache } from '../../utils/cache'
-import { getTraderBondBalance, getTraderEDRFBalance, getTraderPMRBalance } from '../../api/trade'
-import { toChecksumAddress } from '@/utils/utils'
-import { getUSDTokenName } from '@/config'
+import {getCache} from '../../utils/cache'
+import {getTraderBondBalance, getTraderEDRFBalance, getTraderPMRBalance} from '../../api/trade'
+import {toChecksumAddress} from '@/utils/utils'
+import {getUSDTokenName} from '@/config'
 
 export class EarningType {
   static get MIN () {
@@ -125,9 +125,9 @@ const actions = {
     const contract = web3Util.contract(state.wallet_address)
     return contract.depositBondToBank({amount, bondAccountType})
   },
-  redeemBondFromBank ({state, commit, dispatch}, {amount, bondAccountType }) {
+  redeemBondFromBank ({state, commit, dispatch}, {amount, bondAccountType}) {
     const contract = web3Util.contract(state.wallet_address)
-    return contract.redeemBondFromBank({amount, bondAccountType })
+    return contract.redeemBondFromBank({amount, bondAccountType})
   },
   getTraderPMRBalance ({state, commit, dispatch}, {page = 0, size = 10}) {
     return getTraderPMRBalance(state.wallet_address, page, size)
@@ -147,7 +147,7 @@ const actions = {
 
       const contract = web3Util.contract(state.wallet_address)
       const exchangeBondSizeUpperBound = await contract.getExchangeBondSizeUpperBound({trader: state.wallet_address, bondAccountType})
-      commit('updateState', { exchangeBondSizeUpperBound })
+      commit('updateState', {exchangeBondSizeUpperBound})
       return exchangeBondSizeUpperBound
     })();
   },

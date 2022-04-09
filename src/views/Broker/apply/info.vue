@@ -78,11 +78,11 @@
 <script>
 import Navbar from '@/components/Navbar'
 import DerifyErrorNotice from "@/components/DerifyErrorNotice/DerifyErrorNotice";
-import { BrokerInfo } from '@/api/broker'
-import { getWebroot } from '@/config'
-import { EVENT_WALLET_CHANGE } from '@/utils/web3Utils'
-import { UserProcessStatus } from '@/store/modules/user'
-import { countLength,cutLength } from '@/utils/utils'
+import {BrokerInfo} from '@/api/broker'
+import {getWebroot} from '@/config'
+import {EVENT_WALLET_CHANGE} from '@/utils/web3Utils'
+import {UserProcessStatus} from '@/store/modules/user'
+import {countLength,cutLength} from '@/utils/utils'
 
 export default {
   name: 'Home',

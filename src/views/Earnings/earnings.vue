@@ -136,9 +136,9 @@ import withdraw from './Popup/withdraw.vue'
 import redeem from './Popup/redeem.vue'
 import pledge from './Popup/pledge.vue'
 import deposit from './Popup/deposit.vue'
-import { EarningType } from '../../store/modules/earnings'
-import { EVENT_WALLET_CHANGE } from '../../utils/web3Utils'
-import { getUSDTokenName } from '@/config'
+import {EarningType} from '../../store/modules/earnings'
+import {EVENT_WALLET_CHANGE} from '../../utils/web3Utils'
+import {getUSDTokenName} from '@/config'
 
 export default {
   name: 'earnings',
@@ -231,7 +231,7 @@ export default {
       this.show = true
     },
     goDetail (id) {
-      this.$router.push({ name: 'detail', query: { id } })
+      this.$router.push({name: 'detail', query: {id}})
     },
     loadEarningData() {
       this.$store.dispatch('earnings/loadEarningData')

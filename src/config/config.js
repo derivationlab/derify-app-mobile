@@ -13,7 +13,7 @@ export default {
       "debug": "https://test-api.derify.exchange/eth",
       "production": "https://api.derify.exchange/eth"
     },
-    "kdata":{
+    "kdata": {
       "development": "https://test-api.derify.exchange",
       "debug": "https://test-api.derify.exchange",
       "production": "https://api.derify.exchange"
@@ -23,7 +23,7 @@ export default {
       "debug": "https://test-web.derify.exchange",
       "production": "https://derify.exchange"
     },
-    "showVar":{
+    "showVar": {
       "usdTokenName": "USDT"
     },
     "contract": {
@@ -142,21 +142,21 @@ export default {
   },
   "bsc": {
     "server": {
-      "development": "https://test-api.derify.exchange/bsc",
-      "debug": "https://test-api.derify.exchange/bsc",
+      "development": "https://dev-bsctestnet-api.derify.exchange",
+      "debug": "https://dev-bsctestnet-api.derify.exchange",
       "production": "https://api.derify.exchange/bsc"
     },
-    "kdata":{
-      "development": "https://test-api.derify.exchange",
-      "debug": "https://test-api.derify.exchange",
+    "kdata": {
+      "development": "https://dev-bsctestnet-api.derify.exchange",
+      "debug": "https://dev-bsctestnet-api.derify.exchange",
       "production": "https://api.derify.exchange"
     },
     "webroot": {
-      "development": "https://test-m.derify.exchange",
-      "debug": "https://test-m.derify.exchange",
+      "development": "https://dev-m.derify.exchange",
+      "debug": "https://dev-m.derify.exchange",
       "production": "https://m.derify.exchange"
     },
-    "showVar":{
+    "showVar": {
       "usdTokenName": "BUSD"
     },
     "contract": {
