@@ -4,10 +4,10 @@ import VueEvents from 'vue-events'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import {VueRecaptcha} from 'vue-recaptcha';
+import { VueRecaptcha } from 'vue-recaptcha';
 import VueTouchEvents from './components/TouchEvents/index'
 import Vant from 'vant'
-import {Lazyload} from 'vant';
+import { Lazyload } from 'vant';
 import 'vant/lib/index.less'
 import './styles/index.less'
 import * as echarts from 'echarts'
@@ -16,12 +16,16 @@ import '@/utils/filters'
 import '@/utils/contractUtil.js'
 import VueI18n from 'vue-i18n'
 import UserProcessBox from './components/UserProcessBox'
-import {asyncInitWallet, getWallet, handleEthereum} from './store/modules/user'
-import {EVENT_WALLET_CHANGE} from './utils/web3Utils'
+import { asyncInitWallet, getWallet, handleEthereum } from './store/modules/user'
+import { EVENT_WALLET_CHANGE } from './utils/web3Utils'
 import Vconsole from 'vconsole';
-import {isDebug} from '@/config';
+import { isDebug } from '@/config';
 
-if(isDebug()){
+const env = process.env.VUE_APP_VERCEL_ENV
+const gitHash = process.env.VUE_APP_VERCEL_GIT_COMMIT_SHA
+console.log({ env, gitHash })
+
+if (isDebug()) {
   const vConsole = new Vconsole();
   Vue.use(vConsole)
 }
@@ -105,15 +109,15 @@ Vue.prototype.$loginWallet = function () {
   asyncInitWallet().then(async () => {
     const walletInfo = await getWallet()
 
-    if(!walletInfo.isLogin){
+    if (!walletInfo.isLogin) {
       walletInfo.showWallet = true
-    }else{
+    } else {
       walletInfo.showWallet = false
     }
 
     this.$store.commit("user/updateState", walletInfo)
   }).catch((e) => {
-    console.error('init wallet failed',e);
+    console.error('init wallet failed', e);
   })
 }
 
