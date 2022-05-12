@@ -234,7 +234,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name"><a href="https://form.jotform.com/220383773757061" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
+          <div class="menu-list-item-name"><a href="https://forms.gle/8sfeqHKQufFyjwAo6" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">
