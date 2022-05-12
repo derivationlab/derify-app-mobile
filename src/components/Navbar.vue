@@ -234,7 +234,7 @@
             size="2.0rem"
           >
           </van-icon>
-          <div class="menu-list-item-name"><a href="https://forms.gle/8sfeqHKQufFyjwAo6" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
+          <div class="menu-list-item-name"><a href="https://docs.google.com/forms/d/e/1FAIpQLSelBo6du-kioL3kTWgMqCOtiwNZvw7D7kF82SSm3l314Ot9xA/viewform" target="_blank">{{ $t("Trade.navbar.Feedback") }}</a></div>
         </div>
       </div>
       <div class="language-wrap">
