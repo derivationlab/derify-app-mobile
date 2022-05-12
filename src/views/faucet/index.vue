@@ -21,7 +21,7 @@
 <!--        </div>-->
 
         <div class="btn-wrap">
-          <a href="https://forms.gle/dsMgQErBKUUNbnz36" target="_blank">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSesoXfNkoXbF9KoDf_cCq-CqND4xD62GLVcf2F1jUGk3D3WZA/viewform" target="_blank">
             <div class="derify-big-btn btn-yellow">
               <DerifyI18n text="Faucet.GetUSDT" :params="getUSDTDesc"/>
             </div>
