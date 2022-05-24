@@ -110,7 +110,7 @@
           <template v-if="isLogin">
             <div class="btnDiv" @click="closeApplyPopup">{{$t('Broker.Apply.ApplyBroker')}}</div>
             <div class="derify-big-btn">
-              <a class="fc-yellow fz-15" href="https://form.jotform.com/213133802570042" target="_blank">{{$t("Broker.Apply.GetTestEDRF")}}</a>
+              <a class="fc-yellow fz-15" href="https://docs.google.com/forms/d/e/1FAIpQLSfXtFTznW1COzNFebfNGjdRKfcNdG0zNjM7GXasajJOLA5v_A/viewform" target="_blank">{{$t("Broker.Apply.GetTestEDRF")}}</a>
             </div>
           </template>
           <div v-else class="btnDiv" @click="$loginWallet()">{{$t('Trade.Wallet.ConnectWallet')}}</div>
